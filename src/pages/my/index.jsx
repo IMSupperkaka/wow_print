@@ -22,8 +22,6 @@ class Index extends Component {
 
     render() {
 
-        console.log(this.props)
-
         return (
             <View className='index'>
                 <View className="header">

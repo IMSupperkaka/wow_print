@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import dva from './dva'
 import models from './models'
 import './app.less'
+import './custom-variables.scss'
 
 const dvaApp = dva.createApp({
     initialState: {},
