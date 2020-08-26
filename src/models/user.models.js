@@ -3,13 +3,19 @@ export default {
     namespace: 'user',
     state: {
         info: {
-            username: null,
-            avatar: null
+            nickName: null,
+            avatarUrl: null
         }
     },
-    effects: {
-        *getUserInfo(action, effects) {
-            
+    reducers: {
+        saveUserInfo(state, { payload }) {
+            return {
+                ...state,
+                info: {
+                    ...state.info,
+                    ...payload
+                }
+            }
         }
     }
 }

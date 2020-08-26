@@ -5,29 +5,27 @@ import { View, Button, Image } from '@tarojs/components'
 
 import './index.less'
 
+@connect(({ user }) => ({
+    user
+}))
 class Index extends Component {
-    componentWillReceiveProps(nextProps) {
-        console.log(this.props, nextProps)
+
+    onGetUserInfo = (e) => {
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'user/saveUserInfo',
+            payload: JSON.parse(e.detail.rawData)
+        })
+        Taro.navigateBack();
     }
-
-    componentWillUnmount() { }
-
-    componentDidShow() {
-        
-    }
-
-    componentDidHide() { }
 
     render() {
         return (
             <View className='index'>
-                <View className="header">
-                    <Button openType="getUserInfo">授权用户信息</Button>
-                </View>
+                <Button openType="getUserInfo" onGetUserInfo={this.onGetUserInfo}>授权用户信息</Button>
             </View>
         )
     }
 }
 
 export default Index
-
