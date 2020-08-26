@@ -1,4 +1,56 @@
 .header {
-    height: 400px;
+    height: 320px;
     background:rgba(255,99,69,1);
+    padding: 80px 32px 32px 32px;
+    .avatar-wrap {
+        display: flex;
+        align-items: center;
+        color: #fff;
+        .user-info {
+            margin-left: 24px;
+            & > view:first-child {
+                font-size:36px;
+                margin-bottom: 16px;
+                font-weight:600;
+                line-height:36px;
+            }
+            & > view:last-child {
+                font-size:22px;
+                font-weight:400;
+                line-height: 18px;
+            }
+        }
+    }
+}
+
+.my-orders {
+    width: 702px;
+    padding: 32px 0;
+    margin: -80px auto 0 auto;
+    border-radius: 16px;
+    box-sizing: border-box;
+    background-color: #fff;
+    .title {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 32px;
+        & > text:first-child {
+            font-size:24px;
+            font-weight:500;
+            color: #000;
+        }
+        & > view:last-child {
+            font-size:22px;
+            font-weight:400;
+            color:rgba(153,153,153,1);
+        }
+    }
+    .order-icons {
+        display: flex;
+        justify-content: space-around;
+        color: #666666;
+        font-size:24px;
+        font-weight:400;
+        padding: 0 32px;
+    }
 }
