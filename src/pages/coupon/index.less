@@ -9,5 +9,64 @@
     }
     .list {
         margin:32px 24px 0;
+        .list-item {
+            // height: 218px;
+            background-color: #FFFFFF;
+            margin-bottom: 20px;
+            padding:0 11px 0 12px;
+            border-radius: 15px;
+            .list-item-header {
+                // height: 106px;
+                padding: 24px 21px 24px 12px;
+                border-bottom: 1px dashed #E0E0E0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                .list-item-header-left {
+                    display: flex;
+                    > image {
+                        width: 106px;
+                        height: 106px;
+                        margin-right: 20px;
+                    }
+                    .list-item-header-text {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                        .name {
+                            color: #333333;
+                            font-size: 28px;
+                        }
+                        .sill,.time {
+                            color: #666666;
+                            font-size: 22px;
+                        }
+                        .sill {
+                            // margin-bottom: 6px;
+                        }
+                    }
+                }
+                .list-item-header-btn {
+                    flex-shrink: 0;
+                    margin-right: 21px;
+                    width: 120px;
+                    height: 48px;
+                    background-color: #FF6345;
+                    text-align: center;
+                    line-height: 48px;
+                    color: #FFFFFF;
+                    font-size: 24px;
+                    border-radius:26px;
+                }
+            }
+            .list-item-desc {
+                padding-left: 12px;
+                height: 63px;
+                display: flex;
+                align-items: center;
+                font-size: 22px;
+                color: #B0B0B0;
+            }
+        }
     }
 }
