@@ -6196,6 +6196,11 @@ lodash.debounce@^4.0.8:
   resolved "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
 
+lodash.isequal@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.npm.taobao.org/lodash.isequal/download/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
+  integrity sha1-QVxEePK8wwEgwizhDtMib30+GOA=
+
 lodash.sortby@^4.7.0:
   version "4.7.0"
   resolved "https://registry.npmjs.org/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
@@ -8495,6 +8500,11 @@ requires-port@^1.0.0:
   resolved "https://registry.npmjs.org/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
+resize-observer-polyfill@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.npm.taobao.org/resize-observer-polyfill/download/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
+  integrity sha1-DpAg3T0hAkRY1OvSfiPkAmmBBGQ=
+
 resolve-cwd@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/resolve-cwd/-/resolve-cwd-2.0.0.tgz#00a9f7387556e27038eae232caa372a6a59b665a"
@@ -9616,6 +9626,23 @@ tar@^6.0.2:
     minizlib "^2.1.0"
     mkdirp "^1.0.3"
     yallist "^4.0.0"
+
+taro-list-data-manager@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.npm.taobao.org/taro-list-data-manager/download/taro-list-data-manager-0.3.2.tgz#f3b322af48f54b91f1a5193075928b7e29b33224"
+  integrity sha1-87Mir0j1S5HxpRkwdZKLfimzMiQ=
+  dependencies:
+    lodash.isequal "^4.5.0"
+
+taro-list@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.npm.taobao.org/taro-list/download/taro-list-1.0.8.tgz#f92ddc80423871695bf293496a7212e0c26712ea"
+  integrity sha1-+S3cgEI4cWlb8pNJanIS4MJnEuo=
+  dependencies:
+    lodash.isequal "^4.5.0"
+    prop-types "^15.7.2"
+    resize-observer-polyfill "^1.5.1"
+    taro-list-data-manager "^0.3.2"
 
 taro-ui@^3.0.0-alpha.3:
   version "3.0.0-alpha.3"
