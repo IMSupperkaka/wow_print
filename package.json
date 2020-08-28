@@ -38,6 +38,8 @@
   "dependencies": {
     "@babel/runtime": "^7.7.7",
     "@tarojs/components": "3.0.5",
+    "@tarojs/plugin-less": "^2.2.10",
+    "@tarojs/plugin-sass": "^2.2.10",
     "@tarojs/react": "3.0.5",
     "@tarojs/redux": "^2.2.10",
     "@tarojs/runtime": "3.0.5",

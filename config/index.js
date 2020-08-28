@@ -9,7 +9,10 @@ const config = {
     },
     sourceRoot: 'src',
     outputRoot: 'dist',
-    plugins: [],
+    plugins: [
+        '@tarojs/plugin-sass',
+        '@tarojs/plugin-less'
+    ],
     defineConstants: {
     },
     copy: {

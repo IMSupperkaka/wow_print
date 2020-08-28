@@ -5,7 +5,6 @@ import dva from './dva'
 import models from './models'
 import './app.less'
 import './custom-variables.scss'
-import 'taro-ui/dist/style/index.scss'
 
 const dvaApp = dva.createApp({
     initialState: {},

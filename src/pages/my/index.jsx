@@ -36,6 +36,12 @@ class Index extends Component {
         }
     }
 
+    handleGoAddress = () => {
+        Taro.navigateTo({
+            url: '/pages/addressList/index'
+        })
+    }
+
     render() {
 
         return (
@@ -85,7 +91,7 @@ class Index extends Component {
                         </View>
                         <AtIcon value='chevron-right' size='14' color='#999'></AtIcon>
                     </View>
-                    <View className="cell">
+                    <View className="cell" onClick={this.handleGoAddress}>
                         <View className="cell-left">
                             <Image className="icon-left" src={addressPng}/>
                             <Text>收货地址</Text>

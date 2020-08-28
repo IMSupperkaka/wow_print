@@ -3,7 +3,10 @@ export default {
         'pages/home/index',
         'pages/coupon/index',
         'pages/my/index',
-        'pages/authInfo/index'
+        'pages/authInfo/index',
+        'pages/productDetail/index',
+        'pages/addressList/index',
+        'pages/addressEdit/index'
     ],
     tabBar: {
         color: '#666666',

@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import Taro from '@tarojs/taro'
+import { AtButton } from 'taro-ui'
 import { connect } from 'react-redux'
-import { View, Button, Image } from '@tarojs/components'
+import { View, Image } from '@tarojs/components'
 
 import './index.less'
 
@@ -22,7 +23,7 @@ class Index extends Component {
     render() {
         return (
             <View className='index'>
-                <Button openType="getUserInfo" onGetUserInfo={this.onGetUserInfo}>授权用户信息</Button>
+                <AtButton type='primary' openType="getUserInfo" onGetUserInfo={this.onGetUserInfo}>授权用户信息</AtButton>
             </View>
         )
     }
