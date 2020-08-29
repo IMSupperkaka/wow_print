@@ -34,6 +34,7 @@ class Index extends Component {
     render() {
         return (
             <View className='index'>
+                <View className="fixed-header"></View>
                 <Swiper
                     className='banner'
                     circular
