@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import Taro from '@tarojs/taro'
-import { View, Image, Text, Swiper, Button, SwiperItem } from '@tarojs/components'
+import { View, Image, Text, Swiper, ScrollView, SwiperItem } from '@tarojs/components'
 import { AtModal, AtModalHeader, AtModalContent, AtModalAction } from "taro-ui"
+import NavBar from '../../components/NavBar'
 import './index.less'
 
 class Index extends Component {
@@ -21,7 +22,8 @@ class Index extends Component {
                     price: '4.98'
                 }
             ],
-            isOpened: true
+            isOpened: true,
+            scrollTop: 0
         }
     }
 
@@ -31,10 +33,29 @@ class Index extends Component {
         })
     }
 
+    onScroll = (e) => {
+        this.setState({
+            scrollTop: e.detail.scrollTop
+        })
+    }
+
     render() {
+
+        const percent = this.state.scrollTop / 150;
+
+        const navBarStyle = {
+            backgroundColor: `rgba(255,255,255,${percent * 1})`,
+            color: `rgba(${255 *  (1 - percent)},${255 *  (1 - percent)},${255 *  (1 - percent)},1)`
+        }
+
         return (
-            <View className='index'>
-                <View className="fixed-header"></View>
+            <ScrollView scrollY onScroll={this.onScroll} className='index'>
+                <NavBar style={navBarStyle} left={
+                    <View className="nav-left">
+                        <Image src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1598590603816&di=45a66e123318babfefbcf7e78bfb699c&imgtype=0&src=http%3A%2F%2Fa2.att.hudong.com%2F86%2F10%2F01300000184180121920108394217.jpg"/>
+                        <Text>咔嚓熊魔法馆</Text>
+                    </View>
+                }/>
                 <Swiper
                     className='banner'
                     circular
@@ -72,14 +93,14 @@ class Index extends Component {
                     </View>
                     <View className="bottom-text">更多商品  持续更新</View>
                 </View>
-                <AtModal isOpened={this.state.isOpened}>
+                {/* <AtModal isOpened={this.state.isOpened}>
                     <AtModalContent>
                         这里是正文内容，欢迎加入京东凹凸实验室
                         这里是正文内容，欢迎加入京东凹凸实验室
                         这里是正文内容，欢迎加入京东凹凸实验室
                     </AtModalContent>
-                </AtModal>
-            </View>
+                </AtModal> */}
+            </ScrollView>
         )
     }
 }
