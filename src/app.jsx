@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Provider } from 'react-redux'
+import { Provider, connect } from 'react-redux'
+import Taro from '@tarojs/taro'
 
 import dva from './dva'
 import models from './models'
@@ -15,7 +16,12 @@ const dvaApp = dva.createApp({
 const store = dvaApp.getStore()
 
 class App extends Component {
-    componentDidMount() { }
+    componentDidMount() {
+        const { dispatch } = store;
+        dispatch({
+            type: 'user/login'
+        })
+    }
 
     componentDidShow() { }
 

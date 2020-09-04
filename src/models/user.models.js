@@ -1,3 +1,6 @@
+import Taro from '@tarojs/taro'
+
+import { login } from '../services/user';
 
 export default {
     namespace: 'user',
@@ -7,13 +10,38 @@ export default {
             avatarUrl: null
         }
     },
+    effects: {
+        *login(action, { call, put }) {
+            const response = yield call(async () => {
+                return new Promise((resolve) => {
+                    Taro.login({
+                        success: (res) => {
+                            login(res.code).then(({ data }) => {
+                                resolve(data);
+                            })
+                        }
+                    })
+                })
+            })
+            yield  put({
+                type: 'saveUserInfo',
+                payload: {
+                    userInfo: response.data || {}
+                }
+            })
+        }  
+    },
     reducers: {
         saveUserInfo(state, { payload }) {
+            if (payload.token) {
+                Taro.setStorageSync('token', payload.token);
+            }
             return {
                 ...state,
                 info: {
                     ...state.info,
-                    ...payload
+                    nickName: payload.nickName || payload.wechatName,
+                    avatarUrl: payload.avatarUrl || payload.headImg
                 }
             }
         }

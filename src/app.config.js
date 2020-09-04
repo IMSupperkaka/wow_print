@@ -2,6 +2,7 @@ export default {
     pages: [
         'pages/home/index',
         'pages/coupon/index',
+        'pages/couponList/index',
         'pages/my/index',
         'pages/authInfo/index',
         'pages/productDetail/index',

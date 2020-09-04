@@ -42,6 +42,12 @@ class Index extends Component {
         })
     }
 
+    handleGoCoupon = () => {
+        Taro.switchTab({
+            url: '/pages/coupon/index'
+        })
+    }
+
     render() {
 
         return (
@@ -84,7 +90,7 @@ class Index extends Component {
                     </View>
                 </View>
                 <View className="cell-wrap">
-                    <View className="cell">
+                    <View className="cell" onClick={this.handleGoCoupon}>
                         <View className="cell-left">
                             <Image className="icon-left" src={couponPng}/>
                             <Text>优惠券</Text>
