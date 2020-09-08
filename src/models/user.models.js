@@ -16,18 +16,14 @@ export default {
                 return new Promise((resolve) => {
                     Taro.login({
                         success: (res) => {
-                            login(res.code).then(({ data }) => {
-                                resolve(data);
-                            })
+                            login(res.code).then(resolve)
                         }
                     })
                 })
             })
             yield  put({
                 type: 'saveUserInfo',
-                payload: {
-                    userInfo: response.data || {}
-                }
+                payload: response.data.data || {}
             })
         }  
     },

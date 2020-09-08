@@ -9,9 +9,7 @@ const tokeninterceptor = function (chain) {
         ...requestParams,
         header: {
             ...header,
-            token: Taro.clearStorageSync({
-                key: 'token'
-            })
+            token: Taro.getStorageSync('token')
         }
     });
 }
@@ -24,7 +22,7 @@ class TaroRequest {
     }
 
     request(params) {
-        return new Promise((reoslve) => {
+        return new Promise((resolve) => {
             Taro.showLoading({
                 title: '请求数据中',
                 mask: true

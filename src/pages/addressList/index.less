@@ -6,3 +6,59 @@
     width: 560px;
     border-radius: 100px;
 }
+
+.address-list-wrap {
+    padding: 20px 0;
+    .address-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 32px;
+        background-color: #fff;
+        &:first-child {
+            padding-top: 30px;
+        }
+        &:last-child {
+            padding-bottom: 30px;
+        }
+        .address-user {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #333333;
+            line-height: 28px;
+            margin-bottom: 12px;
+            & > text:first-child {
+                margin-right: 15px;
+            }
+            .default {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #FF6345;
+                border-radius: 2px;
+                font-size: 18px;
+                font-family: PingFangSC-Regular, PingFang SC;
+                font-weight: 400;
+                color: #FFFFFF;
+                line-height: 18px;
+                margin-left: 16px;
+                width: 46px;
+                height: 26px;
+            }
+        }
+        .address-info {
+            font-size: 22px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: #666666;
+            line-height: 24px;
+        }
+        .edit {
+            color: #999999;
+            font-size: 24px;
+        }
+    }
+}
