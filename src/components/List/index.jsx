@@ -6,27 +6,34 @@ import { View, ScrollView, Image, Button, Text } from '@tarojs/components'
 export default (props) => {
 
     const [loading, setLoading] = useState(false);
-    const Threshold = 20;
+    const Threshold = 30;
 
-    const onScrollToLower = () => {
-        setLoading(true);
-        try {
-            await props.onLoad();
-            setLoading(false);
-        } catch (error) {
-            setLoading(false);
-        }
+    const onScrollToLower = async () => {
+        await props.onLoad();
     }
 
     const onRefresherRefresh = async (e) => {
         setLoading(true);
         try {
-            await props.onLoad();
+            await props.onRefresh();
             setLoading(false);
         } catch (error) {
             setLoading(false);
         }
     }
+
+    useEffect(() => {
+        async function fetchData() {
+            setLoading(true);
+            try {
+                await props.onLoad();
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+            }
+        }
+        fetchData();
+    }, [])
 
     return (
         <ScrollView
@@ -35,13 +42,12 @@ export default (props) => {
             scrollWithAnimation
             scrollAnchoring
             refresherEnabled
-            refresherThreshold="30"
+            refresherThreshold={Threshold}
             refresherTriggered={loading}
             className="index"
             lowerThreshold={Threshold}
             upperThreshold={Threshold}
             onScrollToLower={onScrollToLower}
-            onScroll={onScroll}
             onRefresherRefresh={onRefresherRefresh}
             {...props}
         >

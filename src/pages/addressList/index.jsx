@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useState } from 'react'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 
@@ -11,15 +11,21 @@ export default () => {
 
     const [addressList, setAddressList] = useState([]);
 
-    useEffect(() => {
+    useDidShow(() => {
         list().then(({ data }) => {
             setAddressList(data.data);
         })
-    }, []);
+    })
 
-    const goEdit = () => {
+    const goEdit = (address) => {
         Taro.navigateTo({
-            url: '/pages/addressEdit/index'
+            url: `/pages/addressEdit/index?type=edit&id=${address.id}`
+        })
+    }
+
+    const handleAddAddress = () => {
+        Taro.navigateTo({
+            url: '/pages/addressEdit/index?type=add'
         })
     }
 
@@ -32,7 +38,7 @@ export default () => {
                     {
                         addressList.map((address) => {
                             return (
-                                <View className="address-item">
+                                <View className="address-item" onClick={goEdit.bind(this, address)}>
                                     <View>
                                         <View className="address-user">
                                             <Text>{ address.recipient }</Text>
@@ -51,7 +57,7 @@ export default () => {
                     }
                 </View>
             }
-            <AtButton className="new-address" type="primary" onClick={goEdit}>新增收获地址</AtButton>
+            <AtButton className="new-address" type="primary" onClick={handleAddAddress}>新增收获地址</AtButton>
         </View>
     )
 };

@@ -9,17 +9,27 @@ export const list = (code) => {
     })
 }
 
-export const add = (code) => {
+export const detail = (data) => {
     return TaroRequest.request({
-        url: `${baseUrl}/address`,
-        method: 'POST'
+        url: `${baseUrl}/address/detail`,
+        method: 'GET',
+        data
     })
 }
 
-export const edit = (code) => {
+export const add = (data) => {
     return TaroRequest.request({
         url: `${baseUrl}/address`,
-        method: 'PUT'
+        method: 'POST',
+        data
+    })
+}
+
+export const edit = (data) => {
+    return TaroRequest.request({
+        url: `${baseUrl}/address`,
+        method: 'PUT',
+        data
     })
 }
 

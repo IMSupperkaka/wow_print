@@ -48,6 +48,12 @@ class Index extends Component {
         })
     }
 
+    goOrder = () => {
+        Taro.navigateTo({
+            url: '/pages/myOrder/index'
+        })
+    }
+
     render() {
 
         return (
@@ -62,7 +68,7 @@ class Index extends Component {
                     </View>
                 </View>
                 <View className="my-orders">
-                    <View className="title">
+                    <View className="title" onClick={this.goOrder}>
                         <Text>我的订单</Text>
                         <View>
                             <Text>查看更多</Text>

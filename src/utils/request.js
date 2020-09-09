@@ -1,5 +1,6 @@
 import Taro from '@tarojs/taro'
 import { resolve } from 'path';
+import { rejects } from 'assert';
 
 const tokeninterceptor = function (chain) {
     const requestParams = chain.requestParams;
@@ -22,7 +23,7 @@ class TaroRequest {
     }
 
     request(params) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             Taro.showLoading({
                 title: '请求数据中',
                 mask: true
@@ -30,6 +31,12 @@ class TaroRequest {
             Taro.request({
                 complete: (params) => {
                     Taro.hideLoading();
+                    if (params.data.code != '10000') {
+                        Taro.showToast({
+                            title: params.data.msg || '服务器开小差了~'
+                        });
+                        return reject(params.data);
+                    }
                     resolve(params);
                 },
                 ...params

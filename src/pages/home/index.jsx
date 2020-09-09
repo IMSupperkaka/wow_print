@@ -48,6 +48,10 @@ class Index extends Component {
             color: `rgba(${255 *  (1 - percent)},${255 *  (1 - percent)},${255 *  (1 - percent)},1)`
         }
 
+        Taro.setBackgroundColor({
+            backgroundColor: '#000'
+        })
+
         return (
             <ScrollView scrollY onScroll={this.onScroll} className='index'>
                 <NavBar style={navBarStyle} left={

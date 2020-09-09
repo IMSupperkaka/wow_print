@@ -7,7 +7,8 @@ export default {
         'pages/authInfo/index',
         'pages/productDetail/index',
         'pages/addressList/index',
-        'pages/addressEdit/index'
+        'pages/addressEdit/index',
+        'pages/myOrder/index'
     ],
     tabBar: {
         color: '#666666',
