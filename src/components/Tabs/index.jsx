@@ -1,0 +1,74 @@
+import React, { useState, useEffect } from 'react'
+import Taro from '@tarojs/taro'
+import { View, Swiper, ScrollView, SwiperItem } from '@tarojs/components'
+import './index.less'
+
+export default (props) => {
+
+    const [enableScroll, setEnableScroll] = useState(true);
+    const [screenWidth, setScreenWidth] = useState(0);
+    const [dx, setDx] = useState(0);
+    const [left, setLeft] = useState(0);
+    const [current, setCurrent] = useState(0);
+
+    const { animation = false } = props;
+
+    useEffect(() => {
+      const info = Taro.getSystemInfoSync();
+      setScreenWidth(info.screenWidth);
+    }, [])
+
+    const onTransition = (e) => {
+      setLeft(left + e.detail.dx - dx);
+      setEnableScroll(false);
+      setDx(e.detail.dx);
+    }
+
+    const onAnimationFinish = () => {
+      setEnableScroll(true);
+      setDx(0);
+    }
+
+    const onChange = (e) => {
+      setCurrent(e.detail.current);
+    }
+
+    const newChildren = React.Children.map(props.children, (child, index) => {
+      if (child.type) {
+        return React.cloneElement(child, {
+          active: index == current,
+          onClick: () => {
+            setCurrent(index);
+          }
+        })
+      } else {
+        return child;
+      }
+    })
+
+    const length = newChildren.length;
+    const translateX = animation ? (screenWidth / 2 + left) / length : ((screenWidth / 2 + current * screenWidth) / length);
+    const transitionDuration = animation ? '0' : '0.3s';
+
+    return (
+      <View>
+        <View className="wy-tabs__wrap">
+          { newChildren }
+          <View className="wy-tabs__line" style={{ transitionDuration: transitionDuration, transform: `translateX(${translateX}px) translateX(-50%)` }}></View>
+        </View>
+        <Swiper current={current} className="wy-tabs__content" onChange={onChange} onAnimationFinish={onAnimationFinish} onTransition={onTransition}>
+            {
+              newChildren.map((child) => {
+                return (
+                  <SwiperItem>
+                    <ScrollView scrollY={enableScroll} style={{ height: '100%' }}>
+                      { child }
+                    </ScrollView>
+                  </SwiperItem>
+                )
+              })
+            }
+        </Swiper>
+      </View>
+    )
+}

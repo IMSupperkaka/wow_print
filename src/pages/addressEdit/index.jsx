@@ -24,7 +24,6 @@ export default () => {
     const onGetAddress = (e) => {
         Taro.chooseAddress({
             success: (result) => {
-                console.log(result);
                 setForm({
                     ...form,
                     recipient: result.userName,
