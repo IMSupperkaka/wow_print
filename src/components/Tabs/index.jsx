@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import { View, Swiper, ScrollView, SwiperItem } from '@tarojs/components'
+
+import Tab from './Tab';
 import './index.less'
 
 export default (props) => {
@@ -14,61 +16,61 @@ export default (props) => {
     const { animation = false } = props;
 
     useEffect(() => {
-      const info = Taro.getSystemInfoSync();
-      setScreenWidth(info.screenWidth);
+        const info = Taro.getSystemInfoSync();
+        setScreenWidth(info.screenWidth);
     }, [])
 
     const onTransition = (e) => {
-      setLeft(left + e.detail.dx - dx);
-      setEnableScroll(false);
-      setDx(e.detail.dx);
+        setLeft(left + e.detail.dx - dx);
+        setEnableScroll(false);
+        setDx(e.detail.dx);
     }
 
     const onAnimationFinish = () => {
-      setEnableScroll(true);
-      setDx(0);
+        setEnableScroll(true);
+        setDx(0);
     }
 
     const onChange = (e) => {
-      setCurrent(e.detail.current);
+        setCurrent(e.detail.current);
+        props.onChange(e);
     }
 
-    const newChildren = React.Children.map(props.children, (child, index) => {
-      if (child.type) {
-        return React.cloneElement(child, {
-          active: index == current,
-          onClick: () => {
-            setCurrent(index);
-          }
-        })
-      } else {
-        return child;
-      }
-    })
-
-    const length = newChildren.length;
+    const length = props.children.length;
     const translateX = animation ? (screenWidth / 2 + left) / length : ((screenWidth / 2 + current * screenWidth) / length);
     const transitionDuration = animation ? '0' : '0.3s';
 
-    return (
-      <View>
-        <View className="wy-tabs__wrap">
-          { newChildren }
-          <View className="wy-tabs__line" style={{ transitionDuration: transitionDuration, transform: `translateX(${translateX}px) translateX(-50%)` }}></View>
-        </View>
-        <Swiper current={current} className="wy-tabs__content" onChange={onChange} onAnimationFinish={onAnimationFinish} onTransition={onTransition}>
-            {
-              newChildren.map((child) => {
-                return (
-                  <SwiperItem>
+    const TabList = React.Children.map(props.children, (child, index) => {
+        if (child.type) {
+            return (
+                <Tab active={index == current} onClick={() => { setCurrent(index) }} {...child.props} />
+            )
+        } else {
+            return child;
+        }
+    })
+
+    const TabPanel = React.Children.map(props.children, (child, index) => {
+        if (child.type) {
+            return (
+                <SwiperItem>
                     <ScrollView scrollY={enableScroll} style={{ height: '100%' }}>
-                      { child }
+                        {React.cloneElement(child)}
                     </ScrollView>
-                  </SwiperItem>
-                )
-              })
-            }
-        </Swiper>
-      </View>
+                </SwiperItem>
+            )
+        }
+    })
+
+    return (
+        <View>
+            <View className="wy-tabs__wrap">
+                { TabList }
+                <View className="wy-tabs__line" style={{ transitionDuration: transitionDuration, transform: `translateX(${translateX}px) translateX(-50%)` }}></View>
+            </View>
+            <Swiper current={current} className="wy-tabs__content" onChange={onChange} onAnimationFinish={onAnimationFinish} onTransition={onTransition}>
+                { TabPanel }
+            </Swiper>
+        </View>
     )
 }

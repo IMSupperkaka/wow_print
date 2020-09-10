@@ -1,0 +1,65 @@
+.banner {
+    width: 750px;
+    height: 750px;
+    image {
+        width: 750px;
+        height: 750px;
+    }
+}
+
+.banner-wrap {
+    position: relative;
+    background-color: #fff;
+    .indicator {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        right: 24px;
+        bottom: 24px;
+        width: 64px;
+        height: 36px;
+        background: #000000;
+        border-radius: 22px;
+        opacity: 0.3;
+        font-size: 20px;
+        font-weight: 400;
+        color: #FFFFFF;
+        line-height: 20px;
+    }
+}
+
+.product-info {
+    padding: 23px 32px;
+    background-color: #fff;
+    .product-price {
+        font-size: 28px;
+        line-height: 28px;
+        font-weight: bold;
+        color: #FF6345;
+        margin-bottom: 17px;
+    }
+    .product-name {
+        font-size: 28px;
+        line-height: 28px;
+        font-weight: bold;
+        color: #333;
+    }
+}
+
+.coupon-cell {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 76px;
+    font-size: 24px;
+    background-color: #fff;
+    & > view:first-child {
+        color: #333;
+        image {
+            width: 30px;
+            height: 30px;
+            margin-right: 12px;
+        }
+    }
+}

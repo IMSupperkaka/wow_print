@@ -33,7 +33,8 @@ class TaroRequest {
                     Taro.hideLoading();
                     if (params.data.code != '10000') {
                         Taro.showToast({
-                            title: params.data.msg || '服务器开小差了~'
+                            title: params.data.msg || '服务器开小差了~',
+                            icon: 'none'
                         });
                         return reject(params.data);
                     }

@@ -8,7 +8,10 @@ export default {
         'pages/productDetail/index',
         'pages/addressList/index',
         'pages/addressEdit/index',
-        'pages/myOrder/index'
+        'pages/myOrder/index',
+        'pages/orderDetail/index',
+        'pages/result/index',
+        'pages/service/index'
     ],
     tabBar: {
         color: '#666666',

@@ -1,0 +1,88 @@
+import React from 'react'
+import Taro from '@tarojs/taro'
+import { View, Image, Button } from '@tarojs/components'
+
+import './index.less'
+import { repay } from '../../services/order'
+import iconCancel from '../../../images/icon_Order@2x.png'
+import iconSuccess from '../../../images/icon_success@2x.png'
+import iconFail from '../../../images/icon_failure@2x.png'
+import iconReceived from '../../../images/icon_Receipt@2x.png'
+
+const reslutType = new Map([
+    ['cancel', { title: '订单已取消', icon: iconCancel }],
+    ['received', { title: '收货成功', icon: iconReceived }],
+    ['pay_success', { title: '支付成功', subTitle: '定制商品预计3-5个工作日内发货，请耐心等待', icon: iconSuccess }],
+    ['pay_fail', { title: '支付失败', icon: iconFail }],
+])
+
+export default () => {
+
+    const query = Taro.getCurrentInstance().router.params;
+    const item = reslutType.get(query.type);
+
+    const goHome = () => {
+        Taro.switchTab({
+            url: '/pages/home/index'
+        })
+    }
+
+    const goOrderDetail = () => {
+        Taro.navigateTo({
+            url: `/pages/orderDetail/index?id=${query.id}`
+        })
+    }
+
+    const handleRepay = () => {
+        repay({
+            loanId: query.id
+        }).then(({ data }) => {
+            Taro.requestPayment({
+                timeStamp: data.data.timestamp,
+                nonceStr: data.data.nonce_str,
+                package: data.data.pay_package,
+                signType: 'MD5',
+                paySign: data.data.paysign,
+                success: function (res) {
+                    Taro.redirectTo({
+                        url: `/pages/result/index?type=pay_success&id=${order.id}`
+                    })
+                },
+                fail: function (res) {
+                    Taro.redirectTo({
+                        url: `/pages/result/index?type=pay_fail&id=${order.id}`
+                    })
+                }
+            })
+        })
+    }
+
+    return (
+        <View className="result-wrap">
+            <Image className="icon" src={item.icon}/>
+            <View className="title">{ item.title }</View>
+            {
+                item.subTitle &&
+                <View className="sub-title">{ item.subTitle }</View>
+            }
+            <View className="btn-wrap">
+                {
+                    ['pay_success', 'cancel', 'received'].includes(query.type) &&
+                    <Button onClick={goHome} className="radius-btn outline-btn">返回首页</Button>
+                }
+                {
+                    ['pay_success', 'pay_fail', 'received'].includes(query.type) &&
+                    <Button onClick={goOrderDetail} className="radius-btn outline-btn">查看订单</Button>
+                }
+                {
+                    query.type == 'cancel' &&
+                    <Button className="radius-btn primary-outline-btn">重新购买</Button>
+                }
+                {
+                    query.type == 'pay_fail' &&
+                    <Button onClick={handleRepay} className="radius-btn primary-outline-btn">重新支付</Button>
+                }
+            </View>
+        </View>
+    )
+}
