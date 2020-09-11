@@ -1,0 +1,58 @@
+.wy-modal {
+    // visibility: hidden;
+    // transition: visibility 300ms ease-in-out;
+    // display: none;
+    .wy-modal__container {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #fff;
+        z-index: 1001;
+        transform: translate3d(0, 100%, 0);
+        transition: transform 300ms ease-in-out;
+        .wy-modal__title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 104px;
+            font-size: 28px;
+            color: #000000;
+            font-weight: bold;
+        }
+    }
+    
+    .wy-modal__overlay {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,.5);
+        z-index: 1000;
+        opacity: 0;
+        transition: all 300ms ease-in-out;
+        visibility: hidden;
+    }
+
+    &.active {
+        // visibility: visible;
+        // display: block;
+        .wy-modal__overlay {
+            opacity: 1;
+            visibility: visible;
+        }
+        .wy-modal__container {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
+}
+
+.fade-enter {
+    opacity: 0;
+    // animation-duration: .5s;
+    // animation-fill-mode: both;
+    // animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+    // animation-play-state: paused;
+}

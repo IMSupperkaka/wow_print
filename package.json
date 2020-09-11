@@ -49,6 +49,7 @@
     "dva-core": "^2.0.2",
     "dva-loading": "^3.0.20",
     "dva-model-extend": "^0.1.2",
+    "rc-animate": "^3.1.0",
     "react": "^16.10.0",
     "react-dom": "^16.10.0",
     "react-redux": "^7.2.0",
