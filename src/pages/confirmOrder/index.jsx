@@ -19,7 +19,6 @@ export default () => {
     }, [])
 
     const submitOrder = (orderParams) => {
-        console.log(orderParams);
         create({
             addressId: orderParams.addressId,
             couponUserId: orderParams.couponUserId,
