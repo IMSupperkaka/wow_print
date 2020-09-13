@@ -2,6 +2,14 @@ import TaroRequest from '../utils/request'
 
 const baseUrl = 'https://testapp.wayinkeji.com';
 
+export const create = (data) => {
+    return TaroRequest.request({
+        url: `${baseUrl}/loan/create`,
+        method: 'POST',
+        data
+    })
+}
+
 export const list = (data) => {
     return TaroRequest.request({
         url: `${baseUrl}/loan/list`,

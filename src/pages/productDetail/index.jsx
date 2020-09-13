@@ -35,7 +35,7 @@ export default () => {
 
     const goSelectPic = () => {
       Taro.navigateTo({
-          url: '/pages/selectPic/index'
+          url: `/pages/selectPic/index?couponUserId=${1}&goodId=${query.id}`
       })
     }
 

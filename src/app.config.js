@@ -12,7 +12,8 @@ export default {
         'pages/orderDetail/index',
         'pages/result/index',
         'pages/service/index',
-        'pages/selectPic/index'
+        'pages/selectPic/index',
+        'pages/confirmOrder/index'
     ],
     tabBar: {
         color: '#666666',

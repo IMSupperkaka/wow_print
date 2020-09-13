@@ -5,7 +5,7 @@ import { rejects } from 'assert';
 const tokeninterceptor = function (chain) {
     const requestParams = chain.requestParams;
     const { header } = requestParams;
-
+    console.log('token')
     return chain.proceed({
         ...requestParams,
         header: {
@@ -20,6 +20,24 @@ class TaroRequest {
     constructor() {
         Taro.addInterceptor(Taro.interceptors.logInterceptor);
         Taro.addInterceptor(tokeninterceptor);
+    }
+
+    uploadFile(params) {
+        return new Promise((resolve) => {
+            const uploadTask = Taro.uploadFile({
+                url: params.url,
+                filePath: params.filePath,
+                name: params.name,
+                header: {
+                    token: Taro.getStorageSync('token')
+                },  
+                formData: params.formData,
+                success: function (res){
+                    resolve(JSON.parse(res.data));
+                }
+            })
+            uploadTask.progress(params.progress);
+        })
     }
 
     request(params) {
