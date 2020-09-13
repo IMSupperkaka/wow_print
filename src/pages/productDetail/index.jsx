@@ -9,7 +9,7 @@ import iconCoupon from '../../../images/icon_coupon@2x.png'
 import { detail as getDetail } from '../../services/product'
 
 export default () => {
-    
+
     const [query, setQuery] = useState({});
     const [detail, setDetail] = useState({});
     const [current, setCurrent] = useState(0);
@@ -31,6 +31,12 @@ export default () => {
 
     const handleCloseCoupon = () => {
         setIsOpened(false);
+    }
+
+    const goSelectPic = () => {
+      Taro.navigateTo({
+          url: '/pages/selectPic/index'
+      })
     }
 
     return (
@@ -71,7 +77,7 @@ export default () => {
                     })
                 }
             </View>
-            <View className="submit-btn">
+            <View onClick={goSelectPic} className="submit-btn">
                 立即打印
             </View>
             <Modal className="coupon-modal" visible={isOpened} onClose={handleCloseCoupon}>
