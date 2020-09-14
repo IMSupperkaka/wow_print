@@ -33,25 +33,25 @@ const ConfirmOrder = ({ confirmOrder }) => {
     create({
       addressId: addressInfo.id,
       couponUserId: coupon.id,
-      goodsInfo: {
+      goodsInfo: [{
         goodId: goodId,
         userImageList: userImageList
-      }
+      }]
     }).then(({ data }) => {
       Taro.requestPayment({
-        timeStamp: data.data.timestamp,
-        nonceStr: data.data.nonce_str,
-        package: data.data.pay_package,
+        timeStamp: data.data.payData.timestamp,
+        nonceStr: data.data.payData.nonce_str,
+        package: data.data.payData.pay_package,
         signType: 'MD5',
-        paySign: data.data.paysign,
+        paySign: data.data.payData.paysign,
         success: function (res) {
           Taro.navigateTo({
-            url: `/pages/result/index?type=pay_success&id=${data.data.id}`
+            url: `/pages/result/index?type=pay_success&id=${data.data.loanId}`
           })
         },
         fail: function (res) {
           Taro.navigateTo({
-            url: `/pages/result/index?type=pay_fail&id=${data.data.id}`
+            url: `/pages/result/index?type=pay_fail&id=${data.data.loanId}`
           })
         }
       })

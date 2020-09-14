@@ -13,7 +13,8 @@ export default {
         'pages/result/index',
         'pages/service/index',
         'pages/selectPic/index',
-        'pages/confirmOrder/index'
+        'pages/confirmOrder/index',
+        'pages/webview/index'
     ],
     tabBar: {
         color: '#666666',

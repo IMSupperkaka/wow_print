@@ -16,20 +16,14 @@ const dvaApp = dva.createApp({
 const store = dvaApp.getStore()
 
 class App extends Component {
-    componentDidMount() {
+
+    onLaunch() {
         const { dispatch } = store;
         dispatch({
             type: 'user/login'
         })
     }
 
-    componentDidShow() { }
-
-    componentDidHide() { }
-
-    componentDidCatchError() { }
-
-    // global provider
     render() {
         return (
             <Provider store={store}>

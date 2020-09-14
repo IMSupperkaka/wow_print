@@ -9,3 +9,11 @@ export const list = (data) => {
         data
     })
 }
+
+// 领取优惠券
+export const receive = () => {
+    return TaroRequest.request({
+        url: `${baseUrl}/coupon/index/receive`,
+        method: 'GET'
+    })
+}

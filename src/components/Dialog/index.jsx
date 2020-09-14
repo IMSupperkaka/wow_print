@@ -10,9 +10,15 @@ const Modal = (props) => {
 
     const { onClose } = props;
 
+    const onTouchMove = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+    }
+
     return (
         <View className={classNames('wy-dialog', props.visible ? 'active' : '')}>
-            <View className="wy-dialog__overlay" onClick={onClose}></View>
+            <View onTouchMove={onTouchMove} className="wy-dialog__overlay" onClick={onClose}></View>
             <View className={classNames("wy-dialog__container", props.className)}>
                 <View className="wy-dialog__content">
                     {
