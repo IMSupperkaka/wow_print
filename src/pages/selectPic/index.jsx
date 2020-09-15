@@ -95,6 +95,12 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
     })
   }
 
+  const handleGoEdit = () => {
+    Taro.navigateTo({
+      url: '/pages/imgEdit/index'
+    })
+  }
+
   const restFreeNums = (coupon.couponFreeNums || 0) - picList.reduce((count, v) => { return count + v.printNums }, 0);
 
   return (
@@ -106,7 +112,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
             return (
               <View className="item">
                 <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className="delete-icon" />
-                <View className="item-body">
+                <View className="item-body" onClick={handleGoEdit}>
                   <Image className="item-img" mode="aspectFill" src={v.originPath || v.originPath} />
                 </View>
                 <View className="item-footer">
