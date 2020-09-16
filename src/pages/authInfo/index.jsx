@@ -20,10 +20,15 @@ class Index extends Component {
         Taro.navigateBack();
     }
 
+    goBack = () => {
+        Taro.navigateBack();
+    }
+
     render() {
         return (
             <View className='index'>
-                <AtButton type='primary' openType="getUserInfo" onGetUserInfo={this.onGetUserInfo}>授权用户信息</AtButton>
+                <AtButton className="auth-btn" type='primary' openType="getUserInfo" onGetUserInfo={this.onGetUserInfo}>微信授权登录</AtButton>
+                <AtButton className="cancel-btn" onClick={this.goBack} type='primary'>取消</AtButton>
             </View>
         )
     }

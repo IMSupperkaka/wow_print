@@ -10,6 +10,14 @@ export const list = (data) => {
     })
 }
 
+export const pre = (data) => {
+    return TaroRequest.request({
+        url: `${baseUrl}/coupon/use/pre`,
+        method: 'GET',
+        data
+    })
+}
+
 // 领取优惠券
 export const receive = () => {
     return TaroRequest.request({

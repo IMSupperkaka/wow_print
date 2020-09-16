@@ -9,7 +9,8 @@ export default {
     state: {
         info: {
             nickName: null,
-            avatarUrl: null
+            avatarUrl: null,
+            token: null
         },
         couponJudge: {
             isHaveCoupon: true,
@@ -81,14 +82,15 @@ export default {
                 })
             }
         },
-        *clickDialog(action, { call, put, select }) {
+        *clickDialog({ payload = {} }, { call, put, select }) {
+            const { close = false } = payload;
             const { dialog, popup } = yield select((state) => {
                 return state.user;
             })
             if (dialog.type === 'coupon') {
                 yield call(receive);
             }
-            if (dialog.type === 'popup') {
+            if (dialog.type === 'popup' && !close) {
                 Taro.navigateTo({
                     url: `/pages/webview/index?url=${dialog.url}`
                 })
@@ -129,7 +131,8 @@ export default {
                 info: {
                     ...state.info,
                     nickName: payload.nickName || payload.wechatName,
-                    avatarUrl: payload.avatarUrl || payload.headImg
+                    avatarUrl: payload.avatarUrl || payload.headImg,
+                    token: payload.token
                 }
             }
         },

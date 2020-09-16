@@ -4,7 +4,7 @@ import { usePullDownRefresh, useReachBottom } from '@tarojs/taro'
 import { View, ScrollView, Image, Button, Text } from '@tarojs/components'
 
 import './index.less'
-import { list } from '../../services/coupon';
+import { list, pre } from '../../services/coupon';
 import Empty from '../../components/Empty';
 import rightArrow from '../../../images/right_arrow@2x.png';
 
@@ -39,6 +39,13 @@ export default () => {
             page: refresh ? 1 : page.current,
             pageSize: page.pageSize
         }).then(({ data }) => {
+            const currentTime = new Date().getTime();
+            data.data.records = data.data.records.map((v) => {
+                return {
+                    ...v,
+                    new: (currentTime - new Date(v.createTime)) <= 86400000
+                }
+            })
             setIsFinish(data.data.current >= data.data.pages);
             if (refresh) {
                 setRecords(data.data.records);
@@ -62,6 +69,16 @@ export default () => {
         })
     }
 
+    const handleUse = (coupon) => {
+        pre({
+            id: coupon.id
+        }).then(() => {
+            Taro.navigateTo({
+                url: `/pages/productDetail/index?id=${coupon.couponGoodId}`
+            })
+        })
+    }
+
     return (
         <View className="index">
             {
@@ -76,7 +93,7 @@ export default () => {
                                 return (
                                     <View className='list-item' key={index}>
                                         { 
-                                            index == 0 && 
+                                            item.new && 
                                             <View className="top">
                                                 <View className="triangle"></View>
                                                 <Text className="new">新</Text>
@@ -93,7 +110,7 @@ export default () => {
                                                     </View>
                                                 </View>
                                             </View>
-                                            <View className="list-item-header-btn">使用</View>
+                                            <View className="list-item-header-btn" onClick={handleUse.bind(this, item)}>使用</View>
                                         </View>
                                         <View className="list-item-desc">
                                             <Text>{ item.couponDescription }</Text>

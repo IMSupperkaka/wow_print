@@ -75,6 +75,15 @@ const Home = (props) => {
         })
     }
 
+    const handleClose = () => {
+        dispatch({
+            type: 'user/clickDialog',
+            payload: {
+                close: true
+            }
+        })
+    }
+
     return (
         <View className='index'>
             <NavBar style={navBarStyle} left={
@@ -133,7 +142,7 @@ const Home = (props) => {
                 </View>
                 <View className="bottom-text">更多商品  持续更新</View>
             </View>
-            <Dialog visible={dialog.visible} className="home-dialog">
+            <Dialog visible={dialog.visible} className="home-dialog" onClose={handleClose}>
                 <Image src={dialog.image} mode="widthFix" onClick={handleClickDialog}/>
             </Dialog>
         </View>

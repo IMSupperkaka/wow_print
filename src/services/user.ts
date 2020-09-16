@@ -8,3 +8,10 @@ export const login = (code) => {
         method: 'POST'
     })
 }
+
+export const info = () => {
+    return TaroRequest.request({
+        url: `${baseUrl}/my/info`,
+        method: 'GET'
+    })
+}

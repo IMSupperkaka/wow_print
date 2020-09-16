@@ -9,75 +9,75 @@ import Empty from '../../components/Empty'
 import { list } from '../../services/address'
 
 const AddresssList = ({ dispatch }) => {
-  const [addressList, setAddressList] = useState([]);
+    const [addressList, setAddressList] = useState([]);
 
-  useDidShow(() => {
-    list().then(({ data }) => {
-      setAddressList(data.data);
+    useDidShow(() => {
+        list().then(({ data }) => {
+            setAddressList(data.data);
+        })
     })
-  })
 
-  const goEdit = (address, e) => {
-    e.stopPropagation();
-    Taro.navigateTo({
-      url: `/pages/addressEdit/index?type=edit&id=${address.id}`
-    })
-  }
-
-  const handleClickAddressItem = (address) => {
-    const querInfo = Taro.getCurrentInstance().router.params;
-    if (querInfo.type == 'choose') {
-      Taro.navigateBack();
-      dispatch({
-        type: 'confirmOrder/saveAddressInfo',
-        payload: address
-      })
-    } else {
-      Taro.navigateTo({
-        url: `/pages/addressEdit/index?type=edit&id=${address.id}`
-      })
+    const goEdit = (address, e) => {
+        e.stopPropagation();
+        Taro.navigateTo({
+            url: `/pages/addressEdit/index?type=edit&id=${address.id}`
+        })
     }
-  }
 
-  const handleAddAddress = () => {
-    Taro.navigateTo({
-      url: '/pages/addressEdit/index?type=add'
-    })
-  }
+    const handleClickAddressItem = (address) => {
+        const querInfo = Taro.getCurrentInstance().router.params;
+        if (querInfo.type == 'choose') {
+            Taro.navigateBack();
+            dispatch({
+                type: 'confirmOrder/saveAddressInfo',
+                payload: address
+            })
+        } else {
+            Taro.navigateTo({
+                url: `/pages/addressEdit/index?type=edit&id=${address.id}`
+            })
+        }
+    }
 
-  return (
-    <View>
-      {
-        addressList.length <= 0 ?
-          <Empty text="可新增地址，常回来看看" /> :
-          <View className="address-list-wrap">
+    const handleAddAddress = () => {
+        Taro.navigateTo({
+            url: '/pages/addressEdit/index?type=add'
+        })
+    }
+
+    return (
+        <View>
             {
-              addressList.map((address) => {
-                return (
-                  <View className="address-item" onClick={handleClickAddressItem.bind(this, address)}>
-                    <View>
-                      <View className="address-user">
-                        <Text>{address.recipient}</Text>
-                        <Text>{address.phone}</Text>
+                addressList.length <= 0 ?
+                    <Empty text="可新增地址，常回来看看" /> :
+                    <View className="address-list-wrap">
                         {
-                          address.isDefault == 1 &&
-                          <View className="default">默认</View>
+                            addressList.map((address) => {
+                                return (
+                                    <View className="address-item" onClick={handleClickAddressItem.bind(this, address)}>
+                                        <View>
+                                            <View className="address-user">
+                                                <Text>{address.recipient}</Text>
+                                                <Text>{address.phone}</Text>
+                                                {
+                                                    address.isDefault == 1 &&
+                                                    <View className="default">默认</View>
+                                                }
+                                            </View>
+                                            <View className="address-info">{address.province + address.city + address.area + address.address}</View>
+                                        </View>
+                                        <View className="edit" onClick={goEdit.bind(this, address)}>编辑</View>
+                                    </View>
+                                )
+                            })
                         }
-                      </View>
-                      <View className="address-info">{address.province + address.city + address.area + address.address}</View>
                     </View>
-                    <View className="edit" onClick={goEdit.bind(this, address)}>编辑</View>
-                  </View>
-                )
-              })
             }
-          </View>
-      }
-      <AtButton className="new-address" type="primary" onClick={handleAddAddress}>新增收获地址</AtButton>
-    </View>
-  )
+            <AtButton className="new-address" type="primary" onClick={handleAddAddress}>新增收获地址</AtButton>
+        </View>
+    )
 }
 
 export default connect(({ confirmOrder }) => ({
-  confirmOrder
+    confirmOrder
 }))(AddresssList);
