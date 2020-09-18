@@ -14,9 +14,9 @@ import plusSelectIcon from '../../../images/cion_plus／selected@2x.png'
 
 const SelectPic = ({ dispatch, confirmOrder }) => {
 
-  const { coupon } = confirmOrder;
+  const { coupon, userImageList } = confirmOrder;
 
-  const [picList, setPicList] = useState([]);
+  // const [picList, setPicList] = useState([]);
   const [progress, setProgress] = useState({
     visible: false,
     totalNum: 0,
@@ -43,9 +43,10 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                 visible: completeNum < e.tempFilePaths.length
               }
             })
-            setPicList((picList) => {
-              return [
-                ...picList,
+            dispatch({
+              type: 'confirmOrder/saveUserImageList',
+              payload: [
+                ...userImageList,
                 {
                   originPath: v,
                   originImage: res.data,
@@ -54,6 +55,17 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                 }
               ]
             })
+            // setPicList((picList) => {
+            //   return [
+            //     ...picList,
+            //     {
+            //       originPath: v,
+            //       originImage: res.data,
+            //       cropImage: res.data,
+            //       printNums: 1
+            //     }
+            //   ]
+            // })
           })
         })
       }
@@ -61,13 +73,17 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
   }
 
   const handleDelete = (index) => {
-    let cloneList = [...picList];
+    let cloneList = [...userImageList];
     cloneList.splice(index, 1);
-    setPicList(cloneList);
+    dispatch({
+      type: 'confirmOrder/saveUserImageList',
+      payload: cloneList
+    })
+    // setPicList(cloneList);
   }
 
   const handleOprate = (index, type) => {
-    let cloneList = [...picList];
+    let cloneList = [...userImageList];
     let item = cloneList[index];
     if (item.printNums <= 1 && type == 'substract') {
       return;
@@ -76,20 +92,20 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
       ...item,
       printNums: type == 'substract' ? (item.printNums - 1) : (item.printNums + 1)
     });
-    setPicList(cloneList);
+    dispatch({
+      type: 'confirmOrder/saveUserImageList',
+      payload: cloneList
+    })
+    // setPicList(cloneList);
   }
 
   const handleGoPrint = () => {
-    if (picList.length <= 0) {
+    if (userImageList.length <= 0) {
       return Taro.showToast({
         title: '至少选择一张照片',
         icon: 'none'
       })
     }
-    dispatch({
-      type: 'confirmOrder/saveUserImageList',
-      payload: picList
-    })
     Taro.navigateTo({
       url: '/pages/confirmOrder/index'
     })
@@ -101,14 +117,14 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
     })
   }
 
-  const restFreeNums = (coupon.couponFreeNums || 0) - picList.reduce((count, v) => { return count + v.printNums }, 0);
+  const restFreeNums = (coupon.couponFreeNums || 0) - userImageList.reduce((count, v) => { return count + v.printNums }, 0);
 
   return (
     <View className="index">
       <View className="header">显示区域即为打印区域，如需调整请点击图片</View>
       <View className="content">
         {
-          picList.map((v, index) => {
+          userImageList.map((v, index) => {
             return (
               <View className="item">
                 <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className="delete-icon" />
@@ -138,7 +154,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
         <View className="freenums-tag">还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
         <View className="submit-left">
           <Text onClick={handleChoose}>添加照片</Text>
-          <Text>已选{picList.length}张</Text>
+          <Text>已选{userImageList.length}张</Text>
         </View>
         <View className="submit-right" onClick={handleGoPrint}>去打印</View>
       </View>
