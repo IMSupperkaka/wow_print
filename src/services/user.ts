@@ -9,6 +9,14 @@ export const login = (code) => {
     })
 }
 
+export const saveinfo = (data) => {
+    return TaroRequest.request({
+        url: `${baseUrl}/app/user/info`,
+        method: 'POST',
+        data
+    })
+}
+
 export const info = () => {
     return TaroRequest.request({
         url: `${baseUrl}/my/info`,

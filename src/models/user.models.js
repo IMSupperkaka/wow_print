@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro'
 
-import { login } from '../services/user';
+import { login, saveinfo } from '../services/user';
 import { judge, popup } from '../services/home';
 import { receive } from '../services/coupon';
 
@@ -28,6 +28,17 @@ export default {
         }
     },
     effects: {
+        *saveinfo({ payload }, { call, put }) {
+            const response = yield call(saveinfo, {
+                headImg: payload.info.avatarUrl,
+                wechatName: payload.info.nickName
+            })
+            yield put({
+                type: 'saveUserInfo',
+                payload: payload.info
+            })
+            payload.success();
+        },
         *login(action, { call, put }) {
             const response = yield call(async () => {
                 return new Promise((resolve) => {
@@ -132,7 +143,7 @@ export default {
                     ...state.info,
                     nickName: payload.nickName || payload.wechatName,
                     avatarUrl: payload.avatarUrl || payload.headImg,
-                    token: payload.token
+                    token: payload.token || state.info.token
                 }
             }
         },
