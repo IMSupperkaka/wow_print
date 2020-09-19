@@ -43,29 +43,29 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                 visible: completeNum < e.tempFilePaths.length
               }
             })
-            dispatch({
-              type: 'confirmOrder/saveUserImageList',
-              payload: [
-                ...userImageList,
-                {
-                  originPath: v,
-                  originImage: res.data,
-                  cropImage: res.data,
-                  printNums: 1
-                }
-              ]
+            Taro.getImageInfo({
+              src: v,
+              success: (res) => {
+                dispatch({
+                  type: 'confirmOrder/saveUserImageList',
+                  payload: [
+                    ...userImageList,
+                    {
+                      originPath: v,
+                      originImage: res.data,
+                      cropImage: res.data,
+                      printNums: 1,
+                      imgInfo: {
+                        ...res,
+                        origin: [0.5, 0.5],
+                        scale: 1,
+                        translate: [0, 0]
+                      }
+                    }
+                  ]
+                })
+              }
             })
-            // setPicList((picList) => {
-            //   return [
-            //     ...picList,
-            //     {
-            //       originPath: v,
-            //       originImage: res.data,
-            //       cropImage: res.data,
-            //       printNums: 1
-            //     }
-            //   ]
-            // })
           })
         })
       }
@@ -79,7 +79,6 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
       type: 'confirmOrder/saveUserImageList',
       payload: cloneList
     })
-    // setPicList(cloneList);
   }
 
   const handleOprate = (index, type) => {
@@ -96,7 +95,6 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
       type: 'confirmOrder/saveUserImageList',
       payload: cloneList
     })
-    // setPicList(cloneList);
   }
 
   const handleGoPrint = () => {
@@ -111,7 +109,11 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
     })
   }
 
-  const handleGoEdit = () => {
+  const handleGoEdit = (index) => {
+    dispatch({
+      type: 'confirmOrder/saveActiveIndex',
+      payload: index
+    })
     Taro.navigateTo({
       url: '/pages/imgEdit/index'
     })
@@ -128,7 +130,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
             return (
               <View className="item">
                 <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className="delete-icon" />
-                <View className="item-body" onClick={handleGoEdit}>
+                <View className="item-body" onClick={handleGoEdit.bind(this, index)}>
                   <Image className="item-img" mode="aspectFill" src={v.originPath || v.originPath} />
                 </View>
                 <View className="item-footer">

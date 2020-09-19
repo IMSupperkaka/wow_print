@@ -14,21 +14,17 @@ const getDistance = (p1, p2) => {
 const contentWidth = 582;
 const contentHeight = 833;
 
+const getOrigin = (p1, p2) => {
+  return [(p1.x + p2.x) / contentWidth, (p1.y + p2.y) / contentHeight];
+}
+
 const ImgEdit = (props) => {
 
-  const { confirmOrder: { userImageList } } = props;
-  const [imgInfo, setImgInfo] = useState({});
-  const [translate, setTranslate] = useState([0, 0]);
-  const [scale, setScale] = useState(1);
-
-  useEffect(() => {
-    Taro.getImageInfo({
-      src: userImageList[0].originPath,
-      success: (res) => {
-        setImgInfo(res);
-      }
-    })
-  }, []);
+  const { dispatch, confirmOrder: { userImageList, activeIndex } } = props;
+  const IMG = userImageList[activeIndex];
+  const [translate, setTranslate] = useState(IMG.imgInfo.translate);
+  const [scale, setScale] = useState(IMG.imgInfo.scale);
+  const [origin, setOrigin] = useState(IMG.imgInfo.origin);
 
   const onTouchStart = (e) => {
     lastTouch = e.touches;
@@ -37,8 +33,11 @@ const ImgEdit = (props) => {
   const onTouchMove = (e) => {
     if (e.touches.length >= 2) {
       const newscale = getDistance(e.touches[0], e.touches[1]) / getDistance(lastTouch[0], lastTouch[1]);
+      const neworigin = getOrigin(e.touches[0], e.touches[1]);
+      setOrigin([neworigin[0], neworigin[1]]);
       setScale((scale) => {
-        return scale * newscale;
+        let nowscale = scale * newscale;
+        return nowscale;
       })
     } else {
       const dx = e.touches[0].x - lastTouch[0].x;
@@ -53,31 +52,55 @@ const ImgEdit = (props) => {
   const onTouchEnd = (e) => {
     const [dx, dy] = translate;
     const resetScale = scale < 1 ? 1 : scale;
-    const { width, height } = imgInfo;
+    const { width, height } = IMG.imgInfo;
     const imgWidth = contentWidth * scale;
     const imgHeight = (height / width) * imgWidth;
-    const limitWidth = (imgWidth - contentWidth) / 2;
-    const limitHeight = (imgHeight - contentHeight) / 2;
+    const limitLeft = (imgWidth - contentWidth) * origin[0];
+    const limitRight = -(imgWidth - contentWidth) * (1 - origin[0]);
+    const limitTop = (imgHeight - contentHeight) * origin[1];
+    const limitBottom = -(imgHeight - contentHeight) * (1 - origin[1]);
     let resetx = dx;
     let resety = dy;
-    if (Math.abs(dx) - limitWidth > 0) {
-      resetx = limitWidth * (dx < 0 ? -1 : 1 );
+    if (dx > 0 && dx > limitLeft) {
+      resetx = limitLeft;
     }
-    if (Math.abs(dy) - limitHeight > 0) {
-      resety = limitHeight * (dy < 0 ? -1 : 1 );
+    if (dx < 0 && dx < limitRight) {
+      resetx = limitRight;
+    }
+    if (dy > 0 && dy > limitTop) {
+      resety = limitTop;
+    }
+    if (dy < 0 && dy < limitBottom) {
+      resety = limitBottom;
     }
     setScale(resetScale);
     setTranslate([resetx, resety]);
+    const cloneList = [...userImageList];
+    cloneList[activeIndex].imgInfo = {
+      ...cloneList[activeIndex].imgInfo,
+      translate: [resetx, resety],
+      scale: resetScale,
+      origin: origin
+    }
+    dispatch({
+      type: 'confirmOrder/saveUserImageList',
+      payload: cloneList
+    })
   }
 
-  const { width, height } = imgInfo;
-  const imgWidth = contentWidth * scale;
+  const { width, height } = IMG.imgInfo;
+  const imgWidth = contentWidth;
   const imgHeight = (height / width) * imgWidth;
-  const percentx = translate[0] / imgWidth * 100;
-  const percenty = translate[1] / imgHeight * 100;
+  const offsetX = imgWidth - contentWidth;
+  const offsetY = imgHeight - contentHeight;
+  const percentx = (translate[0] - origin[0] * offsetX) / imgWidth * 100;
+  const percenty = (translate[1] - origin[1] * offsetY) / imgHeight * 100;
 
   const imgStyle = {
-    transform: `translate(${percentx}%, ${percenty}%) scale(${scale})`
+    transformOrigin: `${origin[0] * 100}% ${origin[1] * 100}%`,
+    transform: `translate(${percentx}%, ${percenty}%) scale(${scale})`,
+    width: Taro.pxTransform(imgWidth),
+    height: Taro.pxTransform(imgHeight)
   }
 
   return (
@@ -85,9 +108,10 @@ const ImgEdit = (props) => {
       <View className="mask"></View>
       <View className="top-tip"># 双指拖动、缩放可调整打印范围 #</View>
       <Canvas canvasId='canvas' disableScroll={true} className="content" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}>
-        <Image mode="widthFix" style={imgStyle} className="img" src={userImageList[0].originPath}/>
+        <Image style={imgStyle} className="img" src={IMG.originPath}/>
       </Canvas>
       <View className="bottom-tip">tips：灰色区域将被裁剪，不在打印范围内</View>
+      { JSON.stringify(origin) }
     </View>
   )
 }

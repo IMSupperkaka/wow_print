@@ -19,7 +19,8 @@ export default {
       couponFreeNums: 0
     },
     goodId: null,
-    userImageList: []
+    userImageList: [],
+    activeIndex: 0
   },
   effects: {
     *getAddressDetail({ payload }, { call, put }) {
@@ -53,6 +54,12 @@ export default {
       return {
         ...state,
         userImageList: payload
+      }
+    },
+    saveActiveIndex(state, { payload }) {
+      return {
+        ...state,
+        activeIndex: payload
       }
     }
   }
