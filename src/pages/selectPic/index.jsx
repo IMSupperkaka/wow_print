@@ -26,8 +26,8 @@ const getImgStyle = ({ width, height, origin, translate, scale }) => {
   }
   const offsetX = imgWidth - contentWidth;
   const offsetY = imgHeight - contentHeight;
-  const percentx = translate[0] - origin[0] * offsetX;
-  const percenty = translate[1] - origin[1] * offsetY;
+  const percentx = translate[0] / 1.92 - origin[0] * offsetX;
+  const percenty = translate[1] / 1.92  - origin[1] * offsetY;
 
   return {
     transformOrigin: `${origin[0] * 100}% ${origin[1] * 100}%`,
