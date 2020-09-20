@@ -64,10 +64,19 @@ const ConfirmOrder = ({ confirmOrder }) => {
     })
   }
 
-  const shipMoney = 8.00;
+  const handlePreview = () => {
+
+  }
+
+  const freeShipMoney = productDetail.freeShipMoney / 100;
+  let shipMoney = addressInfo.shipMoney / 100;
   const picNum = userImageList.reduce((count, v) => { return count + v.printNums }, 0);
   const payNum = picNum - (coupon.couponFreeNums || 0);
-  const totalMoney = (shipMoney + productDetail.sellingPrice * (payNum <= 0 ? 0 : payNum) / 100).toFixed(2);
+  const productMoney = productDetail.sellingPrice * (payNum <= 0 ? 0 : payNum) / 100;
+  if (productMoney >= freeShipMoney) {
+    shipMoney = 0;
+  }
+  const totalMoney = (shipMoney + productMoney).toFixed(2);
 
   return (
     <View className="index">
@@ -87,7 +96,7 @@ const ConfirmOrder = ({ confirmOrder }) => {
         <Image className="address-info__arrow" src={arrowIcon} />
       </View>
       <View className="product-info">
-        <View className="product-info-content">
+        <View className="product-info-content" onClick={handlePreview}>
           <Image className="product-image" mode="aspectFill" src={productDetail?.productMainImages?.[0]} />
           <View className="product-content">
             <View>

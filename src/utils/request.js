@@ -1,16 +1,14 @@
 import Taro from '@tarojs/taro'
-import { resolve } from 'path';
-import { rejects } from 'assert';
 
 const tokeninterceptor = function (chain) {
     const requestParams = chain.requestParams;
     const { header } = requestParams;
-    console.log('token')
     return chain.proceed({
         ...requestParams,
         header: {
             ...header,
-            token: Taro.getStorageSync('token')
+            token: Taro.getStorageSync('token'),
+            channel: Taro.getStorageSync('channel')
         }
     });
 }
@@ -30,7 +28,7 @@ class TaroRequest {
                 name: params.name,
                 header: {
                     token: Taro.getStorageSync('token')
-                },  
+                },
                 formData: params.formData,
                 success: function (res){
                     resolve(JSON.parse(res.data));

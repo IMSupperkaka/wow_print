@@ -5,6 +5,10 @@ import { View, Image, Canvas, Text } from '@tarojs/components';
 
 import './index.less';
 import deleteIcon from '../../../images/icon_delete／2@2x.png'
+import leftActiveIcon from '../../../images/icon_active_left@2x.png'
+import leftDisabledIcon from '../../../images/icon_disabled_left@2x.png'
+import rightActiveIcon from '../../../images/icon_active_right@2x.png'
+import rightDisabledIcon from '../../../images/icon_disabled_right@2x.png'
 
 let lastTouch = null;
 let store = {
@@ -36,11 +40,20 @@ const getDistance = (p1, p2) => {
 const ImgEdit = (props) => {
 
   const { dispatch, confirmOrder: { userImageList, activeIndex } } = props;
-  const IMG = userImageList[activeIndex];
+
+  const [IMG, setIMG] = useState(userImageList[activeIndex]);
   const [isTouch, setIsTouch] = useState(false);
-  const [translate, setTranslate] = useState(IMG.imgInfo.translate);
-  const [scale, setScale] = useState(IMG.imgInfo.scale);
-  const [origin, setOrigin] = useState(IMG.imgInfo.origin);
+  const [translate, setTranslate] = useState([]);
+  const [scale, setScale] = useState(1);
+  const [origin, setOrigin] = useState([]);
+
+  useEffect(() => {
+    const IMG = userImageList[activeIndex];
+    setIMG(userImageList[activeIndex]);
+    // setTranslate(IMG.imgInfo.translate);
+    // setScale(IMG.imgInfo.scale);
+    // setOrigin(IMG.imgInfo.origin);
+  }, [activeIndex])
 
   const getOrigin = (p1, p2) => {
     const { width, height } = getImgwh(IMG.imgInfo);
@@ -96,31 +109,59 @@ const ImgEdit = (props) => {
     setIsTouch(false);
     setScale(resetScale);
     setTranslate([resetx, resety]);
-  }
-
-  const confirm = () => {
     const cloneList = [...userImageList];
     cloneList[activeIndex].imgInfo = {
       ...cloneList[activeIndex].imgInfo,
-      translate: translate,
-      scale: scale,
+      translate: [resetx, resety],
+      scale: resetScale,
       origin: origin
     }
     dispatch({
       type: 'confirmOrder/saveUserImageList',
       payload: cloneList
     })
+  }
+
+  const confirm = () => {
     Taro.navigateBack();
   }
 
   const handleDelete = () => {
-    const cloneList = [...userImageList];
-    cloneList.splice(activeIndex, 1);
-    dispatch({
-      type: 'confirmOrder/saveUserImageList',
-      payload: cloneList
+    Taro.showModal({
+      title: '确定删除',
+      content: '是否删除该照片',
+      confirmText: '确定',
+      cancelText: '取消',
+      confirmColor: '#FF6345',
+      success: (res) => {
+        if (res.confirm) {
+          const cloneList = [...userImageList];
+          cloneList.splice(activeIndex, 1);
+          if (cloneList.length <= 0) {
+            Taro.navigateBack();
+          } else {
+            oprate(activeIndex <= 0 ? 'plus' : 'subtraction');
+          }
+          dispatch({
+            type: 'confirmOrder/saveUserImageList',
+            payload: cloneList
+          })
+        }
+      }
     })
-    Taro.navigateBack();
+  }
+
+  const oprate = (type) => {
+    dispatch({
+      type: 'confirmOrder/saveActiveIndex',
+      payload: type == 'plus' ? activeIndex + 1 : activeIndex - 1
+    })
+  }
+
+  const onImgLoad = () => {
+    setTranslate(IMG.imgInfo.translate);
+    setScale(IMG.imgInfo.scale);
+    setOrigin(IMG.imgInfo.origin);
   }
 
   const { width, height } = getImgwh(IMG.imgInfo);
@@ -134,19 +175,36 @@ const ImgEdit = (props) => {
     transform: `translate3d(${Taro.pxTransform(percentx)}, ${Taro.pxTransform(percenty)}, 0) scale(${scale})`,
     width: Taro.pxTransform(width),
     height: Taro.pxTransform(height),
-    transitionProperty: (isTouch || scale > 2) ? 'null' : 'transform'
+    transitionProperty: (isTouch || scale > 2) ? 'null' : 'all'
   }
+
+  const activeLeftIcon = <Image onClick={oprate.bind(this, 'subtraction')} className="oprate-icon" src={leftActiveIcon} />;
+  const disabledLeftIcon = <Image className="oprate-icon" src={leftDisabledIcon} />;
+  const activeRightIcon = <Image onClick={oprate.bind(this, 'plus')} className="oprate-icon" src={rightActiveIcon} />;
+  const disabledRightIcon = <Image className="oprate-icon" src={rightDisabledIcon} />;
 
   return (
     <View>
       <View className="edit-content">
-        <View className="mask"></View>
         <View className="top-tip"># 双指拖动、缩放可调整打印范围 #</View>
         <View className="content-wrap">
+          <View className="mask"></View>
           <Canvas canvasId='canvas' disableScroll={true} className="content" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
-          <Image style={imgStyle} className="img" src={IMG.originPath} />
+          <Image onLoad={onImgLoad} style={imgStyle} className="img" src={IMG.originPath} />
         </View>
         <View className="bottom-tip">tips：灰色区域将被裁剪，不在打印范围内</View>
+        <View>
+          {
+            activeIndex <= 0 ?
+              disabledLeftIcon :
+              activeLeftIcon
+          }
+          {
+            activeIndex >= userImageList.length - 1 ?
+              disabledRightIcon :
+              activeRightIcon
+          }
+        </View>
       </View>
       <View className="bottom-bar">
         <View onClick={handleDelete}><Image className="delete" src={deleteIcon} /></View>

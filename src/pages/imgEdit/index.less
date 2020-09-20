@@ -5,7 +5,6 @@
   position: relative;
   overflow: hidden;
   height: 100vh;
-  z-index: -1;
 }
 
 .mask {
@@ -18,17 +17,17 @@
   border-color: rgba(0,0,0,.5);
   border-style: solid;
   background: transparent;
-  z-index: -1;
+  z-index: 1;
   border-width: 102px 84px calc(100vh - 102px - 833px) 84px;
 }
 
 .img {
   display: flex;
   position: absolute;
-  z-index: -2;
   top: 102px;
   left: 86px;
   transition-duration: .2s;
+  transition-property: all;
 }
 
 .top-tip {
@@ -42,14 +41,16 @@
 }
 
 .content-wrap {
-  border: 2px dashed #FF6345;
   margin: 0 auto;
+  z-index: -1;
 }
 
 .content {
   position: relative;
   width: 582px;
   height: 833px;
+  border: 2px dashed #FF6345;
+  z-index: 2;
 }
 
 .bottom-tip {
@@ -58,6 +59,12 @@
   line-height: 24px;
   color: #FFFFFF;
   margin: 24px 0 40px 0;
+}
+
+.oprate-icon {
+  width: 40px;
+  height: 40px;
+  margin: 40px;
 }
 
 .bottom-bar {

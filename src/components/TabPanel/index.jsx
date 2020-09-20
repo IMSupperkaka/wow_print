@@ -4,7 +4,7 @@ import './index.less';
 
 export default (props) => {
   return (
-    <View {...props} className={props.active ? 'wy-tabs__active' : ''}>
+    <View {...props} style={{ height: '100%' }} className={props.active ? 'wy-tabs__active' : ''}>
         {props.children}
     </View>
   )

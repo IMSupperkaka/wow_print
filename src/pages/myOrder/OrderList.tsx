@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Taro, { usePullDownRefresh, useReachBottom } from '@tarojs/taro'
-import { View, Image, Button, Text } from '@tarojs/components'
+import { ScrollView, View, Image, Button, Text } from '@tarojs/components'
 
 import './orderList.less'
 import { orderStatus } from '../../utils/map/order'
@@ -23,17 +23,14 @@ export default (props) => {
         }
     }, [props.active])
 
-    useReachBottom(() => {
-        onLoad(false);
-    })
-
     const onLoad = (refresh = false) => {
         if (!refresh && isFinish) {
             return false;
         }
+        const requestPage = refresh ? 1 : page.current + 1;
         return list({
             status: props.status || 0,
-            page: refresh ? 1 : page.current + 1,
+            pageNum: requestPage,
             pageSize: page.pageSize
         }).then(({ data }) => {
             setIsFinish(data.data.current >= data.data.pages);
@@ -129,7 +126,7 @@ export default (props) => {
     }
 
     return (
-        <View>
+      <ScrollView onScrollToLower={onLoad.bind(this, false)} scrollY={true} style={{ height: '100%' }}>
             {
                 records.length > 0 ?
                 <View className='order-list'>
@@ -189,7 +186,7 @@ export default (props) => {
                 </View> :
                 <Empty text="想了想，确实没有订单"/>
             }
-        </View>
+        </ScrollView>
     )
 }
 

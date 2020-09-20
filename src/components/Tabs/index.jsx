@@ -54,9 +54,7 @@ export default (props) => {
         if (child.type) {
             return (
                 <SwiperItem>
-                    <ScrollView scrollY={enableScroll} style={{ height: '100%' }}>
-                        {React.cloneElement(child)}
-                    </ScrollView>
+                  {React.cloneElement(child)}
                 </SwiperItem>
             )
         }

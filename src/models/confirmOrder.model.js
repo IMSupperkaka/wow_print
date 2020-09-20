@@ -12,7 +12,8 @@ export default {
       province: null,
       city: null,
       area: null,
-      address: null
+      address: null,
+      shipMoney: 0
     },
     coupon: {
       id: null,

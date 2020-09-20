@@ -26,8 +26,8 @@ const getImgStyle = ({ width, height, origin, translate, scale }) => {
   }
   const offsetX = imgWidth - contentWidth;
   const offsetY = imgHeight - contentHeight;
-  const percentx = translate[0] / 1.92 - origin[0] * offsetX;
-  const percenty = translate[1] / 1.92  - origin[1] * offsetY;
+  const percentx = translate[0] / (582 / contentWidth) - origin[0] * offsetX;
+  const percenty = translate[1] / (833 / contentHeight) - origin[1] * offsetY;
 
   return {
     transformOrigin: `${origin[0] * 100}% ${origin[1] * 100}%`,
@@ -102,11 +102,22 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
   }
 
   const handleDelete = (index) => {
-    let cloneList = [...userImageList];
-    cloneList.splice(index, 1);
-    dispatch({
-      type: 'confirmOrder/saveUserImageList',
-      payload: cloneList
+    Taro.showModal({
+      title: '确定删除',
+      content: '是否删除该照片',
+      confirmText: '确定',
+      cancelText: '取消',
+      confirmColor: '#FF6345',
+      success: (res) => {
+        if (res.confirm) {
+          let cloneList = [...userImageList];
+          cloneList.splice(index, 1);
+          dispatch({
+            type: 'confirmOrder/saveUserImageList',
+            payload: cloneList
+          })
+        }
+      }
     })
   }
 
