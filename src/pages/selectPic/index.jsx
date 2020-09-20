@@ -12,6 +12,31 @@ import lessSelectIcon from '../../../images/icon_Less／selected@2x.png'
 import lessDisabledIcon from '../../../images/icon_Less／disabled@2x.png'
 import plusSelectIcon from '../../../images/cion_plus／selected@2x.png'
 
+const getImgStyle = ({ width, height, origin, translate, scale }) => {
+  const contentWidth = 300;
+  const contentHeight = 429;
+  let imgWidth;
+  let imgHeight;
+  if (width / height <= contentWidth / contentHeight) {
+    imgWidth = contentWidth;
+    imgHeight = (height / width) * imgWidth;
+  } else {
+    imgHeight = contentHeight;
+    imgWidth = (width / height) * imgHeight;
+  }
+  const offsetX = imgWidth - contentWidth;
+  const offsetY = imgHeight - contentHeight;
+  const percentx = translate[0] - origin[0] * offsetX;
+  const percenty = translate[1] - origin[1] * offsetY;
+
+  return {
+    transformOrigin: `${origin[0] * 100}% ${origin[1] * 100}%`,
+    transform: `translate3d(${Taro.pxTransform(percentx)}, ${Taro.pxTransform(percenty)}, 0) scale(${scale})`,
+    width: Taro.pxTransform(imgWidth),
+    height: Taro.pxTransform(imgHeight)
+  }
+}
+
 const SelectPic = ({ dispatch, confirmOrder }) => {
 
   const { coupon, userImageList } = confirmOrder;
@@ -31,6 +56,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
           totalNum: e.tempFilePaths.length,
           completeNum: 0
         })
+        let list = [];
         e.tempFilePaths.map((v) => {
           uploadFile({
             filePath: v
@@ -46,24 +72,27 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
             Taro.getImageInfo({
               src: v,
               success: (res) => {
-                dispatch({
-                  type: 'confirmOrder/saveUserImageList',
-                  payload: [
-                    ...userImageList,
-                    {
-                      originPath: v,
-                      originImage: res.data,
-                      cropImage: res.data,
-                      printNums: 1,
-                      imgInfo: {
-                        ...res,
-                        origin: [0.5, 0.5],
-                        scale: 1,
-                        translate: [0, 0]
-                      }
-                    }
-                  ]
+                list.push({
+                  originPath: v,
+                  originImage: res.data,
+                  cropImage: res.data,
+                  printNums: 1,
+                  imgInfo: {
+                    ...res,
+                    origin: [0.5, 0.5],
+                    scale: 1,
+                    translate: [0, 0]
+                  }
                 })
+                if (list.length === e.tempFilePaths.length) {
+                  dispatch({
+                    type: 'confirmOrder/saveUserImageList',
+                    payload: [
+                      ...userImageList,
+                      ...list
+                    ]
+                  })
+                }
               }
             })
           })
@@ -131,7 +160,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
               <View className="item">
                 <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className="delete-icon" />
                 <View className="item-body" onClick={handleGoEdit.bind(this, index)}>
-                  <Image className="item-img" mode="aspectFill" src={v.originPath || v.originPath} />
+                  <Image style={getImgStyle(v.imgInfo)} className="item-img" mode="widthFix" src={v.originPath} />
                 </View>
                 <View className="item-footer">
                   <View className="step-wrap">
