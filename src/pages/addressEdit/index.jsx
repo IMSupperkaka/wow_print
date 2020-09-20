@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import Taro, { useDidShow } from '@tarojs/taro';
-import { View, Input, Switch, Picker, Text } from '@tarojs/components';
+import Taro from '@tarojs/taro';
+import { View, Image, Input, Switch, Picker, Text } from '@tarojs/components';
 import { AtButton } from 'taro-ui';
-import { getSetting } from '../../utils/openMethod';
 import Cell from '../../components/Cell';
 
 import './index.less';
+import wechatIcon from '../../../images/icon_wechat／2@2x.png';
 import { add, edit, detail, del } from '../../services/address';
 import { useEffect } from 'react';
 
@@ -189,7 +189,10 @@ export default () => {
                 <Cell onClick={handleDelete} className="delete-address" title="删除该收获地址"/>
             }
             <AtButton disabled={!isValid} className="save-btn" type="primary" onClick={handleSave}>保存并使用</AtButton>
-            <AtButton className="use-wx-location" type="primary" onClick={onGetAddress}>使用微信地址</AtButton>
+            <AtButton className="use-wx-location" type="primary" onClick={onGetAddress}>
+              <Image className="wechat-icon" src={wechatIcon}/>
+              使用微信地址
+            </AtButton>
         </View>
     )
 }

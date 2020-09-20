@@ -7,6 +7,7 @@ import './index.less'
 import { list, index } from '../../services/home'
 import NavBar from '../../components/NavBar'
 import Dialog from '../../components/Dialog'
+import logo from '../../../images/bg_kachaxionglogo@2x.png'
 
 const Home = (props) => {
 
@@ -88,7 +89,7 @@ const Home = (props) => {
         <View className='index'>
             <NavBar style={navBarStyle} left={
                 <View className="nav-left">
-                    <Image src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1598590603816&di=45a66e123318babfefbcf7e78bfb699c&imgtype=0&src=http%3A%2F%2Fa2.att.hudong.com%2F86%2F10%2F01300000184180121920108394217.jpg" />
+                    <Image src={logo} />
                     <Text>咔嚓熊魔法馆</Text>
                 </View>
             } />
