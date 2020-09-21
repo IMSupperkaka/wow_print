@@ -1,10 +1,8 @@
 import TaroRequest from '../utils/request'
 
-const baseUrl = 'https://testapp.wayinkeji.com';
-
 export const list = (data) => {
     return TaroRequest.request({
-        url: `${baseUrl}/coupon/list`,
+        url: `/coupon/list`,
         method: 'GET',
         data
     })
@@ -12,7 +10,7 @@ export const list = (data) => {
 
 export const pre = (data) => {
     return TaroRequest.request({
-        url: `${baseUrl}/coupon/use/pre`,
+        url: `/coupon/use/pre`,
         method: 'GET',
         data
     })
@@ -21,7 +19,7 @@ export const pre = (data) => {
 // 领取优惠券
 export const receive = () => {
     return TaroRequest.request({
-        url: `${baseUrl}/coupon/index/receive`,
+        url: `/coupon/index/receive`,
         method: 'GET'
     })
 }

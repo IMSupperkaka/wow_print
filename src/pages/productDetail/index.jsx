@@ -6,6 +6,7 @@ import { View, Image, ScrollView, Swiper, Text, SwiperItem } from '@tarojs/compo
 
 import './index.less'
 import Modal from '../../components/Modal'
+import SafeArea from '../../components/SafeArea'
 import iconCoupon from '../../../images/icon_coupon@2x.png'
 import couponArrow from '../../../images/coin_Jump／3@2x.png'
 import { detail as getDetail } from '../../services/product'
@@ -103,8 +104,8 @@ const ProductDetail = ({ dispatch, confirmOrder }) => {
                 <View className="coupon-cell" onClick={handleOpenCoupon}>
                     <View>
                         <Image src={iconCoupon} />
-            优惠券
-          </View>
+                            优惠券
+                        </View>
                     <View>
                         {coupon.couponName || '请选择优惠券'}
                         <Image src={couponArrow} />
@@ -119,9 +120,11 @@ const ProductDetail = ({ dispatch, confirmOrder }) => {
                     })
                 }
             </View>
-            <View onClick={goSelectPic} className="submit-btn">
-                立即打印
-      </View>
+            <SafeArea>
+                {({ bottom }) => {
+                    return <View style={{ paddingBottom: Taro.pxTransform(bottom) }} onClick={goSelectPic} className="submit-btn">立即打印</View>
+                }}
+            </SafeArea>
             <Modal className="coupon-modal" visible={isOpened} onClose={handleCloseCoupon}>
                 <View className="title">优惠券</View>
                 <ScrollView className="content" scrollY={true}>

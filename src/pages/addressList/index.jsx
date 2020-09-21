@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 
 import './index.less'
 import Empty from '../../components/Empty'
+import SafeArea from '../../components/SafeArea'
 import { list } from '../../services/address'
 
 const AddresssList = ({ dispatch }) => {
@@ -73,7 +74,15 @@ const AddresssList = ({ dispatch }) => {
                         }
                     </View>
             }
-            <AtButton className="new-address" type="primary" onClick={handleAddAddress}>新增收获地址</AtButton>
+            <SafeArea>
+                {({ bottom }) => {
+                    return (
+                        <View className="new-address-wrap" style={{ bottom: Taro.pxTransform(bottom + 32) }}>
+                            <AtButton className="new-address" type="primary" onClick={handleAddAddress}>新增收获地址</AtButton>
+                        </View>
+                    )
+                }}
+            </SafeArea>
         </View>
     )
 }

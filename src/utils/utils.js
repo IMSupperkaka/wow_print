@@ -21,6 +21,5 @@ export const computeCropUrl = (url, { contentWidth, contentHeight, width, height
     const x = origin[0] * offsetX - dx ;
     const y = origin[1] * offsetY - dy;
     const cropUrl = `${url}?imageMogr2/auto-orient/thumbnail/!${oWidth / width * scale * 100}p/crop/!582x833a${x}a${y}`;
-    console.log(cropUrl)
     return cropUrl;
 }

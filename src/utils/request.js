@@ -18,12 +18,13 @@ class TaroRequest {
     constructor() {
         Taro.addInterceptor(Taro.interceptors.logInterceptor);
         Taro.addInterceptor(tokeninterceptor);
+        this.baseUrl = 'https://testapp.wayinkeji.com';
     }
 
     uploadFile(params) {
         return new Promise((resolve) => {
             const uploadTask = Taro.uploadFile({
-                url: params.url,
+                url: this.baseUrl + params.url,
                 filePath: params.filePath,
                 name: params.name,
                 header: {
@@ -56,7 +57,8 @@ class TaroRequest {
                     }
                     resolve(params);
                 },
-                ...params
+                ...params,
+                url: this.baseUrl + params.url
             })
         })
     }

@@ -7,6 +7,7 @@ import './index.less'
 import { computeCropUrl } from '../../utils/utils'
 import { uploadFile } from '../../services/upload'
 import Dialog from '../../components/Dialog'
+import SafeArea from '../../components/SafeArea'
 import addPic from '../../../images/cion_add to@2x.png'
 import deleteIcon from '../../../images/icon_delete／1@2x.png'
 import lessSelectIcon from '../../../images/icon_Less／selected@2x.png'
@@ -189,19 +190,25 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                 <View className="item choose-item" onClick={handleChoose}>
                     <View className="item-body">
                         <Image src={addPic} />
-            添加照片
-          </View>
+                        添加照片
+                    </View>
                     <View className="item-footer"></View>
                 </View>
             </View>
-            <View className="submit-wrap">
-                <View className="freenums-tag">还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
-                <View className="submit-left">
-                    <Text onClick={handleChoose}>添加照片</Text>
-                    <Text>已选{userImageList.length}张</Text>
-                </View>
-                <View className="submit-right" onClick={handleGoPrint}>去打印</View>
-            </View>
+            <SafeArea>
+                {({ bottom }) => {
+                    return (
+                        <View style={{ paddingBottom: Taro.pxTransform(bottom + 20) }} className="submit-wrap">
+                            <View className="freenums-tag">还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
+                            <View className="submit-left">
+                                <Text onClick={handleChoose}>添加照片</Text>
+                                <Text>已选{userImageList.length}张</Text>
+                            </View>
+                            <View className="submit-right" onClick={handleGoPrint}>去打印</View>
+                        </View>
+                    )
+                }}
+            </SafeArea>
             <Dialog className="upload-dialog" title={`已上传${progress.completeNum}/${progress.totalNum}张`} visible={progress.visible}>
                 <View>正在拼命上传中，请耐心等待哦～</View>
             </Dialog>
