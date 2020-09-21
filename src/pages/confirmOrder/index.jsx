@@ -68,7 +68,7 @@ const ConfirmOrder = ({ confirmOrder }) => {
 
   }
 
-  const freeShipMoney = productDetail.freeShipMoney / 100;
+  const freeShipMoney = productDetail.freeShippingMoney / 100;
   let shipMoney = addressInfo.shipMoney / 100;
   const picNum = userImageList.reduce((count, v) => { return count + v.printNums }, 0);
   const payNum = picNum - (coupon.couponFreeNums || 0);
