@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { View, Image, Canvas, Text } from '@tarojs/components';
 
 import './index.less';
-import { computeCropUrl } from '../../utils/utils'
+import { computeCropUrl, getCropPosition } from '../../utils/utils'
 import deleteIcon from '../../../images/icon_delete／2@2x.png'
 import leftActiveIcon from '../../../images/icon_active_left@2x.png'
 import leftDisabledIcon from '../../../images/icon_disabled_left@2x.png'
@@ -54,7 +54,7 @@ const ImgEdit = (props) => {
 
     const getOrigin = (p1, p2) => {
         const { width, height } = getImgwh(IMG.imgInfo);
-        return [(p1.x + p2.x) / width, (p1.y + p2.y) / height];
+        return [(p1.x + p2.x - translate[0]) / width, (p1.y + p2.y - translate[1]) / height];
     }
 
     const onTouchStart = (e) => {
@@ -163,20 +163,21 @@ const ImgEdit = (props) => {
         setOrigin(IMG.imgInfo.origin);
     }
 
-    const { width, height } = getImgwh(IMG.imgInfo);
-    const offsetX = width - contentWidth;
-    const offsetY = height - contentHeight;
-    const percentx = translate[0] - origin[0] * offsetX;
-    const percenty = translate[1] - origin[1] * offsetY;
+    const { x, y, width, height, scale: fScale } = getCropPosition({
+        ...IMG.imgInfo,
+        translate: translate,
+        scale: scale,
+        origin: origin
+    }, contentWidth, contentHeight);
 
     const imgStyle = {
-        transformOrigin: `${origin[0] * 100}% ${origin[1] * 100}%`,
-        transform: `translate3d(${Taro.pxTransform(percentx)}, ${Taro.pxTransform(percenty)}, 0) scale(${scale})`,
+        transformOrigin: '0% 0%',
+        transform: `translate3d(${Taro.pxTransform(-1 * x)}, ${Taro.pxTransform(-1 * y)}, 0) scale(${fScale})`,
         width: Taro.pxTransform(width),
         height: Taro.pxTransform(height),
         transitionProperty: (isTouch || scale > 2) ? 'null' : 'all'
     }
-
+    
     const activeLeftIcon = <Image onClick={oprate.bind(this, 'subtraction')} className="oprate-icon" src={leftActiveIcon} />;
     const disabledLeftIcon = <Image className="oprate-icon" src={leftDisabledIcon} />;
     const activeRightIcon = <Image onClick={oprate.bind(this, 'plus')} className="oprate-icon" src={rightActiveIcon} />;

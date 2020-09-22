@@ -5,7 +5,7 @@ import { AtButton } from 'taro-ui';
 import Cell from '../../components/Cell';
 
 import './index.less';
-import wechatIcon from '../../../images/icon_wechat／2@2x.png';
+import wechatIcon from '../../../images/icon_wechat@2x.png';
 import { add, edit, detail, del } from '../../services/address';
 import { useEffect } from 'react';
 

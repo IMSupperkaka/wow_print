@@ -6,7 +6,7 @@ import { View, Image, Button, Text } from '@tarojs/components'
 import './index.less'
 import { detail } from '../../services/order'
 import { orderStatus } from '../../utils/map/order'
-import address from '../../../images/矩形@2x.png'
+import address from '../../../images/icon_address@2x.png'
 
 export default () => {
     const [query, setQuery] = useState({});

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import Taro, { usePageScroll, useDidShow } from '@tarojs/taro'
+import Taro, { usePageScroll, useDidShow, useShareAppMessage } from '@tarojs/taro'
 import { View, Image, Text, Swiper, SwiperItem } from '@tarojs/components'
 
 import './index.less'
@@ -27,14 +27,16 @@ const Home = (props) => {
         total: 0
     });
 
+    useShareAppMessage();
+
     useDidShow(() => {
         onLoad(1);
         getConfig();
-    })
+    });
 
     usePageScroll((e) => {
         setScrollTop(e.scrollTop);
-    })
+    });
 
     const getConfig = () => {
         index().then(({ data }) => {
@@ -90,7 +92,7 @@ const Home = (props) => {
             <NavBar style={navBarStyle} left={
                 <View className="nav-left">
                     <Image src={logo} />
-                    <Text>咔嚓熊魔法馆</Text>
+                    <Text>哇印</Text>
                 </View>
             } />
             <Swiper

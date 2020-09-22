@@ -4,38 +4,25 @@ import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
 
 import './index.less'
-import { computeCropUrl } from '../../utils/utils'
+import { computeCropUrl, getCropPosition } from '../../utils/utils'
 import { uploadFile } from '../../services/upload'
 import Dialog from '../../components/Dialog'
 import SafeArea from '../../components/SafeArea'
-import addPic from '../../../images/cion_add to@2x.png'
-import deleteIcon from '../../../images/icon_delete／1@2x.png'
-import lessSelectIcon from '../../../images/icon_Less／selected@2x.png'
-import lessDisabledIcon from '../../../images/icon_Less／disabled@2x.png'
-import plusSelectIcon from '../../../images/cion_plus／selected@2x.png'
+import addPic from '../../../images/cion_add_to@2x.png'
+import deleteIcon from '../../../images/icon_delete@2x.png'
+import lessSelectIcon from '../../../images/icon_Less_selected@2x.png'
+import lessDisabledIcon from '../../../images/icon_Less_disabled@2x.png'
+import plusSelectIcon from '../../../images/cion_plus_selected@2x.png'
 
-const getImgStyle = ({ width, height, origin, translate, scale }) => {
+const getImgStyle = (info) => {
     const contentWidth = 300;
     const contentHeight = 429;
-    let imgWidth;
-    let imgHeight;
-    if (width / height <= contentWidth / contentHeight) {
-        imgWidth = contentWidth;
-        imgHeight = (height / width) * imgWidth;
-    } else {
-        imgHeight = contentHeight;
-        imgWidth = (width / height) * imgHeight;
-    }
-    const offsetX = imgWidth - contentWidth;
-    const offsetY = imgHeight - contentHeight;
-    const percentx = translate[0] / (582 / contentWidth) - origin[0] * offsetX;
-    const percenty = translate[1] / (833 / contentHeight) - origin[1] * offsetY;
-
+    const { x, y, width, height, scale } = getCropPosition(info, contentWidth, contentHeight);
     return {
-        transformOrigin: `${origin[0] * 100}% ${origin[1] * 100}%`,
-        transform: `translate3d(${Taro.pxTransform(percentx)}, ${Taro.pxTransform(percenty)}, 0) scale(${scale})`,
-        width: Taro.pxTransform(imgWidth),
-        height: Taro.pxTransform(imgHeight)
+        transformOrigin: '0% 0%',
+        transform: `translate3d(${Taro.pxTransform(-1 * x)}, ${Taro.pxTransform(-1 * y)}, 0) scale(${scale})`,
+        width: Taro.pxTransform(width),
+        height: Taro.pxTransform(height)
     }
 }
 

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { View, Image, Text } from '@tarojs/components'
 
 import './index.less'
-import logo from '../../../images/编组@2x.png'
+import logo from '../../../images/auth-logo@2x.png'
 
 @connect(({ user }) => ({
     user

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import './index.less'
 import SafeArea from '../../components/SafeArea'
-import addressIcon from '../../../images/矩形@2x.png'
+import addressIcon from '../../../images/icon_address@2x.png'
 import arrowIcon from '../../../images/coin_Jump／1@2x.png'
 import { create } from '../../services/order'
 import { detail as getDetail } from '../../services/product'

@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react'
-import Taro from '@tarojs/taro'
+import Taro, { useShareAppMessage } from '@tarojs/taro'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
 import { View, Image, ScrollView, Swiper, Text, SwiperItem } from '@tarojs/components'
@@ -39,6 +39,8 @@ const ProductDetail = ({ dispatch, confirmOrder }) => {
             }
         })
     }, [])
+
+    useShareAppMessage();
 
     const saveCoupon = (coupon) => {
         dispatch({

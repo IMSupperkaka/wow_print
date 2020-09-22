@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro'
-import { usePullDownRefresh, useReachBottom } from '@tarojs/taro'
+import { usePullDownRefresh, useReachBottom, useDidShow } from '@tarojs/taro'
 import { View, ScrollView, Image, Button, Text } from '@tarojs/components'
 
 import './index.less'
@@ -18,9 +18,9 @@ export default () => {
         total: 0
     });
 
-    useEffect(() => {
-        onLoad(false);
-    }, [])
+    useDidShow(() => {
+        onLoad(true);
+    })
 
     usePullDownRefresh(() => {
         onLoad(true);
