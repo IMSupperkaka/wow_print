@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import Taro, { usePageScroll, useReachBottom } from '@tarojs/taro'
+import Taro, { usePageScroll, useDidShow } from '@tarojs/taro'
 import { View, Image, Text, Swiper, SwiperItem } from '@tarojs/components'
 
 import './index.less'
@@ -27,10 +27,10 @@ const Home = (props) => {
         total: 0
     });
 
-    useEffect(() => {
-        onLoad();
+    useDidShow(() => {
+        onLoad(1);
         getConfig();
-    }, [])
+    })
 
     usePageScroll((e) => {
         setScrollTop(e.scrollTop);
@@ -42,13 +42,13 @@ const Home = (props) => {
         })
     }
 
-    const onLoad = () => {
+    const onLoad = (refresh) => {
         return list({
-            page: page.current + 1,
+            page: refresh ? 1 : page.current + 1,
             pageSize: page.pageSize
         }).then(({ data }) => {
             setIsFinish(data.data.current >= data.data.pages);
-            setRecords(records.concat(data.data.records));
+            setRecords(refresh ? data.data.records : records.concat(data.data.records));
             setPage({
                 current: data.data.current,
                 pageSize: data.data.size,
