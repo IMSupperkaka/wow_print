@@ -133,7 +133,7 @@ const ProductDetail = ({ dispatch, confirmOrder }) => {
                     {
                         (detail.couponList || []).map((item, index) => {
                             return (
-                                <View className={classNames('list-item', coupon.id == item.id ? 'active' : '')} key={index}>
+                                <View onClick={useCoupon.bind(this, item)} className={classNames('list-item', coupon.id == item.id ? 'active' : '')} key={index}>
                                     {
                                         item.new &&
                                         <View className="top">
@@ -152,7 +152,7 @@ const ProductDetail = ({ dispatch, confirmOrder }) => {
                                                 </View>
                                             </View>
                                         </View>
-                                        <View className="list-item-header-btn" onClick={useCoupon.bind(this, item)}>使用</View>
+                                        <View className="list-item-header-btn">使用</View>
                                     </View>
                                     <View className="list-item-desc">
                                         <Text>{item.couponDescription}</Text>

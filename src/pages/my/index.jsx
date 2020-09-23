@@ -6,6 +6,7 @@ import { AtAvatar, AtIcon, AtDivider } from 'taro-ui'
 
 import './index.less'
 import { info } from '../../services/user'
+import defaultAvatorPng from '../../../images/bg_avatar__default@2x.png'
 import waitpayPng from '../../../images/order_waitpay.png'
 import deliverPng from '../../../images/order_deliver.png'
 import receivePng from '../../../images/order_receive.png'
@@ -55,7 +56,7 @@ const Index = ({ user }) => {
         <View className='index'>
             <View className="header">
                 <View className="avatar-wrap">
-                    <AtAvatar circle image={user.info.avatarUrl || 'https://jdc.jd.com/img/200'}></AtAvatar>
+                    <Image src={user.info.avatarUrl || defaultAvatorPng} className="avatar"/>
                     <View className="user-info" onClick={handleGoAuth}>
                         <View>{ user.info.nickName || '授权登录' }</View>
                         <View>定格真我 触手可及</View>
