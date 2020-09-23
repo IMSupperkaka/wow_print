@@ -34,6 +34,11 @@ const Home = (props) => {
         getConfig();
     });
 
+    useTabItemTap(() => {
+        onLoad(1);
+        getConfig();
+    })
+
     usePageScroll((e) => {
         setScrollTop(e.scrollTop);
     });
