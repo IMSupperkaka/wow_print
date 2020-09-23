@@ -8,15 +8,35 @@ import SafeArea from '../../components/SafeArea'
 import addressIcon from '../../../images/icon_address@2x.png'
 import arrowIcon from '../../../images/coin_Jump／1@2x.png'
 import { create } from '../../services/order'
+import { list } from '../../services/address'
 import { detail as getDetail } from '../../services/product'
 
-const ConfirmOrder = ({ confirmOrder }) => {
+const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
     const { addressInfo, coupon, goodId, userImageList } = confirmOrder
 
     const [productDetail, setProductDetail] = useState({});
 
     useDidShow(() => {
+        list().then(({ data }) => {
+            if (addressInfo.id) {
+                const address = data.data.find((address) => {
+                    return address.id == address.id;
+                });
+                dispatch({
+                    type: 'confirmOrder/saveAddressInfo',
+                    payload: address
+                })
+            } else {
+                const defaultAddress = data.data.find((address) => {
+                    return address.isDefault == 1;
+                });
+                dispatch({
+                    type: 'confirmOrder/saveAddressInfo',
+                    payload: defaultAddress
+                })
+            }
+        })
         getDetail({
             goodId: goodId
         }).then(({ data }) => {
@@ -69,7 +89,7 @@ const ConfirmOrder = ({ confirmOrder }) => {
 
     }
 
-    const freeShipMoney = addressInfo.freeShippingMoney / 100;
+    const freeShipMoney = addressInfo.freeShippingMoney / 100 || null;
     let shipMoney = addressInfo.shipMoney / 100;
     const picNum = userImageList.reduce((count, v) => { return count + v.printNums }, 0);
     const payNum = picNum - (coupon.couponFreeNums || 0);
@@ -115,7 +135,13 @@ const ConfirmOrder = ({ confirmOrder }) => {
                         <Text>{coupon.couponName || '未使用优惠券'}</Text>
                     </View>
                     <View>
-                        <Text>运费</Text>
+                        <View>
+                            <Text>运费</Text>
+                            {
+                                freeShipMoney &&
+                                <Text className="primary-color">（满{ freeShipMoney }包邮）</Text>
+                            }
+                        </View>
                         <Text>￥{shipMoney.toFixed(2)}</Text>
                     </View>
                     <View>

@@ -11,7 +11,7 @@ import iconCoupon from '../../../images/icon_coupon@2x.png'
 import couponArrow from '../../../images/coin_Jump／3@2x.png'
 import { detail as getDetail } from '../../services/product'
 
-const ProductDetail = ({ dispatch, confirmOrder }) => {
+const ProductDetail = ({ dispatch, confirmOrder, user }) => {
 
     const { coupon } = confirmOrder;
 
@@ -58,12 +58,21 @@ const ProductDetail = ({ dispatch, confirmOrder }) => {
     }
 
     const goSelectPic = () => {
-        dispatch({
-            type: 'confirmOrder/saveGoodId',
-            payload: query.id
-        })
-        Taro.navigateTo({
-            url: `/pages/selectPic/index`
+        Taro.getSetting({
+            success: (res) => {
+                dispatch({
+                    type: 'confirmOrder/saveGoodId',
+                    payload: query.id
+                })
+                if (!res.authSetting['scope.userInfo']) {
+                    return Taro.navigateTo({
+                        url: `/pages/authInfo/index?redirect=/pages/selectPic/index`
+                    })
+                }
+                Taro.navigateTo({
+                    url: `/pages/selectPic/index`
+                })
+            }
         })
     }
 
@@ -168,6 +177,7 @@ const ProductDetail = ({ dispatch, confirmOrder }) => {
     )
 };
 
-export default connect(({ confirmOrder }) => ({
-    confirmOrder
+export default connect(({ confirmOrder, user }) => ({
+    confirmOrder,
+    user
 }))(ProductDetail);

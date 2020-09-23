@@ -186,7 +186,7 @@ const ImgEdit = (props) => {
     return (
         <View>
             <View className="edit-content">
-                <View className="top-tip"># 双指拖动、缩放可调整打印范围 #</View>
+                <View className="top-tip"># 单指拖动、双指缩放可调整打印范围 #</View>
                 <View className="content-wrap">
                     <View className="mask"></View>
                     <Canvas canvasId='canvas' disableScroll={true} className="content" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>

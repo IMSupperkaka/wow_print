@@ -19,7 +19,14 @@ class Index extends Component {
             payload: {
                 info: JSON.parse(e.detail.rawData),
                 success: () => {
-                    Taro.navigateBack();
+                    const query = Taro.getCurrentInstance().router.params;
+                    if (query.redirect) {
+                        Taro.redirectTo({
+                            url: query.redirect
+                        })
+                    } else {
+                        Taro.navigateBack();
+                    }
                 }
             }
         })

@@ -27,11 +27,15 @@ const Index = ({ user }) => {
     })
 
     const handleGoAuth = () => {
-        if (!user.info.nickName) {
-            Taro.navigateTo({
-                url: '/pages/authInfo/index'
-            })
-        }
+        Taro.getSetting({
+            success: (res) => {
+                if (!res.authSetting['scope.userInfo']) {
+                    Taro.navigateTo({
+                        url: '/pages/authInfo/index'
+                    })
+                }
+            }
+        })
     }
 
     const handleGoAddress = () => {
@@ -55,9 +59,9 @@ const Index = ({ user }) => {
     return (
         <View className='index'>
             <View className="header">
-                <View className="avatar-wrap">
+                <View className="avatar-wrap" onClick={handleGoAuth}>
                     <Image src={user.info.avatarUrl || defaultAvatorPng} className="avatar"/>
-                    <View className="user-info" onClick={handleGoAuth}>
+                    <View className="user-info">
                         <View>{ user.info.nickName || '授权登录' }</View>
                         <View>定格真我 触手可及</View>
                     </View>
