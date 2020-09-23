@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import Taro, { usePageScroll, useDidShow, useShareAppMessage } from '@tarojs/taro'
+import Taro, { usePageScroll, useReady, useTabItemTap, useShareAppMessage } from '@tarojs/taro'
 import { View, Image, Text, Swiper, SwiperItem } from '@tarojs/components'
 
 import './index.less'
@@ -11,7 +11,7 @@ import logo from '../../../images/bg_kachaxionglogo@2x.png'
 
 const Home = (props) => {
 
-    const { dispatch, user: { dialog } } = props;
+    const { dispatch, home: { dialog } } = props;
 
     const [scrollTop, setScrollTop] = useState(0);
     const [homeData, setHomeData] = useState({
@@ -29,7 +29,7 @@ const Home = (props) => {
 
     useShareAppMessage();
 
-    useDidShow(() => {
+    useReady(() => {
         onLoad(1);
         getConfig();
     });
@@ -74,13 +74,13 @@ const Home = (props) => {
 
     const handleClickDialog = () => {
         dispatch({
-            type: 'user/clickDialog'
+            type: 'home/clickDialog'
         })
     }
 
     const handleClose = () => {
         dispatch({
-            type: 'user/clickDialog',
+            type: 'home/clickDialog',
             payload: {
                 close: true
             }
@@ -152,6 +152,6 @@ const Home = (props) => {
     )
 }
 
-export default connect(({ user }) => ({
-    user
+export default connect(({ home }) => ({
+    home
 }))(Home);

@@ -1,4 +1,5 @@
 import Taro from '@tarojs/taro'
+import { store, app } from '../dva'
 
 const tokeninterceptor = function (chain) {
     const requestParams = chain.requestParams;
@@ -19,6 +20,12 @@ class TaroRequest {
         Taro.addInterceptor(Taro.interceptors.logInterceptor);
         Taro.addInterceptor(tokeninterceptor);
         this.baseUrl = 'https://testapp.wayinkeji.com';
+        this.queue = [];
+        this.isBlock = false;
+    }
+
+    blocking() {
+        this.isBlock = true;
     }
 
     uploadFile(params) {
@@ -40,27 +47,43 @@ class TaroRequest {
     }
 
     request(params) {
-        return new Promise((resolve, reject) => {
-            Taro.showLoading({
-                title: '请求数据中',
-                mask: true
-            });
-            Taro.request({
-                complete: (params) => {
-                    Taro.hideLoading();
-                    if (params.data.code != '10000') {
-                        Taro.showToast({
-                            title: params.data.msg || '服务器开小差了~',
-                            icon: 'none'
-                        });
-                        return reject(params.data);
-                    }
-                    resolve(params);
-                },
-                ...params,
-                url: this.baseUrl + params.url
+
+        const { dispatch } = app;
+
+        const requestPromise = () => {
+            return new Promise((resolve, reject) => {
+                Taro.showLoading({
+                    title: '请求数据中',
+                    mask: true
+                });
+                Taro.request({
+                    complete: (params) => {
+                        Taro.hideLoading();
+                        if (params.data.code != '10000') {
+                            if (params.data.code == '10025') {
+                                return dispatch({
+                                    type: 'user/login',
+                                    payload: {
+                                        success: () => {
+                                            requestPromise().then(resolve);
+                                        }
+                                    }
+                                })
+                            }
+                            Taro.showToast({
+                                title: params.data.msg || '服务器开小差了~',
+                                icon: 'none'
+                            });
+                            return reject(params.data);
+                        }
+                        resolve(params);
+                    },
+                    ...params,
+                    url: this.baseUrl + params.url
+                })
             })
-        })
+        }
+        return requestPromise();
     }
 }
 
