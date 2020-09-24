@@ -7,6 +7,7 @@ import './index.less'
 import { list, pre } from '../../services/coupon';
 import Empty from '../../components/Empty';
 import rightArrow from '../../../images/right_arrow@2x.png';
+import couponEmptyIcon from '../../../images/bg_no_coupons@2x.png';
 
 export default () => {
 
@@ -125,7 +126,7 @@ export default () => {
                         <Image src={rightArrow}/>
                     </View>
                 </> :
-                <Empty text="有些难为情，券不在"/>
+                <Empty src={couponEmptyIcon} text="有些难为情，券不在"/>
             }
         </View>
     )

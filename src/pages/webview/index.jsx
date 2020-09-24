@@ -7,6 +7,6 @@ export default () => {
     const query = Taro.getCurrentInstance().router.params;
 
     return (
-        <WebView src={query.url}/>
+        <WebView src={decodeURIComponent(query.url)}/>
     )
 }

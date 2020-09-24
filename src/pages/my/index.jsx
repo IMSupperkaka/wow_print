@@ -75,7 +75,6 @@ const Index = ({ user }) => {
                         <AtIcon value='chevron-right' size='14' color='#999'></AtIcon>
                     </View>
                 </View>
-                <AtDivider height="48" lineColor='#F2F2F2'/>
                 <View className="order-icons">
                     <View onClick={goOrder}>
                         <Image src={waitpayPng}/>

@@ -3,6 +3,8 @@ module.exports = {
         NODE_ENV: '"production"'
     },
     defineConstants: {
+        BASE_URL: JSON.stringify('https://app.wayinkeji.com'),
+        BASE_WEB_URL: JSON.stringify('https://web.wayinkeji.com')
     },
     mini: {},
     h5: {

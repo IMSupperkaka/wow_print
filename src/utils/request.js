@@ -19,7 +19,7 @@ class TaroRequest {
     constructor() {
         Taro.addInterceptor(Taro.interceptors.logInterceptor);
         Taro.addInterceptor(tokeninterceptor);
-        this.baseUrl = 'https://testapp.wayinkeji.com';
+        this.baseUrl = BASE_URL;
         this.queue = [];
         this.isBlock = false;
     }

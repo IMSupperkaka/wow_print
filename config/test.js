@@ -1,6 +1,6 @@
 module.exports = {
     env: {
-        NODE_ENV: '"development"'
+        NODE_ENV: '"production"'
     },
     defineConstants: {
         BASE_URL: JSON.stringify('https://testapp.wayinkeji.com'),

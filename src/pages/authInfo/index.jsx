@@ -36,6 +36,20 @@ class Index extends Component {
         Taro.navigateBack();
     }
 
+    handleGoService = () => {
+        const url = encodeURIComponent(`${BASE_WEB_URL}/agreement.html\?key=user_service_agreement`);
+        Taro.navigateTo({
+            url: `/pages/webview/index?url=${url}`
+        })
+    }
+
+    handleGoPolicy = () => {
+        const url = encodeURIComponent(`${BASE_WEB_URL}/agreement.html\?key=privacy_service_agreement`);
+        Taro.navigateTo({
+            url: `/pages/webview/index?url=${url}`
+        })
+    }
+
     render() {
         return (
             <View className='index'>
@@ -44,9 +58,9 @@ class Index extends Component {
                 <AtButton className="cancel-btn" onClick={this.goBack} type='primary'>取消</AtButton>
                 <View className="bottom-agreement">
                     登陆视为同意
-                    <Text>《用户服务协议》</Text>
+                    <Text onClick={this.handleGoService}>《用户服务协议》</Text>
                     和
-                    <Text>《隐私权政策》</Text>
+                    <Text onClick={this.handleGoPolicy}>《隐私权政策》</Text>
                 </View>
             </View>
         )

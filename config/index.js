@@ -67,6 +67,9 @@ const config = {
 }
 
 module.exports = function (merge) {
+    if (process.env.BUILD_ENV === 'test') {
+        return merge({}, config, require('./test'))
+    }
     if (process.env.NODE_ENV === 'development') {
         return merge({}, config, require('./dev'))
     }

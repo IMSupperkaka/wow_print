@@ -6,6 +6,7 @@ import './orderList.less'
 import { orderStatus } from '../../utils/map/order'
 import { list, repay, cancel, receipt } from '../../services/order'
 import Empty from '../../components/Empty'
+import noOrderIcon from '../../../images/bg_no_order@2x.png'
 
 export default (props) => {
 
@@ -184,7 +185,7 @@ export default (props) => {
                         })
                     }
                 </View> :
-                <Empty text="想了想，确实没有订单"/>
+                <Empty src={noOrderIcon} text="想了想，确实没有订单"/>
             }
         </ScrollView>
     )
