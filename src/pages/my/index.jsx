@@ -50,9 +50,9 @@ const Index = ({ user }) => {
         })
     }
 
-    const goOrder = () => {
+    const goOrder = (current) => {
         Taro.navigateTo({
-            url: '/pages/myOrder/index'
+            url: `/pages/myOrder/index?current=${current}`
         })
     }
 
@@ -68,7 +68,7 @@ const Index = ({ user }) => {
                 </View>
             </View>
             <View className="my-orders">
-                <View className="title" onClick={goOrder}>
+                <View className="title" onClick={() => { goOrder(0) }}>
                     <Text>我的订单</Text>
                     <View>
                         <Text>查看全部</Text>
@@ -76,7 +76,7 @@ const Index = ({ user }) => {
                     </View>
                 </View>
                 <View className="order-icons">
-                    <View onClick={goOrder}>
+                    <View onClick={() => { goOrder(1) }}>
                         <Image src={waitpayPng}/>
                         <Text>待付款</Text>
                         {
@@ -84,7 +84,7 @@ const Index = ({ user }) => {
                             <View className="order-icons-tip">{ state.waitPayNums }</View>
                         }
                     </View>
-                    <View onClick={goOrder}>
+                    <View onClick={() => { goOrder(2) }}>
                         <Image src={deliverPng}/>
                         <Text>待发货</Text>
                         {
@@ -92,7 +92,7 @@ const Index = ({ user }) => {
                             <View className="order-icons-tip">{ state.waitShipNums }</View>
                         }
                     </View>
-                    <View onClick={goOrder}>
+                    <View onClick={() => { goOrder(3) }}>
                         <Image src={receivePng}/>
                         <Text>待收货</Text>
                         {
@@ -100,7 +100,7 @@ const Index = ({ user }) => {
                             <View className="order-icons-tip">{ state.waitReceiptNums }</View>
                         }
                     </View>
-                    <View onClick={goOrder}>
+                    <View onClick={() => { goOrder(4) }}>
                         <Image src={refundPng}/>
                         <Text>退款/客服</Text>
                     </View>

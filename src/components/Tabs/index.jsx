@@ -7,11 +7,11 @@ import './index.less'
 
 export default (props) => {
 
+    const { current, onChange } = props;
     const [enableScroll, setEnableScroll] = useState(true);
     const [screenWidth, setScreenWidth] = useState(0);
     const [dx, setDx] = useState(0);
     const [left, setLeft] = useState(0);
-    const [current, setCurrent] = useState(0);
 
     const { animation = false } = props;
 
@@ -31,9 +31,8 @@ export default (props) => {
         setDx(0);
     }
 
-    const onChange = (e) => {
-        setCurrent(e.detail.current);
-        props.onChange(e);
+    const handleOnChange = (e) => {
+        onChange(e.detail.current);
     }
 
     const length = props.children.length;
@@ -43,7 +42,7 @@ export default (props) => {
     const TabList = React.Children.map(props.children, (child, index) => {
         if (child.type) {
             return (
-                <Tab active={index == current} onClick={() => { setCurrent(index) }} {...child.props} />
+                <Tab active={index == current} onClick={() => { onChange(index) }} {...child.props} />
             )
         } else {
             return child;
@@ -66,7 +65,7 @@ export default (props) => {
                 { TabList }
                 <View className="wy-tabs__line" style={{ transitionDuration: transitionDuration, transform: `translateX(${translateX}px) translateX(-50%)` }}></View>
             </View>
-            <Swiper current={current} className="wy-tabs__content" onChange={onChange} onAnimationFinish={onAnimationFinish} onTransition={onTransition}>
+            <Swiper current={current} className="wy-tabs__content" onChange={handleOnChange} onAnimationFinish={onAnimationFinish} onTransition={onTransition}>
                 { TabPanel }
             </Swiper>
         </View>

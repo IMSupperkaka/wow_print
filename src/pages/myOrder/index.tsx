@@ -8,15 +8,17 @@ import OrderList from './OrderList'
 
 export default (props) => {
 
-    const [current, setCurrent] = useState(0);
+    const query = Taro.getCurrentInstance().router.params;
 
-    const onChange = (e) => {
-        setCurrent(e.detail.current);
+    const [current, setCurrent] = useState(query.current || 0);
+
+    const onChange = (current) => {
+        setCurrent(current);
     }
 
     return (
         <View>
-            <Tabs onChange={onChange}>
+            <Tabs current={current} onChange={onChange}>
                 <TabPanel title="全部">
                     <OrderList active={current == 0}/>
                 </TabPanel>
