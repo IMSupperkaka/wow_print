@@ -196,7 +196,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                     return (
                         <View style={{ paddingBottom: Taro.pxTransform(bottom + 20) }} className="submit-wrap">
                             {
-                                coupon.couponFreeNums &&
+                                coupon.couponName &&
                                 <View className="freenums-tag">还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
                             }
                             <View className="submit-left">
