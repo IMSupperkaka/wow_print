@@ -38,6 +38,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
     })
     const handleChoose = () => {
         Taro.chooseImage({
+            sizeType: ['original'],
             success: (e) => {
                 setProgress({
                     ...progress,
