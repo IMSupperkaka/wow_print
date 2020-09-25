@@ -4,6 +4,7 @@ import Taro, { useDidShow } from '@tarojs/taro'
 import { connect } from 'react-redux'
 
 import './index.less'
+import { fix } from '../../utils/utils'
 import SafeArea from '../../components/SafeArea'
 import addressIcon from '../../../images/icon_address@2x.png'
 import arrowIcon from '../../../images/coin_Jump／1@2x.png'
@@ -13,7 +14,7 @@ import { detail as getDetail } from '../../services/product'
 
 const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
-    const { addressInfo, coupon, goodId, userImageList } = confirmOrder
+    const { addressInfo, coupon, goodId, userImageList } = confirmOrder;
 
     const [productDetail, setProductDetail] = useState({});
 
@@ -25,7 +26,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 });
                 dispatch({
                     type: 'confirmOrder/saveAddressInfo',
-                    payload: address
+                    payload: address || {}
                 })
             } else {
                 const defaultAddress = data.data.find((address) => {
@@ -33,7 +34,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 });
                 dispatch({
                     type: 'confirmOrder/saveAddressInfo',
-                    payload: defaultAddress
+                    payload: defaultAddress || {}
                 })
             }
         })
@@ -89,15 +90,15 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
     }
 
-    const freeShipMoney = addressInfo.freeShippingMoney / 100 || null;
-    let shipMoney = addressInfo.shipMoney / 100;
+    const freeShipMoney = fix(addressInfo.freeShippingMoney, 2);
+    let shipMoney = fix(addressInfo.shipMoney, 2);
     const picNum = userImageList.reduce((count, v) => { return count + v.printNums }, 0);
     const payNum = picNum - (coupon.couponFreeNums || 0);
-    const productMoney = productDetail.sellingPrice * (payNum <= 0 ? 0 : payNum) / 100;
+    const productMoney = fix(productDetail.sellingPrice * (payNum <= 0 ? 0 : payNum), 2);
     if (productMoney >= freeShipMoney) {
         shipMoney = 0;
     }
-    const totalMoney = (shipMoney + productMoney).toFixed(2);
+    const totalMoney = (Number(shipMoney) + Number(productMoney)).toFixed(2);
 
     return (
         <View className="index">
@@ -124,7 +125,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                             {productDetail.name}
                         </View>
                         <View>
-                            <Text>￥{(productDetail.sellingPrice / 100).toFixed(2)}</Text>
+                            <Text>￥{fix(productDetail.sellingPrice, 2)}</Text>
                             <Text>x{picNum}</Text>
                         </View>
                     </View>
@@ -142,7 +143,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                                 <Text className="primary-color">（满{ freeShipMoney }包邮）</Text>
                             }
                         </View>
-                        <Text>￥{shipMoney.toFixed(2)}</Text>
+                        <Text>￥{shipMoney}</Text>
                     </View>
                     <View>
                         <Text>小计</Text>

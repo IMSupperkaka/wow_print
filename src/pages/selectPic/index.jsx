@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import './index.less'
 import { computeCropUrl, getCropPosition } from '../../utils/utils'
 import { uploadFile } from '../../services/upload'
+import { list } from '../../services/address'
 import Dialog from '../../components/Dialog'
 import SafeArea from '../../components/SafeArea'
 import addPic from '../../../images/cion_add_to@2x.png'
@@ -30,7 +31,6 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
 
     const { coupon, userImageList } = confirmOrder;
 
-    // const [picList, setPicList] = useState([]);
     const [progress, setProgress] = useState({
         visible: false,
         totalNum: 0,
@@ -134,8 +134,16 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                 icon: 'none'
             })
         }
-        Taro.navigateTo({
-            url: '/pages/confirmOrder/index'
+        list().then(({ data }) => {
+            if (data.data.length <= 0) {
+                Taro.navigateTo({
+                    url: `/pages/addressEdit/index?type=add&redirect=${encodeURIComponent('/pages/confirmOrder/index')}`
+                })
+            } else {
+                Taro.navigateTo({
+                    url: '/pages/confirmOrder/index'
+                })
+            }
         })
     }
 
@@ -186,7 +194,10 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                 {({ bottom }) => {
                     return (
                         <View style={{ paddingBottom: Taro.pxTransform(bottom + 20) }} className="submit-wrap">
-                            <View className="freenums-tag">还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
+                            {
+                                coupon.couponFreeNums &&
+                                <View className="freenums-tag">还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
+                            }
                             <View className="submit-left">
                                 <Text onClick={handleChoose}>添加照片</Text>
                                 <Text>已选{userImageList.length}张</Text>

@@ -134,7 +134,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
             </View>
             <SafeArea>
                 {({ bottom }) => {
-                    return <View style={{ paddingBottom: Taro.pxTransform(bottom) }} onClick={goSelectPic} className="submit-btn">立即打印</View>
+                    return <View style={{ paddingBottom: Taro.pxTransform(bottom) }} onClick={goSelectPic} className="submit-btn">{ coupon.couponName ? '免费打印' : '立即打印' }</View>
                 }}
             </SafeArea>
             <Modal className="coupon-modal" visible={isOpened} onClose={handleCloseCoupon}>

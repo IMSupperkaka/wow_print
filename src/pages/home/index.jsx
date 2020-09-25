@@ -4,6 +4,7 @@ import Taro, { usePageScroll, useReady, useTabItemTap, useShareAppMessage } from
 import { View, Image, Text, Swiper, SwiperItem } from '@tarojs/components'
 
 import './index.less'
+import { jump } from '../../utils/utils'
 import { list, index } from '../../services/home'
 import NavBar from '../../components/NavBar'
 import Dialog from '../../components/Dialog'
@@ -107,7 +108,7 @@ const Home = (props) => {
                 {
                     homeData.bannerList.map((v) => {
                         return (
-                            <SwiperItem key={v.id}>
+                            <SwiperItem key={v.id} onClick={() => { jump(v.url) }}>
                                 <Image mode="aspectFill" src={v.image} />
                             </SwiperItem>
                         )
@@ -122,7 +123,7 @@ const Home = (props) => {
                     {
                         homeData.indexBigImageList.map((v) => {
                             return (
-                                <SwiperItem key={v.id}>
+                                <SwiperItem key={v.id} onClick={() => { jump(v.url) }}>
                                     <Image mode="aspectFill" src={v.image} />
                                 </SwiperItem>
                             )

@@ -1,3 +1,5 @@
+import Taro from '@tarojs/taro';
+
 export const getImgwh = ({ width, height, contentWidth, contentHeight }, scale = 1) => {
     let imgWidth;
     let imgHeight;
@@ -38,8 +40,25 @@ export const computeCropUrl = (url, imgInfo) => {
 }
 
 export const fix = (num, prefix = 0) => {
-    if ([null, undefined].includes(num)) {
+    if ([null, undefined, NaN].includes(num)) {
         return 0;
     }
     return (num / 100).toFixed(prefix);
+}
+
+export const jump = (url) => {
+    const miniProPageReg = new RegExp('wy://');
+    if (typeof url !== 'string') {
+        throw new Error('url must be string');
+    }
+    url = url.trim();
+    if (miniProPageReg.test(url)) {
+        Taro.navigateTo({
+            url: url.replace(miniProPageReg, '/')
+        })
+    } else {
+        Taro.navigateTo({
+            url: `/pages/webview/index?url=${encodeURIComponent(url)}`
+        })
+    }
 }

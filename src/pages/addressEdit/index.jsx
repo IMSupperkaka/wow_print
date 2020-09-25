@@ -57,6 +57,7 @@ export default () => {
     }, [])
 
     const handleSave = () => {
+        const query = Taro.getCurrentInstance().router.params;
         if (query.type == 'add') {
             add({
                 recipient: form.recipient,
@@ -67,7 +68,13 @@ export default () => {
                 address: form.address,
                 isDefault: form.isDefault ? 1 : 0
             }).then(() => {
-                Taro.navigateBack();
+                if (query.redirect) {
+                    Taro.redirectTo({
+                        url: decodeURIComponent(query.redirect)
+                    })
+                } else {
+                    Taro.navigateBack();
+                }
             })
         } else {
             edit({
@@ -80,7 +87,13 @@ export default () => {
                 address: form.address,
                 isDefault: form.isDefault ? 1 : 0
             }).then(() => {
-                Taro.navigateBack();
+                if (query.redirect) {
+                    Taro.redirectTo({
+                        url: decodeURIComponent(query.redirect)
+                    })
+                } else {
+                    Taro.navigateBack();
+                }
             })
         }
     }

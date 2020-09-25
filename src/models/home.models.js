@@ -1,5 +1,6 @@
-import Taro from '@tarojs/taro'
+import Taro from '@tarojs/taro';
 
+import { jump } from '../utils/utils';
 import { judge, popup } from '../services/home';
 import { receive } from '../services/coupon';
 
@@ -72,9 +73,7 @@ export default {
                 yield call(receive);
             }
             if (dialog.type === 'popup' && !close) {
-                Taro.navigateTo({
-                    url: `/pages/webview/index?url=${dialog.url}`
-                })
+                jump(dialog.url);
             }
             if (popup.activeIndex < (popup.list.length - 1)) {
                 yield put({
