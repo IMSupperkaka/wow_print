@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro'
+import day from 'dayjs'
 import { usePullDownRefresh, useReachBottom, useDidShow } from '@tarojs/taro'
 import { View, ScrollView, Image, Button, Text } from '@tarojs/components'
 
@@ -40,11 +41,11 @@ export default () => {
             page: refresh ? 1 : page.current,
             pageSize: page.pageSize
         }).then(({ data }) => {
-            const currentTime = new Date().getTime();
+            const currentTime = day();
             data.data.records = data.data.records.map((v) => {
                 return {
                     ...v,
-                    new: (currentTime - new Date(v.createTime)) <= 86400000
+                    new: currentTime.diff(day(v.createTime)) <= 86400000
                 }
             })
             setIsFinish(data.data.current >= data.data.pages);

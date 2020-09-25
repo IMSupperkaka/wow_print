@@ -29,11 +29,17 @@ export const getCropPosition = ({ width, height, scale, origin, translate: [dx, 
     }
 }
 
-
 export const computeCropUrl = (url, imgInfo) => {
     const contentWidth = 1050;
     const contentHeight = 1500;
     const { scale, x, y } = getCropPosition(imgInfo, contentWidth, contentHeight);
     const cropUrl = `${url}?imageMogr2/auto-orient/thumbnail/!${scale * 100}p/crop/!${contentWidth}x${contentHeight}a${x}a${y}`;
     return cropUrl;
+}
+
+export const fix = (num, prefix = 0) => {
+    if ([null, undefined].includes(num)) {
+        return 0;
+    }
+    return (num / 100).toFixed(prefix);
 }

@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { View, Image, ScrollView, Swiper, Text, SwiperItem } from '@tarojs/components'
 
 import './index.less'
+import { fix } from '../../utils/utils'
 import Modal from '../../components/Modal'
 import SafeArea from '../../components/SafeArea'
 import iconCoupon from '../../../images/icon_coupon@2x.png'
@@ -107,7 +108,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 </View>
             </View>
             <View className="product-info">
-                <View className="product-price">￥{(detail.sellingPrice / 100).toFixed(2)}</View>
+                <View className="product-price">￥{fix(detail.sellingPrice, 2)}</View>
                 <View className="product-name">{detail.name}</View>
             </View>
             {

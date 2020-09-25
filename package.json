@@ -47,6 +47,7 @@
     "@tarojs/taro": "3.0.5",
     "@umijs/hooks": "^1.9.3",
     "classnames": "^2.2.6",
+    "dayjs": "^1.8.36",
     "dva-core": "^2.0.2",
     "dva-loading": "^3.0.20",
     "dva-model-extend": "^0.1.2",
