@@ -78,7 +78,7 @@ export default () => {
                                                 </View>
                                             </View>
                                         </View>
-                                        <Image className="list-item-header-right" src={item.status == 1 ? icon_expired : icon_used}/>
+                                        <Image className="list-item-header-right" src={item.status == 0 ? icon_expired : icon_used}/>
                                     </View>
                                     <View className="list-item-desc">
                                         <Text>{ item.couponDescription }</Text>
