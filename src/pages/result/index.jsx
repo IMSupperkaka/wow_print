@@ -44,13 +44,14 @@ export default () => {
                 signType: 'MD5',
                 paySign: data.data.paysign,
                 success: function (res) {
+                    Taro.eventCenter.trigger('updateOrderStatus', query.id);
                     Taro.redirectTo({
-                        url: `/pages/result/index?type=pay_success&id=${order.id}`
+                        url: `/pages/result/index?type=pay_success&id=${query.id}`
                     })
                 },
                 fail: function (res) {
                     Taro.redirectTo({
-                        url: `/pages/result/index?type=pay_fail&id=${order.id}`
+                        url: `/pages/result/index?type=pay_fail&id=${query.id}`
                     })
                 }
             })
@@ -71,12 +72,8 @@ export default () => {
                     <Button onClick={goHome} className="radius-btn outline-btn">返回首页</Button>
                 }
                 {
-                    ['pay_success', 'pay_fail', 'received'].includes(query.type) &&
+                    ['pay_success', 'pay_fail', 'received', 'cancel'].includes(query.type) &&
                     <Button onClick={goOrderDetail} className="radius-btn outline-btn">查看订单</Button>
-                }
-                {
-                    query.type == 'cancel' &&
-                    <Button className="radius-btn primary-outline-btn">重新购买</Button>
                 }
                 {
                     query.type == 'pay_fail' &&

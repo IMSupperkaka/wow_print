@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import Taro from '@tarojs/taro'
+import Taro, { Events, useDidShow } from '@tarojs/taro'
 import classNames from 'classnames';
 import { View, Image, Button, Text } from '@tarojs/components'
 
 import './index.less'
-import { detail } from '../../services/order'
+import { detail, repay, cancel } from '../../services/order'
 import { orderStatus } from '../../utils/map/order'
 import address from '../../../images/icon_address@2x.png'
 
@@ -12,7 +12,7 @@ export default () => {
     const [query, setQuery] = useState({});
     const [orderDetail, setOrderDetail] = useState({});
 
-    useEffect(() => {
+    useDidShow(() => {
         const query = Taro.getCurrentInstance().router.params;
         setQuery(query);
         detail({
@@ -20,7 +20,54 @@ export default () => {
         }).then(({ data }) => {
             setOrderDetail(data.data);
         })
-    }, [])
+    })
+
+    const handleCancel = () => {
+        Taro.showModal({
+            title: '确认取消',
+            content: '是否确认取消订单',
+            confirmText: '确认',
+            cancelText: '取消',
+            confirmColor: '#FF6345',
+            success: (res) => {
+                if (res.confirm) {
+                    cancel({
+                        loanId: query.id
+                    }).then(() => {
+                        Taro.eventCenter.trigger('updateOrderStatus', query.id);
+                        Taro.navigateTo({
+                            url: `/pages/result/index?type=cancel`
+                        })
+                    })
+                }
+            }
+        })
+    }
+
+    const handleRepay = () => {
+        repay({
+            loanId: query.id
+        }).then(({ data }) => {
+            Taro.requestPayment({
+                timeStamp: data.data.timestamp,
+                nonceStr: data.data.nonce_str,
+                package: data.data.pay_package,
+                signType: 'MD5',
+                paySign: data.data.paysign,
+                success: function (res) {
+                    Taro.eventCenter.trigger('updateOrderStatus', query.id);
+                    Taro.navigateTo({
+                        url: `/pages/result/index?type=pay_success&id=${query.id}`
+                    })
+                },
+                fail: function (res) {
+                    Taro.navigateTo({
+                        url: `/pages/result/index?type=pay_fail&id=${query.id}`
+                    })
+                }
+            })
+        })
+    }
 
     const handleCopy = (data) => {
         Taro.setClipboardData({
@@ -101,7 +148,7 @@ export default () => {
             </View>
             <View className="submit-bar">
                 <View></View>
-                <View>
+                <View className="submit-right">
                     {
                         [2, 3, 4, 5, 9].includes(orderDetail.status) &&
                         <Button onClick={handleGoService} className="radius-btn outline-btn">联系客服</Button>
@@ -109,6 +156,14 @@ export default () => {
                     {
                         orderDetail.status == 3 &&
                         <Button className="radius-btn primary-outline-btn">确认收货</Button>
+                    }
+                    {
+                        orderDetail.status == 1 &&
+                        <Button onClick={handleCancel} className="radius-btn outline-btn">取消订单</Button>
+                    }
+                    {
+                        orderDetail.status == 1 &&
+                        <Button onClick={handleRepay} className="radius-btn primary-btn">立即付款</Button>
                     }
                 </View>
             </View>

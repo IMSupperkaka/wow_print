@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import Taro, { usePullDownRefresh, useReachBottom } from '@tarojs/taro'
+import Taro from '@tarojs/taro'
 import { ScrollView, View, Image, Button, Text } from '@tarojs/components'
 
 import './orderList.less'
 import { orderStatus } from '../../utils/map/order'
-import { list, repay, cancel, receipt } from '../../services/order'
+import { list, repay, cancel, receipt, detail } from '../../services/order'
 import Empty from '../../components/Empty'
 import noOrderIcon from '../../../images/bg_no_order@2x.png'
 
@@ -17,6 +17,15 @@ export default (props) => {
         pageSize: 10,
         total: 0
     });
+
+    useEffect(() => {
+        Taro.eventCenter.on('updateOrderStatus', (id) => {
+            updateOrderStatus(id);
+        })
+        return () => {
+            Taro.eventCenter.off('updateOrderStatus');
+        }
+    }, [])
 
     useEffect(() => {
         if (props.active) {
@@ -48,7 +57,8 @@ export default (props) => {
         })
     }
 
-    const handleCancel = (order) => {
+    const handleCancel = (order, e) => {
+        e.stopPropagation();
         Taro.showModal({
             title: '确认取消',
             content: '是否确认取消订单',
@@ -60,8 +70,9 @@ export default (props) => {
                     cancel({
                         loanId: order.id
                     }).then(() => {
+                        updateOrderStatus(order.id);
                         Taro.navigateTo({
-                            url: `/pages/result/index?type=cancel`
+                            url: `/pages/result/index?type=cancel&id=${order.id}`
                         })
                     })
                 }
@@ -69,7 +80,8 @@ export default (props) => {
         })
     }
 
-    const handleReceived = (order) => {
+    const handleReceived = (order, e) => {
+        e.stopPropagation();
         Taro.showModal({
             title: '确认收货',
             content: '确认已收到商品？非质量问题无法退货退款哦～',
@@ -81,6 +93,7 @@ export default (props) => {
                     receipt({
                         loanId: order.id
                     }).then(() => {
+                        updateOrderStatus(order.id);
                         Taro.navigateTo({
                             url: `/pages/result/index?type=received&id=${order.id}`
                         })
@@ -90,7 +103,8 @@ export default (props) => {
         })
     }
 
-    const handleRepay = (order) => {
+    const handleRepay = (order, e) => {
+        e.stopPropagation();
         repay({
             loanId: order.id
         }).then(({ data }) => {
@@ -101,6 +115,7 @@ export default (props) => {
                 signType: 'MD5',
                 paySign: data.data.paysign,
                 success: function (res) {
+                    updateOrderStatus(order.id);
                     Taro.navigateTo({
                         url: `/pages/result/index?type=pay_success&id=${order.id}`
                     })
@@ -114,15 +129,37 @@ export default (props) => {
         })
     }
 
-    const handleDetail = (order) => {
+    const handleDetail = (order, e) => {
+        e.stopPropagation();
         Taro.navigateTo({
             url: `/pages/orderDetail/index?id=${order.id}`
         })
     }
 
-    const handleGoService = () => {
+    const handleGoService = (e) => {
+        e.stopPropagation();
         Taro.navigateTo({
             url: '/pages/service/index'
+        })
+    }
+
+    const updateOrderStatus = (id) => {
+        detail({
+            loanId: id
+        }).then(({ data }) => {
+            setRecords((records) => {
+                const cloneList = [...records];
+                const index = cloneList.findIndex((v) => {
+                    return v.id == id;
+                });
+                if (index != -1) {
+                    const item = cloneList[index];
+                    item.status = data.data.status;
+                    cloneList.splice(index, 1, item);
+                    return cloneList;
+                }
+                return records;
+            });
         })
     }
 
@@ -137,7 +174,7 @@ export default (props) => {
                             const goodsInfo = item.goodsInfo[0];
 
                             return (
-                                <View className='order-item' key={index}>
+                                <View className='order-item' key={index} onClick={handleDetail.bind(this, item)}>
                                     <View className="order-item-header">
                                         <Text>共{ item.loanGoodsNums }件商品</Text>
                                         <Text className={(item.status != 4 && item.status != 5) ? 'primary' : ''}>{ orderStatus.get(item.status) }</Text>
