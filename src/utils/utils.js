@@ -35,10 +35,8 @@ export const computeCropUrl = (url, imgInfo) => {
     const aspectRatio = 1050 / 1500;
     const contentWidth = imgInfo.width;
     const contentHeight = contentWidth / aspectRatio;
-    const limitPx = 25000000;
     const { scale, x, y } = getCropPosition(imgInfo, contentWidth, contentHeight);
-    const cropUrl = `${url}?imageMogr2/auto-orient/thumbnail/!${100}p/crop/!${contentWidth / scale}x${contentHeight / scale}a${x / scale}a${y / scale}`;
-    console.log(cropUrl);
+    const cropUrl = `${url}?imageMogr2/auto-orient/thumbnail/!${100}p/crop/!${Math.round(contentWidth / scale)}x${Math.round(contentHeight / scale)}a${Math.round(x / scale)}a${Math.round(y / scale)}`;
     return cropUrl;
 }
 

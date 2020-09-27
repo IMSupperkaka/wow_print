@@ -53,8 +53,13 @@ const ImgEdit = (props) => {
     }, [activeIndex])
 
     const getOrigin = (p1, p2) => {
-        const { width, height } = getImgwh(IMG.imgInfo);
-        return [(p1.x + p2.x - translate[0]) / width, (p1.y + p2.y - translate[1]) / height];
+        const { x, y, width, height, scale: fScale } = getCropPosition({
+            ...IMG.imgInfo,
+            translate: translate,
+            scale: scale,
+            origin: origin
+        }, contentWidth, contentHeight);
+        return [((p1.x + p2.x) / 2 + x) / (width * fScale), ((p1.y + p2.y) / 2 + y) / (height * fScale)];
     }
 
     const onTouchStart = (e) => {
@@ -62,14 +67,16 @@ const ImgEdit = (props) => {
         setIsTouch(true);
         store.originScale = scale;
         store.originTranslate = translate;
+        if (e.touches.length >= 2) {
+            const neworigin = getOrigin(e.touches[0], e.touches[1]);
+            setOrigin([neworigin[0], neworigin[1]]);
+        }
     }
 
     const onTouchMove = (e) => {
         if (e.touches.length >= 2) {
             const zoom = getDistance(e.touches[0], e.touches[1]) / getDistance(lastTouch[0], lastTouch[1]);
             const newScale = store.originScale * zoom;
-            const neworigin = getOrigin(e.touches[0], e.touches[1]);
-            setOrigin([neworigin[0], neworigin[1]]);
             setScale(newScale);
         } else {
             const dx = e.touches[0].x - lastTouch[0].x;
@@ -80,9 +87,14 @@ const ImgEdit = (props) => {
 
     const onTouchEnd = (e) => {
         const [dx, dy] = translate;
-        const resetScale = scale < 1 ? 1 : scale;
+        let resetScale = scale;
         const { width, height } = getImgwh(IMG.imgInfo, scale);
         if (scale < 1) {
+            resetScale = 1;
+            Taro.vibrateShort();
+        }
+        if (scale > 3) {
+            resetScale = 3;
             Taro.vibrateShort();
         }
         const limitLeft = (width - contentWidth) * origin[0];
@@ -175,7 +187,7 @@ const ImgEdit = (props) => {
         transform: `translate3d(${Taro.pxTransform(-1 * x)}, ${Taro.pxTransform(-1 * y)}, 0) scale(${fScale})`,
         width: Taro.pxTransform(width),
         height: Taro.pxTransform(height),
-        transitionProperty: (isTouch || scale > 2) ? 'null' : 'all'
+        transitionProperty: (isTouch || scale > 3) ? 'none' : 'all'
     }
     
     const activeLeftIcon = <Image onClick={oprate.bind(this, 'subtraction')} className="oprate-icon" src={leftActiveIcon} />;
@@ -192,18 +204,20 @@ const ImgEdit = (props) => {
                     <Canvas canvasId='canvas' disableScroll={true} className="content" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
                     <Image onLoad={onImgLoad} style={imgStyle} className="img" src={IMG.originPath} />
                 </View>
-                <View className="bottom-tip">tips：灰色区域将被裁剪，不在打印范围内</View>
-                <View>
-                    {
-                        activeIndex <= 0 ?
-                            disabledLeftIcon :
-                            activeLeftIcon
-                    }
-                    {
-                        activeIndex >= userImageList.length - 1 ?
-                            disabledRightIcon :
-                            activeRightIcon
-                    }
+                <View className="bottom-wrap">
+                    <View className="bottom-tip">tips：灰色区域将被裁剪，不在打印范围内</View>
+                    <View>
+                        {
+                            activeIndex <= 0 ?
+                                disabledLeftIcon :
+                                activeLeftIcon
+                        }
+                        {
+                            activeIndex >= userImageList.length - 1 ?
+                                disabledRightIcon :
+                                activeRightIcon
+                        }
+                    </View>
                 </View>
             </View>
             <View className="bottom-bar">
