@@ -2,23 +2,27 @@ import Taro from '@tarojs/taro'
 
 import { detail } from '../services/address'
 
+const defaultAddressInfo = {
+    id: null,
+    recipient: null,
+    phone: null,
+    province: null,
+    city: null,
+    area: null,
+    address: null,
+    shipMoney: 0
+}
+
+const defaultCoupon = {
+    id: null,
+    couponFreeNums: 0
+}
+
 export default {
     namespace: 'confirmOrder',
     state: {
-        addressInfo: {
-            id: null,
-            recipient: null,
-            phone: null,
-            province: null,
-            city: null,
-            area: null,
-            address: null,
-            shipMoney: 0
-        },
-        coupon: {
-            id: null,
-            couponFreeNums: 0
-        },
+        addressInfo: defaultAddressInfo,
+        coupon: defaultCoupon,
         goodId: null,
         userImageList: [],
         activeIndex: 0
@@ -33,6 +37,16 @@ export default {
         }
     },
     reducers: {
+        initConfirmOrder(state) {
+            return {
+                ...state,
+                addressInfo: defaultAddressInfo,
+                coupon: defaultCoupon,
+                goodId: null,
+                userImageList: [],
+                activeIndex: 0
+            }
+        },
         saveAddressInfo(state, { payload }) {
             return {
                 ...state,

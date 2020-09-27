@@ -18,14 +18,14 @@
   border-style: solid;
   background: transparent;
   z-index: 1;
-  border-width: 102px 84px calc(100vh - 102px - 833px) 84px;
+  border-width: 102px 84px calc(100vh - 102px - 831.42px) 84px;
 }
 
 .img {
   display: flex;
   position: absolute;
   top: 102px;
-  left: 86px;
+  left: 84px;
   transition-duration: .2s;
   transition-property: all;
 }
@@ -48,7 +48,7 @@
 .content {
   position: relative;
   width: 582px;
-  height: 833px;
+  height: 831.42px;
   border: 2px dashed #FF6345;
   z-index: 2;
 }
@@ -70,6 +70,10 @@
 }
 
 .bottom-wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     z-index: 2;
 }
 

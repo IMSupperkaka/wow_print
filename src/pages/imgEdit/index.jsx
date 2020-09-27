@@ -16,7 +16,7 @@ let store = {
     originScale: 1
 };
 const contentWidth = 582;
-const contentHeight = 833;
+const contentHeight = 831.42;
 
 const getImgwh = ({ width, height }, scale = 1) => {
     let imgWidth;

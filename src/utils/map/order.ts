@@ -6,3 +6,7 @@ export const orderStatus = new Map([
     [5, '已退款'],
     [9, '已收货']
 ])
+
+export const sizeMap = new Map([
+    [5, 0.7]
+])

@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react'
-import Taro, { useShareAppMessage } from '@tarojs/taro'
+import Taro, { useShareAppMessage, useDidShow, useReady } from '@tarojs/taro'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
 import { View, Image, ScrollView, Swiper, Text, SwiperItem } from '@tarojs/components'
@@ -21,7 +21,10 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     const [current, setCurrent] = useState(0);
     const [isOpened, setIsOpened] = useState(false);
 
-    useEffect(() => {
+    useReady(() => {
+        dispatch({
+            type: 'confirmOrder/initConfirmOrder'
+        })
         const query = Taro.getCurrentInstance().router.params;
         setQuery(query);
         getDetail({
@@ -39,7 +42,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 saveCoupon(data.data.couponList[0])
             }
         })
-    }, [])
+    })
 
     useShareAppMessage();
 

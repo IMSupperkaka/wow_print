@@ -21,7 +21,7 @@ export const getCropPosition = ({ width, height, scale, origin, translate: [dx, 
     const offsetX = scale * oWidth - contentWidth;
     const offsetY = scale * oHeight - contentHeight;
     const x = origin[0] * offsetX - dx * (contentWidth / 582);
-    const y = origin[1] * offsetY - dy * (contentHeight / 833);
+    const y = origin[1] * offsetY - dy * (contentHeight / (582 / 0.7));
     return {
         width: width,
         height: height,
@@ -32,7 +32,7 @@ export const getCropPosition = ({ width, height, scale, origin, translate: [dx, 
 }
 
 export const computeCropUrl = (url, imgInfo) => {
-    const aspectRatio = 1050 / 1500;
+    const aspectRatio = 0.7;
     const contentWidth = imgInfo.width;
     const contentHeight = contentWidth / aspectRatio;
     const { scale, x, y } = getCropPosition(imgInfo, contentWidth, contentHeight);

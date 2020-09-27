@@ -7,6 +7,7 @@ import './index.less'
 import { computeCropUrl, getCropPosition } from '../../utils/utils'
 import { uploadFile } from '../../services/upload'
 import { list } from '../../services/address'
+import { sizeMap } from '../../utils/utils'
 import Dialog from '../../components/Dialog'
 import SafeArea from '../../components/SafeArea'
 import addPic from '../../../images/cion_add_to@2x.png'
@@ -17,7 +18,7 @@ import plusSelectIcon from '../../../images/cion_plus_selected@2x.png'
 
 const getImgStyle = (info) => {
     const contentWidth = 300;
-    const contentHeight = 429;
+    const contentHeight = contentWidth / 0.7;
     const { x, y, width, height, scale } = getCropPosition(info, contentWidth, contentHeight);
     return {
         transformOrigin: '0% 0%',
