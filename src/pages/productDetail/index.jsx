@@ -52,6 +52,11 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
             setDetail(data.data);
             if (data.data.couponList.length > 0) {
                 saveCoupon(data.data.couponList[0])
+            } else {
+                saveCoupon({
+                    id: null,
+                    couponFreeNums: 0
+                })
             }
         })
     }

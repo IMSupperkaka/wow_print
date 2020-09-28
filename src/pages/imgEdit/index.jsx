@@ -38,7 +38,7 @@ const getDistance = (p1, p2) => {
     return Math.sqrt(Math.pow(p2.x - p1.x, 2), Math.pow(p2.y - p1.y), 2);
 }
 
-const Img = React.memo(({ translate, scale, origin, img, onLoad }) => {
+const Img = React.memo(({ translate, scale, origin, img, onLoad, animate }) => {
 
     const { x, y, width, height, scale: fScale } = getCropPosition({
         ...img.imgInfo,
@@ -51,7 +51,8 @@ const Img = React.memo(({ translate, scale, origin, img, onLoad }) => {
         transformOrigin: '0% 0%',
         transform: `translate3d(${Taro.pxTransform(-1 * x)}, ${Taro.pxTransform(-1 * y)}, 0) scale(${fScale})`,
         width: Taro.pxTransform(width),
-        height: Taro.pxTransform(height)
+        height: Taro.pxTransform(height),
+        transitionProperty: animate ? 'transform' : 'none'
     }
 
     return (
