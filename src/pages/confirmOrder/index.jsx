@@ -22,7 +22,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
         list().then(({ data }) => {
             if (addressInfo.id) {
                 const address = data.data.find((address) => {
-                    return address.id == address.id;
+                    return address.id == addressInfo.id;
                 });
                 dispatch({
                     type: 'confirmOrder/saveAddressInfo',
@@ -75,6 +75,9 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                     Taro.navigateTo({
                         url: `/pages/result/index?type=pay_fail&id=${data.data.loanId}`
                     })
+                },
+                complete: () => {
+                    Taro.eventCenter.trigger('finishOrder', goodId);
                 }
             })
         })
@@ -84,10 +87,6 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
         Taro.navigateTo({
             url: `/pages/addressList/index?type=choose`
         })
-    }
-
-    const handlePreview = () => {
-
     }
 
     const freeShipMoney = fix(addressInfo.freeShippingMoney, 2);
@@ -118,7 +117,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 <Image className="address-info__arrow" src={arrowIcon} />
             </View>
             <View className="product-info">
-                <View className="product-info-content" onClick={handlePreview}>
+                <View className="product-info-content">
                     <Image className="product-image" mode="aspectFill" src={productDetail?.productMainImages?.[0]} />
                     <View className="product-content">
                         <View>

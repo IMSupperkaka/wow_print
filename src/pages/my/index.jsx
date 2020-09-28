@@ -29,7 +29,7 @@ const Index = ({ user }) => {
     const handleGoAuth = () => {
         Taro.getSetting({
             success: (res) => {
-                if (!res.authSetting['scope.userInfo']) {
+                if (!res.authSetting['scope.userInfo'] || !user.info.nickName) {
                     Taro.navigateTo({
                         url: '/pages/authInfo/index'
                     })
@@ -100,7 +100,7 @@ const Index = ({ user }) => {
                             <View className="order-icons-tip">{ state.waitReceiptNums }</View>
                         }
                     </View>
-                    <View onClick={() => { goOrder(4) }}>
+                    <View onClick={() => { goOrder(5) }}>
                         <Image src={refundPng}/>
                         <Text>退款/客服</Text>
                     </View>

@@ -4,17 +4,51 @@ import { View, Image, Button } from '@tarojs/components'
 
 import './index.less'
 import logo from '../../../images/bg_kachaxionglogo@2x.png'
+import service from '../../../images/lADPD3zULfUogVjNAa7NAa4_430_430.jpg'
 
 export default () => {
+
+    const downloadImgToAlbum = () => {
+        Taro.saveImageToPhotosAlbum({
+            filePath: service,
+            success: () => {
+                Taro.showToast({
+                    title:'保存成功',
+                    icon:'none',
+                    duration:1000
+                })
+            }
+        })
+    }
+
+    const longTap = (e) => {
+        e.stopPropagation();
+        Taro.getSetting({
+            success (res) {
+                if (!res.authSetting['scope.writePhotosAlbum']) {//没有授权
+                    Taro.authorize({
+                        scope:'scope.writePhotosAlbum',
+                        success: () => {
+                            downloadImgToAlbum();
+                        }
+                    })
+                } else { //已授权
+                    downloadImgToAlbum();
+                }
+            }
+        })
+    }
+
     return (
         <View>
             <View className="header">
-                <View>
+                <View onLongPress={longTap}>
                     <Image src={logo}/>
                     <View>
                         <View>哇印人工客服</View>
                         <View>长按保存并扫码咨询</View>
                     </View>
+                    <Image className="service" src={service}/>
                 </View>
             </View>
             <View className="content">

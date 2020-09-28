@@ -81,6 +81,12 @@ export default () => {
         })
     }
 
+    const goPreview = () => {
+        Taro.navigateTo({
+            url: `/pages/preview/index?id=${query.id}`
+        })
+    }
+
     const greyHeader = [4, 5].includes(orderDetail.status);
 
     const goodsInfo = orderDetail?.goodsInfo?.[0] || {};
@@ -98,7 +104,7 @@ export default () => {
                 </View>
             </View>
             <View className="product-info">
-                <View className="product-info-content">
+                <View className="product-info-content" onClick={goPreview}>
                     <Image className="product-image" mode="aspectFill" src={goodsInfo.indexImage}/>
                     <View className="product-content">
                         <View>

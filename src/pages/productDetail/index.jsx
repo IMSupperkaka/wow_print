@@ -22,13 +22,25 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     const [isOpened, setIsOpened] = useState(false);
 
     useReady(() => {
+        const query = Taro.getCurrentInstance().router.params;
+        setQuery(query);
         dispatch({
             type: 'confirmOrder/initConfirmOrder'
         })
-        const query = Taro.getCurrentInstance().router.params;
-        setQuery(query);
+        getOrderDetail(query.id);
+        Taro.eventCenter.on('finishOrder', (id) => {
+            getOrderDetail(id);
+        })
+        return () => {
+            Taro.eventCenter.off('finishOrder');
+        }
+    })
+
+    useShareAppMessage();
+
+    const getOrderDetail = (id) => {
         getDetail({
-            goodId: query.id
+            goodId: id
         }).then(({ data }) => {
             const currentTime = new Date().getTime();
             data.data.couponList = data.data.couponList.map((v) => {
@@ -42,9 +54,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 saveCoupon(data.data.couponList[0])
             }
         })
-    })
-
-    useShareAppMessage();
+    }
 
     const saveCoupon = (coupon) => {
         dispatch({

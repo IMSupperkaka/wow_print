@@ -37,6 +37,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
         totalNum: 0,
         completeNum: 0
     })
+    
     const handleChoose = () => {
         Taro.chooseImage({
             sizeType: ['original'],
@@ -47,7 +48,6 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                     totalNum: e.tempFilePaths.length,
                     completeNum: 0
                 })
-                let list = [];
                 e.tempFilePaths.map((v) => {
                     uploadFile({
                         filePath: v
@@ -60,31 +60,11 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                                 visible: completeNum < e.tempFilePaths.length
                             }
                         })
-                        Taro.getImageInfo({
-                            src: v,
-                            success: (imgres) => {
-                                const imgInfo = {
-                                    ...imgres,
-                                    origin: [0.5, 0.5],
-                                    scale: 1,
-                                    translate: [0, 0]
-                                }
-                                list.push({
-                                    originPath: v,
-                                    originImage: res.data,
-                                    cropImage: computeCropUrl(res.data, { ...imgInfo, contentWidth: 582, contentHeight: 833 }),
-                                    printNums: 1,
-                                    imgInfo: imgInfo
-                                })
-                                if (list.length === e.tempFilePaths.length) {
-                                    dispatch({
-                                        type: 'confirmOrder/saveUserImageList',
-                                        payload: [
-                                            ...userImageList,
-                                            ...list
-                                        ]
-                                    })
-                                }
+                        dispatch({
+                            type: 'confirmOrder/pushUserImg',
+                            payload: {
+                                filePath: v,
+                                res: res
                             }
                         })
                     })

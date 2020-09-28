@@ -15,7 +15,8 @@ export default {
         'pages/selectPic/index',
         'pages/imgEdit/index',
         'pages/confirmOrder/index',
-        'pages/webview/index'
+        'pages/webview/index',
+        'pages/preview/index'
     ],
     tabBar: {
         color: '#666666',

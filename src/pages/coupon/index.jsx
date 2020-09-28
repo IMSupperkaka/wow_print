@@ -10,6 +10,24 @@ import Empty from '../../components/Empty';
 import rightArrow from '../../../images/right_arrow@2x.png';
 import couponEmptyIcon from '../../../images/bg_no_coupons@2x.png';
 
+
+const ExpiresText = ({ endTime, ...resetProps }) => {
+    const expreisTime = day(endTime).diff(day()) / 60 / 60 / 1000;
+    console.log(expreisTime);
+    let text;
+    if (expreisTime > 72) {
+        return null;
+    }
+    if (expreisTime <= 24) {
+        text = '今日过期';
+    } else if (expreisTime <= 48) {
+        text = '2天后过期';
+    } else if (expreisTime <= 72) {
+        text = '即将过期';
+    }
+    return <Text {...resetProps}>{text}</Text>
+}
+
 export default () => {
 
     const [isFinish, setIsFinish] = useState(false);
@@ -38,7 +56,7 @@ export default () => {
         }
         return list({
             type: 1,
-            page: refresh ? 1 : page.current,
+            pageNum: refresh ? 1 : page.current + 1,
             pageSize: page.pageSize
         }).then(({ data }) => {
             const currentTime = day();
@@ -113,6 +131,7 @@ export default () => {
                                                 </View>
                                             </View>
                                             <View className="list-item-header-btn" onClick={handleUse.bind(this, item)}>使用</View>
+                                            <ExpiresText className="expires-time" endTime={item.endTime}/>
                                         </View>
                                         <View className="list-item-desc">
                                             <Text>{ item.couponDescription }</Text>

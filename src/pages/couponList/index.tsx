@@ -38,7 +38,7 @@ export default () => {
         }
         return list({
             type: 2,
-            page: refresh ? 1 : page.current,
+            pageNum: refresh ? 1 : page.current + 1,
             pageSize: page.pageSize
         }).then(({ data }) => {
             setIsFinish(data.data.current >= data.data.pages);

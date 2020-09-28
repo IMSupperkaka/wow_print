@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { connect } from 'react-redux';
 import { View, Image, Canvas, Text } from '@tarojs/components';
@@ -16,7 +16,7 @@ let store = {
     originScale: 1
 };
 const contentWidth = 582;
-const contentHeight = 831.42;
+const contentHeight = 582 / 0.7;
 
 const getImgwh = ({ width, height }, scale = 1) => {
     let imgWidth;
@@ -37,6 +37,27 @@ const getImgwh = ({ width, height }, scale = 1) => {
 const getDistance = (p1, p2) => {
     return Math.sqrt(Math.pow(p2.x - p1.x, 2), Math.pow(p2.y - p1.y), 2);
 }
+
+const Img = React.memo(({ translate, scale, origin, img, onLoad }) => {
+
+    const { x, y, width, height, scale: fScale } = getCropPosition({
+        ...img.imgInfo,
+        translate: translate,
+        scale: scale,
+        origin: origin
+    }, contentWidth, contentHeight);
+
+    const imgStyle = {
+        transformOrigin: '0% 0%',
+        transform: `translate3d(${Taro.pxTransform(-1 * x)}, ${Taro.pxTransform(-1 * y)}, 0) scale(${fScale})`,
+        width: Taro.pxTransform(width),
+        height: Taro.pxTransform(height)
+    }
+
+    return (
+        <Image onLoad={onLoad} style={imgStyle} className="img" src={img.originPath} />
+    )
+})
 
 const ImgEdit = (props) => {
 
@@ -126,7 +147,7 @@ const ImgEdit = (props) => {
             origin: origin
         }
         cloneList[activeIndex].imgInfo = imgInfo;
-        cloneList[activeIndex].cropImage = computeCropUrl(IMG.originImage, { ...imgInfo, contentWidth: 582, contentHeight: 833 });
+        cloneList[activeIndex].cropImage = computeCropUrl(IMG.originImage, { ...imgInfo, contentWidth: 582, contentHeight: 582 / 0.7 });
         dispatch({
             type: 'confirmOrder/saveUserImageList',
             payload: cloneList
@@ -174,21 +195,6 @@ const ImgEdit = (props) => {
         setScale(IMG.imgInfo.scale);
         setOrigin(IMG.imgInfo.origin);
     }
-
-    const { x, y, width, height, scale: fScale } = getCropPosition({
-        ...IMG.imgInfo,
-        translate: translate,
-        scale: scale,
-        origin: origin
-    }, contentWidth, contentHeight);
-
-    const imgStyle = {
-        transformOrigin: '0% 0%',
-        transform: `translate3d(${Taro.pxTransform(-1 * x)}, ${Taro.pxTransform(-1 * y)}, 0) scale(${fScale})`,
-        width: Taro.pxTransform(width),
-        height: Taro.pxTransform(height),
-        transitionProperty: (isTouch || scale > 3) ? 'none' : 'all'
-    }
     
     const activeLeftIcon = <Image onClick={oprate.bind(this, 'subtraction')} className="oprate-icon" src={leftActiveIcon} />;
     const disabledLeftIcon = <Image className="oprate-icon" src={leftDisabledIcon} />;
@@ -202,7 +208,7 @@ const ImgEdit = (props) => {
                 <View className="content-wrap">
                     <View className="mask"></View>
                     <Canvas canvasId='canvas' disableScroll={true} className="content" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
-                    <Image onLoad={onImgLoad} style={imgStyle} className="img" src={IMG.originPath} />
+                    <Img translate={translate} scale={scale} origin={origin} onLoad={onImgLoad} img={IMG} />
                 </View>
                 <View className="bottom-wrap">
                     <View className="bottom-tip">tips：灰色区域将被裁剪，不在打印范围内</View>
@@ -230,4 +236,4 @@ const ImgEdit = (props) => {
 
 export default connect(({ confirmOrder }) => ({
     confirmOrder
-}))(ImgEdit);;
+}))(ImgEdit);

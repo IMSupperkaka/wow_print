@@ -6,8 +6,19 @@
     border-radius: 16px;
     padding: 38px;
     & > view:first-child {
+        position: relative;
         display: flex;
         align-items: center;
+        width: 100%;
+        .service {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 144px;
+            height: 144px;
+            margin-right: 0;
+        }
         image {
             width: 96px;
             height: 96px;

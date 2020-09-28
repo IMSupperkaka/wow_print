@@ -37,12 +37,21 @@
                 }
             }
             .list-item-header {
-                // height: 106px;
+                position: relative;
                 padding: 24px 21px 24px 12px;
                 border-bottom: 1px dashed #E0E0E0;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+                .expires-time {
+                    position: absolute;
+                    width: 120px;
+                    text-align: center;
+                    right: 24px;
+                    top: 105px;
+                    font-size: 20px;
+                    color: #FF6345;
+                }
                 .list-item-header-left {
                     display: flex;
                     > image {
@@ -66,7 +75,6 @@
                 }
                 .list-item-header-btn {
                     flex-shrink: 0;
-                    margin-right: 21px;
                     width: 120px;
                     height: 48px;
                     background-color: #FF6345;
