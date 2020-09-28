@@ -64,19 +64,23 @@ const ImgEdit = (props) => {
 
     const { dispatch, confirmOrder: { userImageList, activeIndex } } = props;
 
-    const [IMG, setIMG] = useState(userImageList[activeIndex]);
-    const [isTouch, setIsTouch] = useState(false);
-    const [translate, setTranslate] = useState([]);
-    const [scale, setScale] = useState(1);
-    const [origin, setOrigin] = useState([]);
+    const { imgInfo, originPath, originImage } = userImageList[activeIndex];
 
-    useEffect(() => {
-        setIMG(userImageList[activeIndex]);
-    }, [activeIndex])
+    const { translate, scale, origin } = imgInfo;
+
+    // const [IMG, setIMG] = useState(userImageList[activeIndex]);
+    // const [isTouch, setIsTouch] = useState(false);
+    // const [translate, setTranslate] = useState([]);
+    // const [scale, setScale] = useState(1);
+    // const [origin, setOrigin] = useState([]);
+
+    // useEffect(() => {
+    //     setIMG(userImageList[activeIndex]);
+    // }, [activeIndex])
 
     const getOrigin = (p1, p2) => {
         const { x, y, width, height, scale: fScale } = getCropPosition({
-            ...IMG.imgInfo,
+            ...imgInfo,
             translate: translate,
             scale: scale,
             origin: origin
@@ -86,12 +90,15 @@ const ImgEdit = (props) => {
 
     const onTouchStart = (e) => {
         lastTouch = e.touches;
-        setIsTouch(true);
+        // setIsTouch(true);
         store.originScale = scale;
         store.originTranslate = translate;
         if (e.touches.length >= 2) {
             const neworigin = getOrigin(e.touches[0], e.touches[1]);
-            setOrigin([neworigin[0], neworigin[1]]);
+            updateImg({
+                origin: [neworigin[0], neworigin[1]]
+            })
+            // setOrigin([neworigin[0], neworigin[1]]);
         }
     }
 
@@ -99,11 +106,17 @@ const ImgEdit = (props) => {
         if (e.touches.length >= 2) {
             const zoom = getDistance(e.touches[0], e.touches[1]) / getDistance(lastTouch[0], lastTouch[1]);
             const newScale = store.originScale * zoom;
-            setScale(newScale);
+            updateImg({
+                scale: newScale
+            })
+            // setScale(newScale);
         } else {
             const dx = e.touches[0].x - lastTouch[0].x;
             const dy = e.touches[0].y - lastTouch[0].y;
-            setTranslate([store.originTranslate[0] + dx, store.originTranslate[1] + dy]);
+            updateImg({
+                translate: [store.originTranslate[0] + dx, store.originTranslate[1] + dy]
+            })
+            // setTranslate([store.originTranslate[0] + dx, store.originTranslate[1] + dy]);
         }
     }
 
@@ -137,22 +150,27 @@ const ImgEdit = (props) => {
         if (dy < 0 && dy < limitBottom) {
             resety = limitBottom;
         }
-        setIsTouch(false);
-        setScale(resetScale);
-        setTranslate([resetx, resety]);
-        const cloneList = [...userImageList];
-        const imgInfo = {
-            ...cloneList[activeIndex].imgInfo,
+        updateImg({
             translate: [resetx, resety],
             scale: resetScale,
             origin: origin
-        }
-        cloneList[activeIndex].imgInfo = imgInfo;
-        cloneList[activeIndex].cropImage = computeCropUrl(IMG.originImage, { ...imgInfo, contentWidth: 582, contentHeight: 582 / 0.7 });
-        dispatch({
-            type: 'confirmOrder/saveUserImageList',
-            payload: cloneList
         })
+        // setIsTouch(false);
+        // setScale(resetScale);
+        // setTranslate([resetx, resety]);
+        // const cloneList = [...userImageList];
+        // const imgInfo = {
+        //     ...cloneList[activeIndex].imgInfo,
+        //     translate: [resetx, resety],
+        //     scale: resetScale,
+        //     origin: origin
+        // }
+        // cloneList[activeIndex].imgInfo = imgInfo;
+        // cloneList[activeIndex].cropImage = computeCropUrl(IMG.originImage, { ...imgInfo, contentWidth: 582, contentHeight: 582 / 0.7 });
+        // dispatch({
+        //     type: 'confirmOrder/saveUserImageList',
+        //     payload: cloneList
+        // })
     }
 
     const confirm = () => {
@@ -192,9 +210,25 @@ const ImgEdit = (props) => {
     }
 
     const onImgLoad = () => {
-        setTranslate(IMG.imgInfo.translate);
-        setScale(IMG.imgInfo.scale);
-        setOrigin(IMG.imgInfo.origin);
+        // setTranslate(IMG.imgInfo.translate);
+        // setScale(IMG.imgInfo.scale);
+        // setOrigin(IMG.imgInfo.origin);
+    }
+
+    const updateImg = (params) => {
+        const cloneList = [...userImageList];
+        const item = cloneList[activeIndex];
+        cloneList[activeIndex] = {
+            ...item,
+            imgInfo: {
+                ...item.imgInfo,
+                ...params
+            }
+        }
+        dispatch({
+            type: 'confirmOrder/saveUserImageList',
+            payload: cloneList
+        })
     }
     
     const activeLeftIcon = <Image onClick={oprate.bind(this, 'subtraction')} className="oprate-icon" src={leftActiveIcon} />;
@@ -209,7 +243,7 @@ const ImgEdit = (props) => {
                 <View className="content-wrap">
                     <View className="mask"></View>
                     <Canvas canvasId='canvas' disableScroll={true} className="content" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
-                    <Img translate={translate} scale={scale} origin={origin} onLoad={onImgLoad} img={IMG} />
+                    <Img translate={translate} scale={scale} origin={origin} onLoad={onImgLoad} img={{ imgInfo: imgInfo, originPath: originPath }} />
                 </View>
                 <View className="bottom-wrap">
                     <View className="bottom-tip">tips：灰色区域将被裁剪，不在打印范围内</View>
