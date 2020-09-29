@@ -38,8 +38,9 @@ class App extends Component {
                 }
             })
         })
-        updateManager.onUpdateFailed(function () {
+        updateManager.onUpdateFailed(function (err) {
             // 新的版本下载失败
+            console.log(err);
         })
     }
 
