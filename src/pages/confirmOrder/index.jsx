@@ -140,7 +140,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                             <Text>运费</Text>
                             {
                                 freeShipMoney &&
-                                <Text className="primary-color">（满{ freeShipMoney }包邮）</Text>
+                                <Text>（满{ freeShipMoney }包邮）</Text>
                             }
                         </View>
                         <Text>￥{shipMoney}</Text>
@@ -159,6 +159,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                                 <Text>合计</Text>
                                 <Text>￥</Text>
                                 <Text>{totalMoney}</Text>
+                                <Text>含运费{shipMoney}元</Text>
                             </View>
                             <View onClick={submitOrder}>提交订单</View>
                         </View>

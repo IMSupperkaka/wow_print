@@ -113,20 +113,30 @@
     width: 100%;
     background-color: #fff;
     & > view:first-child {
+        display: flex;
       & > text:first-child {
         font-weight: bold;
         font-size: 28px;
         margin-right: 4px;
+        align-self: baseline;
       }
       & > text:nth-child(2) {
         font-size: 24px;
         color: #FF6345;
         font-weight: bold;
+        align-self: baseline;
       }
-      & > text:last-child {
+      & > text:nth-child(3) {
         font-size: 30px;
         color: #FF6345;
         font-weight: bold;
+        align-self: baseline;
+      }
+      & > text:nth-child(4) {
+        font-size: 22px;
+        color: #999;
+        margin-left: 15px;
+        align-self: center;
       }
     }
     & > view:last-child {
