@@ -9,6 +9,9 @@ import './custom-variables.scss'
 class App extends Component {
 
     onLaunch(props) {
+        if (Taro.getEnv() == 'WEB') {
+            return;
+        }
         const { dispatch } = app;
         dispatch({
             type: 'user/login',

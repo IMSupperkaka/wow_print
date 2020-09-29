@@ -22,9 +22,9 @@ const getImgStyle = (info) => {
     const { x, y, width, height, scale } = getCropPosition(info, contentWidth, contentHeight);
     return {
         transformOrigin: '0% 0%',
-        transform: `translate3d(${Taro.pxTransform(-1 * x)}, ${Taro.pxTransform(-1 * y)}, 0) scale(${scale})`,
-        width: Taro.pxTransform(width),
-        height: Taro.pxTransform(height)
+        transform: `translate3d(${Taro.pxTransform(-1 * x, 750)}, ${Taro.pxTransform(-1 * y, 750)}, 0) scale(${scale})`,
+        width: Taro.pxTransform(width, 750),
+        height: Taro.pxTransform(height, 750)
     }
 }
 
@@ -175,7 +175,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
             <SafeArea>
                 {({ bottom }) => {
                     return (
-                        <View style={{ paddingBottom: Taro.pxTransform(bottom + 20) }} className="submit-wrap">
+                        <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className="submit-wrap">
                             {
                                 coupon.couponName &&
                                 <View className="freenums-tag">还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
