@@ -56,6 +56,12 @@ const Index = ({ user }) => {
         })
     }
 
+    const goService = () => {
+        Taro.navigateTo({
+            url: '/pages/service/index'
+        })
+    }
+
     return (
         <View className='index'>
             <View className="header">
@@ -100,7 +106,7 @@ const Index = ({ user }) => {
                             <View className="order-icons-tip">{ state.waitReceiptNums }</View>
                         }
                     </View>
-                    <View onClick={() => { goOrder(5) }}>
+                    <View onClick={goService}>
                         <Image src={refundPng}/>
                         <Text>退款/客服</Text>
                     </View>

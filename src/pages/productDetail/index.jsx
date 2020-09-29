@@ -9,7 +9,7 @@ import { fix } from '../../utils/utils'
 import Modal from '../../components/Modal'
 import SafeArea from '../../components/SafeArea'
 import iconCoupon from '../../../images/icon_coupon@2x.png'
-import couponArrow from '../../../images/coin_Jump／3@2x.png'
+import couponArrow from '../../../images/coin_jump@3x.png'
 import { detail as getDetail } from '../../services/product'
 
 const ProductDetail = ({ dispatch, confirmOrder, user }) => {
