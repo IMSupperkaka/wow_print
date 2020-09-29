@@ -121,8 +121,10 @@ export default (props) => {
                     })
                 },
                 fail: function (res) {
-                    Taro.navigateTo({
-                        url: `/pages/result/index?type=pay_fail&id=${order.id}`
+                    Taro.showToast({
+                        title:'取消支付',
+                        icon:'none',
+                        duration:1000
                     })
                 }
             })

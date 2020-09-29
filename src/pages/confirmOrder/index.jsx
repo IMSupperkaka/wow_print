@@ -94,7 +94,8 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     const picNum = userImageList.reduce((count, v) => { return count + v.printNums }, 0);
     const payNum = picNum - (coupon.couponFreeNums || 0);
     const productMoney = fix(productDetail.sellingPrice * (payNum <= 0 ? 0 : payNum), 2);
-    if (productMoney >= freeShipMoney) {
+
+    if (productMoney - freeShipMoney >= 0) {
         shipMoney = 0;
     }
     const totalMoney = (Number(shipMoney) + Number(productMoney)).toFixed(2);

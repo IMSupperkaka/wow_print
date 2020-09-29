@@ -36,7 +36,7 @@ export default () => {
                     }).then(() => {
                         Taro.eventCenter.trigger('updateOrderStatus', query.id);
                         Taro.navigateTo({
-                            url: `/pages/result/index?type=cancel`
+                            url: `/pages/result/index?type=cancel&id=${query.id}`
                         })
                     })
                 }
@@ -61,8 +61,10 @@ export default () => {
                     })
                 },
                 fail: function (res) {
-                    Taro.navigateTo({
-                        url: `/pages/result/index?type=pay_fail&id=${query.id}`
+                    Taro.showToast({
+                        title:'取消支付',
+                        icon:'none',
+                        duration:1000
                     })
                 }
             })
