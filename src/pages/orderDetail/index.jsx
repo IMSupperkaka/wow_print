@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { View, Image, Button, Text } from '@tarojs/components'
 
 import './index.less'
-import { detail, repay, cancel } from '../../services/order'
+import { detail, repay, cancel, receipt } from '../../services/order'
 import { orderStatus } from '../../utils/map/order'
 import address from '../../../images/icon_address@2x.png'
 
@@ -87,6 +87,34 @@ export default () => {
         })
     }
 
+    const handleReceived = () => {
+        Taro.showModal({
+            title: '确认收货',
+            content: '确认已收到商品？非质量问题无法退货退款哦～',
+            confirmText: '确认收货',
+            cancelText: '取消',
+            confirmColor: '#FF6345',
+            success: (res) => {
+                if (res.confirm) {
+                    receipt({
+                        loanId: query.id
+                    }).then(() => {
+                        Taro.eventCenter.trigger('updateOrderStatus', query.id);
+                        Taro.navigateTo({
+                            url: `/pages/result/index?type=received&id=${query.id}`
+                        })
+                    })
+                }
+            }
+        })
+    }
+
+    const handleGoLog = () => {
+      Taro.navigateTo({
+          url: `/pages/logisticsDetails/index?id=${query.id}`
+      })
+    }
+
     const greyHeader = [4, 5].includes(orderDetail.status);
 
     const goodsInfo = orderDetail?.goodsInfo?.[0] || {};
@@ -161,7 +189,11 @@ export default () => {
                     }
                     {
                         orderDetail.status == 3 &&
-                        <Button className="radius-btn primary-outline-btn">确认收货</Button>
+                        <Button onClick={handleGoLog} className="radius-btn primary-outline-btn">查看物流</Button>
+                    }
+                    {
+                        orderDetail.status == 3 &&
+                        <Button onClick={handleReceived} className="radius-btn primary-outline-btn">确认收货</Button>
                     }
                     {
                         orderDetail.status == 1 &&

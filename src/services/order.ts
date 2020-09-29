@@ -47,3 +47,11 @@ export const cancel = (data) => {
         data
     })
 }
+
+export const logistics = (data) => {
+  return TaroRequest.request({
+      url: `/loan/logistics`,
+      method: 'GET',
+      data
+  })
+}
