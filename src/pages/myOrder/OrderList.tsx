@@ -143,6 +143,13 @@ export default (props) => {
         })
     }
 
+    const handleGoLog = (order, e) => {
+        e.stopPropagation();
+        Taro.navigateTo({
+            url: `/pages/logisticsDetails/index?id=${order.id}`
+        })
+    }
+
     const updateOrderStatus = (id) => {
         detail({
             loanId: id
@@ -199,6 +206,10 @@ export default (props) => {
                                         {
                                             item.status == 2 &&
                                             <Button onClick={handleGoService} className="order-btn outline-btn">联系客服</Button>
+                                        }
+                                        {
+                                            [3, 9].includes(item.status) &&
+                                            <Button onClick={handleGoLog.bind(this, item)} className="order-btn outline-btn">查看物流</Button>
                                         }
                                         {
                                             [2, 4, 5, 9].includes(item.status) &&
