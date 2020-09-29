@@ -30,19 +30,29 @@ class TaroRequest {
 
     uploadFile(params) {
         return new Promise((resolve) => {
-            const uploadTask = Taro.uploadFile({
-                url: this.baseUrl + params.url,
-                filePath: params.filePath,
-                name: params.name,
-                header: {
-                    token: Taro.getStorageSync('token')
-                },
-                formData: params.formData,
-                success: function (res){
-                    resolve(JSON.parse(res.data));
-                }
+            this.request({
+                url: `/upload/getUploadToken`,
+                method: 'GET'
+            }).then(({ data }) => {
+                const uploadTask = Taro.uploadFile({
+                    url: 'https://up.qiniup.com',
+                    filePath: params.filePath,
+                    name: params.name,
+                    header: {
+                        "Content-Type": "multipart/form-data"
+                    },
+                    formData: {
+                        token: data.data
+                    },
+                    success: function (res){
+                        const response = JSON.parse(res.data);
+                        resolve({
+                            data: `https://cdn.91jiekuan.com/${response.key}`
+                        });
+                    }
+                })
+                uploadTask.progress(params.progress);
             })
-            uploadTask.progress(params.progress);
         })
     }
 

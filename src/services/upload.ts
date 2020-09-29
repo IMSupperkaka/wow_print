@@ -2,8 +2,14 @@ import TaroRequest from '../utils/request'
 
 export const uploadFile = (data) => {
     return TaroRequest.uploadFile({
-        url: `/upload/file`,
         name: 'file',
         ...data
+    })
+}
+
+export const getUploadToken = () => {
+    return TaroRequest.request({
+        url: `/upload/getUploadToken`,
+        method: 'GET'
     })
 }
