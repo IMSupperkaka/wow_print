@@ -44,12 +44,6 @@ export const computeCropUrl = (url, imgInfo) => {
     const aspectRatio = 0.7;
     let contentWidth = imgInfo.width;
     let contentHeight = contentWidth / aspectRatio;
-    const originLimitPixle = 200000000;
-    const resultLimitPixle = 24999999;
-    if (imgInfo.width * imgInfo.height > resultLimitPixle) {
-        contentWidth = Math.floor(resultLimitPixle / 2.5);
-        contentHeight = contentWidth / aspectRatio;
-    }
     const { scale, x, y } = getCropPosition(imgInfo, contentWidth, contentHeight);
     const cropUrl = `${url}?imageMogr2/auto-orient/crop/!${Math.round(contentWidth / scale)}x${Math.round(contentHeight / scale)}a${Math.round(x / scale)}a${Math.round(y / scale)}`;
     return cropUrl;
