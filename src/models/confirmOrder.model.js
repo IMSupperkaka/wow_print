@@ -1,5 +1,6 @@
 import Taro from '@tarojs/taro'
 
+import math from '../utils/math'
 import { detail } from '../services/address'
 import { computeCropUrl } from '../utils/utils'
 
@@ -46,7 +47,10 @@ export default {
                             ...imgres,
                             origin: [0.5, 0.5],
                             scale: 1,
-                            translate: [0, 0]
+                            translate: [0, 0],
+                            translateMatrix: math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+                            scaleMatrix: math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+                            rotateMatrix: math.matrix([[Math.cos(0), Math.sin(0), 0], [-Math.sin(0), Math.cos(0), 0], [0, 0, 1]])
                         }
                         resolve({
                             originPath: filePath,

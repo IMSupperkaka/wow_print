@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import { Provider, connect } from 'react-redux'
 import Taro from '@tarojs/taro'
+import { create, all } from 'mathjs'
 
 import { store, app } from './dva'
 import './app.less'
 import './custom-variables.scss'
+
+const math = create(all, {})
 
 class App extends Component {
 
@@ -48,6 +51,14 @@ class App extends Component {
     }
 
     render() {
+        // [[a, c, e], [b, d, f], [0, 0, 1]]
+        // [[ax + cy + e], [bx + dy + f], [0, 0, 1]]
+        const translateMatrix = math.matrix([[1, 0, 30], [0, 1, 30], [0, 0, 1]]);
+        const scaleMatrix = math.matrix([[1.2, 0, 0], [0, 1.2, 0], [0, 0, 1]]);
+        const rotateMatrix = math.matrix([[Math.cos(Math.PI / 2), -Math.sin(Math.PI / 2), 0], [Math.sin(Math.PI / 2), -Math.cos(Math.PI / 2), 0], [0, 0, 1]]);
+
+        console.log(math.multiply(rotateMatrix, translateMatrix, scaleMatrix));
+
         return (
             <Provider store={store}>
                 {this.props.children}

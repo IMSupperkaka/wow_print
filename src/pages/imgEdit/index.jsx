@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { View, Image, Canvas, Text, Swiper, SwiperItem } from '@tarojs/components';
 
 import './index.less';
+import math from '../../utils/math'
 import { computeCropUrl, getCropPosition } from '../../utils/utils'
 import deleteIcon from '../../../images/icon_delete／2@2x.png'
 import leftActiveIcon from '../../../images/icon_active_left@2x.png'
@@ -47,12 +48,20 @@ const Img = React.memo(({ translate, scale, origin, img, onLoad, animate }) => {
         origin: origin
     }, contentWidth, contentHeight, true);
 
+    // const imgStyle = {
+    //     transformOrigin: '0% 0%',
+    //     transform: `translate3d(${Taro.pxTransform(-1 * x)}, ${Taro.pxTransform(-1 * y)}, 0) scale(${fScale})`,
+    //     width: Taro.pxTransform(width),
+    //     height: Taro.pxTransform(height),
+    //     transitionProperty: animate ? 'transform' : 'none'
+    // }
+
+    const { translateMatrix, scaleMatrix, rotateMatrix } = img.imgInfo;
+    const matrix = math.multiply(translateMatrix, scaleMatrix, rotateMatrix);
+    console.log(matrix);
     const imgStyle = {
-        transformOrigin: '0% 0%',
-        transform: `translate3d(${Taro.pxTransform(-1 * x)}, ${Taro.pxTransform(-1 * y)}, 0) scale(${fScale})`,
-        width: Taro.pxTransform(width),
-        height: Taro.pxTransform(height),
-        transitionProperty: animate ? 'transform' : 'none'
+      transform: `matrix(${matrix._data[0][0]}, ${matrix._data[1][0]}, ${matrix._data[0][1]}, ${matrix._data[1][1]}, ${matrix._data[0][2]}, ${matrix._data[1][2]})`,
+      transitionProperty: animate ? 'transform' : 'none'
     }
 
     return (
