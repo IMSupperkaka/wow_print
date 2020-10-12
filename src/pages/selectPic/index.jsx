@@ -4,10 +4,11 @@ import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
 
 import './index.less'
-import { computeCropUrl, getCropPosition } from '../../utils/utils'
+import math from '../../utils/math'
+import { initImg } from '../../utils/utils'
+import { EDIT_WIDTH, SELECT_WIDTH } from '../../utils/picContent'
 import { uploadFile } from '../../services/upload'
 import { list } from '../../services/address'
-import { sizeMap } from '../../utils/utils'
 import Dialog from '../../components/Dialog'
 import SafeArea from '../../components/SafeArea'
 import addPic from '../../../images/cion_add_to@2x.png'
@@ -16,28 +17,29 @@ import lessSelectIcon from '../../../images/icon_Less_selected@2x.png'
 import lessDisabledIcon from '../../../images/icon_Less_disabled@2x.png'
 import plusSelectIcon from '../../../images/cion_plus_selected@2x.png'
 
-const getImgStyle = (info) => {
-    const contentWidth = 300;
-    const contentHeight = contentWidth / 0.7;
-    const { x, y, width, height, scale } = getCropPosition(info, contentWidth, contentHeight);
-    return {
-        transformOrigin: '0% 0%',
-        transform: `translate3d(${Taro.pxTransform(-1 * x, 750)}, ${Taro.pxTransform(-1 * y, 750)}, 0) scale(${scale})`,
-        width: Taro.pxTransform(width, 750),
-        height: Taro.pxTransform(height, 750)
-    }
-}
-
 const SelectPic = ({ dispatch, confirmOrder }) => {
 
-    const { coupon, userImageList } = confirmOrder;
+    const { coupon, userImageList, proportion } = confirmOrder;
 
     const [progress, setProgress] = useState({
         visible: false,
         totalNum: 0,
         completeNum: 0
     })
-    
+
+    const getImgStyle = (info) => {
+        const { centerMatrix, rotateMatrix, translate, scale, fWidth, fHeight } = initImg(info, { width: SELECT_WIDTH, height: SELECT_WIDTH / proportion })
+        const translateMatrix = math.matrix([[1, 0, translate[0] * (SELECT_WIDTH / EDIT_WIDTH)], [0, 1, translate[1] * (SELECT_WIDTH / EDIT_WIDTH)], [0, 0, 1]]);
+        const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
+        const matrix = math.multiply(scaleMatrix, centerMatrix, translateMatrix, rotateMatrix);
+        return {
+            transformOrigin: '0% 0%',
+            transform: `matrix(${matrix._data[0][0]}, ${matrix._data[1][0]}, ${matrix._data[0][1]}, ${matrix._data[1][1]}, ${matrix._data[0][2]}, ${matrix._data[1][2]})`,
+            width: Taro.pxTransform(fWidth),
+            height: Taro.pxTransform(fHeight)
+        }
+    }
+
     const handleChoose = () => {
         Taro.chooseImage({
             sizeType: ['original'],
@@ -141,6 +143,9 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
 
     const restFreeNums = (coupon.couponFreeNums || 0) - userImageList.reduce((count, v) => { return count + v.printNums }, 0);
 
+    const contentStyle = {
+      height: `${Taro.pxTransform(SELECT_WIDTH / proportion)}`
+    }
     return (
         <View className="index">
             <View className="header">显示区域即为打印区域，如需调整请点击图片</View>
@@ -150,7 +155,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                         return (
                             <View className="item">
                                 <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className="delete-icon" />
-                                <View className="item-body" onClick={handleGoEdit.bind(this, index)}>
+                                <View className="item-body" onClick={handleGoEdit.bind(this, index)} style={contentStyle}>
                                     <Image style={getImgStyle(v.imgInfo)} className="item-img" mode="widthFix" src={v.originPath} />
                                 </View>
                                 <View className="item-footer">
@@ -165,7 +170,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                     })
                 }
                 <View className="item choose-item" onClick={handleChoose}>
-                    <View className="item-body">
+                    <View className="item-body" style={contentStyle}>
                         <Image src={addPic} />
                         添加照片
                     </View>

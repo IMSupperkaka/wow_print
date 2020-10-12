@@ -80,8 +80,8 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
         Taro.getSetting({
             success: (res) => {
                 dispatch({
-                    type: 'confirmOrder/saveGoodId',
-                    payload: query.id
+                    type: 'confirmOrder/saveGoodInfo',
+                    payload: detail
                 })
                 if (!res.authSetting['scope.userInfo']) {
                     return Taro.navigateTo({

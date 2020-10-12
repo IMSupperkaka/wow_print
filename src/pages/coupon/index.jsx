@@ -13,7 +13,6 @@ import couponEmptyIcon from '../../../images/bg_no_coupons@2x.png';
 
 const ExpiresText = ({ endTime, ...resetProps }) => {
     const expreisTime = day(endTime).diff(day()) / 60 / 60 / 1000;
-    console.log(expreisTime);
     let text;
     if (expreisTime > 72) {
         return null;
@@ -112,12 +111,12 @@ export default () => {
                             records.map((item, index) => {
                                 return (
                                     <View className='list-item' key={index}>
-                                        { 
-                                            item.new && 
+                                        {
+                                            item.new &&
                                             <View className="top">
                                                 <View className="triangle"></View>
                                                 <Text className="new">新</Text>
-                                            </View> 
+                                            </View>
                                         }
                                         <View className='list-item-header'>
                                             <View className="list-item-header-left">

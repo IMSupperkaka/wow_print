@@ -1,4 +1,5 @@
 import Taro from '@tarojs/taro';
+import math from './math';
 
 export const getImgwh = ({ width, height, contentWidth, contentHeight }, scale = 1) => {
     let imgWidth;
@@ -41,12 +42,60 @@ export const getCropPosition = ({ width, height, scale, origin, translate: [dx, 
 }
 
 export const computeCropUrl = (url, imgInfo) => {
-    const aspectRatio = 0.7;
-    let contentWidth = imgInfo.width;
-    let contentHeight = contentWidth / aspectRatio;
-    const { scale, x, y } = getCropPosition(imgInfo, contentWidth, contentHeight);
-    const cropUrl = `${url}?imageMogr2/auto-orient/crop/!${Math.round(contentWidth / scale)}x${Math.round(contentHeight / scale)}a${Math.round(x / scale)}a${Math.round(y / scale)}`;
+
+    const radio = 750 / Taro.getSystemInfoSync().screenWidth;
+    const { fWidth, width, contentWidth, contentHeight, scale, translate, centerMatrix, rotateMatrix } = imgInfo;
+    const centerOffsetx = centerMatrix._data[0][2];
+    const centerOffsety = centerMatrix._data[1][2];
+    const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
+    const translateMatrix = math.matrix([[1, 0, translate[0] * radio], [0, 1, translate[1] * radio], [0, 0, 1]]);
+    const radioCenterMatrix = math.matrix([[1, 0, centerOffsetx * radio], [0, 1, centerOffsety * radio], [0, 0, 1]])
+    const leftTop = math.multiply(scaleMatrix, radioCenterMatrix, translateMatrix, rotateMatrix, math.matrix([0, 0, 1]));
+    const as = fWidth / width * scale;
+    const cropUrl = `${url}?imageMogr2/auto-orient/crop/!${Math.round(contentWidth / as)}x${Math.round(contentHeight / as)}a${-Math.round(leftTop._data[0] / as)}a${-Math.round(leftTop._data[1] / as)}`;
     return cropUrl;
+}
+
+export const initImg = (imginfo, content) => {
+  const cloneImginfo = {...imginfo};
+  const aspectRadio = imginfo.width / imginfo.height;
+  const contentRadio = content.width / content.height;
+  // if (aspectRadio > 1) {
+  //     const deg = 1.5 * Math.PI;
+  //     cloneImginfo.rotateMatrix = math.matrix([[Math.cos(deg), Math.sin(deg), 0], [-Math.sin(deg), Math.cos(deg), 0], [0, 0, 1]]);
+  //     if (1 / aspectRadio > contentRadio) {
+  //         cloneImginfo.fWidth = content.height;
+  //         cloneImginfo.fHeight = cloneImginfo.fWidth / aspectRadio;
+  //     } else {
+  //         cloneImginfo.fHeight = content.width;
+  //         cloneImginfo.fWidth = cloneImginfo.fHeight * aspectRadio;
+  //     }
+  // } else {
+  //     if (aspectRadio > contentRadio) {
+  //         cloneImginfo.fHeight = content.height;
+  //         cloneImginfo.fWidth = cloneImginfo.fHeight * aspectRadio;
+  //     } else {
+  //         cloneImginfo.fWidth = content.width;
+  //         cloneImginfo.fHeight = cloneImginfo.fWidth / aspectRadio;
+  //     }
+  //     cloneImginfo.rotateMatrix = math.matrix([[Math.cos(0), Math.sin(0), 0], [-Math.sin(0), Math.cos(0), 0], [0, 0, 1]]);
+  // }
+  if (aspectRadio > contentRadio) {
+      cloneImginfo.fHeight = content.height;
+      cloneImginfo.fWidth = cloneImginfo.fHeight * aspectRadio;
+  } else {
+      cloneImginfo.fWidth = content.width;
+      cloneImginfo.fHeight = cloneImginfo.fWidth / aspectRadio;
+  }
+  cloneImginfo.rotateMatrix = math.matrix([[Math.cos(0), Math.sin(0), 0], [-Math.sin(0), Math.cos(0), 0], [0, 0, 1]]);
+  cloneImginfo.translateMatrix = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
+  cloneImginfo.scaleMatrix = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
+  const centerPoint = [content.width / 2, content.height / 2, 1];
+  const afterCenterPoint = [cloneImginfo.fWidth / 2, cloneImginfo.fHeight / 2, 1];
+  const centerOffset = [centerPoint[0] - afterCenterPoint[0], centerPoint[1] - afterCenterPoint[1]];
+  const radio = 750 / Taro.getSystemInfoSync().screenWidth;
+  cloneImginfo.centerMatrix = math.matrix([[1, 0, centerOffset[0] / radio], [0, 1, centerOffset[1] / radio], [0, 0, 1]]);
+  return cloneImginfo;
 }
 
 export const fix = (num, prefix = 0) => {

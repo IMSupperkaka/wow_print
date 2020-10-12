@@ -6,6 +6,7 @@ import { View, Image, Canvas, Text, Swiper, SwiperItem } from '@tarojs/component
 import './index.less';
 import math from '../../utils/math'
 import { computeCropUrl, getCropPosition } from '../../utils/utils'
+import { EDIT_WIDTH } from '../../utils/picContent'
 import deleteIcon from '../../../images/icon_delete／2@2x.png'
 import leftActiveIcon from '../../../images/icon_active_left@2x.png'
 import leftDisabledIcon from '../../../images/icon_disabled_left@2x.png'
@@ -16,37 +17,20 @@ let lastTouch = null;
 let store = {
     originScale: 1
 };
-const contentWidth = 582;
-const contentHeight = 582 / 0.7;
-const radio = 750 / Taro.getSystemInfoSync().screenWidth;
 
-const getImgwh = ({ width, height }, scale = 1) => {
-    let imgWidth;
-    let imgHeight;
-    if (width / height <= contentWidth / contentHeight) {
-        imgWidth = contentWidth;
-        imgHeight = (height / width) * imgWidth;
-    } else {
-        imgHeight = contentHeight;
-        imgWidth = (width / height) * imgHeight;
-    }
-    return {
-        width: imgWidth * scale,
-        height: imgHeight * scale
-    }
-}
+const radio = 750 / Taro.getSystemInfoSync().screenWidth;
 
 const getDistance = (p1, p2) => {
     return Math.sqrt(Math.pow(p2.x - p1.x, 2), Math.pow(p2.y - p1.y), 2);
 }
 
-const Img = React.memo(({ path, imgInfo, onLoad, animate }) => {
+const Img = ({ path, imgInfo, onLoad, animate }) => {
 
     const { centerMatrix, rotateMatrix, translate, scale } = imgInfo;
     const translateMatrix = math.matrix([[1, 0, translate[0]], [0, 1, translate[1]], [0, 0, 1]]);
     const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
     const matrix = math.multiply(scaleMatrix, centerMatrix, translateMatrix, rotateMatrix);
-    
+
     const imgStyle = {
         transform: `matrix(${matrix._data[0][0]}, ${matrix._data[1][0]}, ${matrix._data[0][1]}, ${matrix._data[1][1]}, ${matrix._data[0][2]}, ${matrix._data[1][2]})`,
         transitionProperty: animate ? 'transform' : 'none',
@@ -57,12 +41,13 @@ const Img = React.memo(({ path, imgInfo, onLoad, animate }) => {
     return (
         <Image onLoad={onLoad} style={imgStyle} className="img" src={path} />
     )
-})
+}
 
 const ImgEdit = (props) => {
 
-    const { dispatch, confirmOrder: { userImageList, activeIndex } } = props;
-
+    const { dispatch, confirmOrder: { proportion, userImageList, activeIndex } } = props;
+    const contentWidth = EDIT_WIDTH;
+    const contentHeight = EDIT_WIDTH / proportion;
     const [IMG, setIMG] = useState(userImageList[activeIndex]);
     const [isTouch, setIsTouch] = useState(false);
     const [translate, setTranslate] = useState([0, 0]);
@@ -70,10 +55,11 @@ const ImgEdit = (props) => {
     const [origin, setOrigin] = useState([]);
 
     useEffect(() => {
-        setIMG(userImageList[activeIndex]);
-        setTranslate(IMG.imgInfo.translate);
-        setScale(IMG.imgInfo.scale);
-        setOrigin(IMG.imgInfo.origin);
+        const current = userImageList[activeIndex];
+        setIMG(current);
+        setTranslate(current.imgInfo.translate);
+        setScale(current.imgInfo.scale);
+        setOrigin(current.imgInfo.origin);
     }, [activeIndex])
 
     const getOrigin = (p1, p2) => {
@@ -130,8 +116,8 @@ const ImgEdit = (props) => {
         const scaleMatrix = math.matrix([[resetScale, 0, 0], [0, resetScale, 0], [0, 0, 1]]);
         const radioCenterMatrix = math.matrix([[1, 0, centerOffsetx * radio], [0, 1, centerOffsety * radio], [0, 0, 1]])
         const translateMatrix = math.matrix([[1, 0, translate[0] * radio], [0, 1, translate[1] * radio], [0, 0, 1]]);
-        const leftTop = math.multiply(radioCenterMatrix, translateMatrix, rotateMatrix, scaleMatrix, math.matrix([0, 0, 1]));
-        const rightBottom = math.multiply(radioCenterMatrix, translateMatrix, rotateMatrix, scaleMatrix, math.matrix([fWidth, fHeight, 1]));
+        const leftTop = math.multiply(scaleMatrix, radioCenterMatrix, translateMatrix, rotateMatrix, math.matrix([0, 0, 1]));
+        const rightBottom = math.multiply(scaleMatrix, radioCenterMatrix, translateMatrix, rotateMatrix, math.matrix([fWidth, fHeight, 1]));
 
         if (leftTop._data[0] > 0) { // 左侧有空隙
             resetx = -centerOffsetx;
@@ -140,10 +126,10 @@ const ImgEdit = (props) => {
             resety = -centerOffsety;
         }
         if (rightBottom._data[0] < contentWidth) { // 右侧有空隙
-            resetx = centerOffsetx;
+            resetx = (contentWidth / resetScale - fWidth - radio * centerOffsetx) / radio;
         }
         if (rightBottom._data[1] < contentHeight) { // 下侧有空隙
-            resety = centerOffsety;
+            resety = (contentHeight / resetScale - fHeight - radio * centerOffsety) / radio;
         }
         setIsTouch(false);
         setScale(resetScale);
@@ -156,7 +142,8 @@ const ImgEdit = (props) => {
             origin: origin
         }
         cloneList[activeIndex].imgInfo = imgInfo;
-        cloneList[activeIndex].cropImage = computeCropUrl(IMG.originImage, { ...imgInfo, contentWidth: 582, contentHeight: 582 / 0.7 });
+        cloneList[activeIndex].cropImage = computeCropUrl(IMG.originImage, { ...imgInfo, contentWidth: EDIT_WIDTH, contentHeight: EDIT_WIDTH / proportion });
+        console.log(cloneList)
         dispatch({
             type: 'confirmOrder/saveUserImageList',
             payload: cloneList
@@ -210,13 +197,21 @@ const ImgEdit = (props) => {
         scale
     }
 
+    const maskStyle = {
+      borderWidth: `${Taro.pxTransform(102)} ${Taro.pxTransform(84)} calc(100vh - ${Taro.pxTransform(102)} - ${Taro.pxTransform(EDIT_WIDTH / proportion)}) ${Taro.pxTransform(84)}`
+    }
+
+    const contentStyle = {
+      height: `${Taro.pxTransform(EDIT_WIDTH / proportion)}`
+    }
+
     return (
         <View>
             <View className="edit-content">
                 <View className="top-tip"># 单指拖动、双指缩放可调整打印范围 #</View>
                 <View className="content-wrap">
-                    <View className="mask"></View>
-                    <Canvas canvasId='canvas' disableScroll={true} className="content" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
+                    <View className="mask" style={maskStyle}></View>
+                    <Canvas canvasId='canvas' style={contentStyle} disableScroll={true} className="content" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
                     <Img animate={!isTouch} path={IMG.originPath} imgInfo={imgInfo} />
                 </View>
                 <View className="bottom-wrap">
