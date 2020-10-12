@@ -18,6 +18,7 @@ let store = {
 };
 const contentWidth = 582;
 const contentHeight = 582 / 0.7;
+const radio = 750 / Taro.getSystemInfoSync().screenWidth;
 
 const getImgwh = ({ width, height }, scale = 1) => {
     let imgWidth;
@@ -39,33 +40,22 @@ const getDistance = (p1, p2) => {
     return Math.sqrt(Math.pow(p2.x - p1.x, 2), Math.pow(p2.y - p1.y), 2);
 }
 
-const Img = React.memo(({ translate, scale, origin, img, onLoad, animate }) => {
+const Img = React.memo(({ path, imgInfo, onLoad, animate }) => {
 
-    const { x, y, width, height, scale: fScale } = getCropPosition({
-        ...img.imgInfo,
-        translate: translate,
-        scale: scale,
-        origin: origin
-    }, contentWidth, contentHeight, true);
-
-    // const imgStyle = {
-    //     transformOrigin: '0% 0%',
-    //     transform: `translate3d(${Taro.pxTransform(-1 * x)}, ${Taro.pxTransform(-1 * y)}, 0) scale(${fScale})`,
-    //     width: Taro.pxTransform(width),
-    //     height: Taro.pxTransform(height),
-    //     transitionProperty: animate ? 'transform' : 'none'
-    // }
-
-    const { translateMatrix, scaleMatrix, rotateMatrix } = img.imgInfo;
-    const matrix = math.multiply(translateMatrix, scaleMatrix, rotateMatrix);
-    console.log(matrix);
+    const { centerMatrix, rotateMatrix, translate, scale } = imgInfo;
+    const translateMatrix = math.matrix([[1, 0, translate[0]], [0, 1, translate[1]], [0, 0, 1]]);
+    const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
+    const matrix = math.multiply(scaleMatrix, centerMatrix, translateMatrix, rotateMatrix);
+    
     const imgStyle = {
-      transform: `matrix(${matrix._data[0][0]}, ${matrix._data[1][0]}, ${matrix._data[0][1]}, ${matrix._data[1][1]}, ${matrix._data[0][2]}, ${matrix._data[1][2]})`,
-      transitionProperty: animate ? 'transform' : 'none'
+        transform: `matrix(${matrix._data[0][0]}, ${matrix._data[1][0]}, ${matrix._data[0][1]}, ${matrix._data[1][1]}, ${matrix._data[0][2]}, ${matrix._data[1][2]})`,
+        transitionProperty: animate ? 'transform' : 'none',
+        width: Taro.pxTransform(imgInfo.fWidth),
+        height: Taro.pxTransform(imgInfo.fHeight)
     }
 
     return (
-        <Image onLoad={onLoad} style={imgStyle} className="img" src={img.originPath} />
+        <Image onLoad={onLoad} style={imgStyle} className="img" src={path} />
     )
 })
 
@@ -75,7 +65,7 @@ const ImgEdit = (props) => {
 
     const [IMG, setIMG] = useState(userImageList[activeIndex]);
     const [isTouch, setIsTouch] = useState(false);
-    const [translate, setTranslate] = useState([]);
+    const [translate, setTranslate] = useState([0, 0]);
     const [scale, setScale] = useState(1);
     const [origin, setOrigin] = useState([]);
 
@@ -122,7 +112,7 @@ const ImgEdit = (props) => {
     const onTouchEnd = (e) => {
         const [dx, dy] = translate;
         let resetScale = scale;
-        const { width, height } = getImgwh(IMG.imgInfo, scale);
+        const { fWidth, fHeight } = IMG.imgInfo;
         if (scale < 1) {
             resetScale = 1;
             Taro.vibrateShort();
@@ -131,23 +121,29 @@ const ImgEdit = (props) => {
             resetScale = 3;
             Taro.vibrateShort();
         }
-        const limitLeft = (width - contentWidth) * origin[0];
-        const limitRight = -(width - contentWidth) * (1 - origin[0]);
-        const limitTop = (height - contentHeight) * origin[1];
-        const limitBottom = -(height - contentHeight) * (1 - origin[1]);
         let resetx = dx;
         let resety = dy;
-        if (dx > 0 && dx > limitLeft) {
-            resetx = limitLeft;
+
+        const { rotateMatrix, centerMatrix } = IMG.imgInfo;
+        const centerOffsetx = centerMatrix._data[0][2];
+        const centerOffsety = centerMatrix._data[1][2];
+        const scaleMatrix = math.matrix([[resetScale, 0, 0], [0, resetScale, 0], [0, 0, 1]]);
+        const radioCenterMatrix = math.matrix([[1, 0, centerOffsetx * radio], [0, 1, centerOffsety * radio], [0, 0, 1]])
+        const translateMatrix = math.matrix([[1, 0, translate[0] * radio], [0, 1, translate[1] * radio], [0, 0, 1]]);
+        const leftTop = math.multiply(radioCenterMatrix, translateMatrix, rotateMatrix, scaleMatrix, math.matrix([0, 0, 1]));
+        const rightBottom = math.multiply(radioCenterMatrix, translateMatrix, rotateMatrix, scaleMatrix, math.matrix([fWidth, fHeight, 1]));
+
+        if (leftTop._data[0] > 0) { // 左侧有空隙
+            resetx = -centerOffsetx;
         }
-        if (dx < 0 && dx < limitRight) {
-            resetx = limitRight;
+        if (leftTop._data[1] > 0) { // 上侧有空隙
+            resety = -centerOffsety;
         }
-        if (dy > 0 && dy > limitTop) {
-            resety = limitTop;
+        if (rightBottom._data[0] < contentWidth) { // 右侧有空隙
+            resetx = centerOffsetx;
         }
-        if (dy < 0 && dy < limitBottom) {
-            resety = limitBottom;
+        if (rightBottom._data[1] < contentHeight) { // 下侧有空隙
+            resety = centerOffsety;
         }
         setIsTouch(false);
         setScale(resetScale);
@@ -208,6 +204,12 @@ const ImgEdit = (props) => {
     const activeRightIcon = <Image onClick={oprate.bind(this, 'plus')} className="oprate-icon" src={rightActiveIcon} />;
     const disabledRightIcon = <Image className="oprate-icon" src={rightDisabledIcon} />;
 
+    const imgInfo = {
+        ...IMG.imgInfo,
+        translate,
+        scale
+    }
+
     return (
         <View>
             <View className="edit-content">
@@ -215,7 +217,7 @@ const ImgEdit = (props) => {
                 <View className="content-wrap">
                     <View className="mask"></View>
                     <Canvas canvasId='canvas' disableScroll={true} className="content" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
-                    <Img animate={!isTouch} translate={translate} scale={scale} origin={origin} img={IMG} />
+                    <Img animate={!isTouch} path={IMG.originPath} imgInfo={imgInfo} />
                 </View>
                 <View className="bottom-wrap">
                     <View className="bottom-tip">tips：灰色区域将被裁剪，不在打印范围内</View>

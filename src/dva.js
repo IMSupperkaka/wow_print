@@ -1,7 +1,6 @@
 
 import Taro from '@tarojs/taro'
 import { create } from 'dva-core'
-import createLoading from 'dva-loading'
 import models from './models'
 
 let dispatch
@@ -9,7 +8,6 @@ let dispatch
 function createApp(opt) {
     let store
     const app = create(opt)
-    app.use(createLoading({}))
 
     if (!global.registered) opt.models.forEach(model => app.model(model))
     global.registered = true

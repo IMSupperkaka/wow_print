@@ -1,5 +1,8 @@
-import { create, all } from 'mathjs'
+import { create, matrixDependencies, multiplyDependencies } from 'mathjs';
 
-const math = create(all, {})
+const math = create({
+    matrixDependencies,
+    multiplyDependencies
+}, {})
 
 export default math;
