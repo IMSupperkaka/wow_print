@@ -10,5 +10,6 @@ export const orderStatus = new Map([
 export const sizeMap = new Map([
   [3, 0.697],
   [4, 0.745],
-  [5, 0.700]
+  [5, 0.700],
+  [6, 0.667]
 ])
