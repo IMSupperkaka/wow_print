@@ -26,10 +26,10 @@ const getDistance = (p1, p2) => {
 
 const Img = ({ path, imgInfo, onLoad, animate }) => {
 
-    const { centerMatrix, rotateMatrix, translate, scale } = imgInfo;
-    const translateMatrix = math.matrix([[1, 0, translate[0]], [0, 1, translate[1]], [0, 0, 1]]);
+    const { rotateMatrix, translate, scale } = imgInfo;
+    const translateMatrix = math.matrix([[1, 0, translate[0] / radio], [0, 1, translate[1] / radio], [0, 0, 1]]);
     const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
-    const matrix = math.multiply(scaleMatrix, centerMatrix, translateMatrix, rotateMatrix);
+    const matrix = math.multiply(scaleMatrix, translateMatrix, rotateMatrix);
 
     const imgStyle = {
         transform: `matrix(${matrix._data[0][0]}, ${matrix._data[1][0]}, ${matrix._data[0][1]}, ${matrix._data[1][1]}, ${matrix._data[0][2]}, ${matrix._data[1][2]})`,
@@ -52,35 +52,19 @@ const ImgEdit = (props) => {
     const [isTouch, setIsTouch] = useState(false);
     const [translate, setTranslate] = useState([0, 0]);
     const [scale, setScale] = useState(1);
-    const [origin, setOrigin] = useState([]);
 
     useEffect(() => {
         const current = userImageList[activeIndex];
         setIMG(current);
         setTranslate(current.imgInfo.translate);
         setScale(current.imgInfo.scale);
-        setOrigin(current.imgInfo.origin);
     }, [activeIndex])
-
-    const getOrigin = (p1, p2) => {
-        const { x, y, width, height, scale: fScale } = getCropPosition({
-            ...IMG.imgInfo,
-            translate: translate,
-            scale: scale,
-            origin: origin
-        }, contentWidth, contentHeight);
-        return [((p1.x + p2.x) / 2 + x) / (width * fScale), ((p1.y + p2.y) / 2 + y) / (height * fScale)];
-    }
 
     const onTouchStart = (e) => {
         lastTouch = e.touches;
         setIsTouch(true);
         store.originScale = scale;
         store.originTranslate = translate;
-        if (e.touches.length >= 2) {
-            const neworigin = getOrigin(e.touches[0], e.touches[1]);
-            setOrigin([neworigin[0], neworigin[1]]);
-        }
     }
 
     const onTouchMove = (e) => {
@@ -89,8 +73,8 @@ const ImgEdit = (props) => {
             const newScale = store.originScale * zoom;
             setScale(newScale);
         } else {
-            const dx = e.touches[0].x - lastTouch[0].x;
-            const dy = e.touches[0].y - lastTouch[0].y;
+            const dx = (e.touches[0].x - lastTouch[0].x) * radio;
+            const dy = (e.touches[0].y - lastTouch[0].y) * radio;
             setTranslate([store.originTranslate[0] + dx, store.originTranslate[1] + dy]);
         }
     }
@@ -110,27 +94,25 @@ const ImgEdit = (props) => {
         let resetx = dx;
         let resety = dy;
 
-        const { rotateMatrix, centerMatrix } = IMG.imgInfo;
-        const centerOffsetx = centerMatrix._data[0][2];
-        const centerOffsety = centerMatrix._data[1][2];
+        const { rotateMatrix } = IMG.imgInfo;
         const scaleMatrix = math.matrix([[resetScale, 0, 0], [0, resetScale, 0], [0, 0, 1]]);
-        const radioCenterMatrix = math.matrix([[1, 0, centerOffsetx * radio], [0, 1, centerOffsety * radio], [0, 0, 1]])
-        const translateMatrix = math.matrix([[1, 0, translate[0] * radio], [0, 1, translate[1] * radio], [0, 0, 1]]);
-        const leftTop = math.multiply(scaleMatrix, radioCenterMatrix, translateMatrix, rotateMatrix, math.matrix([0, 0, 1]));
-        const rightBottom = math.multiply(scaleMatrix, radioCenterMatrix, translateMatrix, rotateMatrix, math.matrix([fWidth, fHeight, 1]));
+        const translateMatrix = math.matrix([[1, 0, translate[0] * 1], [0, 1, translate[1] * 1], [0, 0, 1]]);
+        const leftTop = math.multiply(scaleMatrix, translateMatrix, rotateMatrix, math.matrix([0, 0, 1]));
+        const rightBottom = math.multiply(scaleMatrix, translateMatrix, rotateMatrix, math.matrix([fWidth, fHeight, 1]));
 
         if (leftTop._data[0] > 0) { // 左侧有空隙
-            resetx = -centerOffsetx;
+            resetx = 0;
         }
         if (leftTop._data[1] > 0) { // 上侧有空隙
-            resety = -centerOffsety;
+            resety = 0;
         }
         if (rightBottom._data[0] < contentWidth) { // 右侧有空隙
-            resetx = (contentWidth / resetScale - fWidth - radio * centerOffsetx) / radio;
+            resetx = contentWidth / resetScale - fWidth;
         }
         if (rightBottom._data[1] < contentHeight) { // 下侧有空隙
-            resety = (contentHeight / resetScale - fHeight - radio * centerOffsety) / radio;
+            resety = contentHeight / resetScale - fHeight;
         }
+
         setIsTouch(false);
         setScale(resetScale);
         setTranslate([resetx, resety]);
@@ -143,7 +125,6 @@ const ImgEdit = (props) => {
         }
         cloneList[activeIndex].imgInfo = imgInfo;
         cloneList[activeIndex].cropImage = computeCropUrl(IMG.originImage, { ...imgInfo, contentWidth: EDIT_WIDTH, contentHeight: EDIT_WIDTH / proportion });
-        console.log(cloneList)
         dispatch({
             type: 'confirmOrder/saveUserImageList',
             payload: cloneList

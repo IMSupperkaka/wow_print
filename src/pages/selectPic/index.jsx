@@ -17,6 +17,8 @@ import lessSelectIcon from '../../../images/icon_Less_selected@2x.png'
 import lessDisabledIcon from '../../../images/icon_Less_disabled@2x.png'
 import plusSelectIcon from '../../../images/cion_plus_selected@2x.png'
 
+const radio = 750 / Taro.getSystemInfoSync().screenWidth;
+
 const SelectPic = ({ dispatch, confirmOrder }) => {
 
     const { coupon, userImageList, proportion } = confirmOrder;
@@ -28,10 +30,10 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
     })
 
     const getImgStyle = (info) => {
-        const { centerMatrix, rotateMatrix, translate, scale, fWidth, fHeight } = initImg(info, { width: SELECT_WIDTH, height: SELECT_WIDTH / proportion })
-        const translateMatrix = math.matrix([[1, 0, translate[0] * (SELECT_WIDTH / EDIT_WIDTH)], [0, 1, translate[1] * (SELECT_WIDTH / EDIT_WIDTH)], [0, 0, 1]]);
+        const { rotateMatrix, translate, scale, fWidth, fHeight } = initImg(info, { width: SELECT_WIDTH, height: SELECT_WIDTH / proportion }, false)
+        const translateMatrix = math.matrix([[1, 0, translate[0] * (SELECT_WIDTH / EDIT_WIDTH) / radio], [0, 1, translate[1] * (SELECT_WIDTH / EDIT_WIDTH) / radio], [0, 0, 1]]);
         const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
-        const matrix = math.multiply(scaleMatrix, centerMatrix, translateMatrix, rotateMatrix);
+        const matrix = math.multiply(scaleMatrix, translateMatrix, rotateMatrix);
         return {
             transformOrigin: '0% 0%',
             transform: `matrix(${matrix._data[0][0]}, ${matrix._data[1][0]}, ${matrix._data[0][1]}, ${matrix._data[1][1]}, ${matrix._data[0][2]}, ${matrix._data[1][2]})`,

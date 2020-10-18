@@ -44,19 +44,16 @@ export const getCropPosition = ({ width, height, scale, origin, translate: [dx, 
 export const computeCropUrl = (url, imgInfo) => {
 
     const radio = 750 / Taro.getSystemInfoSync().screenWidth;
-    const { fWidth, width, contentWidth, contentHeight, scale, translate, centerMatrix, rotateMatrix } = imgInfo;
-    const centerOffsetx = centerMatrix._data[0][2];
-    const centerOffsety = centerMatrix._data[1][2];
+    const { fWidth, width, contentWidth, contentHeight, scale, translate, rotateMatrix } = imgInfo;
     const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
-    const translateMatrix = math.matrix([[1, 0, translate[0] * radio], [0, 1, translate[1] * radio], [0, 0, 1]]);
-    const radioCenterMatrix = math.matrix([[1, 0, centerOffsetx * radio], [0, 1, centerOffsety * radio], [0, 0, 1]])
-    const leftTop = math.multiply(scaleMatrix, radioCenterMatrix, translateMatrix, rotateMatrix, math.matrix([0, 0, 1]));
+    const translateMatrix = math.matrix([[1, 0, translate[0] / radio], [0, 1, translate[1] / radio], [0, 0, 1]]);
+    const leftTop = math.multiply(scaleMatrix, translateMatrix, rotateMatrix, math.matrix([0, 0, 1]));
     const as = fWidth / width * scale;
     const cropUrl = `${url}?imageMogr2/auto-orient/crop/!${Math.round(contentWidth / as)}x${Math.round(contentHeight / as)}a${-Math.round(leftTop._data[0] / as)}a${-Math.round(leftTop._data[1] / as)}`;
     return cropUrl;
 }
 
-export const initImg = (imginfo, content) => {
+export const initImg = (imginfo, content, to_center = true) => {
   const cloneImginfo = {...imginfo};
   const aspectRadio = imginfo.width / imginfo.height;
   const contentRadio = content.width / content.height;
@@ -93,8 +90,9 @@ export const initImg = (imginfo, content) => {
   const centerPoint = [content.width / 2, content.height / 2, 1];
   const afterCenterPoint = [cloneImginfo.fWidth / 2, cloneImginfo.fHeight / 2, 1];
   const centerOffset = [centerPoint[0] - afterCenterPoint[0], centerPoint[1] - afterCenterPoint[1]];
-  const radio = 750 / Taro.getSystemInfoSync().screenWidth;
-  cloneImginfo.centerMatrix = math.matrix([[1, 0, centerOffset[0] / radio], [0, 1, centerOffset[1] / radio], [0, 0, 1]]);
+  if (to_center) {
+    cloneImginfo.translate = [centerOffset[0], centerOffset[1]];
+  }
   return cloneImginfo;
 }
 
