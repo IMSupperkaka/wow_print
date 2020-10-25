@@ -4,20 +4,17 @@ import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
 
 import './index.less'
-import math from '../../utils/math'
-import { initImg } from '../../utils/utils'
-import { EDIT_WIDTH, SELECT_WIDTH } from '../../utils/picContent'
+import { SELECT_WIDTH } from '../../utils/picContent'
 import { uploadFile } from '../../services/upload'
 import { list } from '../../services/address'
 import Dialog from '../../components/Dialog'
 import SafeArea from '../../components/SafeArea'
+import CropImg from '../../components/CropImg'
 import addPic from '../../../images/cion_add_to@2x.png'
 import deleteIcon from '../../../images/icon_delete@2x.png'
 import lessSelectIcon from '../../../images/icon_Less_selected@2x.png'
 import lessDisabledIcon from '../../../images/icon_Less_disabled@2x.png'
 import plusSelectIcon from '../../../images/cion_plus_selected@2x.png'
-
-const radio = 750 / Taro.getSystemInfoSync().screenWidth;
 
 const SelectPic = ({ dispatch, confirmOrder }) => {
 
@@ -28,19 +25,6 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
         totalNum: 0,
         completeNum: 0
     })
-
-    const getImgStyle = (info) => {
-        const { rotateMatrix, translate, scale, fWidth, fHeight } = initImg(info, { width: SELECT_WIDTH, height: SELECT_WIDTH / proportion }, false)
-        const translateMatrix = math.matrix([[1, 0, translate[0] * (SELECT_WIDTH / EDIT_WIDTH) / radio], [0, 1, translate[1] * (SELECT_WIDTH / EDIT_WIDTH) / radio], [0, 0, 1]]);
-        const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
-        const matrix = math.multiply(scaleMatrix, translateMatrix, rotateMatrix);
-        return {
-            transformOrigin: '0% 0%',
-            transform: `matrix(${matrix._data[0][0]}, ${matrix._data[1][0]}, ${matrix._data[0][1]}, ${matrix._data[1][1]}, ${matrix._data[0][2]}, ${matrix._data[1][2]})`,
-            width: Taro.pxTransform(fWidth),
-            height: Taro.pxTransform(fHeight)
-        }
-    }
 
     const handleChoose = () => {
         Taro.chooseImage({
@@ -158,7 +142,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                             <View className="item">
                                 <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className="delete-icon" />
                                 <View className="item-body" onClick={handleGoEdit.bind(this, index)} style={contentStyle}>
-                                    <Image style={getImgStyle(v.imgInfo)} className="item-img" mode="widthFix" src={v.originPath} />
+                                    <CropImg width={SELECT_WIDTH} height={SELECT_WIDTH / proportion} cropOption={v.imgInfo} className="item-img" src={v.originPath}/>
                                 </View>
                                 <View className="item-footer">
                                     <View className="step-wrap">

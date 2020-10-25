@@ -1,12 +1,13 @@
-import React, { useState, useReducer, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { connect } from 'react-redux';
-import { View, Image, Canvas, Text, Swiper, SwiperItem } from '@tarojs/components';
+import { View, Image, Canvas } from '@tarojs/components';
 
 import './index.less';
 import math from '../../utils/math'
-import { computeCropUrl, getCropPosition } from '../../utils/utils'
+import { computeCropUrl } from '../../utils/utils'
 import { EDIT_WIDTH } from '../../utils/picContent'
+import CropImg from '../../components/CropImg'
 import deleteIcon from '../../../images/icon_delete／2@2x.png'
 import leftActiveIcon from '../../../images/icon_active_left@2x.png'
 import leftDisabledIcon from '../../../images/icon_disabled_left@2x.png'
@@ -14,6 +15,7 @@ import rightActiveIcon from '../../../images/icon_active_right@2x.png'
 import rightDisabledIcon from '../../../images/icon_disabled_right@2x.png'
 
 let lastTouch = null;
+
 let store = {
     originScale: 1
 };
@@ -22,25 +24,6 @@ const radio = 750 / Taro.getSystemInfoSync().screenWidth;
 
 const getDistance = (p1, p2) => {
     return Math.sqrt(Math.pow(p2.x - p1.x, 2), Math.pow(p2.y - p1.y), 2);
-}
-
-const Img = ({ path, imgInfo, onLoad, animate }) => {
-
-    const { rotateMatrix, translate, scale } = imgInfo;
-    const translateMatrix = math.matrix([[1, 0, translate[0] / radio], [0, 1, translate[1] / radio], [0, 0, 1]]);
-    const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
-    const matrix = math.multiply(scaleMatrix, translateMatrix, rotateMatrix);
-
-    const imgStyle = {
-        transform: `matrix(${matrix._data[0][0]}, ${matrix._data[1][0]}, ${matrix._data[0][1]}, ${matrix._data[1][1]}, ${matrix._data[0][2]}, ${matrix._data[1][2]})`,
-        transitionProperty: animate ? 'transform' : 'none',
-        width: Taro.pxTransform(imgInfo.fWidth),
-        height: Taro.pxTransform(imgInfo.fHeight)
-    }
-
-    return (
-        <Image onLoad={onLoad} style={imgStyle} className="img" src={path} />
-    )
 }
 
 const ImgEdit = (props) => {
@@ -94,23 +77,47 @@ const ImgEdit = (props) => {
         let resetx = dx;
         let resety = dy;
 
-        const { rotateMatrix } = IMG.imgInfo;
+        const limitPosition = {
+          left: -contentWidth / 2,
+          top: -contentHeight / 2,
+          right: contentWidth / 2,
+          bottom: contentHeight / 2
+        };
+        const { rotateMatrix, rotateDeg } = IMG.imgInfo;
+        const leftTopPostion = math.multiply(rotateMatrix, math.matrix([-fWidth / 2, -fHeight / 2, 1]));
+        const rightBottomPosition = math.multiply(rotateMatrix, math.matrix([fWidth / 2, fHeight / 2, 1]));
         const scaleMatrix = math.matrix([[resetScale, 0, 0], [0, resetScale, 0], [0, 0, 1]]);
-        const translateMatrix = math.matrix([[1, 0, translate[0] * 1], [0, 1, translate[1] * 1], [0, 0, 1]]);
-        const leftTop = math.multiply(scaleMatrix, translateMatrix, rotateMatrix, math.matrix([0, 0, 1]));
-        const rightBottom = math.multiply(scaleMatrix, translateMatrix, rotateMatrix, math.matrix([fWidth, fHeight, 1]));
+        const translateMatrix = math.matrix([[1, 0, translate[0]], [0, 1, translate[1]], [0, 0, 1]]);
+        const leftTop = math.multiply(scaleMatrix, translateMatrix, leftTopPostion);
+        const rightBottom = math.multiply(scaleMatrix, translateMatrix, rightBottomPosition);
 
-        if (leftTop._data[0] > 0) { // 左侧有空隙
-            resetx = 0;
-        }
-        if (leftTop._data[1] > 0) { // 上侧有空隙
-            resety = 0;
-        }
-        if (rightBottom._data[0] < contentWidth) { // 右侧有空隙
-            resetx = contentWidth / resetScale - fWidth;
-        }
-        if (rightBottom._data[1] < contentHeight) { // 下侧有空隙
-            resety = contentHeight / resetScale - fHeight;
+        // TODO: 消除旋转判断
+        if (rotateDeg == 90) { // 顺时针旋转90度
+          if (leftTop._data[0] < limitPosition.right) { // 右侧有空隙
+            resetx = (contentWidth / 2) / resetScale - leftTopPostion._data[0];
+          }
+          if (leftTop._data[1] > limitPosition.top) { // 上侧有空隙
+            resety = - (contentHeight / 2) / resetScale - leftTopPostion._data[1];
+          }
+          if (rightBottom._data[0] > limitPosition.left) { // 左侧有空隙
+            resetx = -(contentWidth / 2) / resetScale - rightBottomPosition._data[0];
+          }
+          if (rightBottom._data[1] < limitPosition.bottom) { // 下侧有空隙
+            resety = (contentHeight / 2) / resetScale - rightBottomPosition._data[1];
+          }
+        } else {
+          if (leftTop._data[0] > limitPosition.left) { // 左侧有空隙
+            resetx = -(contentWidth / 2) / resetScale - leftTopPostion._data[0];
+          }
+          if (leftTop._data[1] > limitPosition.top) { // 上侧有空隙
+              resety = - (contentHeight / 2) / resetScale - leftTopPostion._data[1];
+          }
+          if (rightBottom._data[0] < limitPosition.right) { // 右侧有空隙
+            resetx = (contentWidth / 2) / resetScale - rightBottomPosition._data[0];
+          }
+          if (rightBottom._data[1] < limitPosition.bottom) { // 下侧有空隙
+            resety = (contentHeight / 2) / resetScale - rightBottomPosition._data[1];
+          }
         }
 
         setIsTouch(false);
@@ -120,8 +127,7 @@ const ImgEdit = (props) => {
         const imgInfo = {
             ...cloneList[activeIndex].imgInfo,
             translate: [resetx, resety],
-            scale: resetScale,
-            origin: origin
+            scale: resetScale
         }
         cloneList[activeIndex].imgInfo = imgInfo;
         cloneList[activeIndex].cropImage = computeCropUrl(IMG.originImage, { ...imgInfo, contentWidth: EDIT_WIDTH, contentHeight: EDIT_WIDTH / proportion });
@@ -193,7 +199,7 @@ const ImgEdit = (props) => {
                 <View className="content-wrap">
                     <View className="mask" style={maskStyle}></View>
                     <Canvas canvasId='canvas' style={contentStyle} disableScroll={true} className="content" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
-                    <Img animate={!isTouch} path={IMG.originPath} imgInfo={imgInfo} />
+                    <CropImg className="img" width={contentWidth} height={contentHeight} src={IMG.originPath} cropOption={imgInfo} style={{ transitionProperty: !isTouch ? 'transform' : 'none' }}/>
                 </View>
                 <View className="bottom-wrap">
                     <View className="bottom-tip">tips：灰色区域将被裁剪，不在打印范围内</View>

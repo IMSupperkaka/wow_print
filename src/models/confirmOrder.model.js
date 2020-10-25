@@ -50,7 +50,7 @@ export default {
                         const imgInfo = initImg({
                             ...imgres,
                             origin: [0.5, 0.5],
-                            scale: 1,
+                            scale: 1.5,
                             translate: [0, 0]
                         }, { width: EDIT_WIDTH, height: EDIT_WIDTH / proportion })
                         resolve({
