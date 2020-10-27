@@ -44,6 +44,12 @@ const Index = ({ user }) => {
         })
     }
 
+    const handleGoPortfolio = () => {
+        Taro.navigateTo({
+            url: '/pages/portfolio/index'
+        })
+    }
+
     const handleGoCoupon = () => {
         Taro.switchTab({
             url: '/pages/coupon/index'
@@ -123,7 +129,7 @@ const Index = ({ user }) => {
                         <AtIcon value='chevron-right' size='14' color='#999'></AtIcon>
                     </View>
                 </View>
-                <View className="cell" onClick={handleGoAddress}>
+                <View className="cell" onClick={handleGoPortfolio}>
                     <View className="cell-left">
                         <Image className="icon-left" src={addressPng}/>
                         <Text>作品集</Text>

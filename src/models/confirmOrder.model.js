@@ -30,7 +30,9 @@ export default {
         userImageList: [],
         activeIndex: 0,
         size: 5,
-        proportion: 0.7
+        proportion: 0.7,
+        // 商品类型 枚举：/utils/map/product/productType
+        type: 1
     },
     effects: {
         *getAddressDetail({ payload }, { call, put }) {
@@ -95,6 +97,7 @@ export default {
         saveGoodInfo(state, { payload }) {
             return {
                 ...state,
+                type: payload.category,
                 goodId: payload.id,
                 size: payload.size,
                 proportion: sizeMap.get(Number(payload.size))

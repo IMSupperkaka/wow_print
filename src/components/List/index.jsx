@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import Taro from '@tarojs/taro'
-import { usePullDownRefresh } from '@tarojs/taro'
+import { usePullDownRefresh, useReachBottom, useReady } from '@tarojs/taro'
 import { View } from '@tarojs/components'
+
+import Empty from '../../components/Empty'
 
 export default (props) => {
 
@@ -22,6 +24,10 @@ export default (props) => {
         _onLoad(false);
     })
 
+    useReady(() => {
+        _onLoad(false);
+    })
+
     const _onLoad = (refresh = false) => {
         if (!refresh && isFinish) {
             return false;
@@ -37,7 +43,7 @@ export default (props) => {
                 pageSize,
                 total
             })
-            setIsFinish(current >= total % pageSize);
+            setIsFinish(current >= Math.ceil(total / pageSize));
             if (refresh) {
                 setRecords(list);
             } else {
@@ -51,11 +57,13 @@ export default (props) => {
 
     const empty = props.empty || <Empty/>;
 
+    const children = props.children({ list: records }); // 以函数形式运行
+
     return (
         <View>
             {
                 records.length > 0 ?
-                props.children :
+                children :
                 empty
             }
         </View>
