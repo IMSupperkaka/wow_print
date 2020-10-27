@@ -17,7 +17,8 @@ export default {
         'pages/confirmOrder/index',
         'pages/webview/index',
         'pages/preview/index',
-        'pages/logisticsDetails/index'
+        'pages/logisticsDetails/index',
+        'pages/xdPromote/index'
     ],
     tabBar: {
         color: '#666666',
