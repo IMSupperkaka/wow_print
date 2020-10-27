@@ -11,3 +11,39 @@ $color-brand: #FF6345;
     border-color: #E0E0E0;
     background: #E0E0E0;
 }
+
+.radius-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    font-size: 24px;
+    border-radius: 31px;
+    width: 156px;
+    height: 56px;
+    &::after {
+        border-radius: 62px;
+    }
+}
+.primary-btn {
+    color: #fff;
+    background-color: #FF6345;
+    &::after {
+        border-color: #FF6345;
+    }
+}
+.outline-btn {
+    color: #666666;
+    background-color: #fff;
+    &::after {
+        border-color: #C1C1C1;
+    }
+}
+.primary-outline-btn {
+    color: #FF6345;
+    background-color: #fff;
+    &::after {
+        border-color: #FF6345;
+    }
+}
