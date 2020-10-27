@@ -13,6 +13,7 @@ export default {
         'pages/result/index',
         'pages/service/index',
         'pages/selectPic/index',
+        'pages/selectBook/index',
         'pages/imgEdit/index',
         'pages/confirmOrder/index',
         'pages/webview/index',

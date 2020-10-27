@@ -4,8 +4,8 @@ import { View } from '@tarojs/components';
 import './index.less';
 
 class NavBar extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor(...props) {
+        super(...props);
         this.state = {
             statusBarHeight: 0
         }

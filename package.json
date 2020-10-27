@@ -37,6 +37,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@babel/register": "^7.12.0",
     "@babel/runtime": "^7.7.7",
     "@tarojs/components": "3.0.5",
     "@tarojs/plugin-less": "^2.2.10",
@@ -52,6 +53,7 @@
     "dva-loading": "^3.0.20",
     "dva-model-extend": "^0.1.2",
     "mathjs": "^7.5.1",
+    "node-sass": "^4.14.1",
     "qiniu-js": "^3.1.1",
     "rc-animate": "^3.1.0",
     "react": "^16.10.0",
