@@ -126,6 +126,16 @@ const Index = ({ user }) => {
                 <View className="cell" onClick={handleGoAddress}>
                     <View className="cell-left">
                         <Image className="icon-left" src={addressPng}/>
+                        <Text>作品集</Text>
+                    </View>
+                    <View>
+                        <Text className="use-coupon">{ state.couponCanUseNums }</Text>
+                        <AtIcon value='chevron-right' size='14' color='#999'></AtIcon>
+                    </View>
+                </View>
+                <View className="cell" onClick={handleGoAddress}>
+                    <View className="cell-left">
+                        <Image className="icon-left" src={addressPng}/>
                         <Text>收货地址</Text>
                     </View>
                     <AtIcon value='chevron-right' size='14' color='#999'></AtIcon>

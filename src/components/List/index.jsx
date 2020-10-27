@@ -1,58 +1,64 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Taro from '@tarojs/taro'
 import { usePullDownRefresh } from '@tarojs/taro'
-import { View, ScrollView, Image, Button, Text } from '@tarojs/components'
+import { View } from '@tarojs/components'
 
 export default (props) => {
 
-    const [loading, setLoading] = useState(false);
-    const Threshold = 30;
+    const { onLoad } = props;
+    const [isFinish, setIsFinish] = useState(false);
+    const [records, setRecords] = useState([]);
+    const [page, setPage] = useState({
+        current: 0,
+        pageSize: 10,
+        total: 0
+    });
 
-    const onScrollToLower = async () => {
-        await props.onLoad();
-    }
+    usePullDownRefresh(() => {
+        _onLoad(true);
+    })
 
-    const onRefresherRefresh = async (e) => {
-        setLoading(true);
-        try {
-            await props.onRefresh();
-            setLoading(false);
-        } catch (error) {
-            setLoading(false);
+    useReachBottom(() => {
+        _onLoad(false);
+    })
+
+    const _onLoad = (refresh = false) => {
+        if (!refresh && isFinish) {
+            return false;
         }
-    }
-
-    useEffect(() => {
-        async function fetchData() {
-            setLoading(true);
-            try {
-                await props.onLoad();
-                setLoading(false);
-            } catch (error) {
-                setLoading(false);
+        const current = refresh ? 1 : page.current + 1;
+        const pageSize = page.pageSize;
+        onLoad({
+            current,
+            pageSize
+        }).then(({ list, total }) => {
+            setPage({
+                current,
+                pageSize,
+                total
+            })
+            setIsFinish(current >= total % pageSize);
+            if (refresh) {
+                setRecords(list);
+            } else {
+                setRecords(records.concat(list));
             }
-        }
-        fetchData();
-    }, [])
+            Taro.stopPullDownRefresh();
+        }).catch(() => {
+            Taro.stopPullDownRefresh();
+        })
+    }
+
+    const empty = props.empty || <Empty/>;
 
     return (
-        <ScrollView
-            className='scrollview'
-            scrollY
-            scrollWithAnimation
-            scrollAnchoring
-            refresherEnabled
-            refresherThreshold={Threshold}
-            refresherTriggered={loading}
-            className="index"
-            lowerThreshold={Threshold}
-            upperThreshold={Threshold}
-            onScrollToLower={onScrollToLower}
-            onRefresherRefresh={onRefresherRefresh}
-            {...props}
-        >
-            {props.children}
-        </ScrollView>
+        <View>
+            {
+                records.length > 0 ?
+                props.children :
+                empty
+            }
+        </View>
     )
 }
 
