@@ -46,7 +46,7 @@ export default (props) => {
             }
         }
         onChange(fileList);
-    }
+    };
 
     const currentImg = fileList[0];
     

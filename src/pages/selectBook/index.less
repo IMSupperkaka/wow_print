@@ -28,14 +28,16 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 44px;
-        margin-bottom: 6px;
+        padding: 42px 44px 0;
+        .wayin {
+          width: 178px;
+          height: 88px;
+        }
         .edit-box {
           .title-box {
             color: #333333;
             margin-bottom: 8px;
             .title {
-              border: 1px solid #666666;
               font-size: 28px;
               vertical-align: middle;
               padding: 2px 16px 2px 0;
@@ -49,7 +51,6 @@
           .description {
             width: 224px;
             padding: 2px 0;
-            border: 1px solid #666666;
             font-size: 14px;
           }
         }
@@ -100,11 +101,18 @@
           height: 64px;
         }
         .mask-box {
+          overflow: hidden;
           position: absolute;
           left: 0;
           right: 0;
           top: 0;
           bottom: 0;
+          &.left {
+            border-radius: 10px 0 0 10px;
+          }
+          &.right {
+            border-radius: 0 10px 10px 0;
+          }
           .mask-tips {
             display: flex;
             align-items: center;
@@ -114,7 +122,6 @@
             height: calc(100% - 65px);
             color: #fff;
             background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 10px 0 0 0;
             :first-child {
               font-size: 30px;
               line-height: 1;
@@ -135,7 +142,6 @@
             bottom: 0;
             left: 0;
             background-color: #fff;
-            border-radius: 0 0 0 10px;
             .line {
               width: 3px;
               height: 20px;
@@ -149,7 +155,6 @@
             }
             &.black {
               background-color: rgba(0, 0, 0, 0.8);
-              border-radius: 0 0 10px 0;
               .line {
                 width: 3px;
                 height: 20px;

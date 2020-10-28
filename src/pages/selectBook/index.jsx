@@ -4,6 +4,7 @@ import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
 
 import UploadCrop from '../../components/UploadCrop';
+import Modal from '../../components/Modal';
 
 import './index.less'
 import { SELECT_WIDTH } from '../../utils/picContent'
@@ -11,14 +12,9 @@ import { uploadFile } from '../../services/upload'
 import { list } from '../../services/address'
 import Dialog from '../../components/Dialog'
 import SafeArea from '../../components/SafeArea'
-import CropImg from '../../components/CropImg'
-import addPic from '../../../images/cion_add_to@2x.png'
-import deleteIcon from '../../../images/icon_delete@2x.png'
-import lessSelectIcon from '../../../images/icon_Less_selected@2x.png'
-import lessDisabledIcon from '../../../images/icon_Less_disabled@2x.png'
-import plusSelectIcon from '../../../images/cion_plus_selected@2x.png'
 import editIcon from '../../../images/icon_edit.png'
 import addIcon from '../../../images/icon_add_gray.png'
+import wayin from '../../../images/cover_wayin.png'
 import { arg } from 'mathjs';
 
 const SelectBook = ({ dispatch, confirmOrder }) => {
@@ -31,7 +27,16 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         completeNum: 0
     });
 
-    const [twinsList, setTwinsList] = useState([]);
+    const [twinsList, setTwinsList] = useState([
+        [[],[]],
+        [[],[]],
+        [[],[]],
+        [[],[]],
+        [[],[]],
+        [[],[]],
+        [[],[]],
+        [[],[]],
+    ]);
 
     const onChange = (fileList) => {
         let cloneList = [...userImageList];
@@ -40,16 +45,16 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
             type: 'confirmOrder/saveUserImageList',
             payload: cloneList
         })
-        const itemList = [];
-        userImageList.forEach((item, index) => {
-            if(!index) return;
-            if(index %2) {
-                itemList.push([])
-            }
-            itemList[Math.ceil(index / 2) - 1].push(item);
-        });
+        // const itemList = [];
+        // userImageList.forEach((item, index) => {
+        //     if(!index) return;
+        //     // if(index %2) {
+        //     //     itemList.push([])
+        //     // }
+        //     itemList[Math.ceil(index / 2) - 1].push(item);
+        // });
         // setTwinsList(itemList);
-        console.log(fileList, itemList, 'a')
+        // console.log(fileList, itemList, 'a')
     };
 
     const handleChoose = () => {
@@ -85,7 +90,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                 })
             }
         })
-    }
+    };
 
     const handleDelete = (index) => {
         Taro.showModal({
@@ -105,7 +110,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                 }
             }
         })
-    }
+    };
 
     const handleOprate = (index, type) => {
         let cloneList = [...userImageList];
@@ -121,7 +126,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
             type: 'confirmOrder/saveUserImageList',
             payload: cloneList
         })
-    }
+    };
 
     const handleGoPrint = () => {
         if (userImageList.length <= 0) {
@@ -141,7 +146,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                 })
             }
         })
-    }
+    };
 
     const handleGoEdit = (index) => {
         dispatch({
@@ -151,7 +156,42 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         Taro.navigateTo({
             url: '/pages/imgEdit/index'
         })
-    }
+    };
+
+    const handleSaveWorks = () => {
+        /**
+         * 保存作品集的操作
+         * 从作品集入口进来的时候，点击存入作品集要提示，将会覆盖，是否确认保存。
+         */
+        Taro.showModal({
+            title: '确认保存',
+            content: '将覆盖原作品，是否确认保存当前修改？',
+            confirmText: '确认',
+            cancelText: '取消',
+            confirmColor: '#FF6345',
+            success: (res) => {
+                if (res.confirm) {
+                    del(query.id).then(() => {
+                        Taro.navigateBack();
+                    })
+                }
+            }
+        })
+        // Taro.showToast({
+        //     title:'已保存，可在作品集中查看',
+        //     icon: 'none',
+        //     duration: 1000
+        // })
+        // Taro.showToast({
+        //     title:'作品集已满，请清除过多的作品',
+        //     icon: 'none',
+        //     duration: 1000
+        // })
+    };
+
+    const handleEditInfo = (isShow) => {
+
+    };
 
     const restFreeNums = (coupon.couponFreeNums || 0) - userImageList.reduce((count, v) => { return count + v.printNums }, 0);
 
@@ -169,13 +209,13 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                             <View className="edit-box">
                                 <View className="title-box">
                                     <Text className="title">定格真我 触手可及</Text>
-                                    <Image src={editIcon} className="edit-icon"/>
+                                    <Image src={editIcon} className="edit-icon" onClick={() => handleEditInfo(true)}/>
                                 </View>
                                 <View className="description">
                                     To 哇印定制
                                 </View>
                             </View>
-                            <View className="wayin">WA</View>
+                            <Image src={wayin} mode="aspectFit" className="wayin"/>
                         </View>
                         <View className="cover-con" onClick={handleChoose}>
                             <Image src={addIcon} className="add-icon"/>
@@ -185,102 +225,39 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     <View className="page-num">封面</View>
                 </View>
                 {
-                    userImageList.length <= 1 && 
-                    <View className="twins-item item-box">
-                        <View className="item-body" onClick={handleChoose}>
-                            <View className="choose-item">
-                                <Image src={addIcon} className="add-icon"/>
-                            </View>
-                            <View className="choose-item">
-                                <Image src={addIcon} className="add-icon"/>
-                            </View>
-                        </View>
-                        <View className="page-num">1 - 2</View>
-                    </View>
-                }
-                {
-                    userImageList.length > 1 &&
                     twinsList.map((item, index) => {
+                        
                         return (
                             <View className="twins-item item-box" key={index}>
                                 <View className="item-body" onClick={handleChoose}>
-                                    <View className="choose-item">
-                                        <Image src={addIcon} className="add-icon"/>
-                                        <View className="mask-box">
-                                            <View className="mask-tips">
-                                                <Text>提示</Text>
-                                                <Text>图片模糊或过长哦~</Text>
-                                            </View>
-                                            <View className="mask-bottom">
-                                                <View className="btn">忽略</View>
-                                                <View className="line" />
-                                                <View className="btn">换图</View>
-                                            </View>
-                                        </View>
-                                        <UploadCrop onChange={onChange} className="cover-con" width={320} height={320}/>
-                                    </View>
-                                    <View className="choose-item">
-                                        <Image src={addIcon} className="add-icon"/>
-                                        <View className="mask-box">
-                                            <View className="mask-bottom black">
-                                                <View className="btn">调整</View>
-                                                <View className="line" />
-                                                <View className="btn">换图</View>
-                                            </View>
-                                        </View>
-                                        <UploadCrop onChange={onChange}className="cover-con" width={320} height={320}/>
-                                    </View>
+                                    {
+                                        item.map((child, i) => {
+                                            return (
+                                                <View className="choose-item" key={i}>
+                                                    <Image src={addIcon} className="add-icon"/>
+                                                    <View className={`mask-box ${i % 2 ? 'right' : 'left'}`}>
+                                                        <View className="mask-bottom black">
+                                                            <View className="btn">调整</View>
+                                                            <View className="line" />
+                                                            <View className="btn">换图</View>
+                                                        </View>
+                                                        <View className="mask-tips">
+                                                            <Text>提示</Text>
+                                                            <Text>图片模糊或过长哦~</Text>
+                                                        </View>
+                                                        <View className="mask-bottom">
+                                                            <View className="btn">忽略</View>
+                                                            <View className="line" />
+                                                            <View className="btn">换图</View>
+                                                        </View>
+                                                    </View>
+                                                    <UploadCrop onChange={onChange} className="cover-con" width={320} height={320}/>
+                                                </View>
+                                            )
+                                        }) 
+                                    }
                                 </View>
-                                <View className="page-num">{`${index} - ${++index}`}</View>
-                            </View>
-                        )
-                    })
-                }
-                            
-                {
-                    userImageList.map((v, index) => {
-                        return (
-                            index > 2 && 
-                            <View className="twins-item item-box">
-                                <View className="item-body" onClick={handleChoose}>
-                                    <View className="choose-item">
-                                        <Image src={addIcon} className="add-icon"/>
-                                        <View className="mask-box">
-                                            <View className="mask-tips">
-                                                <Text>提示</Text>
-                                                <Text>图片模糊或过长哦~</Text>
-                                            </View>
-                                            <View className="mask-bottom">
-                                                <View className="btn">忽略</View>
-                                                <View className="line" />
-                                                <View className="btn">换图</View>
-                                            </View>
-                                        </View>
-                                        {
-                                            index %2 == 1 && 
-                                            <View className="cover-con" onClick={handleGoEdit.bind(this, index)} style={contentStyle}>
-                                                <CropImg width={SELECT_WIDTH} height={SELECT_WIDTH / proportion} cropOption={userImageList[index]?.imgInfo} className="item-img" src={userImageList[index]?.originPath}/>
-                                            </View>
-                                        }
-                                    </View>
-                                    <View className="choose-item">
-                                        <Image src={addIcon} className="add-icon"/>
-                                        <View className="mask-box">
-                                            <View className="mask-bottom black">
-                                                <View className="btn">调整</View>
-                                                <View className="line" />
-                                                <View className="btn">换图</View>
-                                            </View>
-                                        </View>
-                                        {
-                                            index %2 == 0 && 
-                                            <View className="cover-con" onClick={handleGoEdit.bind(this, index)} style={contentStyle}>
-                                                <CropImg width={SELECT_WIDTH} height={SELECT_WIDTH / proportion} cropOption={userImageList[index]?.imgInfo} className="item-img" src={userImageList[index]?.originPath}/>
-                                            </View>
-                                        }
-                                    </View>
-                                </View>
-                                <View className="page-num">index - 2</View>
+                                <View className="page-num">{`${++index*2 - 1} - ${index*2}`}</View>
                             </View>
                         )
                     })
@@ -290,11 +267,11 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                 {({ bottom }) => {
                     const btmLine = userImageList.length ? 
                     <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className="submit-wrap">
-                        {/* {
+                        {
                             coupon.couponName &&
                             <View className="freenums-tag">还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
-                        } */}
-                        <View className="submit-left">存入作品集</View>
+                        }
+                        <View className="submit-left" onClick={handleSaveWorks}>存入作品集</View>
                         {
                             userImageList.length === 17 ? <View className="submit-right" onClick={handleGoPrint}>
                                 <Text>立即定制</Text>
@@ -315,6 +292,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
             <Dialog className="upload-dialog" title={`已上传${progress.completeNum}/${progress.totalNum}张`} visible={progress.visible}>
                 <View>正在拼命上传中，请耐心等待哦～</View>
             </Dialog>
+            {/* onClose, visible, className, title */}
+            <Modal onClose={() => {handleEditInfo(false)}}></Modal>
         </View>
     )
 }

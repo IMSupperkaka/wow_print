@@ -8,14 +8,14 @@ import './index.less'
 
 const Modal = (props) => {
 
-    const { onClose } = props;
+    const { onClose, visible, className, title } = props;
 
     return (
-        <View className={classNames('wy-modal', props.visible ? 'active' : '')}>
+        <View className={classNames('wy-modal', visible ? 'active' : '')}>
             <View className="wy-modal__overlay" onClick={onClose}></View>
-            <View className={classNames("wy-modal__container", props.className)}>
+            <View className={classNames("wy-modal__container", className)}>
                 {
-                    props.title && <View className="wy-modal__title">{ props.title }</View>
+                    title && <View className="wy-modal__title">{ title }</View>
                 }
                 { props.children }
             </View>
