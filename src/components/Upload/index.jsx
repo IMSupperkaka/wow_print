@@ -11,7 +11,9 @@ export default (props) => {
     const [privateFileList, setPrivateFileList] = useState(fileList || defaultFileList);
 
     useEffect(() => {
-        onChange(privateFileList);
+        if (privateFileList.length > 0) {
+            onChange(privateFileList);
+        }
     }, [privateFileList])
 
     const progress = (item, res, status) => {

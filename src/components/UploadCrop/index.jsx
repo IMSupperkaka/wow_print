@@ -22,9 +22,7 @@ const getImageInfo = async (filePath) => {
 
 export default (props) => {
 
-    const { width, height, onChange } = props;
-
-    const [fileList, setFileList] = useState([]); 
+    const { width, height, onChange, fileList = [] } = props;
 
     const onUploadChange = async (fileList) => {
         for (let i = 0; i < fileList.length; i++) {
@@ -47,7 +45,6 @@ export default (props) => {
                 }
             }
         }
-        setFileList(fileList);
         onChange(fileList);
     }
 
