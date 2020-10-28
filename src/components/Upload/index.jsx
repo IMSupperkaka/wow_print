@@ -6,7 +6,7 @@ import { uploadFile } from '../../services/upload';
 
 export default (props) => {
 
-    const { defaultFileList = [], fileList, onChange } = props;
+    const { defaultFileList = [], fileList, beforeUpload, onChange } = props;
 
     const [privateFileList, setPrivateFileList] = useState(fileList || defaultFileList);
 
@@ -30,6 +30,12 @@ export default (props) => {
     }
 
     const handleChoose = () => {
+        if (typeof beforeUpload == 'function') { // return false in beforeuUpload function to stop upload;
+            const result = beforeUpload();
+            if (result === false) {
+                return false;
+            }
+        }
         Taro.chooseImage({
             sizeType: ['original'],
             success: (e) => {

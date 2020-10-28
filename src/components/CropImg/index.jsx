@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import math from '../../utils/math'
 import classNames from 'classnames'
@@ -6,10 +6,11 @@ import { View, Image } from '@tarojs/components'
 
 import './index.less'
 import { EDIT_WIDTH } from '../../utils/picContent'
+import { computeCropUrl, initImg } from '../../utils/utils'
 
 const radio = 750 / Taro.getSystemInfoSync().screenWidth;
 
-const getImageInfo = async (filePath) => {
+const getImageInfo = (filePath) => {
     return new Promise((resolve) => {
         Taro.getImageInfo({
             src: filePath,
@@ -22,8 +23,36 @@ const getImageInfo = async (filePath) => {
 
 export default (props) => {
 
-    const { width, height, src, className, style = {}, cropOption: { translate, scale, fWidth, fHeight, rotateMatrix }, ...resetProps } = props;
-    
+    const { width, height, src, className, style = {}, cropOption = {}, ...resetProps } = props;
+
+    const [crop, setCrop] = useState({
+        translate: [0, 0],
+        scale: 1,
+        fWidth: 0,
+        fHeight: 0,
+        rotateMatrix: null
+    });
+
+    useEffect(() => {
+        console.log('render');
+        const proportion = width / height;
+        getImageInfo(src).then((imgres) => {
+            const info = initImg({
+                ...imgres,
+                origin: [0.5, 0.5],
+                scale: cropOption.scale || 1,
+                translate: cropOption.translate || [0, 0]
+            }, { width: EDIT_WIDTH, height: EDIT_WIDTH / proportion })
+            setCrop(info);
+        });
+    }, [])
+
+    const { translate, scale, fWidth, fHeight, rotateMatrix } = crop;
+
+    if (fWidth <= 0) {
+        return <View>Loading...</View>;
+    }
+
     const scalea = width / EDIT_WIDTH;
     const translateMatrix = math.matrix([[1, 0, translate[0] * scalea / radio], [0, 1, translate[1] * scalea / radio], [0, 0, 1]]);
     const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
