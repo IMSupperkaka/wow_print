@@ -25,6 +25,12 @@ export default (props) => {
 
     const { width, height, src, className, style = {}, cropOption = {}, ...resetProps } = props;
 
+    const [state, setState] = useState({
+        blur: false,
+        ignore: false,
+        edit: false
+    });
+
     const [crop, setCrop] = useState({
         translate: [0, 0],
         scale: 1,
@@ -34,7 +40,6 @@ export default (props) => {
     });
 
     useEffect(() => {
-        console.log('render');
         const proportion = width / height;
         getImageInfo(src).then((imgres) => {
             const info = initImg({
@@ -65,23 +70,40 @@ export default (props) => {
         height: Taro.pxTransform(fHeight * scalea)
     }
 
+    const toogleEdit = () =>{
+        setState((state) => {
+            return {
+                ...state,
+                edit: !state.edit
+            }
+        })
+    }
+
     return (
-        <View style={{ width: Taro.pxTransform(width), height: Taro.pxTransform(height) }} {...resetProps} className={classNames('cropimg-wrap', className)}>
+        <View onClick={toogleEdit} style={{ width: Taro.pxTransform(width), height: Taro.pxTransform(height) }} {...resetProps} className={classNames('cropimg-wrap', className)}>
             <View className="mask-box">
-                <View className="mask-bottom black">
-                    <View className="btn">调整</View>
-                    <View className="line" />
-                    <View className="btn">换图</View>
-                </View>
-                <View className="mask-tips">
-                    <Text>提示</Text>
-                    <Text>图片模糊或过长哦~</Text>
-                </View>
-                <View className="mask-bottom">
-                    <View className="btn">忽略</View>
-                    <View className="line" />
-                    <View className="btn">换图</View>
-                </View>
+                {
+                    state.blur && !state.ignore &&
+                    <>
+                        <View className="mask-bottom black">
+                            <View className="btn">调整</View>
+                            <View className="line" />
+                            <View className="btn">换图</View>
+                        </View>
+                        <View className="mask-tips">
+                            <Text>提示</Text>
+                            <Text>图片模糊或过长哦~</Text>
+                        </View>
+                    </>
+                }
+                {
+                    state.edit &&
+                    <View className="mask-bottom">
+                        <View className="btn">忽略</View>
+                        <View className="line" />
+                        <View className="btn">换图</View>
+                    </View>
+                }
             </View>
             <Image style={{ ...transformStyle, ...style }} src={src} mode="scaleToFill" />
         </View>
