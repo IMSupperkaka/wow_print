@@ -68,7 +68,9 @@ class TaroRequest {
                 });
                 Taro.request({
                     complete: (params) => {
-                        Taro.hideLoading();
+                        setTimeout(() => { // 防止多个请求闪烁
+                            Taro.hideLoading();
+                        }, 0)
                         if (params.data.code != '10000') {
                             if (params.data.code == '10025') {
                                 return dispatch({
