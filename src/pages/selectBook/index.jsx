@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import { View, Image, Text, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
+import lodash from 'lodash';
 
 import UploadCrop from '../../components/UploadCrop';
-import Modal from '../../components/Modal';
+import SelectPicModal from '../../components/SelectPicModal';
 
 import './index.less'
 import { SELECT_WIDTH } from '../../utils/picContent'
@@ -27,34 +28,36 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         completeNum: 0
     });
 
+    const [visible, setVisible] = useState(false);
+
     const [twinsList, setTwinsList] = useState([
-        [[],[]],
-        [[],[]],
-        [[],[]],
-        [[],[]],
-        [[],[]],
-        [[],[]],
-        [[],[]],
-        [[],[]],
+        [{},{}],
+        [{},{}],
+        [{},{}],
+        [{},{}],
+        [{},{}],
+        [{},{}],
+        [{},{}],
+        [{},{}]
     ]);
 
+    const beforeUpload = () => {
+        if (userImageList.length > 0) {
+            setVisible(true);
+            return false;
+        }
+    };
+
     const onChange = (fileList) => {
-        let cloneList = [...userImageList];
-        cloneList.concat(fileList, cloneList);
+        let curImgList = [
+            ...userImageList,
+            ...fileList
+        ];
+
         dispatch({
             type: 'confirmOrder/saveUserImageList',
-            payload: cloneList
+            payload: lodash.uniqBy(curImgList, 'uid')
         })
-        // const itemList = [];
-        // userImageList.forEach((item, index) => {
-        //     if(!index) return;
-        //     // if(index %2) {
-        //     //     itemList.push([])
-        //     // }
-        //     itemList[Math.ceil(index / 2) - 1].push(item);
-        // });
-        // setTwinsList(itemList);
-        // console.log(fileList, itemList, 'a')
     };
 
     const handleChoose = () => {
@@ -217,41 +220,40 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                             </View>
                             <Image src={wayin} mode="aspectFit" className="wayin"/>
                         </View>
-                        <View className="cover-con" onClick={handleChoose}>
-                            <Image src={addIcon} className="add-icon"/>
-                        </View>
-                        <UploadCrop onChange={onChange} className="cover-con" width={555} height={472}/>
+                        <UploadCrop beforeUpload={beforeUpload} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} className="cover-con" width={555} height={472}/>
                     </View>
                     <View className="page-num">封面</View>
                 </View>
                 {
                     twinsList.map((item, index) => {
-                        
+                        const fileList = [];
+                        userImageList[((index+1)*2)-1] && (fileList.push(userImageList[((index+1)*2)-1]));
+                        userImageList[((index+1)*2)] && (fileList.push(userImageList[((index+1)*2)]));
                         return (
                             <View className="twins-item item-box" key={index}>
-                                <View className="item-body" onClick={handleChoose}>
+                                <View className="item-body">
                                     {
                                         item.map((child, i) => {
+                                            const file = fileList[i] ? [fileList[i]] : [];
                                             return (
                                                 <View className="choose-item" key={i}>
-                                                    <Image src={addIcon} className="add-icon"/>
+                                                    <UploadCrop beforeUpload={beforeUpload} fileList={file} onChange={onChange} className="cover-con" width={320} height={320}/>
                                                     <View className={`mask-box ${i % 2 ? 'right' : 'left'}`}>
                                                         <View className="mask-bottom black">
                                                             <View className="btn">调整</View>
                                                             <View className="line" />
                                                             <View className="btn">换图</View>
                                                         </View>
-                                                        <View className="mask-tips">
+                                                        {/* <View className="mask-tips">
                                                             <Text>提示</Text>
                                                             <Text>图片模糊或过长哦~</Text>
-                                                        </View>
+                                                        </View> */}
                                                         <View className="mask-bottom">
                                                             <View className="btn">忽略</View>
                                                             <View className="line" />
                                                             <View className="btn">换图</View>
                                                         </View>
                                                     </View>
-                                                    <UploadCrop onChange={onChange} className="cover-con" width={320} height={320}/>
                                                 </View>
                                             )
                                         }) 
@@ -292,8 +294,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
             <Dialog className="upload-dialog" title={`已上传${progress.completeNum}/${progress.totalNum}张`} visible={progress.visible}>
                 <View>正在拼命上传中，请耐心等待哦～</View>
             </Dialog>
-            {/* onClose, visible, className, title */}
-            <Modal onClose={() => {handleEditInfo(false)}}></Modal>
+            <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/>
         </View>
     )
 }

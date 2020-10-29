@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
-import lodash from 'lodash';
-import { View, Button } from '@tarojs/components';
+import React from 'react';
+import { View } from '@tarojs/components';
 
 import './index.less';
 import { connect } from 'react-redux';
 import UploadCrop from '../../components/UploadCrop';
-import SelectPicModal from '../../components/SelectPicModal';
 
 const deskCalenderList = [
     {
@@ -64,27 +62,16 @@ const deskCalenderList = [
 
 const DeskCalendar = (props) => {
 
-    const [visible, setVisible] = useState(false);
     const { dispatch, confirmOrder: { userImageList } } = props;
 
     const onChange = (fileList) => {
-
-        const coverList = [
-            ...userImageList,
-            ...fileList
-        ];
-
         dispatch({
             type: 'confirmOrder/saveUserImageList',
-            payload: lodash.uniqBy(coverList, 'uid')
+            payload: [
+                ...userImageList,
+                ...fileList
+            ]
         })
-    }
-
-    const beforeUpload = () => {
-        if (userImageList.length > 0) {
-            setVisible(true);
-            return false;
-        }
     }
 
     return (
@@ -102,10 +89,10 @@ const DeskCalendar = (props) => {
                             {
                                 item.type == 'cover' ? 
                                 <View className="calendar-item cover">
-                                    <UploadCrop beforeUpload={beforeUpload} fileList={fileList} onChange={onChange} className="calender-uploader" width={640} height={338}/>
+                                    <UploadCrop fileList={fileList} onChange={onChange} className="calender-uploader" width={640} height={338}/>
                                 </View> :
                                 <View className="calendar-item page">
-                                    <UploadCrop beforeUpload={beforeUpload} fileList={fileList} onChange={onChange} className="calender-uploader" width={251} height={330}/>
+                                    <UploadCrop fileList={fileList} onChange={onChange} className="calender-uploader" width={251} height={330}/>
                                 </View>
                             }
                             <View className="calender-title">{ item.title }</View>
@@ -113,8 +100,6 @@ const DeskCalendar = (props) => {
                     )
                 })
             }
-            <View onClick={beforeUpload} className="bottom-upload-btn">批量上传（需上传 17 张照片）</View>
-            <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/>
         </View>
     )
 }

@@ -30,7 +30,7 @@ export default (props) => {
                 {
                     imgList.map((item) => {
                         return (
-                            <View className="img-item" onClick={() => { handleChoose(item) }}>
+                            <View className="img-item" onClick={() => { handleChoose(item) }} key={index}>
                                 <Image mode="aspectFill" src={item.filePath}/>
                             </View>
                         )
