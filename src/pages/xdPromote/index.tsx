@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { View, Image, Button } from '@tarojs/components';
 
 import Dialog from '../../components/Dialog';
+import { receive } from '../../services/coupon';
 import './index.less';
 
 export default () => {
