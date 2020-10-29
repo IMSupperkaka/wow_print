@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Taro, { useReady } from '@tarojs/taro';
 import classNames from 'classnames';
 import { View, Image, Button } from '@tarojs/components';
@@ -14,14 +14,14 @@ export default Base(() => {
     const [visible, setVisible] = useState(false);
     const [couponList, setCouponList] = useState([]);
 
-    useReady(() => {
+    useEffect(() => {
         receive().then(() => {
             return channelCouponList();
         }).then(({ data }) => {
             setCouponList(data.data);
             setVisible(true);
         })
-    })
+    }, [])
 
     const goDetail = (id) => {
         Taro.navigateTo({

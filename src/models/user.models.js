@@ -2,6 +2,10 @@ import Taro from '@tarojs/taro'
 
 import { login, saveinfo } from '../services/user';
 
+const delay = (ms) => new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
 export default {
     namespace: 'user',
     state: {
@@ -49,6 +53,7 @@ export default {
     },
     reducers: {
         setLoadFinish(state, { payload }) {
+            console.log(1)
             return {
                 ...state,
                 loadFinish: true
