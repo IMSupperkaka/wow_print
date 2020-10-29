@@ -79,6 +79,18 @@ export default (props) => {
         })
     }
 
+    const handleEdit = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        props.onHandleEdit();
+    }
+
+    const handleChange = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        props.onHandleChange();
+    }
+
     return (
         <View onClick={toogleEdit} style={{ width: Taro.pxTransform(width), height: Taro.pxTransform(height) }} {...resetProps} className={classNames('cropimg-wrap', className)}>
             <View className="mask-box">
@@ -99,9 +111,9 @@ export default (props) => {
                 {
                     state.edit &&
                     <View className="mask-bottom black">
-                        <View className="btn">调整</View>
+                        <View className="btn" onClick={handleEdit}>调整</View>
                         <View className="line" />
-                        <View className="btn">换图</View>
+                        <View className="btn" onClick={handleChange}>换图</View>
                     </View>
                 }
             </View>

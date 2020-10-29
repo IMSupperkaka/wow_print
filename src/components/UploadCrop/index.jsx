@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Image } from '@tarojs/components';
+import { app } from '../../dva';
 
 import './index.less';
 import Upload from '../Upload';
@@ -10,6 +11,8 @@ import uploiadPlus from '../../../images/upload-plus@2x.png';
 export default (props) => {
 
     const { width, height, onChange, beforeUpload, fileList = [] } = props;
+
+    const upload = useRef();
 
     const onUploadChange = async (fileList) => {
         onChange(fileList);
@@ -23,15 +26,30 @@ export default (props) => {
         </View>
     );
 
+    const onHandleEdit = () => {
+        app.dispatch({
+            type: 'editimg/goEditImg',
+            payload: {
+                imgList: [
+                    {
+                        ...currentImg,
+                        proportion: width / height
+                    }
+                ],
+                defaultIndex: 0
+            }
+        })
+    }
+
     return (
         <View className={props.className}>
             {
                 fileList.length >= 1 &&
                 <View className="crop-img-wrap">
-                    <CropImg className="item-img" width={width} height={height} cropOption={currentImg.cropInfo} src={currentImg.filePath}/>
+                    <CropImg onHandleEdit={onHandleEdit} onHandleChange={() => { upload.current.handleChoose(); }} className="item-img" width={width} height={height} cropOption={currentImg.cropInfo} src={currentImg.filePath}/>
                 </View>
             }
-            <Upload fileList={fileList} onChange={onUploadChange} beforeUpload={beforeUpload}>
+            <Upload ref={upload} fileList={fileList} onChange={onUploadChange} beforeUpload={beforeUpload}>
                 {
                     fileList.length >= 1 ? null : uploadBtn
                 }
