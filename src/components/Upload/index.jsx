@@ -17,7 +17,7 @@ const getImageInfo = (filePath) => {
 
 export default React.forwardRef((props, ref) => {
 
-    const { defaultFileList = [], fileList, beforeUpload, onChange } = props;
+    const { defaultFileList = [], fileList, beforeUpload, limit = 1, onChange } = props;
 
     const [privateFileList, setPrivateFileList] = useState(fileList || defaultFileList);
 
@@ -56,6 +56,7 @@ export default React.forwardRef((props, ref) => {
         }
         Taro.chooseImage({
             sizeType: ['original'],
+            count: limit,
             success: (e) => {
                 const uploadList = e.tempFilePaths.map((v, index) => {
                     return {

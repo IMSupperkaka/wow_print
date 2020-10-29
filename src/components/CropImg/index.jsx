@@ -14,34 +14,24 @@ export default (props) => {
 
     const { width, height, src, className, style = {}, imgInfo, cropOption = {}, ...resetProps } = props;
 
+    const proportion = width / height;
+
+    const crop = initImg({
+        ...imgInfo,
+        origin: [0.5, 0.5],
+        scale: cropOption.scale || 1,
+        translate: cropOption.translate || [0, 0]
+    }, { width: EDIT_WIDTH, height: EDIT_WIDTH / proportion })
+
     const [state, setState] = useState({
         blur: false,
         ignore: false,
         edit: false
     });
 
-    const [crop, setCrop] = useState({
-        translate: [0, 0],
-        scale: 1,
-        fWidth: 0,
-        fHeight: 0,
-        rotateMatrix: null
-    });
-
-    useEffect(() => {
-        const proportion = width / height;
-        const info = initImg({
-            ...imgInfo,
-            origin: [0.5, 0.5],
-            scale: cropOption.scale || 1,
-            translate: cropOption.translate || [0, 0]
-        }, { width: EDIT_WIDTH, height: EDIT_WIDTH / proportion })
-        setCrop(info);
-    }, [])
-
     const { translate, scale, fWidth, fHeight, rotateMatrix } = crop;
 
-    if (fWidth <= 0) {
+    if (!imgInfo) {
         return <View>Loading...</View>;
     }
 

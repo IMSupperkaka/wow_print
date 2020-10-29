@@ -14,10 +14,9 @@ export const computeCropUrl = (url, imgInfo) => {
 }
 
 export const initImg = (imginfo, content) => {
-  const cloneImginfo = {...imginfo};
+  const cloneImginfo = JSON.parse(JSON.stringify(imginfo));
   const aspectRadio = imginfo.width / imginfo.height;
   const contentRadio = content.width / content.height;
-  console.log(cloneImginfo)
   // TODO:简化流程
   if (aspectRadio > 1) {
       const deg = 1.5 * Math.PI;

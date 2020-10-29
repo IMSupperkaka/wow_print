@@ -10,7 +10,7 @@ import uploiadPlus from '../../../images/upload-plus@2x.png';
 
 export default (props) => {
 
-    const { width, height, onChange, beforeUpload, fileList = [] } = props;
+    const { width, height, onChange, beforeUpload, limit = 1, fileList = [] } = props;
 
     const upload = useRef();
 
@@ -44,12 +44,12 @@ export default (props) => {
     return (
         <View className={props.className}>
             {
-                fileList.length >= 1 &&
+                currentImg &&
                 <View className="crop-img-wrap">
                     <CropImg onHandleEdit={onHandleEdit} onHandleChange={() => { upload.current.handleChoose(); }} className="item-img" width={width} height={height} imgInfo={currentImg.imgInfo} cropOption={currentImg.cropInfo} src={currentImg.filePath}/>
                 </View>
             }
-            <Upload ref={upload} fileList={fileList} onChange={onUploadChange} beforeUpload={beforeUpload}>
+            <Upload limit={limit} ref={upload} fileList={fileList} onChange={onUploadChange} beforeUpload={beforeUpload}>
                 {
                     fileList.length >= 1 ? null : uploadBtn
                 }
