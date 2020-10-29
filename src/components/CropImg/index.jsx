@@ -10,20 +10,9 @@ import { computeCropUrl, initImg } from '../../utils/utils'
 
 const radio = 750 / Taro.getSystemInfoSync().screenWidth;
 
-const getImageInfo = (filePath) => {
-    return new Promise((resolve) => {
-        Taro.getImageInfo({
-            src: filePath,
-            success: (imgres) => {
-                resolve(imgres);
-            }
-        })
-    })
-}
-
 export default (props) => {
 
-    const { width, height, src, className, style = {}, cropOption = {}, ...resetProps } = props;
+    const { width, height, src, className, style = {}, imgInfo, cropOption = {}, ...resetProps } = props;
 
     const [state, setState] = useState({
         blur: false,
@@ -41,15 +30,13 @@ export default (props) => {
 
     useEffect(() => {
         const proportion = width / height;
-        getImageInfo(src).then((imgres) => {
-            const info = initImg({
-                ...imgres,
-                origin: [0.5, 0.5],
-                scale: cropOption.scale || 1,
-                translate: cropOption.translate || [0, 0]
-            }, { width: EDIT_WIDTH, height: EDIT_WIDTH / proportion })
-            setCrop(info);
-        });
+        const info = initImg({
+            ...imgInfo,
+            origin: [0.5, 0.5],
+            scale: cropOption.scale || 1,
+            translate: cropOption.translate || [0, 0]
+        }, { width: EDIT_WIDTH, height: EDIT_WIDTH / proportion })
+        setCrop(info);
     }, [])
 
     const { translate, scale, fWidth, fHeight, rotateMatrix } = crop;

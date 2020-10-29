@@ -4,6 +4,17 @@ import { View } from '@tarojs/components';
 
 import { uploadFile } from '../../services/upload';
 
+const getImageInfo = (filePath) => {
+    return new Promise((resolve) => {
+        Taro.getImageInfo({
+            src: filePath,
+            success: (imgres) => {
+                resolve(imgres);
+            }
+        })
+    })
+}
+
 export default React.forwardRef((props, ref) => {
 
     const { defaultFileList = [], fileList, beforeUpload, onChange } = props;
@@ -22,7 +33,7 @@ export default React.forwardRef((props, ref) => {
         }
     }, [privateFileList])
 
-    const progress = (item, res, status) => {
+    const progress = (item, res, imgInfo, status) => {
         setPrivateFileList((list) => {
             const index = list.findIndex((v) => {
                 return v.uid == item.uid;
@@ -31,6 +42,7 @@ export default React.forwardRef((props, ref) => {
             const currentItem = cloneList[index];
             currentItem.status = status;
             currentItem.response = res;
+            currentItem.imgInfo = imgInfo;
             return cloneList;
         })
     }
@@ -62,7 +74,9 @@ export default React.forwardRef((props, ref) => {
                     uploadFile({
                         filePath: v.filePath
                     }).then((res) => {
-                        progress(v, res, 'done');
+                        getImageInfo(v.filePath).then((imgInfo) => {
+                            progress(v, res, imgInfo, 'done');
+                        })
                     })
                 })
             }
