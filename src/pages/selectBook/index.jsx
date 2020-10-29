@@ -238,22 +238,22 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                             return (
                                                 <View className="choose-item" key={i}>
                                                     <UploadCrop beforeUpload={beforeUpload} fileList={file} onChange={onChange} className="cover-con" width={320} height={320}/>
-                                                    <View className={`mask-box ${i % 2 ? 'right' : 'left'}`}>
+                                                    {/* <View className={`mask-box ${i % 2 ? 'right' : 'left'}`}>
                                                         <View className="mask-bottom black">
                                                             <View className="btn">调整</View>
                                                             <View className="line" />
                                                             <View className="btn">换图</View>
                                                         </View>
-                                                        {/* <View className="mask-tips">
+                                                        <View className="mask-tips">
                                                             <Text>提示</Text>
                                                             <Text>图片模糊或过长哦~</Text>
-                                                        </View> */}
+                                                        </View>
                                                         <View className="mask-bottom">
                                                             <View className="btn">忽略</View>
                                                             <View className="line" />
                                                             <View className="btn">换图</View>
                                                         </View>
-                                                    </View>
+                                                    </View> */}
                                                 </View>
                                             )
                                         }) 
@@ -294,7 +294,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
             <Dialog className="upload-dialog" title={`已上传${progress.completeNum}/${progress.totalNum}张`} visible={progress.visible}>
                 <View>正在拼命上传中，请耐心等待哦～</View>
             </Dialog>
-            <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/>
+            {/* <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/> */}
         </View>
     )
 }

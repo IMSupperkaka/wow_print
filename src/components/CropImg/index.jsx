@@ -85,8 +85,8 @@ export default (props) => {
                 {
                     state.blur && !state.ignore &&
                     <>
-                        <View className="mask-bottom black">
-                            <View className="btn">调整</View>
+                        <View className="mask-bottom">
+                            <View className="btn">忽略</View>
                             <View className="line" />
                             <View className="btn">换图</View>
                         </View>
@@ -98,8 +98,8 @@ export default (props) => {
                 }
                 {
                     state.edit &&
-                    <View className="mask-bottom">
-                        <View className="btn">忽略</View>
+                    <View className="mask-bottom black">
+                        <View className="btn">调整</View>
                         <View className="line" />
                         <View className="btn">换图</View>
                     </View>
