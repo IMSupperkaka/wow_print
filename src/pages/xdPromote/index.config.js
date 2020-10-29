@@ -1,3 +1,3 @@
 export default {
-    navigationBarTitleText: '小电-哇印'
+    navigationBarTitleText: '来自小电的福利'
 }
