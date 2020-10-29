@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import math from '../../utils/math'
 import classNames from 'classnames'
-import { View, Image } from '@tarojs/components'
+import { View, Image, Text } from '@tarojs/components'
 
 import './index.less'
 import { EDIT_WIDTH } from '../../utils/picContent'
@@ -25,6 +25,12 @@ export default (props) => {
 
     const { width, height, src, className, style = {}, cropOption = {}, ...resetProps } = props;
 
+    const [state, setState] = useState({
+        blur: false,
+        ignore: false,
+        edit: false
+    });
+
     const [crop, setCrop] = useState({
         translate: [0, 0],
         scale: 1,
@@ -34,7 +40,6 @@ export default (props) => {
     });
 
     useEffect(() => {
-        console.log('render');
         const proportion = width / height;
         getImageInfo(src).then((imgres) => {
             const info = initImg({
@@ -65,8 +70,41 @@ export default (props) => {
         height: Taro.pxTransform(fHeight * scalea)
     }
 
+    const toogleEdit = () =>{
+        setState((state) => {
+            return {
+                ...state,
+                edit: !state.edit
+            }
+        })
+    }
+
     return (
-        <View style={{ width: Taro.pxTransform(width), height: Taro.pxTransform(height) }} {...resetProps} className={classNames('cropimg-wrap', className)}>
+        <View onClick={toogleEdit} style={{ width: Taro.pxTransform(width), height: Taro.pxTransform(height) }} {...resetProps} className={classNames('cropimg-wrap', className)}>
+            <View className="mask-box">
+                {
+                    state.blur && !state.ignore &&
+                    <>
+                        <View className="mask-bottom black">
+                            <View className="btn">调整</View>
+                            <View className="line" />
+                            <View className="btn">换图</View>
+                        </View>
+                        <View className="mask-tips">
+                            <Text>提示</Text>
+                            <Text>图片模糊或过长哦~</Text>
+                        </View>
+                    </>
+                }
+                {
+                    state.edit &&
+                    <View className="mask-bottom">
+                        <View className="btn">忽略</View>
+                        <View className="line" />
+                        <View className="btn">换图</View>
+                    </View>
+                }
+            </View>
             <Image style={{ ...transformStyle, ...style }} src={src} mode="scaleToFill" />
         </View>
     )
