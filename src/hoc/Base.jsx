@@ -7,6 +7,8 @@ const Base = (Page) => {
     return connect(({ user }) => ({
         user
     }))((props) => {
+        console.log('channel');
+        console.log(Taro.getStorageSync('channel'));
         if (!props.user.loadFinish) {
             return <View>Loading</View>;
         }
