@@ -1,32 +1,26 @@
 import React, { useState } from 'react';
-import Taro from '@tarojs/taro';
+import Taro, { useReady } from '@tarojs/taro';
 import classNames from 'classnames';
 import { View, Image, Button } from '@tarojs/components';
 
+import { couponStatus } from '../../utils/map/coupon';
 import Dialog from '../../components/Dialog';
-import { receive } from '../../services/coupon';
+import { receive, channelCouponList } from '../../services/coupon';
 import './index.less';
 
 export default () => {
 
     const [visible, setVisible] = useState(false);
-    const [couponList, setCouponList] = useState([
-        {
-            productName: '4寸lomo卡',
-            couponName: '免费打印16张券',
-            productId: 13
-        },
-        {
-            productName: '5寸高清照片',
-            couponName: '免费打印12张券',
-            productId: 13
-        },
-        {
-            productName: '6寸高清照片',
-            couponName: '免费打印8张券',
-            productId: 13
-        }
-    ]);
+    const [couponList, setCouponList] = useState([]);
+
+    useReady(() => {
+        receive().then(() => {
+            return channelCouponList();
+        }).then(({ data }) => {
+            setCouponList(data.data);
+            setVisible(true);
+        })
+    })
 
     const goDetail = (id) => {
         Taro.navigateTo({
@@ -38,38 +32,25 @@ export default () => {
         <View>
             <Image className="head-banner" mode="widthFix" src="https://cdn.wanqiandaikuan.com/%E5%B0%8F%E7%94%B5x%E5%93%87%E5%8D%B0%E6%B4%BB%E5%8A%A8.png"/>
             <View className="product-box">
-                <View className="product-main">
-                    <Image className="background" mode="widthFix" src="https://cdn.wanqiandaikuan.com/5%E5%AF%B8%E5%95%86%E5%93%81.png"/>
-                    <View className="product-content">
-                        <View className="product-info">
-                            <View className="product-name">5寸高清照片</View>
-                            <View className="coupon-name">免费打印12张券</View>
-                        </View>
-                        <Button onClick={() => { goDetail(13) }} className="radius-btn primary-btn">去使用</Button>
-                    </View>
-                </View>
-                <View className="product-sub-wrap">
-                    <View className="product-sub">
-                        <Image className="background" mode="widthFix" src="https://cdn.wanqiandaikuan.com/4%20%E5%AF%B8%E5%95%86%E5%93%81.png"/>
-                        <View className="product-content">
-                            <View className="product-info">
-                                <View className="product-name">4寸lomo卡</View>
-                                <View className="coupon-name">免费打印12张券</View>
+                {
+                    couponList.map((coupon, index) => {
+
+                        const imgSrc = index == 0 ? 'https://cdn.wanqiandaikuan.com/5%E5%AF%B8%E5%95%86%E5%93%81.png' : 'https://cdn.wanqiandaikuan.com/4%20%E5%AF%B8%E5%95%86%E5%93%81.png' 
+
+                        return (
+                            <View className={index == 0 ? 'product-main' : 'product-sub'}>
+                                <Image className="background" mode="widthFix" src={imgSrc}/>
+                                <View className="product-content">
+                                    <View className="product-info">
+                                        <View className="product-name">{ coupon.goodName }</View>
+                                        <View className="coupon-name">{ coupon.couponName }</View>
+                                    </View>
+                                    <Button onClick={() => { goDetail(coupon.goodId) }} className="radius-btn primary-btn">去使用</Button>
+                                </View>
                             </View>
-                            <Button onClick={() => { goDetail(13) }} className="radius-btn primary-btn">去使用</Button>
-                        </View>
-                    </View>
-                    <View className="product-sub">
-                        <Image className="background" mode="widthFix" src="https://cdn.wanqiandaikuan.com/4%20%E5%AF%B8%E5%95%86%E5%93%81.png"/>
-                        <View className="product-content">
-                            <View className="product-info">
-                                <View className="product-name">6寸高清照片</View>
-                                <View className="coupon-name">免费打印12张券</View>
-                            </View>
-                            <Button onClick={() => { goDetail(13) }} className="radius-btn primary-btn">去使用</Button>
-                        </View>
-                    </View>
-                </View>
+                        )
+                    })
+                }
             </View>
             <View className="content">
                 <View className="title">使用规则</View>
@@ -97,12 +78,16 @@ export default () => {
                 {
                     couponList.map((v) => {
                         return (
-                            <View className={classNames("coupon-box", v.active ? 'active' : null)}>
+                            <View className={classNames("coupon-box", v.status == 1 ? 'active' : null)}>
                                 <View className="left">
-                                    <View>{ v.productName }</View>
+                                    <View>{ v.goodName }</View>
                                     <View>{ v.couponName }</View>
                                 </View>
-                                <View className="right" onClick={() => { goDetail(v.productId) }}>立即打印</View>
+                                <View className="right" onClick={() => { v.status == 1 && goDetail(v.goodId) }}>
+                                    {
+                                        v.status == 1 ? '立即打印' : (couponStatus.get(v.status))
+                                    }
+                                </View>
                             </View>
                         )
                     })
