@@ -5,6 +5,7 @@ import { login, saveinfo } from '../services/user';
 export default {
     namespace: 'user',
     state: {
+        loadFinish: false,
         info: {
             nickName: null,
             avatarUrl: null,
@@ -27,6 +28,9 @@ export default {
             if (payload.channel) {
                 Taro.setStorageSync('channel', payload.channel);
             }
+            yield put({
+                type: 'setLoadFinish'
+            })
             const response = yield call(async () => {
                 return new Promise((resolve) => {
                     Taro.login({
@@ -44,6 +48,12 @@ export default {
         }
     },
     reducers: {
+        setLoadFinish(state, { payload }) {
+            return {
+                ...state,
+                loadFinish: true
+            }
+        },
         saveUserInfo(state, { payload }) {
             if (payload.token) {
                 Taro.setStorageSync('token', payload.token);

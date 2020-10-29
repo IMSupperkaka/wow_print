@@ -3,12 +3,13 @@ import Taro, { useReady } from '@tarojs/taro';
 import classNames from 'classnames';
 import { View, Image, Button } from '@tarojs/components';
 
+import Base from '../../hoc/Base';
 import { couponStatus } from '../../utils/map/coupon';
 import Dialog from '../../components/Dialog';
 import { receive, channelCouponList } from '../../services/coupon';
 import './index.less';
 
-export default () => {
+export default Base(() => {
 
     const [visible, setVisible] = useState(false);
     const [couponList, setCouponList] = useState([]);
@@ -106,4 +107,4 @@ export default () => {
             </Dialog>
         </View>
     )
-}
+})
