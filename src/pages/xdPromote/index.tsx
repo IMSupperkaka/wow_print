@@ -28,6 +28,12 @@ export default () => {
         })
     }
 
+    const goHome = () => {
+        Taro.switchTab({
+            url: '/pages/home/index'
+        })
+    }
+
     return (
         <View>
             <Image className="head-banner" mode="widthFix" src="https://cdn.wanqiandaikuan.com/%E5%B0%8F%E7%94%B5x%E5%93%87%E5%8D%B0%E6%B4%BB%E5%8A%A8.png"/>
@@ -93,6 +99,10 @@ export default () => {
                     })
                 }
                 <View className="tips">优惠券有效期：自领取15天内有效</View>
+                {
+                    couponList.filter((v) => { return v.status == 1 }).length > 0 &&
+                    <View className="getmore-coupon" onClick={goHome}>获取更多券</View>
+                }
             </Dialog>
         </View>
     )
