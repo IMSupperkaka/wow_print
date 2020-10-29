@@ -28,7 +28,7 @@ export default (props) => {
         <Modal {...resetProps} title="已上传图片">
             <View className="select-content">
                 {
-                    imgList.map((item) => {
+                    imgList.map((item, index) => {
                         return (
                             <View className="img-item" onClick={() => { handleChoose(item) }} key={index}>
                                 <Image mode="aspectFill" src={item.filePath}/>
