@@ -119,11 +119,11 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
 
     const handleGoEdit = (index) => {
         dispatch({
-            type: 'confirmOrder/saveActiveIndex',
-            payload: index
-        })
-        Taro.navigateTo({
-            url: '/pages/imgEdit/index'
+            type: 'imgEdit/goImgEdit',
+            payload: {
+                imgList: userImageList,
+                defaultIndex: index
+            }
         })
     }
 
@@ -187,6 +187,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
     )
 }
 
-export default connect(({ confirmOrder }) => ({
-    confirmOrder
+export default connect(({ confirmOrder, editimg }) => ({
+    confirmOrder,
+    editimg
 }))(SelectPic);

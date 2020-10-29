@@ -1,14 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useImperativeHandle } from 'react';
 import Taro from '@tarojs/taro';
 import { View } from '@tarojs/components';
 
 import { uploadFile } from '../../services/upload';
 
-export default (props) => {
+export default React.forwardRef((props, ref) => {
 
     const { defaultFileList = [], fileList, beforeUpload, onChange } = props;
 
     const [privateFileList, setPrivateFileList] = useState(fileList || defaultFileList);
+
+    useImperativeHandle(ref, () => {
+        return {
+            handleChoose
+        }
+    })
 
     useEffect(() => {
         if (privateFileList.length > 0) {
@@ -74,4 +80,4 @@ export default (props) => {
             }
         </View>
     )
-}
+});

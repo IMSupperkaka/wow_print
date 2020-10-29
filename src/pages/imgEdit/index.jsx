@@ -28,19 +28,21 @@ const getDistance = (p1, p2) => {
 
 const ImgEdit = (props) => {
 
-    const { dispatch, confirmOrder: { proportion, userImageList, activeIndex } } = props;
+    const { dispatch, editimg: { imgList, activeIndex } } = props;
+    const currentImg = imgList[activeIndex];
     const contentWidth = EDIT_WIDTH;
-    const contentHeight = EDIT_WIDTH / proportion;
-    const [IMG, setIMG] = useState(userImageList[activeIndex]);
+    const contentHeight = EDIT_WIDTH / currentImg.proportion;
+    const [IMG, setIMG] = useState(currentImg);
     const [isTouch, setIsTouch] = useState(false);
     const [translate, setTranslate] = useState([0, 0]);
     const [scale, setScale] = useState(1);
 
     useEffect(() => {
-        const current = userImageList[activeIndex];
+        const current = imgList[activeIndex];
+        console.log(current);
         setIMG(current);
-        setTranslate(current.imgInfo.translate);
-        setScale(current.imgInfo.scale);
+        setTranslate(current?.imgInfo?.translate || [0, 0]);
+        setScale(current?.imgInfo?.scale || 1);
     }, [activeIndex])
 
     const onTouchStart = (e) => {
@@ -123,16 +125,16 @@ const ImgEdit = (props) => {
         setIsTouch(false);
         setScale(resetScale);
         setTranslate([resetx, resety]);
-        const cloneList = [...userImageList];
+        const cloneList = [...imgList];
         const imgInfo = {
             ...cloneList[activeIndex].imgInfo,
             translate: [resetx, resety],
             scale: resetScale
         }
         cloneList[activeIndex].imgInfo = imgInfo;
-        cloneList[activeIndex].cropImage = computeCropUrl(IMG.originImage, { ...imgInfo, contentWidth: EDIT_WIDTH, contentHeight: EDIT_WIDTH / proportion });
+        cloneList[activeIndex].cropImage = computeCropUrl(IMG.originImage, { ...imgInfo, contentWidth: contentWidth, contentHeight: contentHeight });
         dispatch({
-            type: 'confirmOrder/saveUserImageList',
+            type: 'confirmOrder/saveimgList',
             payload: cloneList
         })
     }
@@ -150,7 +152,7 @@ const ImgEdit = (props) => {
             confirmColor: '#FF6345',
             success: (res) => {
                 if (res.confirm) {
-                    const cloneList = [...userImageList];
+                    const cloneList = [...imgList];
                     cloneList.splice(activeIndex, 1);
                     if (cloneList.length <= 0) {
                         Taro.navigateBack();
@@ -158,7 +160,7 @@ const ImgEdit = (props) => {
                         oprate(activeIndex <= 0 ? 'plus' : 'subtraction');
                     }
                     dispatch({
-                        type: 'confirmOrder/saveUserImageList',
+                        type: 'confirmOrder/saveimgList',
                         payload: cloneList
                     })
                 }
@@ -185,11 +187,11 @@ const ImgEdit = (props) => {
     }
 
     const maskStyle = {
-      borderWidth: `${Taro.pxTransform(102)} ${Taro.pxTransform(84)} calc(100vh - ${Taro.pxTransform(102)} - ${Taro.pxTransform(EDIT_WIDTH / proportion)}) ${Taro.pxTransform(84)}`
+      borderWidth: `${Taro.pxTransform(102)} ${Taro.pxTransform(84)} calc(100vh - ${Taro.pxTransform(102)} - ${Taro.pxTransform(contentHeight)}) ${Taro.pxTransform(84)}`
     }
 
     const contentStyle = {
-      height: `${Taro.pxTransform(EDIT_WIDTH / proportion)}`
+      height: `${Taro.pxTransform(contentHeight)}`
     }
 
     return (
@@ -199,7 +201,7 @@ const ImgEdit = (props) => {
                 <View className="content-wrap">
                     <View className="mask" style={maskStyle}></View>
                     <Canvas canvasId='canvas' style={contentStyle} disableScroll={true} className="content" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
-                    <CropImg className="img" width={contentWidth} height={contentHeight} src={IMG.originPath} cropOption={imgInfo} style={{ transitionProperty: !isTouch ? 'transform' : 'none' }}/>
+                    <CropImg className="img" width={contentWidth} height={contentHeight} src={IMG.filePath} cropOption={imgInfo} style={{ transitionProperty: !isTouch ? 'transform' : 'none' }}/>
                 </View>
                 <View className="bottom-wrap">
                     <View className="bottom-tip">tips：灰色区域将被裁剪，不在打印范围内</View>
@@ -210,7 +212,7 @@ const ImgEdit = (props) => {
                                 activeLeftIcon
                         }
                         {
-                            activeIndex >= userImageList.length - 1 ?
+                            activeIndex >= imgList.length - 1 ?
                                 disabledRightIcon :
                                 activeRightIcon
                         }
@@ -225,6 +227,6 @@ const ImgEdit = (props) => {
     )
 }
 
-export default connect(({ confirmOrder }) => ({
-    confirmOrder
+export default connect(({ editimg }) => ({
+    editimg
 }))(ImgEdit);
