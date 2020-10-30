@@ -3,9 +3,9 @@ import Taro from '@tarojs/taro'
 import math from '../../utils/math'
 import classNames from 'classnames'
 import { View, Image, Text } from '@tarojs/components'
-import { CSSTransition, Transition } from 'react-transition-group'
 
 import './index.less'
+import Transition from '../Transition'
 import { EDIT_WIDTH } from '../../utils/picContent'
 import { initImg } from '../../utils/utils'
 
@@ -99,32 +99,13 @@ export default (props) => {
                         </View>
                     </>
                 }
-                {/* <Transition unmountOnExit in={state.edit} timeout={500}>
-                    {state => (
-                        <View className={`mask-bottom black fade-in-${state}`}>
-                            <View>
-                                {state}
-                            </View>
-                            <View className="btn" onClick={handleEdit}>调整</View>
-                            <View className="line" />
-                            <View className="btn" onClick={handleChange}>换图</View>
-                        </View>
-                    )}
-                </Transition> */}
-                <CSSTransition in={state.edit} timeout={200} classNames="fade-in">
-                    <View className={`mask-bottom black fade`}>
+                <Transition in={state.edit} timeout={200} classNames="fade-in">
+                    <View className={`mask-bottom black`}>
                         <View className="btn" onClick={handleEdit}>调整</View>
                         <View className="line" />
                         <View className="btn" onClick={handleChange}>换图</View>
                     </View>
-                </CSSTransition>
-                {/* {
-                    <View className={`mask-bottom black ${state.edit && 'show'}`}>
-                        <View className="btn" onClick={handleEdit}>调整</View>
-                        <View className="line" />
-                        <View className="btn" onClick={handleChange}>换图</View>
-                    </View>
-                } */}
+                </Transition>
             </View>
             <Image style={{ ...transformStyle, ...style }} src={src} mode="widthFix" />
         </View>
