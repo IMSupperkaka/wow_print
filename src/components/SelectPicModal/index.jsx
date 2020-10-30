@@ -29,7 +29,7 @@ export default (props) => {
                     {
                         imgList.map((item, index) => {
                             return (
-                                <Upload count={1} onChange={(fileList) => {handleReplace(fileList, index)}} key={index}>
+                                <Upload limit={1} onChange={(fileList) => {handleReplace(fileList, index)}} key={index}>
                                     <View className="img-item">
                                         <Image mode="aspectFill" src={item.filePath}/>
                                     </View>
@@ -41,7 +41,7 @@ export default (props) => {
             </ScrollView>
             {
                 imgList.length < 17 && 
-                <Upload count={17 - imgList.length} onChange={handleChange}>
+                <Upload limit={17 - imgList.length} onChange={handleChange}>
                     <View class="upload-btn">从手机相册上传</View>
                 </Upload>
             }
