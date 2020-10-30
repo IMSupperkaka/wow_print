@@ -1,26 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Image, Text, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
+import './index.less'
 import lodash from 'lodash';
+
+import { add, edit, detail } from '../../services/portfolio';
 
 import UploadCrop from '../../components/UploadCrop';
 import SelectPicModal from '../../components/SelectPicModal';
+import BottomButton from '../../components/BottomButton';
+import Modal from '../../components/Modal';
 
-import './index.less'
+
 import { SELECT_WIDTH } from '../../utils/picContent'
 import { uploadFile } from '../../services/upload'
 import { list } from '../../services/address'
 import Dialog from '../../components/Dialog'
-import SafeArea from '../../components/SafeArea'
 import editIcon from '../../../images/icon_edit.png'
-import addIcon from '../../../images/icon_add_gray.png'
 import wayin from '../../../images/cover_wayin.png'
-import { arg } from 'mathjs';
 
 const SelectBook = ({ dispatch, confirmOrder }) => {
 
-    const { coupon, userImageList, proportion } = confirmOrder;
+    const { coupon, userImageList, proportion, goodId, portfolioId, type } = confirmOrder;
 
     const [progress, setProgress] = useState({
         visible: false,
@@ -30,7 +32,14 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
 
     const [visible, setVisible] = useState(false);
 
-    const [twinsList, setTwinsList] = useState([
+    const [coverInfo, setCoverInfo] = useState({
+        name: null,
+        desc: null
+    });
+
+    const [editVisible, setEditVisible] = useState(false);
+
+    const twinsList = [
         [{},{}],
         [{},{}],
         [{},{}],
@@ -39,7 +48,13 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         [{},{}],
         [{},{}],
         [{},{}]
-    ]);
+    ];
+
+    useEffect(() => {
+        if(portfolioId) {
+            detail(portfolioId)
+        }
+    }, [])
 
     const beforeUpload = () => {
         if (userImageList.length > 0) {
@@ -57,41 +72,6 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         dispatch({
             type: 'confirmOrder/saveUserImageList',
             payload: lodash.uniqBy(curImgList, 'uid')
-        })
-    };
-
-    const handleChoose = () => {
-        Taro.chooseImage({
-            sizeType: ['original'],
-            success: (e) => {
-                setProgress({
-                    ...progress,
-                    visible: true,
-                    totalNum: e.tempFilePaths.length,
-                    completeNum: 0
-                })
-                e.tempFilePaths.map((v) => {
-                    uploadFile({
-                        filePath: v
-                    }).then((res) => {
-                        setProgress((progress) => {
-                            const completeNum = progress.completeNum + 1;
-                            return {
-                                ...progress,
-                                completeNum: completeNum,
-                                visible: completeNum < e.tempFilePaths.length
-                            }
-                        })
-                        dispatch({
-                            type: 'confirmOrder/pushUserImg',
-                            payload: {
-                                filePath: v,
-                                res: res
-                            }
-                        })
-                    })
-                })
-            }
         })
     };
 
@@ -151,6 +131,25 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         })
     };
 
+    const handleEditCover = () => {
+        if(!coverInfo.name && !coverInfo.name) {
+            Taro.showToast({
+                title:'请输入封面信息',
+                icon: 'none',
+                duration: 1000
+            })
+            return
+        }
+        let cloneList = [...userImageList];
+        cloneList[0].name = coverInfo.name;
+        cloneList[0].desc = coverInfo.desc;
+        dispatch({
+            type: 'confirmOrder/saveUserImageList',
+            payload: cloneList
+        })
+        setEditVisible(false)
+    }
+
     const handleGoEdit = (index) => {
         dispatch({
             type: 'confirmOrder/saveActiveIndex',
@@ -162,38 +161,81 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
     };
 
     const handleSaveWorks = () => {
-        /**
-         * 保存作品集的操作
-         * 从作品集入口进来的时候，点击存入作品集要提示，将会覆盖，是否确认保存。
-         */
-        Taro.showModal({
-            title: '确认保存',
-            content: '将覆盖原作品，是否确认保存当前修改？',
-            confirmText: '确认',
-            cancelText: '取消',
-            confirmColor: '#FF6345',
-            success: (res) => {
-                if (res.confirm) {
-                    del(query.id).then(() => {
-                        Taro.navigateBack();
+        if(!userImageList.length) {
+            Taro.showToast({
+                title:'请上传照片',
+                icon: 'none',
+                duration: 1500
+            })
+            return
+        }
+        if(portfolioId) {
+            Taro.showModal({
+                title: '确认保存',
+                content: '将覆盖原作品，是否确认保存当前修改？',
+                confirmText: '确认',
+                cancelText: '取消',
+                confirmColor: '#FF6345',
+                success: (res) => {
+                    if (res.confirm) {
+                        edit({
+                            portfolioId: portfolioId,
+                            userImageList: userImageList
+                        }).then(() => {
+                            Taro.showToast({
+                                title:'作品集保存成功',
+                                icon: 'none',
+                                duration: 1500
+                            })
+                        })
+                    }
+                }
+            })
+        } else {
+            add({
+                goodId: goodId,
+                userImageList: userImageList
+            }).then(({ data }) => {
+                // 作品集未满 存入成功保存返回的portfolioId
+                if(data.data.portfolioId) {
+                    Taro.showToast({
+                        title:'作品集保存成功',
+                        icon: 'none',
+                        duration: 2000
+                    })
+                    dispatch({
+                        type: 'confirmOrder/savePortfolioId',
+                        payload: data.data.portfolioId
+                    })
+                } else {
+                    // 作品集已满 提示用户作品集已经满了
+                    Taro.showModal({
+                        title: '提示',
+                        content: '作品集已满，请清除过多的作品~',
+                        confirmText: '去清除',
+                        cancelText: '取消',
+                        confirmColor: '#FF6345',
+                        success: (res) => {
+                            if (res.confirm) {
+                                Taro.navigateTo({
+                                    url: '/pages/portfolio/index'
+                                })
+                            }
+                        }
                     })
                 }
-            }
-        })
-        // Taro.showToast({
-        //     title:'已保存，可在作品集中查看',
-        //     icon: 'none',
-        //     duration: 1000
-        // })
-        // Taro.showToast({
-        //     title:'作品集已满，请清除过多的作品',
-        //     icon: 'none',
-        //     duration: 1000
-        // })
+            })
+        }
     };
 
-    const handleEditInfo = (isShow) => {
+    const handleReplace = (fileList, index) => {
+        let cloneList = [...userImageList];
+        cloneList.splice(index, 1, ...fileList);
 
+        dispatch({
+            type: 'confirmOrder/saveUserImageList',
+            payload: cloneList
+        })
     };
 
     const restFreeNums = (coupon.couponFreeNums || 0) - userImageList.reduce((count, v) => { return count + v.printNums }, 0);
@@ -212,7 +254,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                             <View className="edit-box">
                                 <View className="title-box">
                                     <Text className="title">定格真我 触手可及</Text>
-                                    <Image src={editIcon} className="edit-icon" onClick={() => handleEditInfo(true)}/>
+                                    <Image src={editIcon} className="edit-icon" onClick={() => setEditVisible(true)}/>
                                 </View>
                                 <View className="description">
                                     To 哇印定制
@@ -220,7 +262,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                             </View>
                             <Image src={wayin} mode="aspectFit" className="wayin"/>
                         </View>
-                        <UploadCrop beforeUpload={beforeUpload} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} className="cover-con" width={555} height={472}/>
+                        <UploadCrop count={17 - userImageList.length} beforeUpload={beforeUpload} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className="cover-con"/>
                     </View>
                     <View className="page-num">封面</View>
                 </View>
@@ -237,23 +279,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                             const file = fileList[i] ? [fileList[i]] : [];
                                             return (
                                                 <View className="choose-item" key={i}>
-                                                    <UploadCrop beforeUpload={beforeUpload} fileList={file} onChange={onChange} className="cover-con" width={320} height={320}/>
-                                                    {/* <View className={`mask-box ${i % 2 ? 'right' : 'left'}`}>
-                                                        <View className="mask-bottom black">
-                                                            <View className="btn">调整</View>
-                                                            <View className="line" />
-                                                            <View className="btn">换图</View>
-                                                        </View>
-                                                        <View className="mask-tips">
-                                                            <Text>提示</Text>
-                                                            <Text>图片模糊或过长哦~</Text>
-                                                        </View>
-                                                        <View className="mask-bottom">
-                                                            <View className="btn">忽略</View>
-                                                            <View className="line" />
-                                                            <View className="btn">换图</View>
-                                                        </View>
-                                                    </View> */}
+                                                    <UploadCrop count={17 - userImageList.length} beforeUpload={beforeUpload} fileList={file} onChange={onChange} width={320} height={320}/>
                                                 </View>
                                             )
                                         }) 
@@ -265,36 +291,57 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     })
                 }
             </View>
-            <SafeArea>
-                {({ bottom }) => {
-                    const btmLine = userImageList.length ? 
-                    <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className="submit-wrap">
-                        {
-                            coupon.couponName &&
-                            <View className="freenums-tag">还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
-                        }
-                        <View className="submit-left" onClick={handleSaveWorks}>存入作品集</View>
-                        {
-                            userImageList.length === 17 ? <View className="submit-right" onClick={handleGoPrint}>
-                                <Text>立即定制</Text>
-                                <Text>(已上传{userImageList.length}张)</Text>
-                            </View> : <View className="submit-right">
-                                <Text onClick={handleChoose}>批量上传</Text>
-                                <Text>(还需{17 - +userImageList.length}张)</Text>
-                            </View>
-                        }
-                    </View> :
-                    <View style={{ paddingBottom: Taro.pxTransform(bottom + 32, 750) }} className="submit-red" onClick={handleChoose}>
-                        <Text className="batch">批量上传</Text>
-                        <Text className="need">(需上传17张照片)</Text>
-                    </View>
-                    return btmLine
-                }}
-            </SafeArea>
+            <BottomButton onChange={onChange} onSave={handleSaveWorks} goPrint={handleGoPrint}/>
             <Dialog className="upload-dialog" title={`已上传${progress.completeNum}/${progress.totalNum}张`} visible={progress.visible}>
                 <View>正在拼命上传中，请耐心等待哦～</View>
             </Dialog>
-            {/* <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/> */}
+            <SelectPicModal onChange={onChange} onReplace={handleReplace} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/>
+            <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
+                <View className="modal-content">
+                    <View className="input-content">
+                        <View className="input-item">
+                            <Text className="title">名称</Text>
+                            <Input
+                                name='name'
+                                type='text'
+                                maxLength={12}
+                                placeholder='最多12个字'
+                                adjustPosition
+                                placeholderStyle="color: #C1C1C1"
+                                value={coverInfo.name}
+                                onInput={(event) => {
+                                    setCoverInfo({
+                                        ...coverInfo,
+                                        name: event.detail.value
+                                    })
+                                }}
+                            />
+                        </View>
+                        <View className="input-item">
+                            <Text className="title">昵称</Text>
+                            <Input
+                                name='name'
+                                type='text'
+                                maxLength={20}
+                                placeholder='最多20个字'
+                                adjustPosition
+                                placeholderStyle="color: #C1C1C1"
+                                value={coverInfo.desc}
+                                onInput={(event) => {
+                                    setCoverInfo({
+                                        ...coverInfo,
+                                        desc: event.detail.value
+                                    })
+                                }}
+                            />
+                        </View>
+                    </View>
+                    <View className="operate-content">
+                        <View className="left-btn" onClick={() => {setEditVisible(false)}}>取消</View>
+                        <View className={`right-btn ${coverInfo.name || coverInfo.desc ? 'clickable' : ''}`} onClick={handleEditCover}>确认</View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     )
 }

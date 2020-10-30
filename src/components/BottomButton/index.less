@@ -1,0 +1,81 @@
+@wy-orange: #FF6345;
+.submit-red {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 32px 0;
+    box-sizing: border-box;
+    line-height: 1;
+    background-color: @wy-orange;
+    color: #fff;
+    font-size: 32px;
+    text-align: center;
+    .batch {
+      font-weight: 600;
+      margin-right: 14px;
+    }
+  }
+  
+  .submit-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 32px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #fff;
+    z-index: 10;
+    .freenums-tag {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      left: 40px;
+      top: -23px;
+      height: 44px;
+      padding: 0 20px;
+      background: rgba(0, 0, 0, 0.85);
+      opacity: .7;
+      border-radius: 44px;
+      color: #fff;
+      font-size: 20px;
+      &::after {
+        content: " ";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        position: absolute;
+        left: 38px;
+        bottom: 0;
+        border: 8.5px solid;
+        border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
+        transform: translateY(100%);
+      }
+    }
+    .submit-left {
+      font-size: 28px;
+      color: #666666;
+      padding: 21px 40px;
+      margin-right: 20px;
+      border-radius: 37px;
+      border: 1px solid #E0E0E0;
+      box-sizing: border-box;
+    }
+    .submit-right {
+      flex: 1;
+      background: @wy-orange;
+      padding: 21px 0;
+      border-radius: 37px;
+      color: #FFFFFF;
+      font-size: 28px;
+      text-align: center;
+      .batch {
+        font-weight: bold;
+        margin-right: 10px;
+      }
+    }
+}

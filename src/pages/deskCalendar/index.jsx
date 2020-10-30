@@ -6,6 +6,7 @@ import './index.less';
 import { connect } from 'react-redux';
 import UploadCrop from '../../components/UploadCrop';
 import SelectPicModal from '../../components/SelectPicModal';
+import BottomButton from '../../components/BottomButton';
 
 const deskCalenderList = [
     {
@@ -80,11 +81,29 @@ const DeskCalendar = (props) => {
         })
     }
 
+    const handleReplace = (fileList, index) => {
+        let cloneList = [...userImageList];
+        cloneList.splice(index, 1, ...fileList);
+
+        dispatch({
+            type: 'confirmOrder/saveUserImageList',
+            payload: cloneList
+        })
+    };
+
     const beforeUpload = () => {
         if (userImageList.length > 0) {
             setVisible(true);
             return false;
         }
+    }
+
+    const handleSaveWorks = () => {
+
+    }
+
+    const handleGoPrint = () => {
+        
     }
 
     return (
@@ -98,7 +117,7 @@ const DeskCalendar = (props) => {
                     const fileList = userImageList[index] ? [userImageList[index]] : [];
 
                     return (
-                        <>
+                        <View key={index}>
                             {
                                 item.type == 'cover' ? 
                                 <View className="calendar-item cover">
@@ -109,12 +128,13 @@ const DeskCalendar = (props) => {
                                 </View>
                             }
                             <View className="calender-title">{ item.title }</View>
-                        </>
+                        </View>
                     )
                 })
             }
             <View onClick={beforeUpload} className="bottom-upload-btn">批量上传（需上传 17 张照片）</View>
-            <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/>
+            <BottomButton onChange={onChange} onSave={handleSaveWorks} goPrint={handleGoPrint}/>
+            <SelectPicModal onChange={onChange} onReplace={handleReplace} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/>
         </View>
     )
 }
