@@ -6,6 +6,7 @@ import './index.less';
 import { connect } from 'react-redux';
 import UploadCrop from '../../components/UploadCrop';
 import SelectPicModal from '../../components/SelectPicModal';
+import BottomButton from '../../components/BottomButton';
 
 const sizeMap = new Map([
     [0, { width: 640, height: 338 }],
@@ -94,6 +95,16 @@ const DeskCalendar = (props) => {
         })
     }
 
+    const handleReplace = (fileList, index) => {
+        let cloneList = [...userImageList];
+        cloneList.splice(index, 1, ...fileList);
+
+        dispatch({
+            type: 'confirmOrder/saveUserImageList',
+            payload: cloneList
+        })
+    };
+
     const beforeUpload = () => {
         if (userImageList.length > 0) {
             setVisible(true);
@@ -101,6 +112,14 @@ const DeskCalendar = (props) => {
         }
     }
 
+    const handleSaveWorks = () => {
+
+    }
+
+    const handleGoPrint = () => {
+
+    }
+        
     const editFinish = (index, res) => {
 
         const coverList = [
@@ -150,7 +169,7 @@ const DeskCalendar = (props) => {
                     const size = sizeMap.get(item.type);
 
                     return (
-                        <>
+                        <View key={index}>
                             {
                                 item.type == 0 ? 
                                 <View className="calendar-item cover" style={styles}>
@@ -162,16 +181,18 @@ const DeskCalendar = (props) => {
                                 </View>
                             }
                             <View className="calender-title">{ item.title }</View>
-                        </>
+                        </View>
                     )
                 })
             }
-            {
+            <BottomButton onChange={onChange} onSave={handleSaveWorks} goPrint={handleGoPrint} limit={13}/>
+            <SelectPicModal onChange={onChange} onReplace={handleReplace} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/>
+            {/* {
                 userImageList.length < 13 ? 
                 <View onClick={beforeUpload} className="bottom-upload-btn">批量上传（需上传 { 13 - userImageList.length } 张照片）</View> :
                 <View onClick={submit} className="bottom-upload-btn">确认打印</View>
             }
-            <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/>
+            <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/> */}
         </View>
     )
 }

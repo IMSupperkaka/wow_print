@@ -17,7 +17,7 @@ const getSelectPath = (category) => {
         case 1: // 照片
             return '/pages/selectPic/index';
         case 2: // 照片书
-            return '/pages/selectPic/index';
+            return '/pages/selectBook/index';
         case 3: // 台历
             return '/pages/deskCalendar/index';
     }
@@ -79,6 +79,15 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
         })
     }
 
+    const saveGoodId = () => {
+        dispatch({
+            type: 'confirmOrder/saveGoodInfo',
+            payload: {
+                id: query.id
+            }
+        })
+    }
+
     const handleOpenCoupon = () => {
         setIsOpened(true);
     }
@@ -103,6 +112,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 Taro.navigateTo({
                     url: path
                 })
+                saveGoodId()
             }
         })
     }

@@ -28,6 +28,7 @@ export default {
         addressInfo: defaultAddressInfo,
         coupon: defaultCoupon,
         goodId: null,
+        portfolioId: null,
         userImageList: [],
         activeIndex: 0,
         size: 5,
@@ -137,6 +138,12 @@ export default {
             return {
                 ...state,
                 activeIndex: payload
+            }
+        },
+        savePortfolioId(state, { payload }) {
+            return {
+                ...state,
+                portfolioId: payload
             }
         }
     }

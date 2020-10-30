@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Taro from '@tarojs/taro';
-import { View, Image, Button } from '@tarojs/components';
+import { View, Image, Button, ScrollView } from '@tarojs/components';
 
 import './index.less';
 import Modal from '../Modal';
@@ -8,39 +8,43 @@ import Upload from '../Upload';
 
 export default (props) => {
 
-    const { imgList = [], onChange, ...resetProps } = props;
+    const { imgList = [], onChange, onReplace, count, ...resetProps } = props;
 
     const handleChange = (fileList) => {
         onChange(fileList);
-        resetProps.onClose();
+        // resetProps.onClose();
     }
 
-    const handleChoose = (item) => {
-        handleChange([
-            {
-                ...item,
-                cropInfo: {},
-                uid: new Date().getTime()
-            }
-        ]);
+    const handleReplace = (fileList, index) => {
+        onReplace(fileList, index)
     }
 
     return (
-        <Modal {...resetProps} title="已上传图片">
-            <View className="select-content">
-                {
-                    imgList.map((item, index) => {
-                        return (
-                            <View className="img-item" onClick={() => { handleChoose(item) }} key={index}>
-                                <Image mode="aspectFill" src={item.filePath}/>
-                            </View>
-                        )
-                    })
-                }
+        <Modal {...resetProps}>
+            <View className="select-title">已上传图片
+                <View className="close" onClick={resetProps.onClose}>取消</View>
             </View>
-            <Upload onChange={handleChange}>
-                <View class="upload-btn">从手机相册上传</View>
-            </Upload>
+            <ScrollView scrollY style={{height: "60vh", background: "#F6F6F6"}}>
+                <View className="select-content">
+                    {
+                        imgList.map((item, index) => {
+                            return (
+                                <Upload count={1} onChange={(fileList) => {handleReplace(fileList, index)}} key={index}>
+                                    <View className="img-item">
+                                        <Image mode="aspectFill" src={item.filePath}/>
+                                    </View>
+                                </Upload>
+                            )
+                        })
+                    }
+                </View>
+            </ScrollView>
+            {
+                imgList.length < 17 && 
+                <Upload count={17 - imgList.length} onChange={handleChange}>
+                    <View class="upload-btn">从手机相册上传</View>
+                </Upload>
+            }
         </Modal>
     )
 }

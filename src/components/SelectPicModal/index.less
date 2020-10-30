@@ -1,11 +1,27 @@
 
+
+.select-title {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 88px;
+    font-size: 28px;
+    color: #000000;
+    font-weight: bold;
+    .close {
+        position: absolute;
+        right: 28px;
+        top: 24px;
+        color: #999999;
+    }
+}
+
 .select-content {
     display: grid;
     grid-template-columns: 165px 165px 165px 165px;
     grid-gap: 10px;
-    background: #F6F6F6;
-    max-height: 400px;
-    padding: 30px;
+    padding: 30px 30px calc(98px + 30px) 30px;
     .img-item {
         width: 165px;
         height: 165px;
@@ -17,6 +33,9 @@
 }
 
 .upload-btn {
+    position: fixed;
+    bottom: 0;
+    left: 0;
     width: 100%;
     height: 98px;
     line-height: 98px;
