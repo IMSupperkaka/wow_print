@@ -1,37 +1,39 @@
-import React, { useState, useEffect } from 'react';
+// Transition 用以解决react-transition-group在Taro中进出场动画失效的单个动画组件
+import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-
-let enterTimer = null;
-let leaveTimer = null;
 
 export default (props) => {
 
     const [state, setState] = useState(null);
 
+    const ref = useRef();
+
+    const transitionend = () => {
+      setState((state) => {
+        return state == 'enter-active' ? 'enter-done' : 'exit-done';
+      })
+    }
+
     useEffect(() => {
+        if (ref.current) {
+          ref.current.addEventListener('transitionend', transitionend, false)
+        }
         if (props.in) {
-            clearTimeout(enterTimer);
-            clearTimeout(leaveTimer);
             setState('enter');
             setTimeout(() => {
-                setState('enter-active');
-            }, 0)
-            enterTimer = setTimeout(() => {
-                setState('enter-done');
-            }, props.timeout);
+              setState('enter-active');
+            }, 0);
         } else {
             if (state == null) {
                 return;
             }
-            clearTimeout(enterTimer);
-            clearTimeout(leaveTimer);
             setState('exit');
             setTimeout(() => {
-                setState('exit-active');
-            }, 0)
-            leaveTimer = setTimeout(() => {
-                setState('exit-done');
-            }, props.timeout);
+              setState('exit-active');
+            }, 0);
+        }
+        return () => {
+          ref.current && ref.current.removeEventListener('transitionend', transitionend);
         }
     }, [props.in])
 
@@ -40,7 +42,8 @@ export default (props) => {
     }
 
     const CloneChildren = React.cloneElement(props.children, {
-        className: classNames(props.children.props.className, props.classNames + '-' + state)
+        className: classNames(props.children.props.className, props.classNames + '-' + state),
+        ref: ref
     })
 
     return CloneChildren;

@@ -99,7 +99,7 @@ export default (props) => {
                         </View>
                     </>
                 }
-                <Transition in={state.edit} timeout={200} classNames="fade-in">
+                <Transition in={state.edit} timeout={0} classNames="bottom-top">
                     <View className={`mask-bottom black`}>
                         <View className="btn" onClick={handleEdit}>调整</View>
                         <View className="line" />

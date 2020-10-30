@@ -48,18 +48,13 @@ $color-brand: #FF6345;
     }
 }
 
-// fade-in transition
-
+// fade-in transition start
 .fade-in-enter {
     opacity: 0;
-    visibility: hidden;
 }
 .fade-in-enter-active {
     opacity: 1;
     transition: opacity 200ms;
-}
-.fade-in-enter-done {
-    opacity: 1;
 }
 .fade-in-exit {
     opacity: 1;
@@ -68,8 +63,25 @@ $color-brand: #FF6345;
     opacity: 0;
     transition: opacity 200ms;
 }
+// fade-in transition end
 
-.fade-in-exit-done {
-    opacity: 0;
-    visibility: hidden;
+// bottom-top transition start
+.bottom-top-enter {
+  opacity: 0;
+  transform: translateY(100%);
 }
+.bottom-top-enter-active {
+  opacity: 1;
+  transition: all 200ms;
+  transform: translateY(0);
+}
+.bottom-top-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+.bottom-top-exit-active {
+  opacity: 0;
+  transition: all 200ms;
+  transform: translateY(100%);
+}
+// bottom-top transition end
