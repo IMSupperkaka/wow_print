@@ -262,7 +262,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                             </View>
                             <Image src={wayin} mode="aspectFit" className="wayin"/>
                         </View>
-                        <UploadCrop count={17 - userImageList.length} beforeUpload={beforeUpload} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className="cover-con"/>
+                        <UploadCrop limit={17 - userImageList.length} beforeUpload={beforeUpload} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className="cover-con"/>
                     </View>
                     <View className="page-num">封面</View>
                 </View>
@@ -279,7 +279,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                             const file = fileList[i] ? [fileList[i]] : [];
                                             return (
                                                 <View className="choose-item" key={i}>
-                                                    <UploadCrop count={17 - userImageList.length} beforeUpload={beforeUpload} fileList={file} onChange={onChange} width={320} height={320}/>
+                                                    <UploadCrop limit={17 - userImageList.length} beforeUpload={beforeUpload} fileList={file} onChange={onChange} width={320} height={320}/>
                                                 </View>
                                             )
                                         }) 
