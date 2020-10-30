@@ -94,8 +94,7 @@ export default (props) => {
                     </>
                 }
                 {
-                    state.edit &&
-                    <View className="mask-bottom black">
+                    <View className={`mask-bottom black ${state.edit && 'show'}`}>
                         <View className="btn" onClick={handleEdit}>调整</View>
                         <View className="line" />
                         <View className="btn" onClick={handleChange}>换图</View>

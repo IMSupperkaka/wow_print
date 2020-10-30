@@ -41,7 +41,7 @@ const BottomButton = (props) => {
                             <Text>立即定制</Text>
                             <Text>(已上传{userImageList.length}张)</Text>
                         </View> : <View className="submit-right">
-                            <Upload  limit={limit - userImageList.length} onChange={handleChange}>
+                            <Upload limit={limit - userImageList.length} onChange={handleChange}>
                                 <View>
                                     <Text className="batch">批量上传</Text>
                                     <Text className="need">(还需{limit - +userImageList.length}张)</Text>

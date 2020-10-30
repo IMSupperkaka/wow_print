@@ -20,6 +20,18 @@ import Dialog from '../../components/Dialog'
 import editIcon from '../../../images/icon_edit.png'
 import wayin from '../../../images/cover_wayin.png'
 
+// 除了封面之外的图片数组
+const twinsList = [
+    [{},{}],
+    [{},{}],
+    [{},{}],
+    [{},{}],
+    [{},{}],
+    [{},{}],
+    [{},{}],
+    [{},{}]
+];
+
 const SelectBook = ({ dispatch, confirmOrder }) => {
 
     const { coupon, userImageList, proportion, goodId, portfolioId, type } = confirmOrder;
@@ -33,22 +45,13 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
     const [visible, setVisible] = useState(false);
 
     const [coverInfo, setCoverInfo] = useState({
-        name: null,
-        desc: null
+        temporaryName: "定格真我 触手可及",
+        temporaryDesc: "To 哇印定制",
+        bookName: "定格真我 触手可及",
+        description: "To 哇印定制",
     });
 
     const [editVisible, setEditVisible] = useState(false);
-
-    const twinsList = [
-        [{},{}],
-        [{},{}],
-        [{},{}],
-        [{},{}],
-        [{},{}],
-        [{},{}],
-        [{},{}],
-        [{},{}]
-    ];
 
     useEffect(() => {
         if(portfolioId) {
@@ -75,64 +78,53 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         })
     };
 
-    const handleDelete = (index) => {
-        Taro.showModal({
-            title: '确定删除',
-            content: '是否删除该照片',
-            confirmText: '确定',
-            cancelText: '取消',
-            confirmColor: '#FF6345',
-            success: (res) => {
-                if (res.confirm) {
-                    let cloneList = [...userImageList];
-                    cloneList.splice(index, 1);
-                    dispatch({
-                        type: 'confirmOrder/saveUserImageList',
-                        payload: cloneList
-                    })
+    const editFinish = (index, res) => {
+
+        const coverList = [
+            ...userImageList
+        ];
+
+        coverList[index].cropInfo = res;
+
+        dispatch({
+            type: 'confirmOrder/saveUserImageList',
+            payload: coverList
+        })
+    }
+
+    // 请求前 处理图片列表
+    const handleResultList = () => {
+        const resultList = userImageList.map((item, index) => {
+            const img = userImageList[index];
+            return {
+                // backgroundUrl: item.backgroundImage, // 背景图片
+                imgInfo: img.imgInfo, // 图片原始信息
+                res: img.res,
+                cropInfo: {},
+                printNums: 1,
+                restInfo: {
+                    bookName: img.bookName ? img.bookName : null,
+                    description: img.description ? img.description : null
                 }
             }
         })
-    };
+        return resultList
+    }
 
-    const handleOprate = (index, type) => {
-        let cloneList = [...userImageList];
-        let item = cloneList[index];
-        if (item.printNums <= 1 && type == 'substract') {
-            return;
-        }
-        cloneList.splice(index, 1, {
-            ...item,
-            printNums: type == 'substract' ? (item.printNums - 1) : (item.printNums + 1)
-        });
+    // 去下单
+    const submit = () => {
+        const resultList = handleResultList()
         dispatch({
-            type: 'confirmOrder/saveUserImageList',
-            payload: cloneList
-        })
-    };
-
-    const handleGoPrint = () => {
-        if (userImageList.length <= 0) {
-            return Taro.showToast({
-                title: '至少选择一张照片',
-                icon: 'none'
-            })
-        }
-        list().then(({ data }) => {
-            if (data.data.length <= 0) {
-                Taro.navigateTo({
-                    url: `/pages/addressEdit/index?type=add&redirect=${encodeURIComponent('/pages/confirmOrder/index')}`
-                })
-            } else {
-                Taro.navigateTo({
-                    url: '/pages/confirmOrder/index'
-                })
+            type: 'confirmOrder/pushConfirmOrder',
+            payload: {
+                resultList
             }
         })
     };
 
+    // 修改封面信息
     const handleEditCover = () => {
-        if(!coverInfo.name && !coverInfo.name) {
+        if(!coverInfo.bookName && !coverInfo.description) {
             Taro.showToast({
                 title:'请输入封面信息',
                 icon: 'none',
@@ -140,26 +132,21 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
             })
             return
         }
-        let cloneList = [...userImageList];
-        cloneList[0].name = coverInfo.name;
-        cloneList[0].desc = coverInfo.desc;
-        dispatch({
-            type: 'confirmOrder/saveUserImageList',
-            payload: cloneList
+        setCoverInfo({
+            ...coverInfo,
+            bookName: coverInfo.temporaryName,
+            description: coverInfo.temporaryDesc,
         })
         setEditVisible(false)
-    }
-
-    const handleGoEdit = (index) => {
-        dispatch({
-            type: 'confirmOrder/saveActiveIndex',
-            payload: index
-        })
-        Taro.navigateTo({
-            url: '/pages/imgEdit/index'
-        })
     };
 
+    // 绑定封面信息到图片数组
+    const bindCoverInfoToImage = () => {
+        userImageList[0].bookName = coverInfo.bookName;
+        userImageList[0].description = coverInfo.description;
+    };
+
+    // 存入作品集
     const handleSaveWorks = () => {
         if(!userImageList.length) {
             Taro.showToast({
@@ -169,6 +156,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
             })
             return
         }
+        bindCoverInfoToImage()
+        const resultList = handleResultList()
         if(portfolioId) {
             Taro.showModal({
                 title: '确认保存',
@@ -180,7 +169,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     if (res.confirm) {
                         edit({
                             portfolioId: portfolioId,
-                            userImageList: userImageList
+                            userImageList: resultList
                         }).then(() => {
                             Taro.showToast({
                                 title:'作品集保存成功',
@@ -228,6 +217,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         }
     };
 
+    // 替换图片
     const handleReplace = (fileList, index) => {
         let cloneList = [...userImageList];
         cloneList.splice(index, 1, ...fileList);
@@ -236,12 +226,6 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
             type: 'confirmOrder/saveUserImageList',
             payload: cloneList
         })
-    };
-
-    const restFreeNums = (coupon.couponFreeNums || 0) - userImageList.reduce((count, v) => { return count + v.printNums }, 0);
-
-    const contentStyle = {
-      height: `${Taro.pxTransform(SELECT_WIDTH / proportion)}`
     };
 
     return (
@@ -253,16 +237,16 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                         <View className="cover-top">
                             <View className="edit-box">
                                 <View className="title-box">
-                                    <Text className="title">定格真我 触手可及</Text>
+                                    <Text className="title">{coverInfo.bookName}</Text>
                                     <Image src={editIcon} className="edit-icon" onClick={() => setEditVisible(true)}/>
                                 </View>
                                 <View className="description">
-                                    To 哇印定制
+                                    {coverInfo.description}
                                 </View>
                             </View>
                             <Image src={wayin} mode="aspectFit" className="wayin"/>
                         </View>
-                        <UploadCrop limit={17 - userImageList.length} beforeUpload={beforeUpload} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className="cover-con"/>
+                        <UploadCrop limit={17 - userImageList.length} beforeUpload={beforeUpload} editFinish={editFinish.bind(this, 0)} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className="cover-con"/>
                     </View>
                     <View className="page-num">封面</View>
                 </View>
@@ -279,7 +263,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                             const file = fileList[i] ? [fileList[i]] : [];
                                             return (
                                                 <View className="choose-item" key={i}>
-                                                    <UploadCrop limit={17 - userImageList.length} beforeUpload={beforeUpload} fileList={file} onChange={onChange} width={320} height={320}/>
+                                                    <UploadCrop limit={17 - userImageList.length} editFinish={editFinish.bind(this, index)} beforeUpload={beforeUpload} fileList={file} onChange={onChange} width={320} height={320}/>
                                                 </View>
                                             )
                                         }) 
@@ -291,7 +275,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     })
                 }
             </View>
-            <BottomButton onChange={onChange} onSave={handleSaveWorks} goPrint={handleGoPrint} limit={17}/>
+            <BottomButton onChange={onChange} onSave={handleSaveWorks} goPrint={submit} limit={17}/>
             <Dialog className="upload-dialog" title={`已上传${progress.completeNum}/${progress.totalNum}张`} visible={progress.visible}>
                 <View>正在拼命上传中，请耐心等待哦～</View>
             </Dialog>
@@ -308,12 +292,13 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 placeholder='最多12个字'
                                 adjustPosition
                                 placeholderStyle="color: #C1C1C1"
-                                value={coverInfo.name}
+                                value={coverInfo.temporaryName}
                                 onInput={(event) => {
                                     setCoverInfo({
                                         ...coverInfo,
-                                        name: event.detail.value
+                                        temporaryName: event.detail.value
                                     })
+                                    return event.detail.value
                                 }}
                             />
                         </View>
@@ -326,19 +311,20 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 placeholder='最多20个字'
                                 adjustPosition
                                 placeholderStyle="color: #C1C1C1"
-                                value={coverInfo.desc}
+                                value={coverInfo.temporaryDesc}
                                 onInput={(event) => {
                                     setCoverInfo({
                                         ...coverInfo,
-                                        desc: event.detail.value
+                                        temporaryDesc: event.detail.value
                                     })
+                                    return event.detail.value
                                 }}
                             />
                         </View>
                     </View>
                     <View className="operate-content">
                         <View className="left-btn" onClick={() => {setEditVisible(false)}}>取消</View>
-                        <View className={`right-btn ${coverInfo.name || coverInfo.desc ? 'clickable' : ''}`} onClick={handleEditCover}>确认</View>
+                        <View className={`right-btn ${coverInfo.bookName || coverInfo.description ? 'clickable' : ''}`} onClick={handleEditCover}>确认</View>
                     </View>
                 </View>
             </Modal>
