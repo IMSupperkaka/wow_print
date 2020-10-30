@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
 
+// TODO: unmount transition-group
 export default (props) => {
 
     const [state, setState] = useState(null);
