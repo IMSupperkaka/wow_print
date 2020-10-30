@@ -40,13 +40,13 @@ export const initImg = (imginfo, content) => {
       cloneImginfo.rotateDeg = 0;
       cloneImginfo.rotateMatrix = math.matrix([[Math.cos(0), Math.sin(0), 0], [-Math.sin(0), Math.cos(0), 0], [0, 0, 1]]);
   }
-  cloneImginfo.translateMatrix = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
-  cloneImginfo.scaleMatrix = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
+//   cloneImginfo.translateMatrix = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
+//   cloneImginfo.scaleMatrix = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
   const centerPoint = [content.width / 2, content.height / 2, 1];
   const afterCenterPoint = [cloneImginfo.fWidth / 2, cloneImginfo.fHeight / 2, 1];
   const centerOffset = [centerPoint[0] - afterCenterPoint[0], centerPoint[1] - afterCenterPoint[1]];
   cloneImginfo.centerOffset = centerOffset;
-  cloneImginfo.translate = [0, 0];
+//   cloneImginfo.translate = [0, 0];
   return cloneImginfo;
 }
 

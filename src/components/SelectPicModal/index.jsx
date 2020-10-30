@@ -19,6 +19,7 @@ export default (props) => {
         handleChange([
             {
                 ...item,
+                cropInfo: {},
                 uid: new Date().getTime()
             }
         ]);

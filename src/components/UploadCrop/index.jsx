@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Image } from '@tarojs/components';
 import { app } from '../../dva';
@@ -10,7 +10,7 @@ import uploiadPlus from '../../../images/upload-plus@2x.png';
 
 export default (props) => {
 
-    const { width, height, onChange, beforeUpload, limit = 1, fileList = [] } = props;
+    const { width, height, onChange, editFinish, beforeUpload, limit = 1, fileList = [] } = props;
 
     const upload = useRef();
 
@@ -27,6 +27,10 @@ export default (props) => {
     );
 
     const onHandleEdit = () => {
+        Taro.eventCenter.off('editFinish');
+        Taro.eventCenter.on('editFinish', (res) => {
+            editFinish && editFinish(res);
+        })
         app.dispatch({
             type: 'editimg/goEditImg',
             payload: {

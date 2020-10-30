@@ -87,6 +87,20 @@ const DeskCalendar = (props) => {
         }
     }
 
+    const editFinish = (index, res) => {
+
+        const coverList = [
+            ...userImageList
+        ];
+
+        coverList[index].cropInfo = res;
+
+        dispatch({
+            type: 'confirmOrder/saveUserImageList',
+            payload: coverList
+        })
+    }
+
     return (
         <View className="app">
             <View className="tips">
@@ -102,10 +116,10 @@ const DeskCalendar = (props) => {
                             {
                                 item.type == 'cover' ? 
                                 <View className="calendar-item cover">
-                                    <UploadCrop beforeUpload={beforeUpload} fileList={fileList} onChange={onChange} className="calender-uploader" width={640} height={338}/>
+                                    <UploadCrop editFinish={editFinish.bind(this, index)} beforeUpload={beforeUpload} fileList={fileList} onChange={onChange} className="calender-uploader" width={640} height={338}/>
                                 </View> :
                                 <View className="calendar-item page">
-                                    <UploadCrop beforeUpload={beforeUpload} fileList={fileList} onChange={onChange} className="calender-uploader" width={251} height={330}/>
+                                    <UploadCrop editFinish={editFinish.bind(this, index)} beforeUpload={beforeUpload} fileList={fileList} onChange={onChange} className="calender-uploader" width={251} height={330}/>
                                 </View>
                             }
                             <View className="calender-title">{ item.title }</View>

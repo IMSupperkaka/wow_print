@@ -14,26 +14,34 @@ export default (props) => {
 
     const { width, height, src, className, style = {}, imgInfo, cropOption = {}, ...resetProps } = props;
 
-    const proportion = width / height;
-
-    const crop = initImg({
-        ...imgInfo,
-        origin: [0.5, 0.5],
-        scale: cropOption.scale || 1,
-        translate: cropOption.translate || [0, 0]
-    }, { width: EDIT_WIDTH, height: EDIT_WIDTH / proportion })
-
     const [state, setState] = useState({
         blur: false,
         ignore: false,
         edit: false
     });
 
-    const { translate, scale, fWidth, fHeight, rotateMatrix } = crop;
+    const [initImgInfo, setInitImgInfo] = useState({
+        fWidth: 0
+    });
 
-    if (!imgInfo) {
+    const proportion = width / height;
+
+    useEffect(() => {
+        const info = initImg({
+            ...imgInfo,
+            origin: [0.5, 0.5],
+            scale: 1,
+            translate: [0, 0]
+        }, { width: EDIT_WIDTH, height: EDIT_WIDTH / proportion });
+        setInitImgInfo(info);
+    }, [imgInfo])
+
+    if (initImgInfo.fWidth <= 0) {
         return <View>Loading...</View>;
     }
+
+    const { fWidth, fHeight, rotateMatrix } = initImgInfo;
+    const { translate = [0, 0], scale = 1 } = cropOption;
 
     const scalea = width / EDIT_WIDTH;
     const translateMatrix = math.matrix([[1, 0, translate[0] * scalea / radio], [0, 1, translate[1] * scalea / radio], [0, 0, 1]]);
@@ -94,7 +102,7 @@ export default (props) => {
                     </View>
                 }
             </View>
-            <Image style={{ ...transformStyle, ...style }} src={src} mode="scaleToFill" />
+            <Image style={{ ...transformStyle, ...style }} src={src} mode="widthFix" />
         </View>
     )
 }
