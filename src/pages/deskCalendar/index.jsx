@@ -87,15 +87,10 @@ const DeskCalendar = (props) => {
     const { dispatch, confirmOrder: { userImageList } } = props;
 
     const onChange = (fileList) => {
-
-        const coverList = [
-            ...userImageList,
-            ...fileList
-        ];
-
+        console.log(fileList)
         dispatch({
             type: 'confirmOrder/saveUserImageList',
-            payload: lodash.uniqBy(coverList, 'uid')
+            payload: fileList
         })
     }
 
@@ -160,10 +155,10 @@ const DeskCalendar = (props) => {
                                 item.type == 0 ? 
                                 <View className="calendar-item cover" style={styles}>
                                     <Image src="https://cdn.wanqiandaikuan.com/1604024547546_lALPD3lGsDaemp_M9szA_192_246.png" className="bear"/>
-                                    <UploadCrop editFinish={editFinish.bind(this, index)} beforeUpload={beforeUpload} fileList={fileList} onChange={onChange} className="calender-uploader" {...size}/>
+                                    <UploadCrop activeIndex={index} fileList={userImageList} editFinish={editFinish.bind(this, index)} beforeUpload={beforeUpload} onChange={onChange} className="calender-uploader" {...size}/>
                                 </View> :
                                 <View className="calendar-item page" style={styles}>
-                                    <UploadCrop editFinish={editFinish.bind(this, index)} beforeUpload={beforeUpload} fileList={fileList} onChange={onChange} className="calender-uploader" {...size}/>
+                                    <UploadCrop activeIndex={index} fileList={userImageList} editFinish={editFinish.bind(this, index)} beforeUpload={beforeUpload} onChange={onChange} className="calender-uploader" {...size}/>
                                 </View>
                             }
                             <View className="calender-title">{ item.title }</View>

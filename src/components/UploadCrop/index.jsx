@@ -10,7 +10,7 @@ import uploiadPlus from '../../../images/upload-plus@2x.png';
 
 export default (props) => {
 
-    const { width, height, onChange, editFinish, beforeUpload, limit = 1, fileList = [] } = props;
+    const { width, height, onChange, editFinish, beforeUpload, limit = 1, activeIndex = 0, fileList = [] } = props;
 
     const upload = useRef();
 
@@ -18,7 +18,7 @@ export default (props) => {
         onChange(fileList);
     };
 
-    const currentImg = fileList[0];
+    const currentImg = fileList[activeIndex];
     
     const uploadBtn = (
         <View className="upload-area" style={{ width: Taro.pxTransform(width), height: Taro.pxTransform(height) }}>
@@ -55,7 +55,7 @@ export default (props) => {
             }
             <Upload limit={limit} ref={upload} fileList={fileList} onChange={onUploadChange} beforeUpload={beforeUpload}>
                 {
-                    fileList.length >= 1 ? null : uploadBtn
+                    currentImg ? null : uploadBtn
                 }
             </Upload>
         </View>
