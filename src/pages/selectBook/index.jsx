@@ -150,16 +150,6 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         setEditVisible(false)
     }
 
-    const handleGoEdit = (index) => {
-        dispatch({
-            type: 'confirmOrder/saveActiveIndex',
-            payload: index
-        })
-        Taro.navigateTo({
-            url: '/pages/imgEdit/index'
-        })
-    };
-
     const handleSaveWorks = () => {
         if(!userImageList.length) {
             Taro.showToast({

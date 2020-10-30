@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Image, Button } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import { connect } from 'react-redux';
+import { View, Image, Button } from '@tarojs/components';
 
 import './index.less';
-import { list } from '../../services/portfolio';
+import { list, detail } from '../../services/portfolio';
 import List from '../../components/List';
 
 const getData = ({ current, pageSize }) => {
@@ -18,11 +19,20 @@ const getData = ({ current, pageSize }) => {
     })
 }
 
-export default () => {
+const Portfolio = ({ dispatch }) => {
 
     const handleGoDetail = (item) => {
-        Taro.navigateTo({
-            url: `/pages/productDetail/index?id=${item.goodId}&portfolioId=${item.id}`
+        detail({
+            portfolioId: item.id
+        }).then(({ data }) => {
+            dispatch({
+                type: 'confirmOrder/pushSeletPage',
+                payload: {
+                    goodInfo: data.data.goodsDetail,
+                    portfolioId: item.id,
+                    userImageList: data.data.imageList
+                }
+            })
         })
     }
 
@@ -78,3 +88,7 @@ export default () => {
         </View>
     )
 }
+
+export default connect(({ confirmOrder }) => ({
+    confirmOrder
+}))(Portfolio);

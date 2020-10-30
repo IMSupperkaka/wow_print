@@ -50,7 +50,7 @@ export default (props) => {
             {
                 currentImg &&
                 <View className="crop-img-wrap">
-                    <CropImg onHandleEdit={onHandleEdit} onHandleChange={() => { upload.current.handleChoose(); }} className="item-img" width={width} height={height} imgInfo={currentImg.imgInfo} cropOption={currentImg.cropInfo} src={currentImg.filePath}/>
+                    <CropImg onHandleEdit={onHandleEdit} onHandleChange={() => { upload.current.handleChoose(); }} className="item-img" width={width} height={height} imgInfo={currentImg.imgInfo} cropOption={currentImg.cropInfo} src={currentImg.filePath || currentImg.originImage}/>
                 </View>
             }
             <Upload limit={limit} ref={upload} fileList={fileList} onChange={onUploadChange} beforeUpload={beforeUpload}>

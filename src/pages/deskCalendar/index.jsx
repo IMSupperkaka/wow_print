@@ -4,6 +4,7 @@ import { View, Button, Image } from '@tarojs/components';
 
 import './index.less';
 import { connect } from 'react-redux';
+import { initImg, computeCropUrl } from '../../utils/utils';
 import UploadCrop from '../../components/UploadCrop';
 import SelectPicModal from '../../components/SelectPicModal';
 import BottomButton from '../../components/BottomButton';
@@ -137,10 +138,21 @@ const DeskCalendar = (props) => {
     const submit = () => {
         const resultList = deskCalenderList.map((item, index) => {
             const img = userImageList[index];
-            return {
-                backgroundUrl: item.backgroundImage, // 背景图片
-                imgInfo: img.imgInfo, // 图片原始信息
-                res: img.res
+            const size = sizeMap.get(item.type);
+            if (img) {
+                return {
+                    filePath: img.filePath,
+                    imgInfo: img.imgInfo, // 图片原始信息 { width, height, ...resetInfo }
+                    cropInfo: img.cropInfo, // 裁剪信息
+                    originImage: img.response.data, // 图片七牛地址
+                    cropImage: computeCropUrl(img.response.data, { // 裁剪后地址
+                        contentWidth: size.width,
+                        contentHeight: size.height,
+                        ...img.imgInfo
+                    }, img.cropInfo),
+                    printNums: 1,
+                    restInfo: {} // 额外信息
+                }
             }
         })
         dispatch({
@@ -185,14 +197,13 @@ const DeskCalendar = (props) => {
                     )
                 })
             }
-            <BottomButton onChange={onChange} onSave={handleSaveWorks} goPrint={handleGoPrint} limit={13}/>
+            {/* <BottomButton onChange={onChange} onSave={handleSaveWorks} goPrint={handleGoPrint} limit={13}/> */}
             <SelectPicModal onChange={onChange} onReplace={handleReplace} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/>
-            {/* {
-                userImageList.length < 13 ? 
+            {
+                userImageList.length < 1 ? 
                 <View onClick={beforeUpload} className="bottom-upload-btn">批量上传（需上传 { 13 - userImageList.length } 张照片）</View> :
                 <View onClick={submit} className="bottom-upload-btn">确认打印</View>
             }
-            <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/> */}
         </View>
     )
 }

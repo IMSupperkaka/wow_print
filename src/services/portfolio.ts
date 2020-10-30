@@ -1,20 +1,20 @@
 import TaroRequest from '../utils/request'
 
 // 作品集列表
-export const list = (params) => {
+export const list = (data) => {
     return TaroRequest.request({
         url: `/portfolio/list`,
         method: 'GET',
-        params
+        data
     })
 }
 
 // 作品集详情
-export const detail = (params) => {
+export const detail = (data) => {
     return TaroRequest.request({
         url: `/portfolio/detail`,
         method: 'GET',
-        params
+        data
     })
 }
 

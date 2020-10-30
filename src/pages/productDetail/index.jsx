@@ -12,17 +12,6 @@ import iconCoupon from '../../../images/icon_coupon@2x.png'
 import couponArrow from '../../../images/coin_jump@3x.png'
 import { detail as getDetail } from '../../services/product'
 
-const getSelectPath = (category) => {
-    switch (category) {
-        case 1: // 照片
-            return '/pages/selectPic/index';
-        case 2: // 照片书
-            return '/pages/selectBook/index';
-        case 3: // 台历
-            return '/pages/deskCalendar/index';
-    }
-}
-
 const ProductDetail = ({ dispatch, confirmOrder, user }) => {
 
     const { coupon } = confirmOrder;
@@ -97,22 +86,10 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     }
 
     const goSelectPic = () => {
-        Taro.getSetting({
-            success: (res) => {
-                dispatch({
-                    type: 'confirmOrder/saveGoodInfo',
-                    payload: detail
-                })
-                const path = getSelectPath(detail.category);
-                if (!res.authSetting['scope.userInfo']) {
-                    return Taro.navigateTo({
-                        url: `/pages/authInfo/index?redirect=${path}`
-                    })
-                }
-                Taro.navigateTo({
-                    url: path
-                })
-                saveGoodId()
+        dispatch({
+            type: 'confirmOrder/pushSeletPage',
+            payload: {
+                goodInfo: detail
             }
         })
     }

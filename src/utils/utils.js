@@ -1,15 +1,20 @@
 import Taro from '@tarojs/taro';
 import math from './math';
 
-export const computeCropUrl = (url, imgInfo) => {
-    const { fWidth, fHeight, width, contentWidth, contentHeight, scale, translate, rotateMatrix, rotateDeg } = imgInfo;
+export const computeCropUrl = (url, imgInfo, cropInfo = { scale: 1, translate: [0, 0] }) => {
+    const { fWidth, fHeight, rotateMatrix, rotateDeg } = initImg(imgInfo, {
+        width: imgInfo.contentWidth,
+        height: imgInfo.contentHeight
+    });
+    const { width } = imgInfo;
+    const { scale, translate } = cropInfo;
     const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
     const translateMatrix = math.matrix([[1, 0, translate[0]], [0, 1, translate[1]], [0, 0, 1]]);
     // TODO:消除rotateDeg判断
     const leftTopPosition = rotateDeg == 0 ? math.matrix([-fWidth / 2, -fHeight / 2, 1]) : math.matrix([-fWidth / 2, fHeight / 2, 1]);
     const leftTop = math.multiply(scaleMatrix, translateMatrix, rotateMatrix, leftTopPosition);
     const as = fWidth / width * scale;
-    const cropUrl = `${url}?imageMogr2/rotate/${rotateDeg}/auto-orient/crop/!${Math.round(contentWidth / as)}x${Math.round(contentHeight / as)}a${-Math.round((leftTop._data[0] + contentWidth / 2) / as)}a${-Math.round((leftTop._data[1] + contentHeight / 2) / as)}`;
+    const cropUrl = `${url}?imageMogr2/rotate/${rotateDeg}/auto-orient/crop/!${Math.round(imgInfo.contentWidth / as)}x${Math.round(imgInfo.contentHeight / as)}a${-Math.round((leftTop._data[0] + imgInfo.contentWidth / 2) / as)}a${-Math.round((leftTop._data[1] + imgInfo.contentHeight / 2) / as)}`;
     return cropUrl;
 }
 

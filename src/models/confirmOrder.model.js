@@ -37,6 +37,52 @@ export default {
         type: 1
     },
     effects: {
+        *pushSeletPage({ payload }, { put }) {
+            const { goodInfo, portfolioId, userImageList } = payload;
+            
+            yield put({
+                type: 'saveGoodInfo',
+                payload: goodInfo
+            })
+
+            yield put({
+                type: 'savePortfolioId',
+                payload: portfolioId || null
+            })
+
+            yield put({
+                type: 'saveUserImageList',
+                payload: userImageList || []
+            })
+
+            let path = '';
+
+            switch (goodInfo.category) {
+                case 1:
+                    path = `/pages/selectPic/index`
+                    break;
+                case 2:
+                    path = `/pages/selectBook/index`
+                    break;
+                case 3:
+                    path = `/pages/deskCalendar/index`
+                    break;
+            }
+
+            Taro.getSetting({
+                success: (res) => {
+                    if (!res.authSetting['scope.userInfo']) {
+                        return Taro.navigateTo({
+                            url: `/pages/authInfo/index?redirect=${path}`
+                        })
+                    }
+                    Taro.navigateTo({
+                        url: path
+                    })
+                }
+            })
+
+        },
         *getAddressDetail({ payload }, { call, put }) {
             const response = yield call(detail, payload.id);
             yield put({
@@ -44,35 +90,13 @@ export default {
                 payload: response.data.data || {}
             })
         },
-        *pushUserImg({ payload }, { call, put, select }) {
-            const { confirmOrder: { proportion } } = yield select();
-            const { filePath, res } = payload;
-            const img = yield new Promise((resolve) => {
-                Taro.getImageInfo({
-                    src: filePath,
-                    success: (imgres) => {
-                        const imgInfo = initImg({
-                            ...imgres,
-                            origin: [0.5, 0.5],
-                            scale: 1,
-                            translate: [0, 0]
-                        }, { width: EDIT_WIDTH, height: EDIT_WIDTH / proportion })
-                        resolve({
-                            originPath: filePath,
-                            originImage: res.data,
-                            cropImage: computeCropUrl(res.data, { ...imgInfo, contentWidth: EDIT_WIDTH, contentHeight: EDIT_WIDTH / proportion }),
-                            printNums: 1,
-                            imgInfo: imgInfo
-                        })
-                    }
-                })
-            })
+        *pushConfirmOrder({ payload }, { call, put, select }) {
+
             yield put({
                 type: 'saveUserImageList',
-                payload: img
+                payload: payload.resultList.filter((v) => { return v })
             })
-        },
-        *pushConfirmOrder({ payload }, { call, put, select }) {
+
             list().then(({ data }) => {
                 if (data.data.length <= 0) {
                     Taro.navigateTo({
