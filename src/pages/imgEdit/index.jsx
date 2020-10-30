@@ -124,18 +124,6 @@ const ImgEdit = (props) => {
             translate: [resetx, resety],
             scale: resetScale
         });
-        // const cloneList = [...imgList];
-        // const imgInfo = {
-        //     ...cloneList[activeIndex].imgInfo,
-        //     translate: [resetx, resety],
-        //     scale: resetScale
-        // }
-        // cloneList[activeIndex].imgInfo = imgInfo;
-        // cloneList[activeIndex].cropImage = computeCropUrl(IMG.originImage, { ...imgInfo, contentWidth: contentWidth, contentHeight: contentHeight });
-        // dispatch({
-        //     type: 'confirmOrder/saveimgList',
-        //     payload: cloneList
-        // })
     }
 
     const confirm = () => {
@@ -199,7 +187,7 @@ const ImgEdit = (props) => {
                 <View className="content-wrap">
                     <View className="mask" style={maskStyle}></View>
                     <Canvas canvasId='canvas' style={contentStyle} disableScroll={true} className="content" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
-                    <CropImg className="img" width={contentWidth} height={contentHeight} src={IMG.filePath} imgInfo={IMG.imgInfo} cropOption={cropOption} style={{ transitionProperty: !isTouch ? 'transform' : 'none' }}/>
+                    <CropImg className="img" width={contentWidth} height={contentHeight} src={IMG.filePath || IMG.originImage} imgInfo={IMG.imgInfo} cropOption={cropOption} style={{ transitionProperty: !isTouch ? 'transform' : 'none' }}/>
                 </View>
                 <View className="bottom-wrap">
                     <View className="bottom-tip">tips：灰色区域将被裁剪，不在打印范围内</View>

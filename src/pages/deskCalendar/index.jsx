@@ -4,7 +4,7 @@ import { View, Button, Image } from '@tarojs/components';
 
 import './index.less';
 import { connect } from 'react-redux';
-import { initImg, computeCropUrl } from '../../utils/utils';
+import { computeCropUrl } from '../../utils/utils';
 import UploadCrop from '../../components/UploadCrop';
 import SelectPicModal from '../../components/SelectPicModal';
 import BottomButton from '../../components/BottomButton';
@@ -144,8 +144,8 @@ const DeskCalendar = (props) => {
                     filePath: img.filePath,
                     imgInfo: img.imgInfo, // 图片原始信息 { width, height, ...resetInfo }
                     cropInfo: img.cropInfo, // 裁剪信息
-                    originImage: img.response.data, // 图片七牛地址
-                    cropImage: computeCropUrl(img.response.data, { // 裁剪后地址
+                    originImage: img.originImage, // 图片七牛地址
+                    cropImage: computeCropUrl(img.originImage, { // 裁剪后地址
                         contentWidth: size.width,
                         contentHeight: size.height,
                         ...img.imgInfo

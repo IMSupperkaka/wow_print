@@ -41,7 +41,7 @@ export default React.forwardRef((props, ref) => {
             const cloneList = [...list];
             const currentItem = cloneList[index];
             currentItem.status = status;
-            currentItem.response = res;
+            currentItem.originImage = res.data;
             currentItem.imgInfo = imgInfo;
             return cloneList;
         })

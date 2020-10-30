@@ -47,3 +47,31 @@ $color-brand: #FF6345;
         border-color: #FF6345;
     }
 }
+
+.fade {
+    opacity: 0;
+}
+
+.fade-in-enter {
+    opacity: 0;
+    visibility: hidden;
+}
+.fade-in-enter-active {
+    opacity: 1;
+    transition: opacity 200ms;
+}
+.fade-in-enter-done {
+    opacity: 1;
+}
+.fade-in-exit {
+    opacity: 1;
+}
+.fade-in-exit-active {
+    opacity: 0;
+    transition: opacity 200ms;
+}
+
+.fade-in-exit-done {
+    opacity: 0;
+    visibility: hidden;
+}

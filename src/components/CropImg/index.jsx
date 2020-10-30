@@ -3,16 +3,22 @@ import Taro from '@tarojs/taro'
 import math from '../../utils/math'
 import classNames from 'classnames'
 import { View, Image, Text } from '@tarojs/components'
+import { CSSTransition, Transition } from 'react-transition-group'
 
 import './index.less'
 import { EDIT_WIDTH } from '../../utils/picContent'
-import { computeCropUrl, initImg } from '../../utils/utils'
+import { initImg } from '../../utils/utils'
 
 const radio = 750 / Taro.getSystemInfoSync().screenWidth;
 
+const defaultCropOption = {
+    translate: [0, 0],
+    scale: 1
+}
+
 export default (props) => {
 
-    const { width, height, src, className, style = {}, imgInfo, cropOption = {}, ...resetProps } = props;
+    const { width, height, src, className, style = {}, cropOption, imgInfo, ...resetProps } = props;
 
     const [state, setState] = useState({
         blur: false,
@@ -41,7 +47,7 @@ export default (props) => {
     }
 
     const { fWidth, fHeight, rotateMatrix } = initImgInfo;
-    const { translate = [0, 0], scale = 1 } = cropOption;
+    const { translate, scale } = cropOption || defaultCropOption;
 
     const scalea = width / EDIT_WIDTH;
     const translateMatrix = math.matrix([[1, 0, translate[0] * scalea / radio], [0, 1, translate[1] * scalea / radio], [0, 0, 1]]);
@@ -93,14 +99,32 @@ export default (props) => {
                         </View>
                     </>
                 }
-                {
-                    state.edit &&
-                    <View className="mask-bottom black">
+                {/* <Transition unmountOnExit in={state.edit} timeout={500}>
+                    {state => (
+                        <View className={`mask-bottom black fade-in-${state}`}>
+                            <View>
+                                {state}
+                            </View>
+                            <View className="btn" onClick={handleEdit}>调整</View>
+                            <View className="line" />
+                            <View className="btn" onClick={handleChange}>换图</View>
+                        </View>
+                    )}
+                </Transition> */}
+                <CSSTransition in={state.edit} timeout={200} classNames="fade-in">
+                    <View className={`mask-bottom black fade`}>
                         <View className="btn" onClick={handleEdit}>调整</View>
                         <View className="line" />
                         <View className="btn" onClick={handleChange}>换图</View>
                     </View>
-                }
+                </CSSTransition>
+                {/* {
+                    <View className={`mask-bottom black ${state.edit && 'show'}`}>
+                        <View className="btn" onClick={handleEdit}>调整</View>
+                        <View className="line" />
+                        <View className="btn" onClick={handleChange}>换图</View>
+                    </View>
+                } */}
             </View>
             <Image style={{ ...transformStyle, ...style }} src={src} mode="widthFix" />
         </View>

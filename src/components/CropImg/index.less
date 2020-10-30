@@ -1,10 +1,9 @@
 .cropimg-wrap {
-    position: relative;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   .mask-box {
-    overflow: hidden;
     position: absolute;
     left: 0;
     right: 0;
@@ -45,6 +44,11 @@
       bottom: 0;
       left: 0;
       background-color: #fff;
+    //   transform: translate(0, 100%);
+    //   transition: all 0.3s;
+      &.show {
+        transform: translate(0, 0);
+      }
       .line {
         width: 3px;
         height: 20px;

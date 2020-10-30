@@ -29,7 +29,7 @@ export default (props) => {
                     {
                         imgList.map((item, index) => {
                             return (
-                                <Upload limit={1} onChange={(fileList) => {handleReplace(fileList, index)}} key={index}>
+                                <Upload onChange={(fileList) => {handleReplace(fileList, index)}} key={index}>
                                     <View className="img-item">
                                         <Image mode="aspectFill" src={item.filePath}/>
                                     </View>
