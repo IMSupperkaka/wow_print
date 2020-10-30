@@ -291,7 +291,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     })
                 }
             </View>
-            <BottomButton onChange={onChange} onSave={handleSaveWorks} goPrint={handleGoPrint}/>
+            <BottomButton onChange={onChange} onSave={handleSaveWorks} goPrint={handleGoPrint} limit={17}/>
             <Dialog className="upload-dialog" title={`已上传${progress.completeNum}/${progress.totalNum}张`} visible={progress.visible}>
                 <View>正在拼命上传中，请耐心等待哦～</View>
             </Dialog>

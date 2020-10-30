@@ -4,6 +4,7 @@ import { detail } from '../services/address'
 import { computeCropUrl, initImg } from '../utils/utils'
 import { sizeMap } from '../utils/map/order'
 import { EDIT_WIDTH } from '../utils/picContent'
+import { list } from '../services/address'
 
 const defaultAddressInfo = {
     id: null,
@@ -69,6 +70,19 @@ export default {
             yield put({
                 type: 'saveUserImageList',
                 payload: img
+            })
+        },
+        *pushConfirmOrder({ payload }, { call, put, select }) {
+            list().then(({ data }) => {
+                if (data.data.length <= 0) {
+                    Taro.navigateTo({
+                        url: `/pages/addressEdit/index?type=add&redirect=${encodeURIComponent('/pages/confirmOrder/index')}`
+                    })
+                } else {
+                    Taro.navigateTo({
+                        url: '/pages/confirmOrder/index'
+                    })
+                }
             })
         }
     },

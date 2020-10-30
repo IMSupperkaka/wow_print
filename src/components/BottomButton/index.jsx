@@ -9,7 +9,7 @@ import './index.less';
 
 const BottomButton = (props) => {
 
-    const {onSave, goPrint, onChange, confirmOrder: { coupon, userImageList }} = props;
+    const {onSave, goPrint, onChange, limit, confirmOrder: { coupon, userImageList }} = props;
 
     const restFreeNums = (coupon.couponFreeNums || 0) - userImageList.reduce((count, v) => { return count + v.printNums }, 0);
 
@@ -37,22 +37,22 @@ const BottomButton = (props) => {
                     }
                     <View className="submit-left" onClick={handleSaveWorks}>存入作品集</View>
                     {
-                        userImageList.length === 17 ? <View className="submit-right" onClick={handleGoPrint}>
+                        userImageList.length === limit ? <View className="submit-right" onClick={handleGoPrint}>
                             <Text>立即定制</Text>
                             <Text>(已上传{userImageList.length}张)</Text>
                         </View> : <View className="submit-right">
-                            <Upload  count={17 - userImageList.length} onChange={handleChange}>
+                            <Upload  count={limit - userImageList.length} onChange={handleChange}>
                                 <View>
                                     <Text className="batch">批量上传</Text>
-                                    <Text className="need">(还需{17 - +userImageList.length}张)</Text>
+                                    <Text className="need">(还需{limit - +userImageList.length}张)</Text>
                                 </View>
                             </Upload>
                         </View>
                     }
-                </View> : <Upload count={17 - userImageList.length} onChange={handleChange}>
+                </View> : <Upload count={limit - userImageList.length} onChange={handleChange}>
                     <View style={{ paddingBottom: Taro.pxTransform(bottom + 32, 750) }} className="submit-red">
                         <Text className="batch">批量上传</Text>
-                        <Text className="need">(需上传17张照片)</Text>
+                        <Text className="need">(需上传{limit}张照片)</Text>
                     </View>
                 </Upload>
                     

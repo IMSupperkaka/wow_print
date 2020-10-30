@@ -12,11 +12,23 @@
 }
 
 .calendar-item {
+    position: relative;
     width: 640px;
     height: 456px;
     margin: 0 auto;
     background-color: #fff;
     overflow: hidden;
+    &.cover {
+        .bear {
+            position: absolute;
+            z-index: 1;
+            width: 58px;
+            height: 74.3px;
+            left: 50%;
+            top: 294px;
+            transform: translateX(-50%);
+        }
+    }
     &.page {
         .calender-uploader {
             margin-top: 79px;
@@ -49,4 +61,5 @@
     font-family: PingFangSC-Medium, PingFang SC;
     font-weight: 500;
     color: #FFFFFF;
+    z-index: 1;
 }

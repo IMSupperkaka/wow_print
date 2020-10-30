@@ -5,7 +5,7 @@ import { View, Image, Canvas } from '@tarojs/components';
 
 import './index.less';
 import math from '../../utils/math'
-import { computeCropUrl } from '../../utils/utils'
+import { computeCropUrl, initImg } from '../../utils/utils'
 import { EDIT_WIDTH } from '../../utils/picContent'
 import CropImg from '../../components/CropImg'
 import deleteIcon from '../../../images/icon_delete／2@2x.png'
@@ -29,21 +29,12 @@ const getDistance = (p1, p2) => {
 const ImgEdit = (props) => {
 
     const { dispatch, editimg: { imgList, activeIndex } } = props;
-    const currentImg = imgList[activeIndex];
+    const IMG = imgList[activeIndex];
     const contentWidth = EDIT_WIDTH;
-    const contentHeight = EDIT_WIDTH / currentImg.proportion;
-    const [IMG, setIMG] = useState(currentImg);
+    const contentHeight = EDIT_WIDTH / IMG.proportion;
     const [isTouch, setIsTouch] = useState(false);
-    const [translate, setTranslate] = useState([0, 0]);
-    const [scale, setScale] = useState(1);
-
-    useEffect(() => {
-        const current = imgList[activeIndex];
-        console.log(current);
-        setIMG(current);
-        setTranslate(current?.imgInfo?.translate || [0, 0]);
-        setScale(current?.imgInfo?.scale || 1);
-    }, [activeIndex])
+    const [translate, setTranslate] = useState(IMG?.cropInfo?.translate || [0, 0]);
+    const [scale, setScale] = useState(IMG?.cropInfo?.scale || 1);
 
     const onTouchStart = (e) => {
         lastTouch = e.touches;
@@ -67,7 +58,12 @@ const ImgEdit = (props) => {
     const onTouchEnd = (e) => {
         const [dx, dy] = translate;
         let resetScale = scale;
-        const { fWidth, fHeight } = IMG.imgInfo;
+        const { fWidth, fHeight, rotateMatrix, rotateDeg } = initImg({
+            ...IMG.imgInfo,
+            origin: [0.5, 0.5],
+            scale: resetScale,
+            translate: translate
+        }, { width: EDIT_WIDTH, height: EDIT_WIDTH / IMG.proportion })
         if (scale < 1) {
             resetScale = 1;
             Taro.vibrateShort();
@@ -85,7 +81,6 @@ const ImgEdit = (props) => {
           right: contentWidth / 2,
           bottom: contentHeight / 2
         };
-        const { rotateMatrix, rotateDeg } = IMG.imgInfo;
         const leftTopPostion = math.multiply(rotateMatrix, math.matrix([-fWidth / 2, -fHeight / 2, 1]));
         const rightBottomPosition = math.multiply(rotateMatrix, math.matrix([fWidth / 2, fHeight / 2, 1]));
         const scaleMatrix = math.matrix([[resetScale, 0, 0], [0, resetScale, 0], [0, 0, 1]]);
@@ -125,18 +120,22 @@ const ImgEdit = (props) => {
         setIsTouch(false);
         setScale(resetScale);
         setTranslate([resetx, resety]);
-        const cloneList = [...imgList];
-        const imgInfo = {
-            ...cloneList[activeIndex].imgInfo,
+        Taro.eventCenter.trigger('editFinish', {
             translate: [resetx, resety],
             scale: resetScale
-        }
-        cloneList[activeIndex].imgInfo = imgInfo;
-        cloneList[activeIndex].cropImage = computeCropUrl(IMG.originImage, { ...imgInfo, contentWidth: contentWidth, contentHeight: contentHeight });
-        dispatch({
-            type: 'confirmOrder/saveimgList',
-            payload: cloneList
-        })
+        });
+        // const cloneList = [...imgList];
+        // const imgInfo = {
+        //     ...cloneList[activeIndex].imgInfo,
+        //     translate: [resetx, resety],
+        //     scale: resetScale
+        // }
+        // cloneList[activeIndex].imgInfo = imgInfo;
+        // cloneList[activeIndex].cropImage = computeCropUrl(IMG.originImage, { ...imgInfo, contentWidth: contentWidth, contentHeight: contentHeight });
+        // dispatch({
+        //     type: 'confirmOrder/saveimgList',
+        //     payload: cloneList
+        // })
     }
 
     const confirm = () => {
@@ -180,8 +179,7 @@ const ImgEdit = (props) => {
     const activeRightIcon = <Image onClick={oprate.bind(this, 'plus')} className="oprate-icon" src={rightActiveIcon} />;
     const disabledRightIcon = <Image className="oprate-icon" src={rightDisabledIcon} />;
 
-    const imgInfo = {
-        ...IMG.imgInfo,
+    const cropOption = {
         translate,
         scale
     }
@@ -201,7 +199,7 @@ const ImgEdit = (props) => {
                 <View className="content-wrap">
                     <View className="mask" style={maskStyle}></View>
                     <Canvas canvasId='canvas' style={contentStyle} disableScroll={true} className="content" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
-                    <CropImg className="img" width={contentWidth} height={contentHeight} src={IMG.filePath} cropOption={imgInfo} style={{ transitionProperty: !isTouch ? 'transform' : 'none' }}/>
+                    <CropImg className="img" width={contentWidth} height={contentHeight} src={IMG.filePath} imgInfo={IMG.imgInfo} cropOption={cropOption} style={{ transitionProperty: !isTouch ? 'transform' : 'none' }}/>
                 </View>
                 <View className="bottom-wrap">
                     <View className="bottom-tip">tips：灰色区域将被裁剪，不在打印范围内</View>
