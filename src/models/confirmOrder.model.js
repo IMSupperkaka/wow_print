@@ -1,9 +1,7 @@
 import Taro from '@tarojs/taro'
 
 import { detail } from '../services/address'
-import { computeCropUrl, initImg } from '../utils/utils'
 import { sizeMap } from '../utils/map/order'
-import { EDIT_WIDTH } from '../utils/picContent'
 import { list } from '../services/address'
 
 const defaultAddressInfo = {
@@ -25,21 +23,20 @@ const defaultCoupon = {
 export default {
     namespace: 'confirmOrder',
     state: {
-        addressInfo: defaultAddressInfo,
-        coupon: defaultCoupon,
-        goodId: null,
-        portfolioId: null,
-        userImageList: [],
-        activeIndex: 0,
-        size: 5,
-        proportion: 0.7,
+        addressInfo: defaultAddressInfo, // 地址信息
+        coupon: defaultCoupon, // 优惠券信息
+        goodId: null, // 商品id
+        portfolioId: null, // 作品集id
+        userImageList: [], // 照片列表
+        size: 5, // 照片尺寸 仅在普通照片有效
+        proportion: 0.7, // 照片比例 仅在普通照片有效
         // 商品类型 枚举：/utils/map/product/productType
         type: 1
     },
     effects: {
         *pushSeletPage({ payload }, { put }) {
             const { goodInfo, portfolioId, userImageList } = payload;
-            
+
             yield put({
                 type: 'saveGoodInfo',
                 payload: goodInfo
@@ -94,7 +91,7 @@ export default {
 
             yield put({
                 type: 'saveUserImageList',
-                payload: payload.resultList.filter((v) => { return v })
+                payload: payload.resultList
             })
 
             list().then(({ data }) => {
@@ -158,11 +155,29 @@ export default {
                 }
             }
         },
-        saveActiveIndex(state, { payload }) {
-            return {
-                ...state,
-                activeIndex: payload
+        mutateUserImageList(state, { payload }) {
+
+          const { index, userImage } = payload;
+
+          const cloneUserImageList = [...state.userImageList];
+
+          if (index != -1) {
+            cloneUserImageList[index] = userImage;
+          } else {
+            const emptyIndex = cloneUserImageList.findIndex((v) => {
+              return !v;
+            });
+            if (emptyIndex == -1) {
+              cloneUserImageList.push(userImage);
+            } else {
+              cloneUserImageList[emptyIndex] = userImage;
             }
+          }
+
+          return {
+            ...state,
+            userImageList: cloneUserImageList
+          }
         },
         savePortfolioId(state, { payload }) {
             return {

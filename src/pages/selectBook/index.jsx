@@ -32,6 +32,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
 
     const { userImageList, goodId, portfolioId } = confirmOrder;
 
+    const [activeIndex, setActiveIndex] = useState(0);
+
     const [visible, setVisible] = useState(false);
 
     const [coverInfo, setCoverInfo] = useState({
@@ -43,23 +45,24 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
 
     const [editVisible, setEditVisible] = useState(false);
 
-    const beforeUpload = () => {
+    const beforeUpload = (index) => {
         if (userImageList.length > 0) {
+            setActiveIndex(index);
             setVisible(true);
             return false;
         }
     };
 
-    const onChange = (fileList) => {
-        let curImgList = [
-            ...userImageList,
-            ...fileList
-        ];
-
+    const onChange = (file, fileList, index = activeIndex) => {
+      if (file.status == 'done') {
         dispatch({
-            type: 'confirmOrder/saveUserImageList',
-            payload: lodash.uniqBy(curImgList, 'uid')
+          type: 'confirmOrder/mutateUserImageList',
+          payload: {
+            userImage: file,
+            index
+          }
         })
+      }
     };
 
     const editFinish = (index, res) => {
@@ -236,7 +239,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                             </View>
                             <Image src={wayin} mode="aspectFit" className="wayin"/>
                         </View>
-                        <UploadCrop limit={17 - userImageList.length} beforeUpload={beforeUpload} editFinish={editFinish.bind(this, 0)} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className="cover-con"/>
+                        <UploadCrop limit={17 - userImageList.length} beforeUpload={beforeUpload.bind(this, 0)} editFinish={editFinish.bind(this, 0)} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className="cover-con"/>
                     </View>
                     <View className="page-num">封面</View>
                 </View>
@@ -253,10 +256,10 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                             const file = fileList[i] ? [fileList[i]] : [];
                                             return (
                                                 <View className="choose-item" key={i}>
-                                                    <UploadCrop limit={17 - userImageList.length} editFinish={editFinish.bind(this, index)} beforeUpload={beforeUpload} fileList={file} onChange={onChange} width={320} height={320}/>
+                                                    <UploadCrop editFinish={editFinish.bind(this, index)} beforeUpload={beforeUpload.bind(this, 1 + index + i)} fileList={file} onChange={onChange} width={320} height={320}/>
                                                 </View>
                                             )
-                                        }) 
+                                        })
                                     }
                                 </View>
                                 <View className="page-num">{`${++index*2 - 1} - ${index*2}`}</View>
@@ -265,8 +268,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     })
                 }
             </View>
-            <BottomButton onChange={onChange} onSave={handleSaveWorks} goPrint={submit} limit={17}/>
-            <SelectPicModal onChange={onChange} onReplace={handleReplace} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/>
+            <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} onSave={handleSaveWorks} goPrint={submit} limit={17}/>
+            <SelectPicModal onChange={onChange} onReplace={handleReplace} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }}/>
             <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
                 <View className="modal-content">
                     <View className="input-content">

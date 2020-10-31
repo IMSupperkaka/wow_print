@@ -8,16 +8,16 @@ import Upload from '../Upload';
 
 export default (props) => {
 
-    const { imgList = [], onChange, onReplace, count, ...resetProps } = props;
+    const { imgList = [], onChange, onReplace, limit = 1, ...resetProps } = props;
 
-    const handleChange = (fileList) => {
-        onChange(fileList);
-        // resetProps.onClose();
+    const handleChange = (file, fileList) => {
+        onChange(file);
+        resetProps.onClose();
     }
 
-    const handleReplace = (fileList, index) => {
-        onReplace(fileList, index)
-    }
+    const filterList = imgList.filter((v) => {
+      return v?.originImage;
+    })
 
     return (
         <Modal {...resetProps}>
@@ -27,24 +27,19 @@ export default (props) => {
             <ScrollView scrollY style={{height: "60vh", background: "#F6F6F6"}}>
                 <View className="select-content">
                     {
-                        imgList.map((item, index) => {
+                        filterList.map((item, index) => {
                             return (
-                                <Upload onChange={(fileList) => {handleReplace(fileList, index)}} key={index}>
-                                    <View className="img-item">
-                                        <Image mode="aspectFill" src={item.filePath}/>
-                                    </View>
-                                </Upload>
+                              <View className="img-item" onClick={() => { handleChange(item) }}>
+                                  <Image mode="aspectFill" src={item.filePath}/>
+                              </View>
                             )
                         })
                     }
                 </View>
             </ScrollView>
-            {
-                imgList.length < 17 && 
-                <Upload limit={17 - imgList.length} onChange={handleChange}>
-                    <View class="upload-btn">从手机相册上传</View>
-                </Upload>
-            }
+            <Upload limit={limit} onChange={handleChange}>
+              <View class="upload-btn">从手机相册上传</View>
+            </Upload>
         </Modal>
     )
 }

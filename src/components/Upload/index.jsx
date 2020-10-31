@@ -2,6 +2,9 @@ import React, { useState, useEffect, useImperativeHandle } from 'react';
 import Taro from '@tarojs/taro';
 import { View } from '@tarojs/components';
 
+import './index.less';
+import Dialog from '../Dialog'
+import useFreshState from '../../hooks/useFreshState';
 import { uploadFile } from '../../services/upload';
 
 const getImageInfo = (filePath) => {
@@ -17,9 +20,14 @@ const getImageInfo = (filePath) => {
 
 export default React.forwardRef((props, ref) => {
 
-    const { defaultFileList = [], fileList, beforeUpload, limit = 1, onChange } = props;
+    const { defaultFileList = [], fileList, beforeUpload, limit = 1, onChange: onChangeProp } = props;
 
-    const [privateFileList, setPrivateFileList] = useState(fileList || defaultFileList);
+    const [uploadList, setUploadList] = useState([]);
+
+    const [getFileList, setFileList] = useFreshState(
+      fileList || defaultFileList || [],
+      fileList
+    );
 
     useImperativeHandle(ref, () => {
         return {
@@ -27,24 +35,32 @@ export default React.forwardRef((props, ref) => {
         }
     })
 
-    useEffect(() => {
-        if (privateFileList.length > 0) {
-            onChange(privateFileList);
-        }
-    }, [privateFileList])
+    const onChange = (info) => {
+      setFileList(info.fileList);
+      onChangeProp(info.file, info.fileList);
+    }
 
     const progress = (item, res, imgInfo, status) => {
-        setPrivateFileList((list) => {
-            const index = list.findIndex((v) => {
-                return v.uid == item.uid;
-            });
-            const cloneList = [...list];
-            const currentItem = cloneList[index];
-            currentItem.status = status;
-            currentItem.originImage = res.data;
-            currentItem.imgInfo = imgInfo;
-            return cloneList;
-        })
+        const nextFileList = getFileList().concat();
+        const index = nextFileList.findIndex((v) => {
+          return v.uid == item.uid;
+        });
+        const currentItem = nextFileList[index];
+        currentItem.status = status;
+        currentItem.originImage = res?.data;
+        currentItem.imgInfo = imgInfo;
+        setUploadList((uploadList) => {
+          const cloneUploadList = [...uploadList];
+          const uploadIndex = cloneUploadList.findIndex((v) => {
+            return v.uid == item.uid;
+          });
+          cloneUploadList[uploadIndex] = currentItem;
+          return cloneUploadList;
+        });
+        onChange({
+          file: currentItem,
+          fileList: nextFileList
+        });
     }
 
     const handleChoose = () => {
@@ -58,20 +74,21 @@ export default React.forwardRef((props, ref) => {
             sizeType: ['original'],
             count: limit,
             success: (e) => {
+                const nextFileList = getFileList().concat();
                 const uploadList = e.tempFilePaths.map((v, index) => {
                     return {
-                        uid: privateFileList.length + index,
+                        uid: nextFileList.length + index,
                         filePath: v,
                         status: 'before-upload'
                     }
                 })
-                setPrivateFileList((list) => {
-                    return [
-                        ...list,
-                        ...uploadList
-                    ]
-                });
+                setUploadList(uploadList);
+                setFileList([
+                  ...nextFileList,
+                  ...uploadList
+                ]);
                 uploadList.map((v) => {
+                    progress(v, null, null, 'uploading');
                     uploadFile({
                         filePath: v.filePath
                     }).then((res) => {
@@ -88,11 +105,21 @@ export default React.forwardRef((props, ref) => {
         onClick: handleChoose
     }) : null;
 
+
+    const totalCount = uploadList.length;
+    const uploadingCount = uploadList.filter((v) => { return v.status != 'done' }).length;
+    const uploadDialogProps = {
+      visible: uploadingCount > 0,
+      totalCount: totalCount,
+      doneCount: totalCount - uploadingCount
+    }
+
     return (
         <View>
-            {
-                chooseArea
-            }
+            { chooseArea }
+            <Dialog className="upload-dialog" title={`已上传${uploadDialogProps.doneCount}/${uploadDialogProps.totalCount}张`} visible={uploadDialogProps.visible}>
+                <View>正在拼命上传中，请耐心等待哦～</View>
+            </Dialog>
         </View>
     )
 });

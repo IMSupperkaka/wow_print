@@ -86,41 +86,29 @@ const deskCalenderList = [
 const DeskCalendar = (props) => {
 
     const [visible, setVisible] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(0);
     const { dispatch, confirmOrder: { userImageList } } = props;
 
-    const onChange = (fileList) => {
-        console.log(fileList)
-        dispatch({
-            type: 'confirmOrder/saveUserImageList',
-            payload: fileList
-        })
+    const onChange = (file, fileList, index = activeIndex) => {
+        if (file.status == 'done') {
+          dispatch({
+            type: 'confirmOrder/mutateUserImageList',
+            payload: {
+              userImage: file,
+              index
+            }
+          })
+        }
     }
 
-    const handleReplace = (fileList, index) => {
-        let cloneList = [...userImageList];
-        cloneList.splice(index, 1, ...fileList);
-
-        dispatch({
-            type: 'confirmOrder/saveUserImageList',
-            payload: cloneList
-        })
-    };
-
-    const beforeUpload = () => {
+    const beforeUpload = (index) => {
         if (userImageList.length > 0) {
+            setActiveIndex(index);
             setVisible(true);
             return false;
         }
     }
 
-    const handleSaveWorks = () => {
-
-    }
-
-    const handleGoPrint = () => {
-
-    }
-        
     const editFinish = (index, res) => {
 
         const coverList = [
@@ -153,8 +141,11 @@ const DeskCalendar = (props) => {
                     printNums: 1,
                     restInfo: {} // 额外信息
                 }
+            } else {
+              return null;
             }
         })
+
         dispatch({
             type: 'confirmOrder/pushConfirmOrder',
             payload: {
@@ -183,13 +174,27 @@ const DeskCalendar = (props) => {
                     return (
                         <View key={index}>
                             {
-                                item.type == 0 ? 
+                                item.type == 0 ?
                                 <View className="calendar-item cover" style={styles}>
                                     <Image src="https://cdn.wanqiandaikuan.com/1604024547546_lALPD3lGsDaemp_M9szA_192_246.png" className="bear"/>
-                                    <UploadCrop activeIndex={index} fileList={userImageList} editFinish={editFinish.bind(this, index)} beforeUpload={beforeUpload} onChange={onChange} className="calender-uploader" {...size}/>
+                                    <UploadCrop
+                                      fileList={fileList}
+                                      editFinish={editFinish.bind(this, index)}
+                                      beforeUpload={beforeUpload.bind(this, index)}
+                                      onChange={onChange}
+                                      className="calender-uploader"
+                                      {...size}
+                                    />
                                 </View> :
                                 <View className="calendar-item page" style={styles}>
-                                    <UploadCrop activeIndex={index} fileList={userImageList} editFinish={editFinish.bind(this, index)} beforeUpload={beforeUpload} onChange={onChange} className="calender-uploader" {...size}/>
+                                    <UploadCrop
+                                      fileList={fileList}
+                                      editFinish={editFinish.bind(this, index)}
+                                      beforeUpload={beforeUpload.bind(this, index)}
+                                      onChange={onChange}
+                                      className="calender-uploader"
+                                      {...size}
+                                    />
                                 </View>
                             }
                             <View className="calender-title">{ item.title }</View>
@@ -197,13 +202,8 @@ const DeskCalendar = (props) => {
                     )
                 })
             }
-            {/* <BottomButton onChange={onChange} onSave={handleSaveWorks} goPrint={handleGoPrint} limit={13}/> */}
-            <SelectPicModal onChange={onChange} onReplace={handleReplace} imgList={lodash.uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }}/>
-            {
-                userImageList.length < 1 ? 
-                <View onClick={beforeUpload} className="bottom-upload-btn">批量上传（需上传 { 13 - userImageList.length } 张照片）</View> :
-                <View onClick={submit} className="bottom-upload-btn">确认打印</View>
-            }
+            <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} limit={13}/>
+            <SelectPicModal limit={activeIndex == -1 ? 9 : 1} onChange={onChange} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }}/>
         </View>
     )
 }

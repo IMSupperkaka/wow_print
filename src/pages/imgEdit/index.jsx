@@ -157,7 +157,7 @@ const ImgEdit = (props) => {
 
     const oprate = (type) => {
         dispatch({
-            type: 'confirmOrder/saveActiveIndex',
+            type: 'editimg/saveActiveIndex',
             payload: type == 'plus' ? activeIndex + 1 : activeIndex - 1
         })
     }

@@ -10,16 +10,12 @@ import uploiadPlus from '../../../images/upload-plus@2x.png';
 
 export default (props) => {
 
-    const { width, height, onChange, editFinish, beforeUpload, limit = 1, activeIndex = 0, fileList = [] } = props;
+    const { width, height, editFinish, limit = 1, showIndex = 0, fileList = [], ...restProps } = props;
 
     const upload = useRef();
 
-    const onUploadChange = async (fileList) => {
-        onChange(fileList);
-    };
+    const currentImg = fileList[showIndex];
 
-    const currentImg = fileList[activeIndex];
-    
     const uploadBtn = (
         <View className="upload-area" style={{ width: Taro.pxTransform(width), height: Taro.pxTransform(height) }}>
             <Image src={uploiadPlus}/>
@@ -53,7 +49,7 @@ export default (props) => {
                     <CropImg onHandleEdit={onHandleEdit} onHandleChange={() => { upload.current.handleChoose(); }} className="item-img" width={width} height={height} imgInfo={currentImg.imgInfo} cropOption={currentImg.cropInfo} src={currentImg.filePath || currentImg.originImage}/>
                 </View>
             }
-            <Upload limit={limit} ref={upload} fileList={fileList} onChange={onUploadChange} beforeUpload={beforeUpload}>
+            <Upload limit={limit} ref={upload} {...restProps}>
                 {
                     currentImg ? null : uploadBtn
                 }

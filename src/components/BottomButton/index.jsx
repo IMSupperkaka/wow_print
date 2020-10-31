@@ -5,57 +5,51 @@ import { View, Text } from '@tarojs/components';
 import SafeArea from '../../components/SafeArea';
 import Upload from '../../components/Upload';
 
+// TODO: 移除全局样式
 import './index.less';
 
+// TODO: 公用组件不应以redux中的数据为驱动
 const BottomButton = (props) => {
 
     const {onSave, goPrint, onChange, limit, confirmOrder: { coupon, userImageList }} = props;
 
-    const restFreeNums = (coupon.couponFreeNums || 0) - userImageList.reduce((count, v) => { return count + v.printNums }, 0);
+    const restFreeNums = (coupon.couponFreeNums || 0) - userImageList.reduce((count, v) => { return count + (v.printNums || 1) }, 0);
 
-    const handleGoPrint = () => {
-        goPrint()
-    };
-
-    const handleSaveWorks = () => {
-        onSave()
-    };
-
-    const handleChange = (fileList) => {
-        onChange(fileList);
-    };
-
+    const notEmptyImageCount = userImageList.filter((v) => { return !v });
 
     return (
         <SafeArea>
             {({ bottom }) => {
-                const btmLine = userImageList.length ? 
-                <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className="submit-wrap">
+                const btmLine = notEmptyImageCount ?
+                <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className="wy-submit-wrap">
                     {
                         coupon.couponName &&
                         <View className="freenums-tag">还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
                     }
-                    <View className="submit-left" onClick={handleSaveWorks}>存入作品集</View>
+                    <View className="submit-left" onClick={onSave}>存入作品集</View>
                     {
-                        userImageList.length === limit ? <View className="submit-right" onClick={handleGoPrint}>
+                        notEmptyImageCount === limit ?
+                        <View className="submit-right" onClick={goPrint}>
                             <Text>立即定制</Text>
-                            <Text>(已上传{userImageList.length}张)</Text>
-                        </View> : <View className="submit-right">
-                            <Upload limit={limit - userImageList.length} onChange={handleChange}>
+                            <Text>(已上传{notEmptyImageCount}张)</Text>
+                        </View> :
+                        <View className="submit-right">
+                            <Upload limit={limit -notEmptyImageCount} onChange={onChange}>
                                 <View>
                                     <Text className="batch">批量上传</Text>
-                                    <Text className="need">(还需{limit - +userImageList.length}张)</Text>
+                                    <Text className="need">(还需{limit - notEmptyImageCount}张)</Text>
                                 </View>
                             </Upload>
                         </View>
                     }
-                </View> : <Upload limit={limit - userImageList.length} onChange={handleChange}>
-                    <View style={{ paddingBottom: Taro.pxTransform(bottom + 32, 750) }} className="submit-red">
+                </View> :
+                <Upload limit={limit - notEmptyImageCount} onChange={onChange}>
+                    <View style={{ paddingBottom: Taro.pxTransform(bottom + 32, 750) }} className="wy-submit-red">
                         <Text className="batch">批量上传</Text>
                         <Text className="need">(需上传{limit}张照片)</Text>
                     </View>
                 </Upload>
-                    
+
                 return btmLine
             }}
         </SafeArea>
