@@ -6,7 +6,7 @@ import './index.less';
 
 export default (props) => {
   return (
-    <View className={classNames('wy-card-wrap', props.className)}>
+    <View className={classNames('wy-card-wrap', props.className)} {...props}>
       {
         props.title &&
         <View className="wy-card-title">{ props.title }</View>
