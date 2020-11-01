@@ -5,8 +5,7 @@ import { connect } from 'react-redux'
 import './index.less'
 import lodash from 'lodash';
 
-import { add, edit } from '../../services/portfolio';
-
+import synthesis from '../../utils/synthesis';
 import { computeCropUrl } from '../../utils/utils';
 import UploadCrop from '../../components/UploadCrop';
 import SelectPicModal from '../../components/SelectPicModal';
@@ -84,21 +83,35 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         const resultList = userImageList.map((img, index) => {
             const content = index == 0 ? { contentWidth: 555, contentHeight: 472 } : { contentWidth: 320, contentHeight: 320 };
             if (img) {
-                return {
+
+                const cropImage = computeCropUrl(img.originImage, { // 裁剪后地址
+                    ...content,
+                    ...img.imgInfo
+                }, img.cropInfo)
+
+                const resultItem = {
                     filePath: img.filePath,
                     imgInfo: img.imgInfo, // 图片原始信息 { width, height, ...resetInfo }
                     cropInfo: img.cropInfo, // 裁剪信息
                     originImage: img.originImage, // 图片七牛地址
-                    cropImage: computeCropUrl(img.originImage, { // 裁剪后地址
-                        ...content,
-                        ...img.imgInfo
-                    }, img.cropInfo),
+                    cropImage: cropImage,
                     printNums: 1,
                     restInfo: {
                         bookName: img.bookName ? img.bookName : null,
                         description: img.description ? img.description : null
                     }
                 }
+
+                return {
+                    ...resultItem,
+                    synthesisList: synthesis(index == 0 ? 'bookCover' : 'bookPage', {
+                      ...resultItem,
+                      bookName: img.bookName,
+                      description: img.description
+                    })
+                }
+            } else {
+              return null
             }
         })
         return resultList
@@ -151,63 +164,12 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         }
         bindCoverInfoToImage()
         const resultList = handleResultList()
-        if(portfolioId) {
-            Taro.showModal({
-                title: '确认保存',
-                content: '将覆盖原作品，是否确认保存当前修改？',
-                confirmText: '确认',
-                cancelText: '取消',
-                confirmColor: '#FF6345',
-                success: (res) => {
-                    if (res.confirm) {
-                        edit({
-                            portfolioId: portfolioId,
-                            userImageList: resultList
-                        }).then(() => {
-                            Taro.showToast({
-                                title:'作品集保存成功',
-                                icon: 'none',
-                                duration: 1500
-                            })
-                        })
-                    }
-                }
-            })
-        } else {
-            add({
-                goodId: goodId,
-                userImageList: resultList
-            }).then(({ data }) => {
-                // 作品集未满 存入成功保存返回的portfolioId
-                if(data.data.portfolioId) {
-                    Taro.showToast({
-                        title:'作品集保存成功',
-                        icon: 'none',
-                        duration: 2000
-                    })
-                    dispatch({
-                        type: 'confirmOrder/savePortfolioId',
-                        payload: data.data.portfolioId
-                    })
-                } else {
-                    // 作品集已满 提示用户作品集已经满了
-                    Taro.showModal({
-                        title: '提示',
-                        content: '作品集已满，请清除过多的作品~',
-                        confirmText: '去清除',
-                        cancelText: '取消',
-                        confirmColor: '#FF6345',
-                        success: (res) => {
-                            if (res.confirm) {
-                                Taro.navigateTo({
-                                    url: '/pages/portfolio/index'
-                                })
-                            }
-                        }
-                    })
-                }
-            })
-        }
+        dispatch({
+            type: 'confirmOrder/savePortfolio',
+            payload: {
+              resultList
+            }
+        })
     };
 
     // 替换图片

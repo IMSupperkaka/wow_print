@@ -1,13 +1,22 @@
+/*
+ * @Date: 2020-09-28 21:46:46
+ * @LastEditors: Shawn
+ * @LastEditTime: 2020-11-01 21:05:05
+ * @FilePath: \wow_print\src\utils\utils.js
+ * @Description: Descrip Content
+ */
 import Taro from '@tarojs/taro';
 import math from './math';
 
-export const computeCropUrl = (url, imgInfo, cropInfo = { scale: 1, translate: [0, 0] }) => {
+const defaultCropInfo = { scale: 1, translate: [0, 0] }
+
+export const computeCropUrl = (url, imgInfo, cropInfo) => {
     const { fWidth, fHeight, rotateMatrix, rotateDeg } = initImg(imgInfo, {
         width: imgInfo.contentWidth,
         height: imgInfo.contentHeight
     });
     const { width } = imgInfo;
-    const { scale, translate } = cropInfo;
+    const { scale, translate } = cropInfo || defaultCropInfo;
     const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
     const translateMatrix = math.matrix([[1, 0, translate[0]], [0, 1, translate[1]], [0, 0, 1]]);
     // TODO:消除rotateDeg判断

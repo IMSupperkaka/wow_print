@@ -13,14 +13,14 @@ const BottomButton = (props) => {
 
     const {onSave, goPrint, onChange, limit, confirmOrder: { coupon, userImageList }} = props;
 
-    const restFreeNums = (coupon.couponFreeNums || 0) - userImageList.reduce((count, v) => { return count + (v.printNums || 1) }, 0);
+    const restFreeNums = (coupon.couponFreeNums || 0) - userImageList.reduce((count, v) => { return count + (v?.printNums || 0) }, 0);
 
-    const notEmptyImageCount = userImageList.filter((v) => { return !v });
+    const notEmptyImageCount = userImageList.filter((v) => { return !!v }).length;
 
     return (
         <SafeArea>
             {({ bottom }) => {
-                const btmLine = notEmptyImageCount ?
+                const btmLine = (notEmptyImageCount > 0 ?
                 <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className="wy-submit-wrap">
                     {
                         coupon.couponName &&
@@ -48,7 +48,7 @@ const BottomButton = (props) => {
                         <Text className="batch">批量上传</Text>
                         <Text className="need">(需上传{limit}张照片)</Text>
                     </View>
-                </Upload>
+                </Upload>)
 
                 return btmLine
             }}

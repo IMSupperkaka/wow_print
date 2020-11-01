@@ -11,7 +11,10 @@ export default (props) => {
     const { imgList = [], onChange, onReplace, limit = 1, ...resetProps } = props;
 
     const handleChange = (file, fileList) => {
-        onChange(file);
+        onChange({
+          ...file,
+          status: 'done'
+        });
         resetProps.onClose();
     }
 
@@ -30,7 +33,7 @@ export default (props) => {
                         filterList.map((item, index) => {
                             return (
                               <View className="img-item" onClick={() => { handleChange(item) }}>
-                                  <Image mode="aspectFill" src={item.filePath}/>
+                                  <Image mode="aspectFill" src={item.originImage}/>
                               </View>
                             )
                         })
