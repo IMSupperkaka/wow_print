@@ -10,7 +10,9 @@ import address from '../../../images/icon_address@2x.png'
 
 export default () => {
     const [query, setQuery] = useState({});
-    const [orderDetail, setOrderDetail] = useState({});
+    const [orderDetail, setOrderDetail] = useState({
+      goodsInfo: []
+    });
 
     useDidShow(() => {
         const query = Taro.getCurrentInstance().router.params;
@@ -119,8 +121,6 @@ export default () => {
 
     const greyHeader = [4, 5].includes(orderDetail.status);
 
-    const goodsInfo = orderDetail?.goodsInfo?.[0] || {};
-
     return (
         <View>
             <View className={classNames('header', greyHeader && 'grey')}>
@@ -134,23 +134,36 @@ export default () => {
                 </View>
             </View>
             <View className="product-info">
-                <View className="product-info-content" onClick={goPreview}>
-                    <Image className="product-image" mode="aspectFill" src={goodsInfo.indexImage}/>
-                    <View className="product-content">
-                        <View>
-                            { goodsInfo.goodName }
-                        </View>
-                        <View>
-                            <Text>￥{ (goodsInfo.sellingPrice / 100).toFixed(2) }</Text>
-                            <Text>x{ goodsInfo.goodsNums }</Text>
+                {
+                  orderDetail.goodsInfo.map((goodsInfo) => {
+                    return (
+                      <View className="product-info-content">
+                        <Image className="product-image" mode="aspectFill" src={goodsInfo.indexImage}/>
+                        <View className="product-content">
+                            <View>
+                                { goodsInfo.goodName }
+                            </View>
+                            <View>
+                                <Text>￥{ (goodsInfo.sellingPrice / 100).toFixed(2) }</Text>
+                                <Text>x{ goodsInfo.goodsNums }</Text>
+                            </View>
                         </View>
                     </View>
-                </View>
+                    )
+                  })
+                }
                 <View className="product-pay-info">
                     <View>
-                        <Text>优惠券</Text>
-                        <Text>{ orderDetail.couponName }</Text>
+                        <Text>商品总价</Text>
+                        <Text>￥{ (orderDetail.money / 100 + orderDetail.discountMoney / 100 - orderDetail.shipMoney / 100).toFixed(2) }</Text>
                     </View>
+                    {
+                      orderDetail.couponName &&
+                      <View>
+                        <Text>优惠</Text>
+                        <Text>{ orderDetail.couponName }</Text>
+                      </View>
+                    }
                     <View>
                         <Text>运费</Text>
                         <Text>￥{ (orderDetail.shipMoney / 100).toFixed(2) }</Text>

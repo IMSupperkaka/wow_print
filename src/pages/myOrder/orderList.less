@@ -24,7 +24,6 @@
         .order-item-content {
             display: flex;
             padding-bottom: 23px;
-            border-bottom: 1px solid #F2F2F2;
             .product-image {
                 width: 128px;
                 height: 128px;
@@ -51,23 +50,28 @@
                     color: #999999;
                     line-height: 24px;
                 }
-                & > view:nth-child(3) {
-                    display: flex;
-                    justify-content: flex-end;
-                    color: #333333;
-                    font-size: 24px;
-                    line-height: 24px;
-                    font-weight: 400;
-                    & > Text:last-child {
-                        font-weight: bold;
-                    }
-                }
             }
         }
         .orde-item-footer {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
             padding-top: 24px;
+            border-top: 1px solid #F2F2F2;
+            & > view:first-child {
+                color: #333333;
+                font-size: 24px;
+                line-height: 24px;
+                font-weight: 400;
+                & > Text:last-child {
+                    font-weight: bold;
+                }
+            }
+            & > view:last-child {
+              display: flex;
+              justify-content: flex-end;
+              flex: 1;
+            }
             .order-btn {
                 display: flex;
                 justify-content: center;

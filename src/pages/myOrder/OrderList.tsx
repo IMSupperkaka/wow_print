@@ -179,56 +179,61 @@ export default (props) => {
                 <View className='order-list'>
                     {
                         records.map((item, index) => {
-
-                            const goodsInfo = item.goodsInfo[0];
-
                             return (
                                 <View className='order-item' key={index} onClick={handleDetail.bind(this, item)}>
                                     <View className="order-item-header">
                                         <Text>共{ item.loanGoodsNums }件商品</Text>
                                         <Text className={(item.status != 4 && item.status != 5) ? 'primary' : ''}>{ orderStatus.get(item.status) }</Text>
                                     </View>
-                                    <View className="order-item-content">
-                                        <Image className="product-image" mode="aspectFill" src={goodsInfo.indexImage}/>
-                                        <View className="product-content">
-                                            <View>
-                                                { goodsInfo.goodName }
-                                            </View>
-                                            <View>
-                                                <Text>￥{ (goodsInfo.sellingPrice / 100).toFixed(2) }</Text>
-                                                <Text>x{ goodsInfo.goodsNums }</Text>
-                                            </View>
-                                            <View>
-                                                <Text>合计</Text>
-                                                <Text>￥{ (item.money / 100).toFixed(2) }</Text>
+                                    {
+                                      item.goodsInfo.map((goodsInfo) => {
+                                        return (
+                                          <View className="order-item-content">
+                                            <Image className="product-image" mode="aspectFill" src={goodsInfo.indexImage}/>
+                                            <View className="product-content">
+                                                <View>
+                                                    { goodsInfo.goodName }
+                                                </View>
+                                                <View>
+                                                    <Text>￥{ (goodsInfo.sellingPrice / 100).toFixed(2) }</Text>
+                                                    <Text>x{ goodsInfo.goodsNums }</Text>
+                                                </View>
                                             </View>
                                         </View>
-                                    </View>
+                                        )
+                                      })
+                                    }
                                     <View className="orde-item-footer">
-                                        {
-                                            item.status == 2 &&
-                                            <Button onClick={handleGoService} className="order-btn outline-btn">联系客服</Button>
-                                        }
-                                        {
-                                            [3, 9].includes(item.status) &&
-                                            <Button onClick={handleGoLog.bind(this, item)} className="order-btn outline-btn">查看物流</Button>
-                                        }
-                                        {
-                                            [2, 4, 5, 9].includes(item.status) &&
-                                            <Button onClick={handleDetail.bind(this, item)} className="order-btn outline-btn">查看订单</Button>
-                                        }
-                                        {
-                                            item.status == 3 &&
-                                            <Button onClick={handleReceived.bind(this, item)} className="order-btn primary-outline-btn">确认收货</Button>
-                                        }
-                                        {
-                                            item.status == 1 &&
-                                            <Button onClick={handleCancel.bind(this, item)} className="order-btn outline-btn">取消订单</Button>
-                                        }
-                                        {
-                                            item.status == 1 &&
-                                            <Button onClick={handleRepay.bind(this, item)} type="primary" className="order-btn primary-btn">立即付款</Button>
-                                        }
+                                        <View>
+                                          <Text>合计</Text>
+                                          <Text>￥{ (item.money / 100).toFixed(2) }</Text>
+                                        </View>
+                                        <View>
+                                          {
+                                              item.status == 2 &&
+                                              <Button onClick={handleGoService} className="order-btn outline-btn">联系客服</Button>
+                                          }
+                                          {
+                                              [3, 9].includes(item.status) &&
+                                              <Button onClick={handleGoLog.bind(this, item)} className="order-btn outline-btn">查看物流</Button>
+                                          }
+                                          {
+                                              [2, 4, 5, 9].includes(item.status) &&
+                                              <Button onClick={handleDetail.bind(this, item)} className="order-btn outline-btn">查看订单</Button>
+                                          }
+                                          {
+                                              item.status == 3 &&
+                                              <Button onClick={handleReceived.bind(this, item)} className="order-btn primary-outline-btn">确认收货</Button>
+                                          }
+                                          {
+                                              item.status == 1 &&
+                                              <Button onClick={handleCancel.bind(this, item)} className="order-btn outline-btn">取消订单</Button>
+                                          }
+                                          {
+                                              item.status == 1 &&
+                                              <Button onClick={handleRepay.bind(this, item)} type="primary" className="order-btn primary-btn">立即付款</Button>
+                                          }
+                                        </View>
                                     </View>
                                 </View>
                             )

@@ -5,18 +5,22 @@ import { connect } from 'react-redux'
 
 import './index.less'
 import { fix } from '../../utils/utils'
+import Card from '../../components/Card'
 import SafeArea from '../../components/SafeArea'
+import ProductList from './productList'
 import addressIcon from '../../../images/icon_address@2x.png'
 import arrowIcon from '../../../images/coin_jump@2x.png'
 import { create } from '../../services/order'
 import { list } from '../../services/address'
-import { detail as getDetail } from '../../services/product'
+import { detail as getDetail, list as getProductList } from '../../services/product'
 
 const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
     const { addressInfo, coupon, goodId, userImageList } = confirmOrder;
 
     const [productDetail, setProductDetail] = useState({});
+    const [matchList, setMatchList] = useState([]);
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
     useDidShow(() => {
         list().then(({ data }) => {
@@ -37,6 +41,19 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                     payload: defaultAddress || {}
                 })
             }
+        })
+        getProductList({
+          goodId: goodId
+        }).then(({ data }) => {
+          if (data.data.records.length > 0) {
+            setSelectedRowKeys([data.data.records[0].id]);
+          }
+          setMatchList(data.data.records.map((v) => {
+            return {
+              ...v,
+              saleNum: 1
+            }
+          }));
         })
         getDetail({
             goodId: goodId
@@ -98,11 +115,24 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     if (productMoney - freeShipMoney >= 0) {
         shipMoney = 0;
     }
+
+    const matchMoney = matchList.filter((v) => { return selectedRowKeys.includes(v.id) }).reduce((count, v) => { return count + v.saleNum * v.sellingPrice }, 0) / 100;
+
     const totalMoney = (Number(shipMoney) + Number(productMoney)).toFixed(2);
+
+    const payMoney = (Number(totalMoney) + matchMoney).toFixed(2)
+
+    const rowSelection = {
+      type: 'radio',
+      selectedRowKeys,
+      onChange: (selectedRowKeys) => {
+        setSelectedRowKeys(selectedRowKeys)
+      }
+    };
 
     return (
         <View className="index">
-            <View className="address-info" onClick={handleChooseAddress}>
+            <Card bodyClassName="address-info" onClick={handleChooseAddress}>
                 <Image src={addressIcon} />
                 <View className="address-info__body">
                     {
@@ -116,8 +146,8 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                     <View className="address-info__notify">支付成功后订单地址无法修改，请仔细确认哦～</View>
                 </View>
                 <Image className="address-info__arrow" src={arrowIcon} />
-            </View>
-            <View className="product-info">
+            </Card>
+            <Card bodyClassName="product-info">
                 <View className="product-info-content">
                     <Image className="product-image" mode="aspectFill" src={productDetail?.productMainImages?.[0]} />
                     <View className="product-content">
@@ -132,7 +162,11 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 </View>
                 <View className="product-pay-info">
                     <View>
-                        <Text>优惠券</Text>
+                        <Text>商品总价</Text>
+                        <Text>￥{productMoney}</Text>
+                    </View>
+                    <View>
+                        <Text>优惠</Text>
                         <Text>{coupon.couponName || '未使用优惠券'}</Text>
                     </View>
                     <View>
@@ -150,7 +184,10 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                         <Text>￥{totalMoney}</Text>
                     </View>
                 </View>
-            </View>
+            </Card>
+            <Card title="推荐搭配">
+              <ProductList list={matchList} rowSelection={rowSelection} onChange={setMatchList}/>
+            </Card>
             <SafeArea>
                 {({ bottom }) => {
                     return (
@@ -158,7 +195,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                             <View>
                                 <Text>合计</Text>
                                 <Text>￥</Text>
-                                <Text>{totalMoney}</Text>
+                                <Text>{payMoney}</Text>
                                 <Text>含运费{shipMoney}元</Text>
                             </View>
                             <View onClick={submitOrder}>提交订单</View>
