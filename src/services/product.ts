@@ -24,7 +24,7 @@ export const detail = (data) => {
 
 export const getMatchList = (data) => {
   return TaroRequest.request({
-      url: `/goods/detail`,
+      url: `/goods/match`,
       method: 'GET',
       data
   })

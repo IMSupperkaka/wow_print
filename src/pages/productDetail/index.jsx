@@ -50,7 +50,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 }
             })
             setDetail(data.data);
-            if (data.data.couponList.length > 0) {
+            if (data.data.couponList.length > 0 && data.data.category == 0) {
                 saveCoupon(data.data.couponList[0])
             } else {
                 saveCoupon({
@@ -65,15 +65,6 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
         dispatch({
             type: 'confirmOrder/saveCoupon',
             payload: coupon
-        })
-    }
-
-    const saveGoodId = () => {
-        dispatch({
-            type: 'confirmOrder/saveGoodInfo',
-            payload: {
-                id: query.id
-            }
         })
     }
 
@@ -129,7 +120,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 <View className="product-name">{detail.name}</View>
             </View>
             {
-                detail?.couponList?.length > 0 &&
+                (detail?.couponList?.length > 0 && detail.category == 0) &&
                 <View className="coupon-cell" onClick={handleOpenCoupon}>
                     <View>
                         <Image src={iconCoupon} />
