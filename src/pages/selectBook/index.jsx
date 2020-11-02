@@ -45,6 +45,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
     const [editVisible, setEditVisible] = useState(false);
 
     const beforeUpload = (index) => {
+        console.log(index)
         if (userImageList.length > 0) {
             setActiveIndex(index);
             setVisible(true);
@@ -53,15 +54,15 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
     };
 
     const onChange = (file, fileList, index = activeIndex) => {
-      if (file.status == 'done') {
-        dispatch({
-          type: 'confirmOrder/mutateUserImageList',
-          payload: {
-            userImage: file,
-            index
-          }
-        })
-      }
+        if (file.status == 'done') {
+            dispatch({
+                type: 'confirmOrder/mutateUserImageList',
+                payload: {
+                    userImage: file,
+                    index: index
+                }
+            })
+        }
     };
 
     const editFinish = (index, res) => {
@@ -218,7 +219,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                             const file = fileList[i] ? [fileList[i]] : [];
                                             return (
                                                 <View className="choose-item" key={i}>
-                                                    <UploadCrop editFinish={editFinish.bind(this, index)} beforeUpload={beforeUpload.bind(this, 1 + index + i)} fileList={file} onChange={onChange} width={320} height={320}/>
+                                                    <UploadCrop editFinish={editFinish.bind(this, index)} beforeUpload={beforeUpload.bind(this, (index+1)*2 - +!i)} fileList={file} onChange={onChange} width={320} height={320}/>
                                                 </View>
                                             )
                                         })
@@ -231,7 +232,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                 }
             </View>
             <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} onSave={handleSaveWorks} goPrint={submit} limit={17}/>
-            <SelectPicModal onChange={onChange} onReplace={handleReplace} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }}/>
+            <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }}/>
             <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
                 <View className="modal-content">
                     <View className="input-content">
