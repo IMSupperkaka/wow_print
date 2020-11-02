@@ -12,7 +12,7 @@ import addressIcon from '../../../images/icon_address@2x.png'
 import arrowIcon from '../../../images/coin_jump@2x.png'
 import { create } from '../../services/order'
 import { list } from '../../services/address'
-import { detail as getDetail, list as getProductList } from '../../services/product'
+import { detail as getDetail, getMatchList } from '../../services/product'
 
 const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
@@ -42,18 +42,18 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 })
             }
         })
-        getProductList({
-          goodId: goodId
+        getMatchList({
+            goodId: goodId
         }).then(({ data }) => {
-          if (data.data.records.length > 0) {
-            setSelectedRowKeys([data.data.records[0].id]);
-          }
-          setMatchList(data.data.records.map((v) => {
-            return {
-              ...v,
-              saleNum: 1
+            if (data.data.records.length > 0) {
+                setSelectedRowKeys([data.data.records[0].id]);
             }
-          }));
+            setMatchList(data.data.records.map((v) => {
+                return {
+                    ...v,
+                    saleNum: 1
+                }
+            }));
         })
         getDetail({
             goodId: goodId
@@ -72,10 +72,21 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
         create({
             addressId: addressInfo.id,
             couponUserId: coupon.id,
-            goodsInfo: [{
-                goodId: goodId,
-                userImageList: userImageList
-            }]
+            goodsInfo: [
+                {
+                    goodIsMaster: 1,
+                    goodsNums: 1,
+                    goodId: goodId,
+                    userImageList: userImageList
+                },
+                ...matchList.map((v) => {
+                    return {
+                        goodIsMaster: 0,
+                        goodsNums: v.saleNum,
+                        goodId: v.goodId
+                    }
+                })
+            ]
         }).then(({ data }) => {
             Taro.requestPayment({
                 timeStamp: data.data.payData.timestamp,
@@ -108,8 +119,8 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
     const freeShipMoney = fix(addressInfo.freeShippingMoney, 2);
     let shipMoney = fix(addressInfo.shipMoney, 2);
-    const picNum = userImageList.reduce((count, v) => { return count + v.printNums }, 0);
-    const payNum = picNum - (coupon.couponFreeNums || 0);
+    const picNum = productDetail.category == 0 ? userImageList.reduce((count, v) => { return count + v.printNums }, 0) : 1;
+    const payNum = productDetail.category == 0 ? picNum - (coupon.couponFreeNums || 0) : 1;
     const productMoney = fix(productDetail.sellingPrice * (payNum <= 0 ? 0 : payNum), 2);
 
     if (productMoney - freeShipMoney >= 0) {
@@ -123,11 +134,11 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     const payMoney = (Number(totalMoney) + matchMoney).toFixed(2)
 
     const rowSelection = {
-      type: 'radio',
-      selectedRowKeys,
-      onChange: (selectedRowKeys) => {
-        setSelectedRowKeys(selectedRowKeys)
-      }
+        type: 'radio',
+        selectedRowKeys,
+        onChange: (selectedRowKeys) => {
+            setSelectedRowKeys(selectedRowKeys)
+        }
     };
 
     return (
@@ -174,7 +185,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                             <Text>运费</Text>
                             {
                                 freeShipMoney &&
-                                <Text>（满{ freeShipMoney }包邮）</Text>
+                                <Text>（满{freeShipMoney}包邮）</Text>
                             }
                         </View>
                         <Text>￥{shipMoney}</Text>
@@ -185,9 +196,12 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                     </View>
                 </View>
             </Card>
-            <Card title="推荐搭配">
-              <ProductList list={matchList} rowSelection={rowSelection} onChange={setMatchList}/>
-            </Card>
+            {
+                matchList.length > 0 &&
+                <Card title="推荐搭配">
+                    <ProductList list={matchList} rowSelection={rowSelection} onChange={setMatchList} />
+                </Card>
+            }
             <SafeArea>
                 {({ bottom }) => {
                     return (

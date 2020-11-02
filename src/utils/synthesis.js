@@ -12,26 +12,26 @@ const renderMap = {
       {
         type: 'Image',
         imageUrl: backgroundImage,
-        width: 640,
-        height: 457,
-        offsetX: 0,
-        offsetY: 0
-      },
-      {
-        type: 'Image',
-        imageUrl: 'https://cdn.wanqiandaikuan.com/1604024547546_lALPD3lGsDaemp_M9szA_192_246.png',
-        width: 640,
-        height: 338,
+        width: 2560,
+        height: 1828,
         offsetX: 0,
         offsetY: 0
       },
       {
         type: 'Image',
         imageUrl: cropImage,
-        width: 58,
-        height: 74.30,
-        offsetX: 291,
-        offsetY: 294
+        width: 2560,
+        height: 1352,
+        offsetX: 0,
+        offsetY: 0
+      },
+      {
+        type: 'Image',
+        imageUrl: 'https://cdn.wanqiandaikuan.com/1604024547546_lALPD3lGsDaemp_M9szA_192_246.png',
+        width: 232,
+        height: 297,
+        offsetX: 1164,
+        offsetY: 1176
       }
     ]
   },
@@ -40,18 +40,18 @@ const renderMap = {
       {
         type: 'Image',
         imageUrl: backgroundImage,
-        width: 640,
-        height: 457,
+        width: 2560,
+        height: 1828,
         offsetX: 0,
         offsetY: 0
       },
       {
         type: 'Image',
         imageUrl: cropImage,
-        width: 251,
-        height: 330,
-        offsetX: 79,
-        offsetY: 43
+        width: 1004,
+        height: 1320,
+        offsetX: 172,
+        offsetY: 316
       }
     ]
   },
@@ -60,18 +60,18 @@ const renderMap = {
       {
         type: 'Image',
         imageUrl: backgroundImage,
-        width: 640,
-        height: 457,
+        width: 2560,
+        height: 1828,
         offsetX: 0,
         offsetY: 0
       },
       {
         type: 'Image',
         imageUrl: cropImage,
-        width: 380,
-        height: 216,
-        offsetX: 79,
-        offsetY: 43
+        width: 1520,
+        height: 864,
+        offsetX: 172,
+        offsetY: 316
       }
     ]
   },
@@ -80,42 +80,42 @@ const renderMap = {
       {
         type: 'Image',
         imageUrl: 'http://cdn.91jiekuan.com/FoXlt8UQT99Eoiuk2NJPWdrwRTIE',
-        width: 640,
-        height: 640,
+        width: 2560,
+        height: 2560,
         offsetX: 0,
         offsetY: 0
       },
       {
         type: 'Image',
         imageUrl: 'http://cdn.91jiekuan.com/FuWAks8AFr9u_OujPhO_Q8zhYydw',
-        width: 178,
-        height: 88,
-        offsetX: 462,
-        offsetY: 42
+        width: 712,
+        height: 352,
+        offsetX: 1848,
+        offsetY: 168
       },
       {
         type: 'Image',
         imageUrl: cropImage,
-        width: 555,
-        height: 472,
+        width: 2220,
+        height: 1888,
         offsetX: 0,
-        offsetY: 168
+        offsetY: 672
       },
       {
         type: 'Text',
         text: bookName,
-        offsetX: 44,
-        offsetY: 66,
-        textFontSize: 28,
+        offsetX: 176,
+        offsetY: 264,
+        textFontSize: 112,
         textColor: [51, 51, 51]
       },
       {
         type: 'Text',
         text: description,
-        offsetX: 44,
-        offsetY: 112,
-        textFontSize: 14,
-        textFontSize: [51, 51, 51]
+        offsetX: 176,
+        offsetY: 448,
+        textFontSize: 56,
+        textColor: [51, 51, 51]
       }
     ]
   },
@@ -123,8 +123,8 @@ const renderMap = {
     return [
       {
         imageUrl: cropImage,
-        width: 320,
-        height: 320,
+        width: 1280,
+        height: 1280,
         offsetX: 0,
         offsetY: 0
       }
