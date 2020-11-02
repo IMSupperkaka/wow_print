@@ -36,6 +36,7 @@ export default {
   },
   effects: {
     *pushSeletPage({ payload }, { put }) {
+
       const { goodInfo, portfolioId, userImageList } = payload;
 
       yield put({

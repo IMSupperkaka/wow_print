@@ -27,6 +27,10 @@ const twinsList = [
     [{},{}]
 ];
 
+const modelList = [
+    {},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}
+];
+
 const SelectBook = ({ dispatch, confirmOrder }) => {
 
     const { userImageList, goodId, portfolioId } = confirmOrder;
@@ -45,7 +49,6 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
     const [editVisible, setEditVisible] = useState(false);
 
     const beforeUpload = (index) => {
-        console.log(index)
         if (userImageList.length > 0) {
             setActiveIndex(index);
             setVisible(true);
@@ -59,7 +62,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                 type: 'confirmOrder/mutateUserImageList',
                 payload: {
                     userImage: file,
-                    index: index
+                    index
                 }
             })
         }
@@ -81,7 +84,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
 
     // 请求前 处理图片列表
     const handleResultList = () => {
-        const resultList = userImageList.map((img, index) => {
+        const resultList = modelList.map((item, index) => {
+            let img = userImageList[index] || null;
             const content = index == 0 ? { contentWidth: 555, contentHeight: 472 } : { contentWidth: 320, contentHeight: 320 };
             if (img) {
 
@@ -91,7 +95,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                 }, img.cropInfo)
 
                 const resultItem = {
-                    filePath: img.filePath,
+                    // filePath: img.filePath,
                     imgInfo: img.imgInfo, // 图片原始信息 { width, height, ...resetInfo }
                     cropInfo: img.cropInfo, // 裁剪信息
                     originImage: img.originImage, // 图片七牛地址
@@ -106,15 +110,16 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                 return {
                     ...resultItem,
                     synthesisList: synthesis(index == 0 ? 'bookCover' : 'bookPage', {
-                      ...resultItem,
-                      bookName: img.bookName,
-                      description: img.description
+                        ...resultItem,
+                        bookName: img.bookName,
+                        description: img.description
                     })
                 }
             } else {
-              return null
+                return null
             }
         })
+        console.log(resultList)
         return resultList
     }
 
@@ -202,7 +207,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                             </View>
                             <Image src={wayin} mode="aspectFit" className="wayin"/>
                         </View>
-                        <UploadCrop limit={17 - userImageList.length} beforeUpload={beforeUpload.bind(this, 0)} editFinish={editFinish.bind(this, 0)} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className="cover-con"/>
+                        <UploadCrop beforeUpload={beforeUpload.bind(this, 0)} editFinish={editFinish.bind(this, 0)} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className="cover-con"/>
                     </View>
                     <View className="page-num">封面</View>
                 </View>
