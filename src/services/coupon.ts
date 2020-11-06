@@ -23,3 +23,11 @@ export const receive = () => {
         method: 'GET'
     })
 }
+
+// 渠道优惠券列表
+export const channelCouponList = () => {
+    return TaroRequest.request({
+        url: `/coupon/channel/list`,
+        method: 'GET'
+    })
+}

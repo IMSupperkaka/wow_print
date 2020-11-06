@@ -54,34 +54,34 @@ $color-brand: #FF6345;
 }
 .fade-in-enter-active {
     opacity: 1;
-    transition: opacity 200ms;
+    transition: opacity 300ms;
 }
 .fade-in-exit {
     opacity: 1;
 }
 .fade-in-exit-active {
     opacity: 0;
-    transition: opacity 200ms;
+    transition: opacity 300ms;
 }
 // fade-in transition end
 
 // bottom-top transition start
 .bottom-top-enter {
   opacity: 0;
-  transform: translateY(100%);
+  transform: translate3d(0, 100%, 0);
 }
 .bottom-top-enter-active {
   opacity: 1;
-  transition: all 200ms;
-  transform: translateY(0);
+  transition: all 300ms ease-in-out;
+  transform: translate3d(0, 0, 0);
 }
 .bottom-top-exit {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
 }
 .bottom-top-exit-active {
   opacity: 0;
-  transition: all 200ms;
-  transform: translateY(100%);
+  transition: all 300ms ease-in-out;
+  transform: translate3d(0, 100%, 0);
 }
 // bottom-top transition end

@@ -8,8 +8,11 @@
 
 .preview-swiper {
     width: 640px;
-    height: 914px;
+    height: auto;
+    height: calc(100vh - 100px)!important;
     .preview-item {
+        display: flex;
+        align-items: center;
         position: relative;
         .print-nums {
             position: absolute;
@@ -21,7 +24,7 @@
     }
     .preview-image {
         width: 640px;
-        height: 914px;
+        height: auto;
     }
 }
 

@@ -36,7 +36,7 @@ export default {
     },
     effects: {
         *pushSeletPage({ payload }, { put }) {
-            const { goodInfo, portfolioId, userImageList } = payload;
+            const { goodInfo, portfolioId, userImageList, goConfirmOrder = false } = payload;
 
             yield put({
                 type: 'saveGoodInfo',
@@ -65,6 +65,10 @@ export default {
                 case 3:
                     path = `/pages/deskCalendar/index`
                     break;
+            }
+
+            if (goConfirmOrder) {
+                path = '/pages/confirmOrder/index'
             }
 
             Taro.getSetting({

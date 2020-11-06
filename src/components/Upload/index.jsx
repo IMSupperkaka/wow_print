@@ -49,6 +49,11 @@ export default React.forwardRef((props, ref) => {
         currentItem.status = status;
         currentItem.originImage = res?.data;
         currentItem.imgInfo = imgInfo;
+        currentItem.cropInfo = {
+            translate: [0, 0],
+            scale: 1,
+            ignoreBlur: false
+        }
         setUploadList((uploadList) => {
           const cloneUploadList = [...uploadList];
           const uploadIndex = cloneUploadList.findIndex((v) => {

@@ -7,7 +7,7 @@
  */
 
 const renderMap = {
-  deskCalendarCover: ({ backgroundImage, cropImage }) => {
+  deskCalendarCover: ({ backgroundImage, cropImage, title }) => {
     return [
       {
         type: 'Image',
@@ -21,17 +21,18 @@ const renderMap = {
         type: 'Image',
         imageUrl: cropImage,
         width: 2560,
-        height: 1352,
+        height: 1180,
         offsetX: 0,
-        offsetY: 0
+        offsetY: 172
       },
       {
-        type: 'Image',
-        imageUrl: 'https://cdn.wanqiandaikuan.com/1604024547546_lALPD3lGsDaemp_M9szA_192_246.png',
-        width: 232,
-        height: 297,
-        offsetX: 1164,
-        offsetY: 1176
+        type: 'Text',
+        text: title,
+        textFontFamily: "微软雅黑",
+        offsetY: 1432,
+        textFontSize: 72,
+        textAlignCenter: true,
+        textColor: [102, 102, 102]
       }
     ]
   },
@@ -75,7 +76,7 @@ const renderMap = {
       }
     ]
   },
-  bookCover: ({ cropImage, bookName, description }) => {
+  bookCover: ({ cropImage, bookName, description, date }) => {
     return [
       {
         type: 'Image',
@@ -90,7 +91,7 @@ const renderMap = {
         imageUrl: 'http://cdn.91jiekuan.com/FuWAks8AFr9u_OujPhO_Q8zhYydw',
         width: 712,
         height: 352,
-        offsetX: 1848,
+        offsetX: 1664,
         offsetY: 168
       },
       {
@@ -104,6 +105,7 @@ const renderMap = {
       {
         type: 'Text',
         text: bookName,
+        textFontFamily: "微软雅黑",
         offsetX: 176,
         offsetY: 264,
         textFontSize: 112,
@@ -112,10 +114,28 @@ const renderMap = {
       {
         type: 'Text',
         text: description,
+        textFontFamily: "微软雅黑",
         offsetX: 176,
         offsetY: 448,
         textFontSize: 56,
         textColor: [51, 51, 51]
+      },
+      {
+        type: 'Image',
+        imageUrl: 'https://cdn.91daiwo.com/back.png',
+        width: 312,
+        height: 76,
+        offsetX: 2064,
+        offsetY: 2244
+      },
+      {
+        type: 'Text',
+        text: date,
+        textFontFamily: "微软雅黑",
+        offsetX: 2090,
+        offsetY: 2250,
+        textFontSize: 48,
+        textColor: [255, 255, 255]
       }
     ]
   },

@@ -1,0 +1,199 @@
+page {
+    background: #E7E7DD;
+}
+
+.head-banner {
+    width: 100%;
+}
+
+.content {
+    padding: 28px;
+    .title {
+        font-size: 28px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: bold;
+        color: #333333;
+        line-height: 40px;
+    }
+    .desc {
+        font-size: 24px;
+        color: #333333;
+        font-family: PingFangSC-Regular, PingFang SC;
+        margin: 15px 0;
+    }
+}
+
+.product-box {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 28px;
+    margin-top: -438px;
+    .product-main {
+        width: 100%;
+        position: relative;
+        margin-bottom: 20px;
+        .background {
+            display: flex;
+            width: 100%;
+        }
+        .product-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-sizing: border-box;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 155px;
+            padding: 0 43px 8px 43px;
+            .product-name {
+                font-size: 28px;
+                font-family: PingFangSC-Regular, PingFang SC;
+                font-weight: 400;
+                color: #333333;
+                line-height: 40px;
+            }
+            .coupon-name {
+                font-size: 36px;
+                font-family: PingFangSC-Medium, PingFang SC;
+                font-weight: 600;
+                color: #FF6345;
+                line-height: 50px;
+            }
+        }
+    }
+    .product-sub-wrap {
+        display: flex;
+        justify-content: space-between;
+        
+    }
+    .product-sub {
+        position: relative;
+        width: 337px;
+        .background {
+            display: flex;
+            width: 100%;
+        }
+        .product-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 204px;
+            padding: 0 4px 8px 4px;
+            text-align: center;
+            .product-name {
+                font-size: 24px;
+                font-family: PingFangSC-Regular, PingFang SC;
+                font-weight: 400;
+                color: #333333;
+                line-height: 33px;
+            }
+            .coupon-name {
+                font-size: 32px;
+                font-family: PingFangSC-Medium, PingFang SC;
+                font-weight: 600;
+                color: #FF6345;
+                line-height: 45px;
+                margin-bottom: 13px;
+            }
+        }
+    }
+}
+
+.xd-dialog {
+    width: 654px!important;
+    .wy-dialog__content {
+        box-sizing: border-box;
+        background-color: transparent!important;
+        padding: 0 48px!important;
+        width: 654px!important;
+        height: 772px;
+        background: url('https://cdn.wanqiandaikuan.com/%E5%BC%B9%E7%AA%97-%E5%88%9D%E6%AC%A1.png');
+        background-size: 100% 100%;
+        .title {
+            text-align: center;
+            font-size: 40px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: bold;
+            color: #333333;
+            line-height: 85px;
+            margin-bottom: 40px;
+        }
+        .coupon-box {
+            display: flex;
+            width: 100%;
+            height: 166px;
+            margin-bottom: 16px;
+            background: url('../../../images/6.png');
+            background-size: 100% 100%;
+            &.active {
+                background: url('https://cdn.wanqiandaikuan.com/5.png');
+                background-size: 100% 100%;
+            }
+            .left {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                flex: 1;
+                padding-left: 40px;
+                & > view:first-child {
+                    font-size: 28px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 600;
+                    color: #333333;
+                    margin-bottom: 4px;
+                }
+                & > view:last-child {
+                    font-size: 36px;
+                    font-family: PingFangSC-Medium, PingFang SC;
+                    font-weight: 600;
+                    color: #FA5E41;
+                }
+            }
+            .right {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 190px;
+                font-size: 28px;
+                font-family: PingFangSC-Medium, PingFang SC;
+                font-weight: 500;
+                color: #FFFFFF;
+            }
+        }
+        .tips {
+            text-align: center;
+            font-size: 22px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: #999999;
+            line-height: 30px;
+            margin-top: 40px;
+        }
+        .getmore-coupon {
+            position: absolute;
+            left: 50%;
+            bottom: -100px;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 386px;
+            height: 80px;
+            background: #FF6345;
+            border-radius: 54px;
+            font-size: 28px;
+            font-family: PingFangSC-Medium, PingFang SC;
+            font-weight: 500;
+            color: #F9F9F9;
+        }
+    }
+}

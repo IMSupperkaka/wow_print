@@ -6,8 +6,10 @@ import { View, Image, ScrollView, Swiper, Text, SwiperItem } from '@tarojs/compo
 
 import './index.less'
 import { fix } from '../../utils/utils'
+import Transition from '../../components/Transition'
 import Modal from '../../components/Modal'
 import SafeArea from '../../components/SafeArea'
+import NoticeBar from '../../components/NoticeBar'
 import iconCoupon from '../../../images/icon_coupon@2x.png'
 import couponArrow from '../../../images/coin_jump@3x.png'
 import { detail as getDetail } from '../../services/product'
@@ -24,10 +26,12 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     useReady(() => {
         const query = Taro.getCurrentInstance().router.params;
         setQuery(query);
-        dispatch({
-            type: 'confirmOrder/initConfirmOrder'
-        })
         getOrderDetail(query.id);
+        if (query.type != 'display') {
+            dispatch({
+                type: 'confirmOrder/initConfirmOrder'
+            })
+        }
         Taro.eventCenter.on('finishOrder', (id) => {
             getOrderDetail(id);
         })
@@ -50,13 +54,15 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 }
             })
             setDetail(data.data);
-            if (data.data.couponList.length > 0 && data.data.category == 0) {
-                saveCoupon(data.data.couponList[0])
-            } else {
-                saveCoupon({
-                    id: null,
-                    couponFreeNums: 0
-                })
+            if (data.data.category != 0) {
+                if (data.data.couponList.length > 0 && data.data.category == 1) {
+                    saveCoupon(data.data.couponList[0])
+                } else {
+                    saveCoupon({
+                        id: null,
+                        couponFreeNums: 0
+                    })
+                }
             }
         })
     }
@@ -77,6 +83,11 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     }
 
     const goSelectPic = () => {
+
+        if (detail.category == 0) {
+            return Taro.navigateBack();
+        }
+
         dispatch({
             type: 'confirmOrder/pushSeletPage',
             payload: {
@@ -95,9 +106,17 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
         handleCloseCoupon();
     }
 
+    const submitBtnText = detail.category == 0 ? '确认选择' : (coupon.couponName ? '免费打印' : '立即打印');
+
     return (
         <View className="index">
             <View className="banner-wrap">
+                {
+                    detail?.buyList?.length > 0 &&
+                    <NoticeBar className="order-notice" list={detail.buyList} renderItem={(v) => {
+                        return <View className="order-notice-item">{ v.cname }打印了{ v.printNums }张</View>
+                    }}/>
+                }
                 <Swiper className="banner" current={current} onChange={(e) => {
                     setCurrent(e.detail.current);
                 }}>
@@ -116,11 +135,14 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 </View>
             </View>
             <View className="product-info">
-                <View className="product-price">￥{fix(detail.sellingPrice, 2)}</View>
-                <View className="product-name">{detail.name}</View>
+                <View>
+                    <View className="product-price">￥{fix(detail.sellingPrice, 2)}</View>
+                    <View className="product-name">{detail.name}</View>
+                </View>
+                <View className="product-sale">销量 {detail.sales}</View>
             </View>
             {
-                (detail?.couponList?.length > 0 && detail.category == 0) &&
+                (detail?.couponList?.length > 0 && detail.category == 1) &&
                 <View className="coupon-cell" onClick={handleOpenCoupon}>
                     <View>
                         <Image src={iconCoupon} />
@@ -142,7 +164,13 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
             </View>
             <SafeArea>
                 {({ bottom }) => {
-                    return <View style={{ paddingBottom: Taro.pxTransform(bottom) }} onClick={goSelectPic} className="submit-btn">{ coupon.couponName ? '免费打印' : '立即打印' }</View>
+                    return (
+                        <Transition in={detail.id} timeout={0} classNames="bottom-top">
+                            <View style={{ paddingBottom: Taro.pxTransform(bottom) }} onClick={goSelectPic} className="submit-btn">
+                                { submitBtnText }
+                            </View>
+                        </Transition>
+                    )
                 }}
             </SafeArea>
             <Modal className="coupon-modal" visible={isOpened} onClose={handleCloseCoupon}>

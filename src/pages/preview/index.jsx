@@ -44,7 +44,7 @@ const Preview = () => {
                         orderDetail?.goodsInfo?.[0]?.userImageList.map((v) => {
                             return (
                                 <SwiperItem className="preview-item" key={v.id}>
-                                    <Image className="preview-image" mode="aspectFill" src={v.cropImage} />
+                                    <Image className="preview-image" mode="widthFix" src={v.synthesisImage || v.cropImage} />
                                     <Text className="print-nums">打印{ v.printNums }张</Text>
                                 </SwiperItem>
                             )

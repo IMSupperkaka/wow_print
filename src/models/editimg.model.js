@@ -18,6 +18,30 @@ export default {
             Taro.navigateTo({
                 url: '/pages/imgEdit/index'
             })
+        },
+        *deleteImg({ payload }, { put, select }) {
+            const { imgList, activeIndex } = yield select((state) => {
+                return state.editimg;
+            })
+            const { index } = payload;
+            const cloneList = [...imgList];
+            cloneList.splice(index, 1);
+
+            if (cloneList.length <= 0) {
+                Taro.navigateBack();
+            }
+
+            yield put({
+                type: 'saveActiveIndex',
+                payload: activeIndex >= cloneList.length ? (cloneList.length - 1) : activeIndex
+            })
+
+            yield put({
+                type: 'saveImgList',
+                payload: cloneList
+            })
+
+            Taro.eventCenter.trigger('editFinish', cloneList);
         }
     },
     reducers: {
@@ -25,6 +49,18 @@ export default {
             return {
                 ...state,
                 ...payload
+            }
+        },
+        saveImgList(state, { payload }) {
+            return {
+                ...state,
+                imgList: payload
+            }
+        },
+        saveActiveIndex(state, { payload }) {
+            return {
+                ...state,
+                activeIndex: payload
             }
         }
     }

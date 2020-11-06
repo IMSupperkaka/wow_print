@@ -28,10 +28,10 @@ const BottomButton = (props) => {
                     }
                     <View className="submit-left" onClick={onSave}>存入作品集</View>
                     {
-                        notEmptyImageCount === limit ?
+                        notEmptyImageCount >= limit ?
                         <View className="submit-right" onClick={goPrint}>
                             <Text>立即定制</Text>
-                            <Text>(已上传{notEmptyImageCount}张)</Text>
+                            {/* <Text>(已上传{notEmptyImageCount}张)</Text> */}
                         </View> :
                         <View className="submit-right">
                             <Upload limit={limit -notEmptyImageCount} onChange={onChange}>

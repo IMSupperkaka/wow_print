@@ -13,6 +13,12 @@ export default (props) => {
     const handleChange = (file, fileList) => {
         onChange({
           ...file,
+          cropInfo: {
+              ...file.cropInfo,
+              translate: [0, 0],
+              scale: 1,
+              ignoreBlur: false
+          },
           status: 'done'
         });
         resetProps.onClose();
@@ -32,9 +38,9 @@ export default (props) => {
                     {
                         filterList.map((item, index) => {
                             return (
-                              <View className="img-item" onClick={() => { handleChange(item) }}>
-                                  <Image mode="aspectFill" src={item.originImage}/>
-                              </View>
+                                <View className="img-item" onClick={() => { handleChange(item) }}>
+                                    <Image mode="aspectFill" src={`${item.originImage}?imageView2/1/w/200/h/200`}/>
+                                </View>
                             )
                         })
                     }

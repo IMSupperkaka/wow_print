@@ -7,9 +7,8 @@ import Empty from '../../components/Empty'
 
 export default (props) => {
 
-    const { onLoad } = props;
-    const [isFinish, setIsFinish] = useState(false);
-    const [records, setRecords] = useState([]);
+    const { onLoad, onChange, isFinish } = props;
+
     const [page, setPage] = useState({
         current: 0,
         pageSize: 10,
@@ -32,23 +31,7 @@ export default (props) => {
         if (!refresh && isFinish) {
             return false;
         }
-        const current = refresh ? 1 : page.current + 1;
-        const pageSize = page.pageSize;
-        onLoad({
-            current,
-            pageSize
-        }).then(({ list, total }) => {
-            setPage({
-                current,
-                pageSize,
-                total
-            })
-            setIsFinish(current >= Math.ceil(total / pageSize));
-            if (refresh) {
-                setRecords(list);
-            } else {
-                setRecords(records.concat(list));
-            }
+        onLoad(refresh).then(() => {
             Taro.stopPullDownRefresh();
         }).catch(() => {
             Taro.stopPullDownRefresh();
@@ -57,13 +40,11 @@ export default (props) => {
 
     const empty = props.empty || <Empty/>;
 
-    const children = props.children({ list: records }); // 以函数形式运行
-
     return (
         <View>
             {
-                records.length > 0 ?
-                children :
+                props.children.length > 0 ?
+                props.children :
                 empty
             }
         </View>

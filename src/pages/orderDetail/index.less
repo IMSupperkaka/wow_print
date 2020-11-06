@@ -56,11 +56,30 @@
             padding: 8px 0;
             flex: 1;
             & > view:nth-child(1) {
+                display: flex;
+                justify-content: space-between;
                 font-size: 28px;
                 font-weight: 400;
                 color: #333333;
                 line-height: 28px;
                 margin-bottom: 20px;
+                .product-name {
+                    display: flex;
+                    align-items: center;
+                }
+                .preview-btn {
+                    font-size: 24px;
+                    color: #666;
+                }
+                .match-icon {
+                    font-size: 18px;
+                    line-height: 18px;
+                    padding: 6px 8px;
+                    color: #B2B2B2;
+                    border-radius: 4px;
+                    border: 1px solid #B2B2B2;
+                    margin-left: 8px;
+                }
             }
             & > view:nth-child(2) {
                 display: flex;

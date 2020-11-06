@@ -1,16 +1,41 @@
+.portfolio-list {
+    .at-swipe-action {
+        margin: 20px 24px;
+        background-color: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+}
 .portfolio-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 20px 24px;
-    background-color: #fff;
-    border-radius: 16px;
     padding: 24px;
-    .portfolio-img {
-        width: 160px;
-        height: 160px;
-        margin-right: 24px;
+    .portfolio-img-wrap {
+        position: relative;
         border-radius: 16px;
+        overflow: hidden;
+        margin-right: 24px;
+        .portfolio-img {
+            display: flex;
+            width: 160px;
+            height: 160px;
+        }
+        .continue-mask {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            position: absolute;
+            width: 160px;
+            height: 80px;
+            padding-bottom: 8px;
+            left: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000000 100%);
+            opacity: 0.7;
+            color: #fff;
+            font-size: 20px;
+        }
     }
     .portfolio-left {
         display: flex;

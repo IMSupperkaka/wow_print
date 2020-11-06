@@ -25,6 +25,9 @@
       height: calc(100% - 65px);
       color: #fff;
       background-color: rgba(0, 0, 0, 0.2);
+      &.full-mask {
+          height: 100%;
+      }
       :first-child {
         font-size: 30px;
         line-height: 1;
@@ -44,8 +47,6 @@
       bottom: 0;
       left: 0;
       background-color: #fff;
-    //   transform: translate(0, 100%);
-    //   transition: all 0.3s;
       &.show {
         transform: translate(0, 0);
       }

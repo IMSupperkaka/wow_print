@@ -13,6 +13,7 @@ import receivePng from '../../../images/order_receive.png'
 import refundPng from '../../../images/order_refund.png'
 import couponPng from '../../../images/my_icon_coupons@2x.png'
 import addressPng from '../../../images/my_icon_address@2x.png'
+import portfolioPng from '../../../images/my_icon_draft_box@2x.png'
 
 const Index = ({ user }) => {
 
@@ -131,11 +132,11 @@ const Index = ({ user }) => {
                 </View>
                 <View className="cell" onClick={handleGoPortfolio}>
                     <View className="cell-left">
-                        <Image className="icon-left" src={addressPng}/>
+                        <Image className="icon-left" src={portfolioPng}/>
                         <Text>作品集</Text>
                     </View>
                     <View>
-                        <Text className="use-coupon">{ state.couponCanUseNums }</Text>
+                        <Text className="use-portfolio">{ state.portfolioNums }</Text>
                         <AtIcon value='chevron-right' size='14' color='#999'></AtIcon>
                     </View>
                 </View>

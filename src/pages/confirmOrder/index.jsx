@@ -14,6 +14,10 @@ import { create } from '../../services/order'
 import { list } from '../../services/address'
 import { detail as getDetail, getMatchList } from '../../services/product'
 
+const NaN2Zero = (num) => {
+    return isNaN(num) ? 0 : num;
+}
+
 const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
     const { addressInfo, coupon, goodId, userImageList } = confirmOrder;
@@ -45,10 +49,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
         getMatchList({
             goodId: goodId
         }).then(({ data }) => {
-            if (data.data.records.length > 0) {
-                setSelectedRowKeys([data.data.records[0].id]);
-            }
-            setMatchList(data.data.records.map((v) => {
+            setMatchList(data.data.map((v) => {
                 return {
                     ...v,
                     saleNum: 1
@@ -79,11 +80,12 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                     goodId: goodId,
                     userImageList: userImageList
                 },
-                ...matchList.map((v) => {
+                ...selectedRowKeys.map((id) => {
+                    var item = matchList.find((v) => { return v.id == id });
                     return {
                         goodIsMaster: 0,
-                        goodsNums: v.saleNum,
-                        goodId: v.goodId
+                        goodsNums: item.saleNum,
+                        goodId: item.id
                     }
                 })
             ]
@@ -119,22 +121,28 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
     const freeShipMoney = fix(addressInfo.freeShippingMoney, 2);
     let shipMoney = fix(addressInfo.shipMoney, 2);
-    const picNum = productDetail.category == 0 ? userImageList.reduce((count, v) => { return count + v.printNums }, 0) : 1;
-    const payNum = productDetail.category == 0 ? picNum - (coupon.couponFreeNums || 0) : 1;
-    const productMoney = fix(productDetail.sellingPrice * (payNum <= 0 ? 0 : payNum), 2);
+    const picNum = productDetail.category == 1 ? userImageList.reduce((count, v) => { return count + v.printNums }, 0) : 1;
+    const discountNum = productDetail.category == 1 ? (coupon.couponFreeNums || 0) : 0;
 
-    if (productMoney - freeShipMoney >= 0) {
+    // 商品总价
+    const productMoney = fix(productDetail.sellingPrice * (picNum <= 0 ? 0 : picNum), 2);
+    // 优惠金额
+    const discountMoney = discountNum * productDetail.sellingPrice / 100;
+    // 搭配商品总价
+    const matchMoney = matchList.filter((v) => { return selectedRowKeys.includes(v.id) }).reduce((count, v) => { return count + v.saleNum * v.sellingPrice }, 0) / 100;
+    // 优惠后金额
+    const afterDiscountMoney = Math.max(Number(productMoney) - Number(discountMoney), 0);
+    // (搭配总价 + 商品总价 - 优惠金额) 是否大于包邮金额
+    if ((Number(matchMoney) + afterDiscountMoney) - freeShipMoney >= 0) {
         shipMoney = 0;
     }
-
-    const matchMoney = matchList.filter((v) => { return selectedRowKeys.includes(v.id) }).reduce((count, v) => { return count + v.saleNum * v.sellingPrice }, 0) / 100;
-
-    const totalMoney = (Number(shipMoney) + Number(productMoney)).toFixed(2);
-
-    const payMoney = (Number(totalMoney) + matchMoney).toFixed(2)
+    // 小计
+    const totalMoney = (afterDiscountMoney + Number(shipMoney)).toFixed(2);
+    // 支付金额
+    const payMoney = (Number(matchMoney) + Number(totalMoney)).toFixed(2)
 
     const rowSelection = {
-        type: 'radio',
+        type: 'checkbox',
         selectedRowKeys,
         onChange: (selectedRowKeys) => {
             setSelectedRowKeys(selectedRowKeys)
@@ -174,7 +182,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 <View className="product-pay-info">
                     <View>
                         <Text>商品总价</Text>
-                        <Text>￥{productMoney}</Text>
+                        <Text>￥{NaN2Zero(productMoney)}</Text>
                     </View>
                     <View>
                         <Text>优惠</Text>
@@ -185,14 +193,14 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                             <Text>运费</Text>
                             {
                                 freeShipMoney &&
-                                <Text>（满{freeShipMoney}包邮）</Text>
+                                <Text>（满{NaN2Zero(freeShipMoney)}包邮）</Text>
                             }
                         </View>
                         <Text>￥{shipMoney}</Text>
                     </View>
                     <View>
                         <Text>小计</Text>
-                        <Text>￥{totalMoney}</Text>
+                        <Text>￥{NaN2Zero(totalMoney)}</Text>
                     </View>
                 </View>
             </Card>
@@ -209,8 +217,8 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                             <View>
                                 <Text>合计</Text>
                                 <Text>￥</Text>
-                                <Text>{payMoney}</Text>
-                                <Text>含运费{shipMoney}元</Text>
+                                <Text>{NaN2Zero(payMoney)}</Text>
+                                <Text>含运费{NaN2Zero(shipMoney)}元</Text>
                             </View>
                             <View onClick={submitOrder}>提交订单</View>
                         </View>

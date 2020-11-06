@@ -20,7 +20,8 @@ export default {
         'pages/preview/index',
         'pages/logisticsDetails/index',
         'pages/portfolio/index',
-        'pages/deskCalendar/index'
+        'pages/deskCalendar/index',
+        'pages/xdPromote/index'
     ],
     tabBar: {
         color: '#666666',

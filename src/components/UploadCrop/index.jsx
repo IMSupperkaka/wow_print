@@ -8,9 +8,9 @@ import Upload from '../Upload';
 import CropImg from '../../components/CropImg';
 import uploiadPlus from '../../../images/upload-plus@2x.png';
 
-export default (props) => {
+export default React.memo((props) => {
 
-    const { width, height, editFinish, limit = 1, showIndex = 0, fileList = [], ...restProps } = props;
+    const { width, height, editFinish, limit = 1, showIndex = 0, fileList = [], showEdit = true, ...restProps } = props;
 
     const upload = useRef();
 
@@ -30,15 +30,24 @@ export default (props) => {
         app.dispatch({
             type: 'editimg/goEditImg',
             payload: {
-                imgList: [
-                    {
-                        ...currentImg,
+                imgList: fileList.map((v) => {
+                    return {
+                        ...v,
                         proportion: width / height
                     }
-                ],
-                defaultIndex: 0
+                }),
+                defaultIndex: showIndex
             }
         })
+    }
+
+    const handleIgnore = () => {
+        const cloneList = [...fileList];
+        cloneList[showIndex].cropInfo = {
+            ...currentImg.cropInfo,
+            ignoreBlur: true
+        }
+        editFinish && editFinish(cloneList);
     }
 
     return (
@@ -46,7 +55,18 @@ export default (props) => {
             {
                 currentImg &&
                 <View className="crop-img-wrap">
-                    <CropImg onHandleEdit={onHandleEdit} onHandleChange={() => { upload.current.handleChoose(); }} className="item-img" width={width} height={height} imgInfo={currentImg.imgInfo} cropOption={currentImg.cropInfo} src={currentImg.filePath || currentImg.originImage}/>
+                    <CropImg
+                        onIgnore={handleIgnore}
+                        showEdit={showEdit}
+                        onHandleEdit={onHandleEdit}
+                        onHandleChange={() => { upload.current.handleChoose(); }}
+                        className="item-img"
+                        width={width}
+                        height={height}
+                        imgInfo={currentImg.imgInfo}
+                        cropOption={currentImg.cropInfo}
+                        src={currentImg.filePath || currentImg.originImage}
+                    />
                 </View>
             }
             <Upload limit={limit} ref={upload} {...restProps}>
@@ -56,4 +76,4 @@ export default (props) => {
             </Upload>
         </View>
     )
-}
+})

@@ -22,7 +22,7 @@ export const detail = (data) => {
 export const deleteWork = (id) => {
     return TaroRequest.request({
         url: `/portfolio/${id}`,
-        method: 'GET'
+        method: 'DELETE'
     })
 }
 

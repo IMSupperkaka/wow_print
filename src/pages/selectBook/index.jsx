@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { View, Image, Text, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import day from 'dayjs'
 import { connect } from 'react-redux'
 import './index.less'
 import lodash from 'lodash';
@@ -17,25 +18,31 @@ import wayin from '../../../images/cover_wayin.png'
 
 // 除了封面之外的图片数组
 const twinsList = [
-    [{},{}],
-    [{},{}],
-    [{},{}],
-    [{},{}],
-    [{},{}],
-    [{},{}],
-    [{},{}],
-    [{},{}]
+    [{}, {}],
+    [{}, {}],
+    [{}, {}],
+    [{}, {}],
+    [{}, {}],
+    [{}, {}],
+    [{}, {}],
+    [{}, {}]
 ];
 
 const modelList = [
-    {},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}
+    {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
 ];
 
 const SelectBook = ({ dispatch, confirmOrder }) => {
 
+    console.log('render-view');
+
     const { userImageList, goodId, portfolioId } = confirmOrder;
 
     const [activeIndex, setActiveIndex] = useState(0);
+    const activeRef = useRef(0);
+    useEffect(() => {
+        activeRef.current = activeIndex;
+    }, [activeIndex])
 
     const [visible, setVisible] = useState(false);
 
@@ -48,21 +55,22 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
 
     const [editVisible, setEditVisible] = useState(false);
 
-    const beforeUpload = (index) => {
+    const beforeUpload = (index, list) => {
+        console.log(activeRef.current)
+        setActiveIndex(index);
         if (userImageList.length > 0) {
-            setActiveIndex(index);
             setVisible(true);
             return false;
         }
     };
 
-    const onChange = (file, fileList, index = activeIndex) => {
+    const onChange = (file, fileList, index) => {
         if (file.status == 'done') {
             dispatch({
                 type: 'confirmOrder/mutateUserImageList',
                 payload: {
                     userImage: file,
-                    index
+                    index: index || activeRef.current
                 }
             })
         }
@@ -74,7 +82,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
             ...userImageList
         ];
 
-        coverList[index].cropInfo = res;
+        coverList[index] = res[0];
 
         dispatch({
             type: 'confirmOrder/saveUserImageList',
@@ -102,8 +110,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     cropImage: cropImage,
                     printNums: 1,
                     restInfo: {
-                        bookName: img.bookName ? img.bookName : null,
-                        description: img.description ? img.description : null
+                        bookName: coverInfo.bookName,
+                        description: coverInfo.description
                     }
                 }
 
@@ -111,15 +119,28 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     ...resultItem,
                     synthesisList: synthesis(index == 0 ? 'bookCover' : 'bookPage', {
                         ...resultItem,
-                        bookName: img.bookName,
-                        description: img.description
+                        bookName: coverInfo.bookName,
+                        description: coverInfo.description,
+                        date: day().format('MM/DD YYYY')
                     })
                 }
             } else {
                 return null
             }
         })
-        console.log(resultList)
+
+        resultList.push({
+            imgInfo: null,
+            cropInfo: null,
+            originImage: 'https://cdn.wanqiandaikuan.com/back_cover.jpg',
+            cropImage: 'https://cdn.wanqiandaikuan.com/back_cover.jpg',
+            printNums: 1,
+            synthesisList: [],
+            restInfo: {
+                isBack: true
+            }
+        })
+
         return resultList
     }
 
@@ -136,13 +157,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
 
     // 修改封面信息
     const handleEditCover = () => {
-        if(!coverInfo.bookName && !coverInfo.description) {
-            Taro.showToast({
-                title:'请输入封面信息',
-                icon: 'none',
-                duration: 1000
-            })
-            return
+        if (!coverInfo.temporaryName && !coverInfo.temporaryDesc) {
+            return false;
         }
         setCoverInfo({
             ...coverInfo,
@@ -152,42 +168,28 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         setEditVisible(false)
     };
 
-    // 绑定封面信息到图片数组
-    const bindCoverInfoToImage = () => {
-        userImageList[0].bookName = coverInfo.bookName;
-        userImageList[0].description = coverInfo.description;
-    };
-
     // 存入作品集
     const handleSaveWorks = () => {
-        if(!userImageList.length) {
+        if (!userImageList.length) {
             Taro.showToast({
-                title:'请上传照片',
+                title: '请上传照片',
                 icon: 'none',
                 duration: 1500
             })
             return
         }
-        bindCoverInfoToImage()
         const resultList = handleResultList()
         dispatch({
             type: 'confirmOrder/savePortfolio',
             payload: {
-              resultList
+                resultList
             }
         })
     };
 
-    // 替换图片
-    const handleReplace = (fileList, index) => {
-        let cloneList = [...userImageList];
-        cloneList.splice(index, 1, ...fileList);
+    const date = day().format('MM/DD YYYY');
 
-        dispatch({
-            type: 'confirmOrder/saveUserImageList',
-            payload: cloneList
-        })
-    };
+    console.log(userImageList)
 
     return (
         <View className="index">
@@ -199,45 +201,53 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                             <View className="edit-box">
                                 <View className="title-box">
                                     <Text className="title">{coverInfo.bookName}</Text>
-                                    <Image src={editIcon} className="edit-icon" onClick={() => setEditVisible(true)}/>
+                                    <Image src={editIcon} className="edit-icon" onClick={() => {
+                                        setEditVisible(true);
+                                        setCoverInfo((coverInfo) => {
+                                            return {
+                                                ...coverInfo,
+                                                temporaryDesc: coverInfo.description,
+                                                temporaryName: coverInfo.bookName
+                                            }
+                                        });
+                                    }} />
                                 </View>
                                 <View className="description">
                                     {coverInfo.description}
                                 </View>
                             </View>
-                            <Image src={wayin} mode="aspectFit" className="wayin"/>
+                            <Image src={wayin} mode="aspectFit" className="wayin" />
                         </View>
-                        <UploadCrop beforeUpload={beforeUpload.bind(this, 0)} editFinish={editFinish.bind(this, 0)} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className="cover-con"/>
+                        <UploadCrop beforeUpload={beforeUpload.bind(this, 0)} editFinish={editFinish.bind(this, 0)} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className="cover-con" />
+                        <View className="date-wrap">{ date }</View>
                     </View>
                     <View className="page-num">封面</View>
                 </View>
                 {
                     twinsList.map((item, index) => {
-                        const fileList = [];
-                        userImageList[((index+1)*2)-1] && (fileList.push(userImageList[((index+1)*2)-1]));
-                        userImageList[((index+1)*2)] && (fileList.push(userImageList[((index+1)*2)]));
                         return (
                             <View className="twins-item item-box" key={index}>
                                 <View className="item-body">
                                     {
                                         item.map((child, i) => {
-                                            const file = fileList[i] ? [fileList[i]] : [];
+                                            const imgIndex = index * 2 + i + 1;
+                                            const file = userImageList[imgIndex] ? [userImageList[imgIndex]] : []
                                             return (
                                                 <View className="choose-item" key={i}>
-                                                    <UploadCrop editFinish={editFinish.bind(this, index)} beforeUpload={beforeUpload.bind(this, (index+1)*2 - +!i)} fileList={file} onChange={onChange} width={320} height={320}/>
+                                                    <UploadCrop editFinish={editFinish.bind(this, imgIndex)} beforeUpload={beforeUpload.bind(this, imgIndex)} fileList={file} onChange={onChange} width={320} height={320} />
                                                 </View>
                                             )
                                         })
                                     }
                                 </View>
-                                <View className="page-num">{`${++index*2 - 1} - ${index*2}`}</View>
+                                <View className="page-num">{`${++index * 2 - 1} - ${index * 2}`}</View>
                             </View>
                         )
                     })
                 }
             </View>
-            <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} onSave={handleSaveWorks} goPrint={submit} limit={17}/>
-            <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }}/>
+            <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} onSave={handleSaveWorks} goPrint={submit} limit={17} />
+            <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
             <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
                 <View className="modal-content">
                     <View className="input-content">
@@ -246,7 +256,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                             <Input
                                 name='name'
                                 type='text'
-                                maxLength={12}
+                                maxlength={12}
                                 placeholder='最多12个字'
                                 adjustPosition
                                 placeholderStyle="color: #C1C1C1"
@@ -265,7 +275,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                             <Input
                                 name='name'
                                 type='text'
-                                maxLength={20}
+                                maxlength={20}
                                 placeholder='最多20个字'
                                 adjustPosition
                                 placeholderStyle="color: #C1C1C1"
@@ -281,8 +291,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                         </View>
                     </View>
                     <View className="operate-content">
-                        <View className="left-btn" onClick={() => {setEditVisible(false)}}>取消</View>
-                        <View className={`right-btn ${coverInfo.bookName || coverInfo.description ? 'clickable' : ''}`} onClick={handleEditCover}>确认</View>
+                        <View className="left-btn" onClick={() => { setEditVisible(false) }}>取消</View>
+                        <View className={`right-btn ${coverInfo.temporaryName || coverInfo.temporaryDesc ? 'clickable' : ''}`} onClick={handleEditCover}>确认</View>
                     </View>
                 </View>
             </Modal>

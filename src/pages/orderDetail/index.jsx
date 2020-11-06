@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Taro, { Events, useDidShow } from '@tarojs/taro'
+import { AtIcon } from 'taro-ui'
 import classNames from 'classnames';
 import { View, Image, Button, Text } from '@tarojs/components'
 
@@ -86,6 +87,15 @@ export default () => {
     }
 
     const goPreview = () => {
+
+        if (orderDetail.imageSynthesisStatus != 1) {
+            return Taro.showToast({
+                title:'杰作生成中，稍后再看哦',
+                icon: 'none',
+                duration: 1000
+            })
+        }
+
         Taro.navigateTo({
             url: `/pages/preview/index?id=${query.id}`
         })
@@ -141,7 +151,20 @@ export default () => {
                         <Image className="product-image" mode="aspectFill" src={goodsInfo.indexImage}/>
                         <View className="product-content">
                             <View>
-                                { goodsInfo.goodName }
+                                <View className="product-name">
+                                    { goodsInfo.goodName }
+                                    {
+                                        goodsInfo.goodIsMaster == 0 &&
+                                        <View className="match-icon">搭配</View>
+                                    }
+                                </View>
+                                {
+                                    goodsInfo.goodIsMaster == 1 &&
+                                    <View onClick={goPreview} className="preview-btn">
+                                        预览
+                                        <AtIcon value='chevron-right' size='12' color='#666'></AtIcon>
+                                    </View>
+                                }
                             </View>
                             <View>
                                 <Text>￥{ (goodsInfo.sellingPrice / 100).toFixed(2) }</Text>
