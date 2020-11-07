@@ -56,7 +56,6 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
     const [editVisible, setEditVisible] = useState(false);
 
     const beforeUpload = (index, list) => {
-        console.log(activeRef.current)
         setActiveIndex(index);
         if (userImageList.length > 0) {
             setVisible(true);

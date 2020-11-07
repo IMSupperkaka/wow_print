@@ -8,6 +8,7 @@ import { jump } from '../../utils/utils'
 import { list, index } from '../../services/home'
 import NavBar from '../../components/NavBar'
 import Dialog from '../../components/Dialog'
+import AddToMine from '../../components/AddToMine'
 import logo from '../../../images/bg_kachaxionglogo@2x.png'
 
 const Home = (props) => {
@@ -101,6 +102,7 @@ const Home = (props) => {
                     <Text>哇印</Text>
                 </View>
             } />
+            <AddToMine/>
             <Swiper
                 className='banner'
                 circular

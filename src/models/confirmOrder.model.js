@@ -112,68 +112,72 @@ export default {
             })
         },
         *savePortfolio({ payload }, { call, put, select }) { // 存入作品集
-            const { resultList } = payload;
-            const { portfolioId, goodId } = yield select((state) => {
-                return state.confirmOrder;
-            });
-            if (portfolioId) {
-                const response = yield call(() => {
-                    return new Promise((resolve, reject) => {
-                        Taro.showModal({
-                            title: '确认保存',
-                            content: '将覆盖原作品，是否确认保存当前修改？',
-                            confirmText: '确认',
-                            cancelText: '取消',
-                            confirmColor: '#FF6345',
-                            success: (res) => {
-                                resolve(res)
-                            }
+            try {
+                const { resultList } = payload;
+                const { portfolioId, goodId } = yield select((state) => {
+                    return state.confirmOrder;
+                });
+                if (portfolioId) {
+                    const response = yield call(() => {
+                        return new Promise((resolve, reject) => {
+                            Taro.showModal({
+                                title: '确认保存',
+                                content: '将覆盖原作品，是否确认保存当前修改？',
+                                confirmText: '确认',
+                                cancelText: '取消',
+                                confirmColor: '#FF6345',
+                                success: (res) => {
+                                    resolve(res)
+                                }
+                            })
                         })
                     })
+                    if (response.confirm) {
+                        yield call(editPortfolio, {
+                            portfolioId: portfolioId,
+                            userImageList: resultList
+                        })
+                        Taro.showToast({
+                            title: '作品集保存成功',
+                            icon: 'none',
+                            duration: 1500
+                        })
+                    }
+                    return;
+                }
+                const response = yield call(addPortfolio, {
+                    goodId: goodId,
+                    userImageList: resultList
                 })
-                if (response.confirm) {
-                    yield call(editPortfolio, {
-                        portfolioId: portfolioId,
-                        userImageList: resultList
-                    })
+
+                if (response.data.data.portfolioId) {
                     Taro.showToast({
-                        title: '作品集保存成功',
+                        title: '已保存，可在作品集中查看',
                         icon: 'none',
-                        duration: 1500
+                        duration: 2000
+                    })
+                    yield put({
+                        type: 'savePortfolioId',
+                        payload: response.data.data.portfolioId
+                    })
+                } else {
+                    Taro.showModal({
+                        title: '提示',
+                        content: '作品集已满，请清除过多的作品~',
+                        confirmText: '去清除',
+                        cancelText: '取消',
+                        confirmColor: '#FF6345',
+                        success: (res) => {
+                            if (res.confirm) {
+                                Taro.navigateTo({
+                                    url: '/pages/portfolio/index'
+                                })
+                            }
+                        }
                     })
                 }
-                return;
-            }
-            const response = yield call(addPortfolio, {
-                goodId: goodId,
-                userImageList: resultList
-            })
-
-            if (response.data.data.portfolioId) {
-                Taro.showToast({
-                    title: '作品集保存成功',
-                    icon: 'none',
-                    duration: 2000
-                })
-                yield put({
-                    type: 'savePortfolioId',
-                    payload: response.data.data.portfolioId
-                })
-            } else {
-                Taro.showModal({
-                    title: '提示',
-                    content: '作品集已满，请清除过多的作品~',
-                    confirmText: '去清除',
-                    cancelText: '取消',
-                    confirmColor: '#FF6345',
-                    success: (res) => {
-                        if (res.confirm) {
-                            Taro.navigateTo({
-                                url: '/pages/portfolio/index'
-                            })
-                        }
-                    }
-                })
+            } catch (error) {
+                console.log(error)
             }
         }
     },

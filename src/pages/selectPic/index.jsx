@@ -1,14 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { View, Image, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
 
 import './index.less'
 import { SELECT_WIDTH } from '../../utils/picContent'
-import { list } from '../../services/address'
-import UploadCrop from '../../components/UploadCrop';
+import { computeCropUrl } from '../../utils/utils'
+import UploadCrop from '../../components/UploadCrop'
 import SafeArea from '../../components/SafeArea'
-import CropImg from '../../components/CropImg'
 import Upload from '../../components/Upload'
 import addPic from '../../../images/cion_add_to@2x.png'
 import deleteIcon from '../../../images/icon_delete@2x.png'
@@ -80,14 +79,21 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                 icon: 'none'
             })
         }
-        list().then(({ data }) => {
-            if (data.data.length <= 0) {
-                Taro.navigateTo({
-                    url: `/pages/addressEdit/index?type=add&redirect=${encodeURIComponent('/pages/confirmOrder/index')}`
-                })
-            } else {
-                Taro.navigateTo({
-                    url: '/pages/confirmOrder/index'
+        dispatch({
+            type: 'confirmOrder/pushConfirmOrder',
+            payload: {
+                resultList: userImageList.map((v) => {
+
+                    const cropImage = computeCropUrl(v.originImage, { // 裁剪后地址
+                        contentWidth: v.imgInfo.width,
+                        contentHeight: v.imgInfo.width / proportion,
+                        ...v.imgInfo
+                    }, v.cropInfo)
+
+                    return {
+                        ...v,
+                        cropImage
+                    }
                 })
             }
         })

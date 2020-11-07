@@ -242,6 +242,7 @@ const DeskCalendar = (props) => {
                                         <View className="edit-box">
                                             <Text className="title">{coverInfo.title}</Text>
                                             <Image src={editIcon} className="edit-icon" onClick={() => {
+                                                setEditVisible(true);
                                                 setCoverInfo((coverInfo) => {
                                                     return {
                                                         ...coverInfo,

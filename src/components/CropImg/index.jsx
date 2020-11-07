@@ -5,9 +5,12 @@ import classNames from 'classnames'
 import { View, Image, Text } from '@tarojs/components'
 
 import './index.less'
+import { CropImgProvider, CropImgConsumer } from './context'
 import Transition from '../Transition'
 import { EDIT_WIDTH } from '../../utils/picContent'
 import { initImg } from '../../utils/utils'
+
+let globalKey = 0;
 
 const radio = 750 / Taro.getSystemInfoSync().screenWidth;
 
@@ -22,13 +25,16 @@ const Img = React.memo((props) => {
     return JSON.stringify(prevProps) === JSON.stringify(nextProps);
 })
 
-export default (props) => {
+export {
+    CropImgProvider
+};
+
+const CropImg = (props) => {
 
     const { width, height, src, className, style = {}, cropOption, imgInfo, showEdit = true, showIgnoreBtn = true, ...resetProps } = props;
 
     const [state, setState] = useState({
-        ignoreBlur: cropOption?.ignoreBlur || false, // 是否忽略模糊
-        edit: false
+        ignoreBlur: cropOption?.ignoreBlur || false // 是否忽略模糊
     });
 
     const [initImgInfo, setInitImgInfo] = useState({
@@ -54,18 +60,32 @@ export default (props) => {
         })
     }, [cropOption])
 
-    const toogleEdit = () =>{
+    useEffect(() => {
+
+        let timer = null;
+
+        if (props.editVisible) {
+            timer = setTimeout(() => {
+                props.onHide();
+            }, 5000);
+        }
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [props.editVisible])
+
+    const toogleEdit = () => {
 
         if (!showEdit) {
             return props.onHandleEdit();
         }
 
-        setState((state) => {
-            return {
-                ...state,
-                edit: !state.edit
-            }
-        })
+        if (props.editVisible) {
+            props.onHide();
+        } else {
+            props.onShow();
+        }
     }
 
     const handleEdit = (e) => {
@@ -120,6 +140,8 @@ export default (props) => {
 
     const showBlur = blur && !state.ignoreBlur;
 
+    const editVisible = props.editVisible && !showBlur;
+
     return (
         <View onClick={toogleEdit} style={{ width: Taro.pxTransform(width), height: Taro.pxTransform(height) }} {...resetProps} className={classNames('cropimg-wrap', className)}>
             <View className="mask-box">
@@ -142,7 +164,7 @@ export default (props) => {
                 }
                 {
                     showEdit &&
-                    <Transition in={state.edit && !showBlur} timeout={0} classNames="bottom-top">
+                    <Transition in={editVisible} timeout={0} classNames="bottom-top">
                         <View className={`mask-bottom black`}>
                             <View className="btn" onClick={handleEdit}>调整</View>
                             <View className="line" />
@@ -151,7 +173,25 @@ export default (props) => {
                     </Transition>
                 }
             </View>
-            <Img style={{ ...transformStyle, ...style }} src={src}/>
+            <Img style={{ ...transformStyle, ...style }} src={src} />
         </View>
+    )
+}
+
+export default (props) => {
+
+    const [cropKey, setCropKey] = useState();
+
+    useEffect(() => {
+        setCropKey(++globalKey);
+    }, [])
+
+    return (
+        <CropImgConsumer>
+            {({ list, onShow, onHide }) => {
+                const editVisible = list.includes(cropKey);
+                return <CropImg {...props} list={list} onShow={() => { onShow(cropKey) }} onHide={() => { onHide(cropKey) }} editVisible={editVisible}/>
+            }}
+        </CropImgConsumer>
     )
 }
