@@ -8,7 +8,7 @@ import './index.less'
 import { CropImgProvider, CropImgConsumer } from './context'
 import Transition from '../Transition'
 import { EDIT_WIDTH } from '../../utils/picContent'
-import { initImg } from '../../utils/utils'
+import { initImg, computedBlur } from '../../utils/utils'
 
 let globalKey = 0;
 
@@ -127,16 +127,16 @@ const CropImg = (props) => {
         height: Taro.pxTransform(fHeight * scalea)
     }
 
-    // 总像素
-    const totalPixels = imgInfo.width * imgInfo.height;
-    // 剪裁区域占图片大小比例
-    const place = (width * height) / (fWidth * fHeight * scale * scale);
-    // 显示的总像素
-    const displayPixels = totalPixels * place;
-    // 一个逻辑像素所表达的物理像素比
-    const pixelsRate = displayPixels / (width * height);
-    // 当一个逻辑像素表达的物理像素小于1/3时 定义为图片模糊
-    const blur = pixelsRate < 0.33333;
+    const blur = computedBlur({
+        contentWidth: EDIT_WIDTH,
+        contentHeight: EDIT_WIDTH / proportion,
+        width: imgInfo.width,
+        height: imgInfo.height,
+        afterWidth: fWidth * scale,
+        afterHieght: fHeight * scale,
+        printWidth: 10,
+        printHeight: 10 / (width / height)
+    });
 
     const showBlur = blur && !state.ignoreBlur;
 

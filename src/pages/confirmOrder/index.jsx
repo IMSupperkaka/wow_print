@@ -7,6 +7,7 @@ import './index.less'
 import { fix } from '../../utils/utils'
 import Card from '../../components/Card'
 import SafeArea from '../../components/SafeArea'
+import SelectCoupon from '../../page-components/SelectCoupon'
 import ProductList from './productList'
 import addressIcon from '../../../images/icon_address@2x.png'
 import arrowIcon from '../../../images/coin_jump@2x.png'
@@ -119,6 +120,13 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
         })
     }
 
+    const saveCoupon = (coupon) => {
+        dispatch({
+            type: 'confirmOrder/saveCoupon',
+            payload: coupon
+        })
+    }
+
     const freeShipMoney = fix(addressInfo.freeShippingMoney, 2);
     let shipMoney = fix(addressInfo.shipMoney, 2);
     const picNum = productDetail.category == 1 ? userImageList.reduce((count, v) => { return count + v.printNums }, 0) : 1;
@@ -180,15 +188,24 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                     </View>
                 </View>
                 <View className="product-pay-info">
-                    <View>
+                    <View className="product-pay-info-item">
                         <Text>商品总价</Text>
                         <Text>￥{NaN2Zero(productMoney)}</Text>
                     </View>
-                    <View>
-                        <Text>优惠</Text>
-                        <Text>{coupon.couponName || '未使用优惠券'}</Text>
-                    </View>
-                    <View>
+                    <SelectCoupon
+                        productId={productDetail.id}
+                        defaultActiveCoupon={coupon}
+                        onChange={saveCoupon}
+                        render={(coupon) => {
+                            return (
+                                <View className="product-pay-info-item">
+                                    <Text>优惠</Text>
+                                    <Text>{coupon?.couponName || '未使用优惠券'}</Text>
+                                </View>
+                            )
+                        }}
+                    />
+                    <View className="product-pay-info-item">
                         <View>
                             <Text>运费</Text>
                             {
@@ -198,7 +215,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                         </View>
                         <Text>￥{shipMoney}</Text>
                     </View>
-                    <View>
+                    <View className="product-pay-info-item">
                         <Text>小计</Text>
                         <Text>￥{NaN2Zero(totalMoney)}</Text>
                     </View>

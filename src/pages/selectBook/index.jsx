@@ -260,6 +260,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 adjustPosition
                                 placeholderStyle="color: #C1C1C1"
                                 value={coverInfo.temporaryName}
+                                cursorSpacing="200"
                                 onInput={(event) => {
                                     setCoverInfo({
                                         ...coverInfo,
@@ -276,6 +277,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 type='text'
                                 maxlength={20}
                                 placeholder='最多20个字'
+                                cursorSpacing="200"
                                 adjustPosition
                                 placeholderStyle="color: #C1C1C1"
                                 value={coverInfo.temporaryDesc}

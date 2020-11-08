@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import './index.less'
 import { SELECT_WIDTH } from '../../utils/picContent'
-import { computeCropUrl } from '../../utils/utils'
+import { computeCropUrl, computedBlur } from '../../utils/utils'
 import UploadCrop from '../../components/UploadCrop'
 import SafeArea from '../../components/SafeArea'
 import Upload from '../../components/Upload'
@@ -79,6 +79,50 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                 icon: 'none'
             })
         }
+
+        let restList = [];
+
+        const blurList = userImageList.map((img) => {
+            const blur = computedBlur({
+                contentWidth: img.imgInfo.width,
+                contentHeight: img.imgInfo.width / proportion,
+                width: img.imgInfo.width,
+                height: img.imgInfo.height,
+                afterWidth: img.imgInfo.width * img.cropInfo.scale,
+                afterHieght: img.imgInfo.height * img.cropInfo.scale,
+                printWidth: 10,
+                printHeight: 10 / proportion
+            }) && !img.cropInfo.ignoreBlur;
+            if (!blur) {
+                restList.push(img);
+            }
+            return blur ? img : false;
+        }).filter(v => v);
+
+        if (blurList.length > 0) {
+            return Taro.showModal({
+                title: '温馨提示',
+                content: '图片存在模糊或太长的问题，建议调整，以免影响打印效果。无操作视为可以打印',
+                confirmText: '确认打印',
+                cancelText: '去调整',
+                confirmColor: '#FF6345',
+                success: (res) => {
+                    if (res.confirm) {
+                        goConfirmOrder();
+                    } else {
+                        dispatch({
+                            type: 'confirmOrder/saveUserImageList',
+                            payload: [...blurList, ...restList]
+                        })
+                    }
+                }
+            })
+        }
+
+        goConfirmOrder();
+    }
+
+    const goConfirmOrder = () => {
         dispatch({
             type: 'confirmOrder/pushConfirmOrder',
             payload: {

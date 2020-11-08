@@ -36,6 +36,22 @@ export const computeCropUrl = (url, imgInfo, cropInfo) => {
     return cropUrl;
 }
 
+// 返回剪裁后图片是否模糊
+export const computedBlur = ({ contentWidth, contentHeight, width, height, afterWidth, afterHieght, printWidth, printHeight }) => {
+    // 总像素
+    const totalPixels = width * height;
+    // 剪裁区域占图片大小比例
+    const place = (contentWidth * contentHeight) / (afterWidth * afterHieght);
+    // 剪裁区域显示的总像素
+    const displayPixels = totalPixels * place;
+    // 每平方厘米所表达的真实像素
+    const averagePixel = displayPixels / (printWidth * printHeight);
+    // 当每平方厘米所表达的真实像素小于2000时 定义为图片模糊
+    const blur = averagePixel < 2000;
+
+    return blur
+}
+
 export const initImg = (imginfo, content) => {
   const cloneImginfo = JSON.parse(JSON.stringify(imginfo));
   const aspectRadio = imginfo.width / imginfo.height;

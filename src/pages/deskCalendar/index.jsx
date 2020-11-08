@@ -288,6 +288,7 @@ const DeskCalendar = (props) => {
                                 name='name'
                                 type='text'
                                 maxlength={12}
+                                cursorSpacing="200"
                                 placeholder='最多12个字'
                                 adjustPosition
                                 placeholderStyle="color: #C1C1C1"
