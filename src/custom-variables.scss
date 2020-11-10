@@ -48,6 +48,33 @@ $color-brand: #FF6345;
     }
 }
 
+.fade {
+  opacity: 0;
+  visibility: hidden;
+}
+.fade-enter {
+  opacity: 0;
+  visibility: visible;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+  visibility: visible;
+}
+.fade-exit {
+  opacity: 1;
+  visibility: visible;
+}
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+  visibility: visible;
+}
+.fade-exit-done {
+  opacity: 0;
+  visibility: hidden;
+}
+
 // fade-in transition start
 .fade-in-enter {
     opacity: 0;

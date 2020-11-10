@@ -1,63 +1,52 @@
 // Transition 用以解决react-transition-group在Taro中进出场动画失效的单个动画组件
 import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames';
-import usePrevious from '../../hooks/usePrevious';
 
 // TODO: unmount transition-group
 export default (props) => {
 
-    const [state, setState] = useState(null);
-    const [isAnimate, setIsAnimate] = useState(false);
+  const { timeout = 0 } = props;
 
-    const previousIn = usePrevious(props.in);
+  const [state, setState] = useState(null);
 
-    const transitionend = () => {
-        setIsAnimate(false);
+  useEffect(() => {
+
+    let enterTimer = null;
+    let exitTimer = null;
+
+    if (props.in) {
+      setState('enter');
+      setTimeout(() => {
+        setState('enter-active');
+      }, 0);
+      enterTimer = setTimeout(() => {
+        setState('enter-done');
+      }, timeout)
+    } else {
+      if (state == null) {
+        return;
+      }
+      setState('exit');
+      setTimeout(() => {
+        setState('exit-active');
+      }, 0);
+      exitTimer = setTimeout(() => {
+        setState('exit-done');
+      }, timeout)
     }
-
-    useEffect(() => {
-        if (!isAnimate) {
-            setState((state) => {
-                if (state == 'enter-active') {
-                    return 'enter-done';
-                }
-                if (state == 'exit-active') {
-                    return 'exit-done';
-                }
-                return state;
-            })
-        }
-    }, [state, isAnimate])
-
-    useEffect(() => {
-        if (previousIn !== props.in) {
-            if (props.in) {
-                setState('enter');
-                setIsAnimate(true);
-                setTimeout(() => {
-                    setState('enter-active');
-                }, 0);
-            } else {
-                if (state == null) {
-                    return;
-                }
-                setState('exit');
-                setIsAnimate(true);
-                setTimeout(() => {
-                    setState('exit-active');
-                }, 0);
-            }
-        }
-    }, [props.in, previousIn])
-
-    if (!props.in && !isAnimate) {
-        return null;
+    return () => {
+      clearTimeout(enterTimer);
+      clearTimeout(exitTimer);
     }
+  }, [props.in])
 
-    const CloneChildren = React.cloneElement(props.children, {
-        className: classNames(props.children.props.className, props.classNames + '-' + state),
-        onTransitionend: transitionend
-    })
+  if (!props.in && (state == null || state == 'exit-done')) {
+    return null;
+  }
 
-    return CloneChildren;
+  const CloneChildren = React.cloneElement(props.children, {
+    className: classNames(props.children.props.className, props.classNames + '-' + state)
+  })
+
+  return CloneChildren;
 }
