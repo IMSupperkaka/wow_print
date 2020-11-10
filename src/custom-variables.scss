@@ -85,3 +85,20 @@ $color-brand: #FF6345;
   transform: translate3d(0, 100%, 0);
 }
 // bottom-top transition end
+
+// scale-top transition start
+.scale-in-enter {
+    transform: scale(0);
+}
+.scale-in-enter-active {
+    transition: transform 300ms ease-in-out;
+    transform: scale(1);
+}
+.scale-in-exit {
+    transform: scale(1);
+}
+.scale-in-exit-active {
+    transition: transform 300ms ease-in-out;
+    transform: scale(0);
+}
+  // bottom-top transition end

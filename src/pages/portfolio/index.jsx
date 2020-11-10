@@ -56,7 +56,7 @@ const Portfolio = ({ dispatch }) => {
                     goConfirmOrder: item.finishPage == item.totalPage,
                     goodInfo: data.data.goodsDetail,
                     portfolioId: item.id,
-                    userImageList: data.data.imageList.filter((v) => { return v?.restInfo?.isBack != true })
+                    userImageList: data.data.imageList
                 }
             })
         })

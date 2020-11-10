@@ -83,9 +83,12 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
         let restList = [];
 
         const blurList = userImageList.map((img) => {
+
+            const contentWidth = Math.min(img.imgInfo.width, img.imgInfo.height)
+
             const blur = computedBlur({
-                contentWidth: img.imgInfo.width,
-                contentHeight: img.imgInfo.width / proportion,
+                contentWidth: contentWidth,
+                contentHeight: contentWidth / proportion,
                 width: img.imgInfo.width,
                 height: img.imgInfo.height,
                 afterWidth: img.imgInfo.width * img.cropInfo.scale,

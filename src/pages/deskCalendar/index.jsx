@@ -13,7 +13,7 @@ import BottomButton from '../../components/BottomButton';
 import editIcon from '../../../images/icon_edit.png';
 
 const sizeMap = new Map([
-    [0, { width: 640, height: 295 }],
+    [0, { width: 554, height: 295 }],
     [1, { width: 251, height: 330 }],
     [2, { width: 380, height: 216 }]
 ])

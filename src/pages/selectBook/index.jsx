@@ -131,8 +131,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         resultList.push({
             imgInfo: null,
             cropInfo: null,
-            originImage: 'https://cdn.wanqiandaikuan.com/back_cover.jpg',
-            cropImage: 'https://cdn.wanqiandaikuan.com/back_cover.jpg',
+            originImage: 'https://cdn.91daiwo.com/back_cover.jpg',
+            cropImage: 'https://cdn.91daiwo.com/back_cover.jpg',
             printNums: 1,
             synthesisList: [],
             restInfo: {
@@ -188,8 +188,6 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
 
     const date = day().format('MM/DD YYYY');
 
-    console.log(userImageList)
-
     return (
         <View className="index">
             <View className="header">显示区域即为打印区域，如需调整请点击图片</View>
@@ -198,9 +196,9 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     <View className="cover">
                         <View className="cover-top">
                             <View className="edit-box">
-                                <View className="title-box">
-                                    <Text className="title">{coverInfo.bookName}</Text>
-                                    <Image src={editIcon} className="edit-icon" onClick={() => {
+                                <View
+                                    className="title-box"
+                                    onClick={() => {
                                         setEditVisible(true);
                                         setCoverInfo((coverInfo) => {
                                             return {
@@ -209,7 +207,9 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                                 temporaryName: coverInfo.bookName
                                             }
                                         });
-                                    }} />
+                                    }}>
+                                    <Text className="title">{coverInfo.bookName}</Text>
+                                    <Image src={editIcon} className="edit-icon" />
                                 </View>
                                 <View className="description">
                                     {coverInfo.description}

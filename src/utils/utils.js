@@ -42,6 +42,7 @@ export const computedBlur = ({ contentWidth, contentHeight, width, height, after
     const totalPixels = width * height;
     // 剪裁区域占图片大小比例
     const place = (contentWidth * contentHeight) / (afterWidth * afterHieght);
+
     // 剪裁区域显示的总像素
     const displayPixels = totalPixels * place;
     // 每平方厘米所表达的真实像素
