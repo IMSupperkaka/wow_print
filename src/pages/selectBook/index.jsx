@@ -44,6 +44,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         activeRef.current = activeIndex;
     }, [activeIndex])
 
+    const [insertHeight, setInsertHeight] = useState();
+
     const [visible, setVisible] = useState(false);
 
     const [coverInfo, setCoverInfo] = useState({
@@ -188,8 +190,6 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
 
     const date = day().format('MM/DD YYYY');
 
-    console.log(userImageList)
-
     return (
         <View className="index">
             <View className="header">显示区域即为打印区域，如需调整请点击图片</View>
@@ -247,7 +247,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
             </View>
             <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} onSave={handleSaveWorks} goPrint={submit} limit={17} />
             <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
-            <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
+            <Modal visible={editVisible} onClose={() => { setEditVisible(false); setInsertHeight(0) }}>
                 <View className="modal-content">
                     <View className="input-content">
                         <View className="input-item">
@@ -257,10 +257,18 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 type='text'
                                 maxlength={12}
                                 placeholder='最多12个字'
-                                adjustPosition
+                                cursorSpacing="200"
+                                adjustPosition={false}
                                 placeholderStyle="color: #C1C1C1"
                                 value={coverInfo.temporaryName}
-                                cursorSpacing="200"
+                                // onKeyboardHeightChange={(event) => {
+                                //     setInsertHeight(event.detail.height)
+                                // }}
+                                // onBlur={() => {
+                                //     setTimeout(() => {
+                                //         setInsertHeight(0)
+                                //     }, 200)
+                                // }}
                                 onInput={(event) => {
                                     setCoverInfo({
                                         ...coverInfo,
@@ -278,9 +286,17 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 maxlength={20}
                                 placeholder='最多20个字'
                                 cursorSpacing="200"
-                                adjustPosition
+                                adjustPosition={false}
                                 placeholderStyle="color: #C1C1C1"
                                 value={coverInfo.temporaryDesc}
+                                // onKeyboardHeightChange={(event) => {
+                                //     setInsertHeight(event.detail.height)
+                                // }}
+                                // onBlur={() => {
+                                //     setTimeout(() => {
+                                //         setInsertHeight(0)
+                                //     }, 200)
+                                // }}
                                 onInput={(event) => {
                                     setCoverInfo({
                                         ...coverInfo,
@@ -291,7 +307,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                             />
                         </View>
                     </View>
-                    <View className="operate-content">
+                    <View className="operate-content" style={{paddingBottom: insertHeight}}>
                         <View className="left-btn" onClick={() => { setEditVisible(false) }}>取消</View>
                         <View className={`right-btn ${coverInfo.temporaryName || coverInfo.temporaryDesc ? 'clickable' : ''}`} onClick={handleEditCover}>确认</View>
                     </View>
