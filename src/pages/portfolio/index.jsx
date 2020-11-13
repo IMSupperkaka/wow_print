@@ -101,20 +101,18 @@ const Portfolio = ({ dispatch }) => {
                                     <View className="portfolio-left">
                                         <View className="portfolio-img-wrap">
                                             <Image class="portfolio-img" src={item.indexImage}/>
-                                            {
-                                                item.finishPage < item.totalPage &&
-                                                <View className="continue-mask">继续创作</View>
-                                            }
                                         </View>
                                         <View className="portfolio-info">
-                                            <View className="portfolio-title">
-                                                { item.name }
-                                                {
-                                                    item.coupon &&
-                                                    <View className="coupon-sign">优惠券</View>
-                                                }
+                                            <View>
+                                                <View className="portfolio-title">
+                                                    { item.name }
+                                                    {
+                                                        item.coupon &&
+                                                        <View className="coupon-sign">优惠券</View>
+                                                    }
+                                                </View>
+                                                <View className="portfolio-page">完成页码: { item.finishPage } / { item.totalPage }</View>
                                             </View>
-                                            <View className="portfolio-page">完成页码: { item.finishPage } / { item.totalPage }</View>
                                             <View className="portfolio-time">创作时间: { item.updateTime.split(' ')[0] }</View>
                                         </View>
                                     </View>

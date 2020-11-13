@@ -8,6 +8,7 @@ import synthesis from '../../utils/synthesis';
 import { computeCropUrl } from '../../utils/utils';
 import Modal from '../../components/Modal';
 import UploadCrop from '../../components/UploadCrop';
+import { CropImgProvider } from '../../components/CropImg';
 import SelectPicModal from '../../components/SelectPicModal';
 import BottomButton from '../../components/BottomButton';
 import editIcon from '../../../images/icon_edit.png';
@@ -218,98 +219,100 @@ const DeskCalendar = (props) => {
     }
 
     return (
-        <View className="app">
-            <View className="tips">
-                显示区域即为打印区域，如需调整请点击图片
-            </View>
-            {
-                deskCalenderList.map((item, index) => {
-
-                    const fileList = userImageList[index] ? [userImageList[index]] : [];
-
-                    const styles = {
-                        background: `url(${item.backgroundImage})`,
-                        backgroundSize: '100% 100%'
-                    }
-
-                    const size = sizeMap.get(item.type);
-
-                    return (
-                        <View key={index}>
-                            {
-                                item.type == 0 ?
-                                    <View className="calendar-item cover" style={styles}>
-                                        <View className="edit-box">
-                                            <Text className="title">{coverInfo.title}</Text>
-                                            <Image src={editIcon} className="edit-icon" onClick={() => {
-                                                setEditVisible(true);
-                                                setCoverInfo((coverInfo) => {
-                                                    return {
-                                                        ...coverInfo,
-                                                        temporaryTitle: coverInfo.title
-                                                    }
-                                                });
-                                            }}/>
-                                        </View>
-                                        <UploadCrop
-                                            fileList={fileList}
-                                            editFinish={editFinish.bind(this, index)}
-                                            beforeUpload={beforeUpload.bind(this, index)}
-                                            onChange={onChange}
-                                            className="calender-uploader"
-                                            {...size}
-                                        />
-                                    </View> :
-                                    <View className="calendar-item page" style={styles}>
-                                        <UploadCrop
-                                            fileList={fileList}
-                                            editFinish={editFinish.bind(this, index)}
-                                            beforeUpload={beforeUpload.bind(this, index)}
-                                            onChange={onChange}
-                                            className="calender-uploader"
-                                            {...size}
-                                        />
-                                    </View>
-                            }
-                            <View className="calender-title">{item.title}</View>
-                        </View>
-                    )
-                })
-            }
-            <BottomButton onSave={handleSaveWorks} goPrint={submit} onChange={(file, fileList) => { onChange(file, fileList, -1) }} limit={13} />
-            <SelectPicModal limit={activeIndex == -1 ? 9 : 1} onChange={onChange} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
-            {/* TODO 封装Form组件 */}
-            <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
-                <View className="modal-content">
-                    <View className="input-content">
-                        <View className="input-item">
-                            <Text className="title">标题</Text>
-                            <Input
-                                name='name'
-                                type='text'
-                                maxlength={12}
-                                cursorSpacing="91"
-                                placeholder='最多12个字'
-                                adjustPosition
-                                placeholderStyle="color: #C1C1C1"
-                                value={coverInfo.temporaryTitle}
-                                onInput={(event) => {
-                                    setCoverInfo({
-                                        ...coverInfo,
-                                        temporaryTitle: event.detail.value
-                                    })
-                                    return event.detail.value
-                                }}
-                            />
-                        </View>
-                    </View>
-                    <View className="operate-content">
-                        <View className="left-btn" onClick={() => { setEditVisible(false) }}>取消</View>
-                        <View className={`right-btn ${coverInfo.temporaryTitle ? 'clickable' : ''}`} onClick={handleEditCover}>确认</View>
-                    </View>
+        <CropImgProvider>
+            <View className="app">
+                <View className="tips">
+                    显示区域即为打印区域，如需调整请点击图片
                 </View>
-            </Modal>
-        </View>
+                {
+                    deskCalenderList.map((item, index) => {
+
+                        const fileList = userImageList[index] ? [userImageList[index]] : [];
+
+                        const styles = {
+                            background: `url(${item.backgroundImage})`,
+                            backgroundSize: '100% 100%'
+                        }
+
+                        const size = sizeMap.get(item.type);
+
+                        return (
+                            <View key={index}>
+                                {
+                                    item.type == 0 ?
+                                        <View className="calendar-item cover" style={styles}>
+                                            <View className="edit-box">
+                                                <Text className="title">{coverInfo.title}</Text>
+                                                <Image src={editIcon} className="edit-icon" onClick={() => {
+                                                    setEditVisible(true);
+                                                    setCoverInfo((coverInfo) => {
+                                                        return {
+                                                            ...coverInfo,
+                                                            temporaryTitle: coverInfo.title
+                                                        }
+                                                    });
+                                                }}/>
+                                            </View>
+                                            <UploadCrop
+                                                fileList={fileList}
+                                                editFinish={editFinish.bind(this, index)}
+                                                beforeUpload={beforeUpload.bind(this, index)}
+                                                onChange={onChange}
+                                                className="calender-uploader"
+                                                {...size}
+                                            />
+                                        </View> :
+                                        <View className="calendar-item page" style={styles}>
+                                            <UploadCrop
+                                                fileList={fileList}
+                                                editFinish={editFinish.bind(this, index)}
+                                                beforeUpload={beforeUpload.bind(this, index)}
+                                                onChange={onChange}
+                                                className="calender-uploader"
+                                                {...size}
+                                            />
+                                        </View>
+                                }
+                                <View className="calender-title">{item.title}</View>
+                            </View>
+                        )
+                    })
+                }
+                <BottomButton onSave={handleSaveWorks} goPrint={submit} onChange={(file, fileList) => { onChange(file, fileList, -1) }} limit={13} />
+                <SelectPicModal limit={activeIndex == -1 ? 9 : 1} onChange={onChange} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
+                {/* TODO 封装Form组件 */}
+                <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
+                    <View className="modal-content">
+                        <View className="input-content">
+                            <View className="input-item">
+                                <Text className="title">标题</Text>
+                                <Input
+                                    name='name'
+                                    type='text'
+                                    maxlength={12}
+                                    cursorSpacing="91"
+                                    placeholder='最多12个字'
+                                    adjustPosition
+                                    placeholderStyle="color: #C1C1C1"
+                                    value={coverInfo.temporaryTitle}
+                                    onInput={(event) => {
+                                        setCoverInfo({
+                                            ...coverInfo,
+                                            temporaryTitle: event.detail.value
+                                        })
+                                        return event.detail.value
+                                    }}
+                                />
+                            </View>
+                        </View>
+                        <View className="operate-content">
+                            <View className="left-btn" onClick={() => { setEditVisible(false) }}>取消</View>
+                            <View className={`right-btn ${coverInfo.temporaryTitle ? 'clickable' : ''}`} onClick={handleEditCover}>确认</View>
+                        </View>
+                    </View>
+                </Modal>
+            </View>
+        </CropImgProvider>
     )
 }
 

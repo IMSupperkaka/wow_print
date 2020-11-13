@@ -62,7 +62,11 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
         })
     }
 
-    const submitBtnText = detail.category == 0 ? '确认选择' : (coupon.couponName ? '免费打印' : '立即打印');
+    let submitBtnText = detail.category == 0 ? '确认选择' : (coupon.couponName ? '免费打印' : '立即打印');
+
+    if (detail.category == 2 || detail.category == 3) {
+        submitBtnText = '立即定制';
+    }
 
     return (
         <View className="index">

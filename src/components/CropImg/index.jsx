@@ -67,7 +67,7 @@ const CropImg = (props) => {
         if (props.editVisible) {
             timer = setTimeout(() => {
                 props.onHide();
-            }, 5000);
+            }, 7000);
         }
 
         return () => {
@@ -75,7 +75,10 @@ const CropImg = (props) => {
         };
     }, [props.editVisible])
 
-    const toogleEdit = () => {
+    const toogleEdit = (e) => {
+
+        e.preventDefault();
+        e.stopPropagation();
 
         if (!showEdit) {
             return props.onHandleEdit();
@@ -143,7 +146,7 @@ const CropImg = (props) => {
     const editVisible = props.editVisible && !showBlur;
 
     return (
-        <View onClick={toogleEdit} style={{ width: Taro.pxTransform(width), height: Taro.pxTransform(height) }} {...resetProps} className={classNames('cropimg-wrap', className)}>
+        <View data-cropimg="ccc" onClick={toogleEdit} style={{ width: Taro.pxTransform(width), height: Taro.pxTransform(height) }} {...resetProps} className={classNames('cropimg-wrap', className)}>
             <View className="mask-box">
                 {
                     <Transition in={showBlur && showIgnoreBtn} timeout={300} classNames="bottom-top">
@@ -188,7 +191,7 @@ export default (props) => {
 
     return (
         <CropImgConsumer>
-            {({ list, onShow, onHide }) => {
+            {({ list = [], onShow, onHide }) => {
                 const editVisible = list.includes(cropKey);
                 return <CropImg {...props} list={list} onShow={() => { onShow(cropKey) }} onHide={() => { onHide(cropKey) }} editVisible={editVisible}/>
             }}
