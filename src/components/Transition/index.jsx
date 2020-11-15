@@ -1,67 +1,112 @@
 // Transition 用以解决react-transition-group在Taro中进出场动画失效的单个动画组件
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef,useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import classNames from 'classnames';
 
-import useFreshState from '../../hooks/useFreshState';
-
 // TODO: unmount transition-group
-export default React.memo((props) => {
-
-    // console.log('render')
+export default (props) => {
 
     const { timeout = 0 } = props;
 
-    const [getState, setState] = useFreshState(null);
+    let initialStatus;
+
+    if (props.in) {
+      initialStatus = 'enter-active';
+    } else {
+      initialStatus = 'unmounted';
+    }
+
+    const [state, setState] = useState(initialStatus);
+
+    const childRef = useRef(null);
+
+    const nextCallbackRef = useRef(null);
+
+    const setNextCallBack = (callback) => {
+      let active = true;
+      nextCallbackRef.current = () => {
+        if (active) {
+          active = false;
+          nextCallbackRef.current = null;
+          callback(event);
+        }
+      };
+      nextCallbackRef.current.cancel = () => {
+        active = false;
+      }
+      return nextCallbackRef.current;
+    }
+
+    const cancelNextCallback = () => {
+      if (nextCallbackRef.current) {
+        nextCallbackRef.current.cancel();
+        nextCallbackRef.current = null;
+      }
+    }
+
+    const onEnter = () => {
+      setState('enter');
+    }
+
+    const onEntering = () => {
+      setState('enter-active');
+    }
+
+    const onEntered = () => {
+      setState('enter-done');
+    }
+
+    const onExit = () => {
+      setState('exit');
+    }
+
+    const onExiting = () => {
+      setState('exit-active');
+    }
+
+    const onExited = () => {
+      setState('exit-done');
+    }
+
+    const onTransitionEnd = (timeout, handler) => {
+      setTimeout(setNextCallBack(handler), timeout);
+    }
 
     useEffect(() => {
+      if (state == 'enter-active') {
+        onTransitionEnd(timeout, () => {
+          onEntered();
+        });
+      }
+      if (state == 'exit-active') {
+        onTransitionEnd(timeout, () => {
+          onExited();
+        });
+      }
+    }, [state])
 
-        console.log(props.in)
-
-        let enterTimer = null;
-        let exitTimer = null;
-
-        clearTimeout(enterTimer);
-        clearTimeout(exitTimer);
-
+    useEffect(() => {
+        cancelNextCallback();
         if (props.in) {
-            setState('enter');
-            Taro.nextTick(() => {
-                setState('enter-active');
-            })
-            enterTimer = setTimeout(() => {
-                setState('enter-done');
-            }, timeout)
+            onEnter();
+            onEntering();
         } else {
-            if (getState() == null) {
-                return;
-            }
-            setState('exit');
-            Taro.nextTick(() => {
-                setState('exit-active');
-            })
-            exitTimer = setTimeout(() => {
-                setState('exit-done');
-            }, timeout)
+            onExit();
+            onExiting();
         }
         return () => {
-            // console.log('destory')
-            clearTimeout(enterTimer);
-            clearTimeout(exitTimer);
+          cancelNextCallback();
         }
     }, [props.in])
 
-    // console.log(props.in)
-
-    if (!props.in && (getState() == null || getState() == 'exit-done')) {
+    if (state == 'unmounted' || state == 'exit-done') {
         return null;
     }
 
     const CloneChildren = React.cloneElement(props.children, {
-        className: classNames(props.children.props.className, props.classNames + '-' + getState())
+        ref: childRef,
+        className: classNames(props.children.props.className, props.classNames + '-' + state)
     })
 
     return CloneChildren;
-}, (prevProps, nextProps) => {
-    return prevProps.in === nextProps.in;
-})
+}

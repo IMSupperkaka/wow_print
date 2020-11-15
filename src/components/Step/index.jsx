@@ -32,7 +32,7 @@ const Step = ({ value, onChange: propOnChange, setp = 1, min = 1, max = Infinity
   return (
     <View className="wy-step-wrap">
       <Image src={value <= min ? lessDisabledIcon : lessSelectIcon} onClick={(e) => { stopPropagation(e);onChange('less') }} className="opration-btn" />
-      <View>{value}</View>
+      <View className="wy-step-value">{value}</View>
       <Image src={plusSelectIcon} onClick={(e) => { stopPropagation(e);onChange('plus') }} className="opration-btn" />
     </View>
   )

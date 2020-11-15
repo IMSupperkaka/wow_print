@@ -8,7 +8,7 @@ export default (props) => {
     const { text, src = emptyPng } = props;
     return (
         <View className="wy-empty">
-            <Image mode="widthFix" src={src}/>
+            <Image className="wy-empty-image" mode="widthFix" src={src}/>
             <View className="wy-empty-describe">{ text }</View>
         </View>
     )

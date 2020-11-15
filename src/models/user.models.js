@@ -1,3 +1,10 @@
+/*
+ * @Date: 2020-09-09 21:04:30
+ * @LastEditors: Shawn
+ * @LastEditTime: 2020-11-14 23:31:35
+ * @FilePath: \wow_print\src\models\user.models.js
+ * @Description: Descrip Content
+ */
 import Taro from '@tarojs/taro'
 
 import { login, saveinfo } from '../services/user';

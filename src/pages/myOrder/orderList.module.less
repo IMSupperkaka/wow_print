@@ -1,3 +1,6 @@
+.order-list-scroll {
+  background-color: #F6F6F6;
+}
 .order-list {
     padding: 24px;
     .order-item {
@@ -14,7 +17,7 @@
             font-size: 24px;
             color: #333;
             margin-bottom: 32px;
-            & > text:first-child {
+            .order-item-header__count {
                 color: #666;
             }
             .primary {
@@ -37,13 +40,13 @@
                 justify-content: space-between;
                 padding: 8px 0;
                 flex: 1;
-                & > view:nth-child(1) {
+                .product-goodsname {
                     font-size: 28px;
                     font-weight: 400;
                     color: #333333;
                     line-height: 28px;
                 }
-                & > view:nth-child(2) {
+                .product-price {
                     display: flex;
                     justify-content: space-between;
                     font-size: 24px;
@@ -58,16 +61,16 @@
             align-items: center;
             padding-top: 24px;
             border-top: 1px solid #F2F2F2;
-            & > view:first-child {
+            .orde-item-footer__left {
                 color: #333333;
                 font-size: 24px;
                 line-height: 24px;
                 font-weight: 400;
-                & > Text:last-child {
+               .orde-item-footer__price{
                     font-weight: bold;
                 }
             }
-            & > view:last-child {
+            .orde-item-footer__right {
               display: flex;
               justify-content: flex-end;
               flex: 1;
@@ -84,27 +87,6 @@
                 border-radius: 31px;
                 &::after {
                     border-radius: 62px;
-                }
-            }
-            .primary-btn {
-                color: #fff;
-                background-color: #FF6345;
-                &::after {
-                    border-color: #FF6345;
-                }
-            }
-            .outline-btn {
-                color: #666666;
-                background-color: #fff;
-                &::after {
-                    border-color: #C1C1C1;
-                }
-            }
-            .primary-outline-btn {
-                color: #FF6345;
-                background-color: #fff;
-                &::after {
-                    border-color: #FF6345;
                 }
             }
         }

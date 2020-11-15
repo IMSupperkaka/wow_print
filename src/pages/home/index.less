@@ -1,14 +1,14 @@
 .index {
   flex-direction: column;
   width: 100%;
-  height: 100vh;
+  background-color: #F6F6F6;
 }
 .nav-left {
     display: flex;
     align-items: center;
     font-weight: bold;
     font-size: 32px;
-    image {
+    .nav-logo {
         width: 58px;
         height: 58px;
         margin-right: 16px;
@@ -18,7 +18,7 @@
 .banner {
     width: 100%;
     height: 420px;
-    image {
+    .banner-image {
         width: 100%;
         height: 100%;
     }
@@ -39,7 +39,7 @@
     swiper-item {
         border-radius: 16px;
     }
-    image {
+    .promote-image {
         display: flex;
         height: 440px;
         width: 100%;
@@ -67,26 +67,26 @@
         background-color: #fff;
         overflow: hidden;
         margin-bottom: 20px;
-        image {
+        .product-image {
             width: 341px;
             height: 341px;
         }
         .product-info {
             padding: 20px 24px;
-            & > view:first-child {
+            .product-name {
                 font-size: 28px;
                 font-weight: 400;
                 color: #333333;
                 line-height: 28px;
             }
-            & > view:nth-child(2) {
+            .product-description {
                 font-size: 22px;
                 font-weight: 400;
                 color: #999999;
                 line-height: 24px;
                 margin: 12px 0 20px 0;
             }
-            & > view:last-child {
+            .product-price {
                 font-weight: 400;
                 color: #FF6345;
                 line-height: 32px;

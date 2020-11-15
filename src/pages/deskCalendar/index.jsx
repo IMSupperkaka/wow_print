@@ -3,7 +3,7 @@ import lodash from 'lodash';
 import { connect } from 'react-redux';
 import { View, Button, Text, Image, Input } from '@tarojs/components';
 
-import './index.less';
+import styles from './index.module.less';
 import synthesis from '../../utils/synthesis';
 import { computeCropUrl } from '../../utils/utils';
 import Modal from '../../components/Modal';
@@ -220,8 +220,8 @@ const DeskCalendar = (props) => {
 
     return (
         <CropImgProvider>
-            <View className="app">
-                <View className="tips">
+            <View className={styles['app']}>
+                <View className={styles['tips']}>
                     显示区域即为打印区域，如需调整请点击图片
                 </View>
                 {
@@ -229,7 +229,7 @@ const DeskCalendar = (props) => {
 
                         const fileList = userImageList[index] ? [userImageList[index]] : [];
 
-                        const styles = {
+                        const style = {
                             background: `url(${item.backgroundImage})`,
                             backgroundSize: '100% 100%'
                         }
@@ -240,10 +240,10 @@ const DeskCalendar = (props) => {
                             <View key={index}>
                                 {
                                     item.type == 0 ?
-                                        <View className="calendar-item cover" style={styles}>
-                                            <View className="edit-box">
-                                                <Text className="title">{coverInfo.title}</Text>
-                                                <Image src={editIcon} className="edit-icon" onClick={() => {
+                                        <View className={`${styles['calendar-item']} ${styles['cover']}`} style={style}>
+                                            <View className={styles['edit-box']}>
+                                                <Text className={styles['title']}>{coverInfo.title}</Text>
+                                                <Image src={editIcon} className={styles['edit-icon']} onClick={() => {
                                                     setEditVisible(true);
                                                     setCoverInfo((coverInfo) => {
                                                         return {
@@ -258,22 +258,22 @@ const DeskCalendar = (props) => {
                                                 editFinish={editFinish.bind(this, index)}
                                                 beforeUpload={beforeUpload.bind(this, index)}
                                                 onChange={onChange}
-                                                className="calender-uploader"
+                                                className={styles['calender-uploader']}
                                                 {...size}
                                             />
                                         </View> :
-                                        <View className="calendar-item page" style={styles}>
+                                        <View className={`${styles['calendar-item']} ${styles['page']}`} style={style}>
                                             <UploadCrop
                                                 fileList={fileList}
                                                 editFinish={editFinish.bind(this, index)}
                                                 beforeUpload={beforeUpload.bind(this, index)}
                                                 onChange={onChange}
-                                                className="calender-uploader"
+                                                className={styles['calender-uploader']}
                                                 {...size}
                                             />
                                         </View>
                                 }
-                                <View className="calender-title">{item.title}</View>
+                                <View className={styles['calender-title']}>{item.title}</View>
                             </View>
                         )
                     })
@@ -282,10 +282,10 @@ const DeskCalendar = (props) => {
                 <SelectPicModal limit={activeIndex == -1 ? 9 : 1} onChange={onChange} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
                 {/* TODO 封装Form组件 */}
                 <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
-                    <View className="modal-content">
-                        <View className="input-content">
-                            <View className="input-item">
-                                <Text className="title">标题</Text>
+                    <View className={styles['modal-content']}>
+                        <View className={styles['input-content']}>
+                            <View className={styles['input-item']}>
+                                <Text className={styles['title']}>标题</Text>
                                 <Input
                                     name='name'
                                     type='text'
@@ -305,9 +305,9 @@ const DeskCalendar = (props) => {
                                 />
                             </View>
                         </View>
-                        <View className="operate-content">
-                            <View className="left-btn" onClick={() => { setEditVisible(false) }}>取消</View>
-                            <View className={`right-btn ${coverInfo.temporaryTitle ? 'clickable' : ''}`} onClick={handleEditCover}>确认</View>
+                        <View className={styles['operate-content']}>
+                            <View className={styles['left-btn']} onClick={() => { setEditVisible(false) }}>取消</View>
+                            <View className={`${styles['right-btn']} ${coverInfo.temporaryTitle ? styles['clickable'] : ''}`} onClick={handleEditCover}>确认</View>
                         </View>
                     </View>
                 </Modal>

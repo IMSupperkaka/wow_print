@@ -241,7 +241,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
             <SafeArea>
                 {({ bottom }) => {
                     return (
-                        <View style={{ paddingBottom: Taro.pxTransform(bottom + 20) }} className="submit-wrap">
+                        <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className="submit-wrap">
                             <View>
                                 <Text>合计</Text>
                                 <Text>￥</Text>

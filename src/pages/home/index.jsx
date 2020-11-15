@@ -98,11 +98,11 @@ const Home = (props) => {
         <View className='index'>
             <NavBar style={navBarStyle} left={
                 <View className="nav-left">
-                    <Image src={logo} />
+                    <Image className="nav-logo" src={logo} />
                     <Text>哇印</Text>
                 </View>
             } />
-            <AddToMine/>
+            {process.env.TARO_ENV === 'weapp' && <AddToMine/>}
             <Swiper
                 className='banner'
                 circular
@@ -111,7 +111,7 @@ const Home = (props) => {
                     homeData.bannerList.map((v) => {
                         return (
                             <SwiperItem key={v.id} onClick={() => { jump(v.url) }}>
-                                <Image mode="aspectFill" src={v.image} />
+                                <Image className="banner-image" mode="aspectFill" src={v.image} />
                             </SwiperItem>
                         )
                     })
@@ -126,7 +126,7 @@ const Home = (props) => {
                         homeData.indexBigImageList.map((v) => {
                             return (
                                 <SwiperItem key={v.id} onClick={() => { jump(v.url) }}>
-                                    <Image mode="aspectFill" src={v.image} />
+                                    <Image className="promote-image" mode="aspectFill" src={v.image} />
                                 </SwiperItem>
                             )
                         })
@@ -140,11 +140,11 @@ const Home = (props) => {
                         records.map((product, index) => {
                             return (
                                 <View key={index} className="product-wrap" onClick={handleGoDetail.bind(this, product.id)}>
-                                    <Image src={product.indexImage} mode="aspectFill" />
+                                    <Image className="product-image" src={product.indexImage} mode="aspectFill" />
                                     <View className="product-info">
-                                        <View>{product.name}</View>
-                                        <View>{product.description}</View>
-                                        <View>￥<Text className="price">{(product.sellingPrice / 100).toFixed(2)}</Text></View>
+                                        <View className="product-name">{product.name}</View>
+                                        <View className="product-description">{product.description}</View>
+                                        <View className="product-price">￥<Text className="price">{(product.sellingPrice / 100).toFixed(2)}</Text></View>
                                     </View>
                                 </View>
                             )

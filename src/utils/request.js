@@ -14,12 +14,19 @@ const tokeninterceptor = function (chain) {
     });
 }
 
+const getBaseUrl = () => {
+  if (Taro.getEnv() == 'WEB') {
+    return '/api';
+  }
+  return BASE_URL;
+}
+
 class TaroRequest {
 
     constructor() {
         Taro.addInterceptor(Taro.interceptors.logInterceptor);
         Taro.addInterceptor(tokeninterceptor);
-        this.baseUrl = BASE_URL;
+        this.baseUrl = getBaseUrl();
         this.queue = [];
         this.isBlock = false;
     }
@@ -68,12 +75,13 @@ class TaroRequest {
                 });
                 Taro.request({
                     complete: (params) => {
-                        // setTimeout(() => { // 防止多个请求闪烁
-                        //     Taro.hideLoading();
-                        // }, 0)
-                        // Taro.hideLoading();
                         if (params.data.code != '10000') {
                             if (params.data.code == '10025') {
+                                if (process.env.TARO_ENV == 'h5') {
+                                  return Taro.navigateTo({
+                                    url: `/pages/authInfo/index`
+                                  })
+                                }
                                 return dispatch({
                                     type: 'user/login',
                                     payload: {

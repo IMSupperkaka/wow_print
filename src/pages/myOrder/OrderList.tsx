@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro'
+import classnames from 'classnames'
 import { ScrollView, View, Image, Button, Text } from '@tarojs/components'
 
-import './orderList.less'
+import styles from './orderList.module.less'
 import { orderStatus } from '../../utils/map/order'
 import { list, repay, cancel, receipt, detail } from '../../services/order'
 import Empty from '../../components/Empty'
@@ -173,28 +174,28 @@ export default (props) => {
     }
 
     return (
-      <ScrollView onScrollToLower={onLoad.bind(this, false)} scrollY={true} style={{ height: '100%' }}>
+      <ScrollView className={styles['order-list-scroll']} onScrollToLower={onLoad.bind(this, false)} scrollY={true} style={{ height: '100%' }}>
             {
                 records.length > 0 ?
-                <View className='order-list'>
+                <View className={styles['order-list']}>
                     {
                         records.map((item, index) => {
                             return (
-                                <View className='order-item' key={index} onClick={handleDetail.bind(this, item)}>
-                                    <View className="order-item-header">
-                                        <Text>共{ item.loanGoodsNums }件商品</Text>
+                                <View className={styles['order-item']} key={index} onClick={handleDetail.bind(this, item)}>
+                                    <View className={styles['order-item-header']}>
+                                        <Text className={styles['order-item-header__count']}>共{ item.loanGoodsNums }件商品</Text>
                                         <Text className={(item.status != 4 && item.status != 5) ? 'primary' : ''}>{ orderStatus.get(item.status) }</Text>
                                     </View>
                                     {
-                                      item.goodsInfo.map((goodsInfo) => {
+                                      item.goodsInfo.map((goodsInfo, index) => {
                                         return (
-                                          <View className="order-item-content">
-                                            <Image className="product-image" mode="aspectFill" src={goodsInfo.indexImage}/>
-                                            <View className="product-content">
-                                                <View>
+                                          <View className={styles['order-item-content']} key={index}>
+                                            <Image className={styles['product-image']} mode="aspectFill" src={goodsInfo.indexImage}/>
+                                            <View className={styles['product-content']}>
+                                                <View className={styles['product-goodsname']}>
                                                     { goodsInfo.goodName }
                                                 </View>
-                                                <View>
+                                                <View className={styles['product-price']}>
                                                     <Text>￥{ (goodsInfo.sellingPrice / 100).toFixed(2) }</Text>
                                                     <Text>x{ goodsInfo.goodsNums }</Text>
                                                 </View>
@@ -203,35 +204,35 @@ export default (props) => {
                                         )
                                       })
                                     }
-                                    <View className="orde-item-footer">
-                                        <View>
+                                    <View className={styles['orde-item-footer']}>
+                                        <View className={styles['orde-item-footer__left']}>
                                           <Text>合计</Text>
-                                          <Text>￥{ (item.money / 100).toFixed(2) }</Text>
+                                          <Text className={styles['orde-item-footer__price']}>￥{ (item.money / 100).toFixed(2) }</Text>
                                         </View>
-                                        <View>
+                                        <View className={styles['orde-item-footer__right']}>
                                           {
                                               item.status == 2 &&
-                                              <Button onClick={handleGoService} className="order-btn outline-btn">联系客服</Button>
+                                              <Button onClick={handleGoService} className={classnames('outline-btn', styles['order-btn'])}>联系客服</Button>
                                           }
                                           {
                                               [3, 9].includes(item.status) &&
-                                              <Button onClick={handleGoLog.bind(this, item)} className="order-btn outline-btn">查看物流</Button>
+                                              <Button onClick={handleGoLog.bind(this, item)} className={classnames('outline-btn', styles['order-btn'])}>查看物流</Button>
                                           }
                                           {
                                               [2, 4, 5, 9].includes(item.status) &&
-                                              <Button onClick={handleDetail.bind(this, item)} className="order-btn outline-btn">查看订单</Button>
+                                              <Button onClick={handleDetail.bind(this, item)} className={classnames('outline-btn', styles['order-btn'])}>查看订单</Button>
                                           }
                                           {
                                               item.status == 3 &&
-                                              <Button onClick={handleReceived.bind(this, item)} className="order-btn primary-outline-btn">确认收货</Button>
+                                              <Button onClick={handleReceived.bind(this, item)} className={classnames('primary-outline-btn', styles['order-btn'])}>确认收货</Button>
                                           }
                                           {
                                               item.status == 1 &&
-                                              <Button onClick={handleCancel.bind(this, item)} className="order-btn outline-btn">取消订单</Button>
+                                              <Button onClick={handleCancel.bind(this, item)} className={classnames('outline-btn', styles['order-btn'])}>取消订单</Button>
                                           }
                                           {
                                               item.status == 1 &&
-                                              <Button onClick={handleRepay.bind(this, item)} type="primary" className="order-btn primary-btn">立即付款</Button>
+                                              <Button onClick={handleRepay.bind(this, item)} className={classnames('primary-btn', styles['order-btn'])}>立即付款</Button>
                                           }
                                         </View>
                                     </View>

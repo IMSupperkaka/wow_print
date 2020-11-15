@@ -1,5 +1,8 @@
 .index {
+  min-height: 100vh;
   padding-bottom: 100px;
+  overflow: hidden;
+  background-color: #F6F6F6;
 }
 
 .header {
@@ -23,7 +26,7 @@
       justify-content: center;
       font-size: 24px;
       color: #FF6345;
-      image {
+      .select-icon {
         width: 124px;
         height: 124px;
         margin-bottom: 3px;
@@ -61,7 +64,7 @@
         width: 32px;
         height: 32px;
       }
-      & > view:nth-child(2) {
+      .step-value {
         display: flex;
         justify-content: center;
         width: 60px;
@@ -119,13 +122,15 @@
     }
   }
   .submit-left {
-    & > text:first-child {
+    display: flex;
+    align-items: center;
+    & > .submit-left-text:first-child {
       color: #FF6345;
       font-weight: bold;
       font-size: 28px;
       margin-right: 20px;
     }
-    & > text:last-child {
+    & > .submit-left-text:last-child {
       font-size: 24px;
       color: #999999;
     }

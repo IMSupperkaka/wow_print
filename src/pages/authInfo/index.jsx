@@ -4,7 +4,7 @@ import { AtButton } from 'taro-ui'
 import { connect } from 'react-redux'
 import { View, Image, Text } from '@tarojs/components'
 
-import './index.less'
+import styles from './index.module.less'
 import logo from '../../../images/auth-logo@2x.png'
 
 @connect(({ user }) => ({
@@ -50,13 +50,33 @@ class Index extends Component {
         })
     }
 
+    handleLogin = () => {
+      const { dispatch } = this.props;
+      if (process.env.TARO_ENV == 'h5') {
+        dispatch({
+            type: 'user/saveUserInfo',
+            payload: {
+                token: 'AUTH_USER_1_4038a51297e742ddbf979a16ce98c9e5'
+            }
+        })
+        const query = Taro.getCurrentInstance().router.params;
+        if (query?.redirect) {
+            Taro.redirectTo({
+                url: query.redirect
+            })
+        } else {
+            Taro.navigateBack();
+        }
+      }
+    }
+
     render() {
         return (
-            <View className='index'>
-                <Image src={logo} className="logo"/>
-                <AtButton className="auth-btn" type='primary' openType="getUserInfo" onGetUserInfo={this.onGetUserInfo}>微信授权登录</AtButton>
-                <AtButton className="cancel-btn" onClick={this.goBack} type='primary'>取消</AtButton>
-                <View className="bottom-agreement">
+            <View className={styles.index}>
+                <Image src={logo} className={styles.logo}/>
+                <AtButton onClick={this.handleLogin} className={styles['auth-btn']} type='primary' openType="getUserInfo" onGetUserInfo={this.onGetUserInfo}>微信授权登录</AtButton>
+                <AtButton className={styles['cancel-btn']} onClick={this.goBack} type='primary'>取消</AtButton>
+                <View className={styles['bottom-agreement']}>
                     登陆视为同意
                     <Text onClick={this.handleGoService}>《用户服务协议》</Text>
                     和

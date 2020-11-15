@@ -20,7 +20,7 @@ const defaultCropOption = {
 }
 
 const Img = React.memo((props) => {
-    return <Image style={props.style} src={props.src} mode="widthFix" />
+    return <Image style={props.style} src={props.src} mode="widthFix" className="crop-image"/>
 }, (prevProps, nextProps) => {
     return JSON.stringify(prevProps) === JSON.stringify(nextProps);
 })
@@ -126,8 +126,8 @@ const CropImg = (props) => {
     const transformStyle = {
         transformOrigin: '50% 50%',
         transform: `matrix(${matrix._data[0][0]}, ${matrix._data[1][0]}, ${matrix._data[0][1]}, ${matrix._data[1][1]}, ${matrix._data[0][2]}, ${matrix._data[1][2]})`,
-        width: Taro.pxTransform(fWidth * scalea),
-        height: Taro.pxTransform(fHeight * scalea)
+        width: Taro.pxTransform(fWidth * scalea, 750),
+        height: Taro.pxTransform(fHeight * scalea, 750)
     }
 
     const blur = computedBlur({
@@ -146,37 +146,30 @@ const CropImg = (props) => {
     const editVisible = props.editVisible && !showBlur;
 
     return (
-        <View data-cropimg="ccc" onClick={toogleEdit} style={{ width: Taro.pxTransform(width), height: Taro.pxTransform(height) }} {...resetProps} className={classNames('cropimg-wrap', className)}>
+        <View onClick={toogleEdit} style={{ width: Taro.pxTransform(width, 750), height: Taro.pxTransform(height, 750) }} {...resetProps} className={classNames('cropimg-wrap', className)}>
             <View className="mask-box">
-                {
-                    <Transition in={showBlur && showIgnoreBtn} timeout={300} classNames="bottom-top">
-                        <View className="mask-bottom">
-                            <View className="btn" onClick={handleIgnore}>忽略</View>
-                            <View className="line" />
-                            <View className="btn" onClick={handleChange}>换图</View>
-                        </View>
-                    </Transition>
-                }
-                {
-                    <Transition in={showBlur} timeout={300} classNames="fade-in">
-                        <View className={classNames("mask-tips", showIgnoreBtn ? null : 'full-mask')}>
-                            <Text>提示</Text>
-                            <Text>图片模糊或过长哦~</Text>
-                        </View>
-                    </Transition>
-                }
-                {
-                    showEdit &&
-                    <Transition in={editVisible} timeout={300} classNames="bottom-top">
-                        <View className={`mask-bottom black`}>
-                            <View className="btn" onClick={handleEdit}>调整</View>
-                            <View className="line" />
-                            <View className="btn" onClick={handleChange}>换图</View>
-                        </View>
-                    </Transition>
-                }
+                <Transition in={showBlur && showIgnoreBtn} timeout={300} classNames="bottom-top">
+                    <View className="mask-bottom">
+                        <View className="btn" onClick={handleIgnore}>忽略</View>
+                        <View className="line" />
+                        <View className="btn" onClick={handleChange}>换图</View>
+                    </View>
+                </Transition>
+                <Transition in={showBlur} timeout={300} classNames="fade-in">
+                    <View className={classNames("mask-tips", showIgnoreBtn ? null : 'full-mask')}>
+                        <Text>提示</Text>
+                        <Text>图片模糊或过长哦~</Text>
+                    </View>
+                </Transition>
+                <Transition in={editVisible} timeout={300} classNames="bottom-top">
+                    <View className={`mask-bottom black`}>
+                        <View className="btn" onClick={handleEdit}>调整</View>
+                        <View className="line" />
+                        <View className="btn" onClick={handleChange}>换图</View>
+                    </View>
+                </Transition>
             </View>
-            <Img style={{ ...transformStyle, ...style }} src={src} />
+            <Img style={{ ...transformStyle, ...style }} src={src}/>
         </View>
     )
 }

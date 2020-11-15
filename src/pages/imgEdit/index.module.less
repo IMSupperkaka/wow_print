@@ -21,12 +21,14 @@
 }
 
 .img {
-  position: absolute;
+  position: absolute!important;
   left: 0;
   top: 0;
-  image {
-    transition-duration: .2s;
-    transition-property: none;
+  :global {
+    .crop-image {
+      transition-duration: .2s;
+      transition-property: none;
+    }
   }
 }
 
@@ -90,7 +92,7 @@
   font-weight: bold;
   background-color: #fff;
   z-index: 3;
-  view:first-child {
+  .bottom-bar-left {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -102,7 +104,7 @@
       height: 40px;
     }
   }
-  view:last-child {
+  .bottom-bar-confirm{
     flex: 1;
     display: flex;
     justify-content: center;

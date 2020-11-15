@@ -71,6 +71,12 @@ export default {
                 path = '/pages/confirmOrder/index'
             }
 
+            if (process.env.TARO_ENV == 'h5') {
+              return Taro.navigateTo({
+                url: path
+              })
+            }
+
             Taro.getSetting({
                 success: (res) => {
                     if (!res.authSetting['scope.userInfo']) {

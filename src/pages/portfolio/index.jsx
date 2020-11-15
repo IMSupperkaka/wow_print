@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import Taro from '@tarojs/taro';
+import Taro, { useReachBottom } from '@tarojs/taro';
 import { connect } from 'react-redux';
+import classnams from 'classnames';
 import { View, Image, Button } from '@tarojs/components';
 import { AtSwipeAction } from "taro-ui";
 
-import './index.less';
+import styles from './index.module.less';
 import { list as getList, detail, deleteWork } from '../../services/portfolio';
 import Empty from '../../components/Empty';
 import List from '../../components/List';
@@ -21,8 +22,11 @@ const Portfolio = ({ dispatch }) => {
 
     const [list, setList] = useState([]);
 
-    const getData = (refresh = false) => {
+    useReachBottom(() => {
+      console.log(1)
+    })
 
+    const getData = (refresh = false) => {
         const current = refresh ? 1 : page.current + 1;
         const pageSize = page.pageSize;
 
@@ -83,12 +87,12 @@ const Portfolio = ({ dispatch }) => {
     }
 
     return (
-        <View className="portfolio-list">
+        <View className={styles['portfolio-list']}>
             <List onLoad={getData} isFinish={isFinish} empty={<Empty text="暂无作品哦"/>}>
                 {
                     list.map((item) => {
                         return (
-                            <AtSwipeAction onClick={handleDelete} className="portfolio-item-swipe" options={[
+                            <AtSwipeAction onClick={handleDelete} className={styles['portfolio-item-swipe']} options={[
                                 {
                                     id: item.id,
                                     text: '删除',
@@ -97,26 +101,26 @@ const Portfolio = ({ dispatch }) => {
                                     }
                                 }
                                 ]}>
-                                <View className="portfolio-item" onClick={(e) => { handleGoDetail(item, e) }}>
-                                    <View className="portfolio-left">
-                                        <View className="portfolio-img-wrap">
-                                            <Image class="portfolio-img" src={item.indexImage}/>
+                                <View className={styles['portfolio-item']} onClick={(e) => { handleGoDetail(item, e) }}>
+                                    <View className={styles['portfolio-left']}>
+                                        <View className={styles['portfolio-img-wrap']}>
+                                            <Image className={styles['portfolio-img']} src={item.indexImage}/>
                                         </View>
-                                        <View className="portfolio-info">
+                                        <View className={styles['portfolio-info']}>
                                             <View>
-                                                <View className="portfolio-title">
+                                                <View className={styles['portfolio-title']}>
                                                     { item.name }
                                                     {
                                                         item.coupon &&
-                                                        <View className="coupon-sign">优惠券</View>
+                                                        <View className={styles['coupon-sign']}>优惠券</View>
                                                     }
                                                 </View>
-                                                <View className="portfolio-page">完成页码: { item.finishPage } / { item.totalPage }</View>
+                                                <View className={styles['portfolio-page']}>完成页码: { item.finishPage } / { item.totalPage }</View>
                                             </View>
-                                            <View className="portfolio-time">创作时间: { item.updateTime.split(' ')[0] }</View>
+                                            <View className={styles['portfolio-time']}>创作时间: { item.updateTime.split(' ')[0] }</View>
                                         </View>
                                     </View>
-                                    <Button className="radius-btn primary-outline-btn">
+                                    <Button className={classnams('primary-outline-btn', 'radius-btn')}>
                                         {
                                             item.finishPage < item.totalPage ?
                                             '继续创作' :
