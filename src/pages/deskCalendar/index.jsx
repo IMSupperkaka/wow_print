@@ -13,7 +13,7 @@ import BottomButton from '../../components/BottomButton';
 import editIcon from '../../../images/icon_edit.png';
 
 const sizeMap = new Map([
-    [0, { width: 640, height: 295 }],
+    [0, { width: 554, height: 295 }],
     [1, { width: 251, height: 330 }],
     [2, { width: 380, height: 216 }]
 ])
@@ -288,7 +288,7 @@ const DeskCalendar = (props) => {
                                 name='name'
                                 type='text'
                                 maxlength={12}
-                                cursorSpacing="200"
+                                cursorSpacing="91"
                                 placeholder='最多12个字'
                                 adjustPosition
                                 placeholderStyle="color: #C1C1C1"

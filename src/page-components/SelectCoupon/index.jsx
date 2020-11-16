@@ -129,7 +129,7 @@ export default (props) => {
     })
 
     return (
-        <>
+        <View>
             { cellComponent }
             <Modal className="coupon-modal" visible={isOpened} onClose={handleCloseCoupon}>
                 <View className="title">优惠券</View>
@@ -168,6 +168,6 @@ export default (props) => {
                 </ScrollView>
                 <View className="footer" onClick={noUseCoupon}>不使用优惠券</View>
             </Modal>
-        </>
+        </View>
     )
 }

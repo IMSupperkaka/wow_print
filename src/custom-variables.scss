@@ -48,6 +48,33 @@ $color-brand: #FF6345;
     }
 }
 
+.fade {
+  opacity: 0;
+  visibility: hidden;
+}
+.fade-enter {
+  opacity: 0;
+  visibility: visible;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 200ms;
+  visibility: visible;
+}
+.fade-exit {
+  opacity: 1;
+  visibility: visible;
+}
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+  visibility: visible;
+}
+.fade-exit-done {
+  opacity: 0;
+  visibility: hidden;
+}
+
 // fade-in transition start
 .fade-in-enter {
     opacity: 0;
@@ -85,3 +112,20 @@ $color-brand: #FF6345;
   transform: translate3d(0, 100%, 0);
 }
 // bottom-top transition end
+
+// scale-top transition start
+.scale-in-enter {
+    transform: scale(0);
+}
+.scale-in-enter-active {
+    transition: transform 300ms ease-in-out;
+    transform: scale(1);
+}
+.scale-in-exit {
+    transform: scale(1);
+}
+.scale-in-exit-active {
+    transition: transform 300ms ease-in-out;
+    transform: scale(0);
+}
+  // bottom-top transition end

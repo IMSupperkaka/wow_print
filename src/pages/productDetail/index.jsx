@@ -50,6 +50,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     const goSelectPic = () => {
 
         if (detail.category == 0) {
+            Taro.eventCenter.trigger('confirmSelectMatch', query.id);
             return Taro.navigateBack();
         }
 
@@ -78,7 +79,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                     {
                         detail?.productMainImages?.map((v, index) => {
                             return (
-                                <SwiperItem key={index}>
+                                <SwiperItem key={index} className="swiper-item">
                                     <Image src={v} mode="aspectFill" />
                                 </SwiperItem>
                             )
@@ -96,7 +97,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 </View>
                 <View className="product-sale">销量 {detail.sales}</View>
             </View>
-            <SelectCoupon productId={query.id} defaultActiveCoupon={coupon} onChange={saveCoupon}/>
+            <SelectCoupon productId={query.id} defaultActiveCoupon={coupon} onChange={saveCoupon}></SelectCoupon>
             <View className="product-detail">
                 <View className="detail-title">商品详情</View>
                 {

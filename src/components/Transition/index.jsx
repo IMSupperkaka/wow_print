@@ -5,47 +5,48 @@ import classNames from 'classnames';
 // TODO: unmount transition-group
 export default (props) => {
 
-    const [state, setState] = useState(null);
+  const { timeout = 0 } = props;
 
-    const ref = useRef();
+  const [state, setState] = useState(null);
 
-    const transitionend = () => {
-      setState((state) => {
-        return state == 'enter-active' ? 'enter-done' : 'exit-done';
-      })
+  useEffect(() => {
+
+    let enterTimer = null;
+    let exitTimer = null;
+
+    if (props.in) {
+      setState('enter');
+      setTimeout(() => {
+        setState('enter-active');
+      }, 0);
+      enterTimer = setTimeout(() => {
+        setState('enter-done');
+      }, timeout)
+    } else {
+      if (state == null) {
+        return;
+      }
+      setState('exit');
+      setTimeout(() => {
+        setState('exit-active');
+      }, 0);
+      exitTimer = setTimeout(() => {
+        setState('exit-done');
+      }, timeout)
     }
-
-    useEffect(() => {
-        if (ref.current) {
-          ref.current.addEventListener('transitionend', transitionend, false)
-        }
-        if (props.in) {
-            setState('enter');
-            setTimeout(() => {
-              setState('enter-active');
-            }, 0);
-        } else {
-            if (state == null) {
-                return;
-            }
-            setState('exit');
-            setTimeout(() => {
-              setState('exit-active');
-            }, 0);
-        }
-        return () => {
-          ref.current && ref.current.removeEventListener('transitionend', transitionend);
-        }
-    }, [props.in])
-
-    if (!props.in && (!state || state == 'exit-done')) {
-        return null;
+    return () => {
+      clearTimeout(enterTimer);
+      clearTimeout(exitTimer);
     }
+  }, [props.in])
 
-    const CloneChildren = React.cloneElement(props.children, {
-        className: classNames(props.children.props.className, props.classNames + '-' + state),
-        ref: ref
-    })
+  if (!props.in && (state == null || state == 'exit-done')) {
+    return null;
+  }
 
-    return CloneChildren;
+  const CloneChildren = React.cloneElement(props.children, {
+    className: classNames(props.children.props.className, props.classNames + '-' + state)
+  })
+
+  return CloneChildren;
 }

@@ -16,7 +16,7 @@ export default () => {
         if (!lastCloseTime || day(lastCloseTime).isBefore(day().startOf('day'))) {
             setVisible(true);
         }
-    }, []);  
+    }, []);
 
     const { statusBarHeight } = Taro.getSystemInfoSync()
 
@@ -25,8 +25,10 @@ export default () => {
         setVisible(false);
     }
 
+    const duration = 300;
+
     return (
-        <Transition in={visible} classNames="fade-in">
+        <Transition in={visible} timeout={duration} classNames="fade-in">
             <View className="addto-mine-wrap" style={{ top: statusBarHeight + 45 }}>
                 <AtIcon onClick={handleClose} className="addto-mine-close-icon" value='close' size='12' color='#FFF'/>
                 点击···添加“我的小程序”享服务更便捷

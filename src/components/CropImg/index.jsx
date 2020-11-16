@@ -146,7 +146,7 @@ const CropImg = (props) => {
         <View onClick={toogleEdit} style={{ width: Taro.pxTransform(width), height: Taro.pxTransform(height) }} {...resetProps} className={classNames('cropimg-wrap', className)}>
             <View className="mask-box">
                 {
-                    <Transition in={showBlur && showIgnoreBtn} timeout={0} classNames="bottom-top">
+                    <Transition in={showBlur && showIgnoreBtn} timeout={300} classNames="bottom-top">
                         <View className="mask-bottom">
                             <View className="btn" onClick={handleIgnore}>忽略</View>
                             <View className="line" />
@@ -155,7 +155,7 @@ const CropImg = (props) => {
                     </Transition>
                 }
                 {
-                    <Transition in={showBlur} timeout={0} classNames="fade-in">
+                    <Transition in={showBlur} timeout={300} classNames="fade-in">
                         <View className={classNames("mask-tips", showIgnoreBtn ? null : 'full-mask')}>
                             <Text>提示</Text>
                             <Text>图片模糊或过长哦~</Text>
@@ -164,7 +164,7 @@ const CropImg = (props) => {
                 }
                 {
                     showEdit &&
-                    <Transition in={editVisible} timeout={0} classNames="bottom-top">
+                    <Transition in={editVisible} timeout={300} classNames="bottom-top">
                         <View className={`mask-bottom black`}>
                             <View className="btn" onClick={handleEdit}>调整</View>
                             <View className="line" />

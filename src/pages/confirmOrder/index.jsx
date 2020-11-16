@@ -27,6 +27,17 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     const [matchList, setMatchList] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
+    useEffect(() => {
+        Taro.eventCenter.on('confirmSelectMatch', (id) => {
+            setSelectedRowKeys((selectedRowKeys) => {
+                return [...selectedRowKeys, id]
+            });
+        })
+        return () => {
+            Taro.eventCenter.off('confirmSelectMatch');
+        }
+    }, [])
+
     useDidShow(() => {
         list().then(({ data }) => {
             if (addressInfo.id) {

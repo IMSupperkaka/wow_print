@@ -1,7 +1,5 @@
 import React from 'react'
-import Taro from '@tarojs/taro'
 import { View } from '@tarojs/components'
-import Animate from 'rc-animate'
 import classNames from 'classnames'
 import Transition from '../Transition'
 
@@ -11,15 +9,17 @@ const Modal = (props) => {
 
     const { onClose, visible, className } = props;
 
+    const duration = 300;
+
     return (
         <View className="wy-modal">
-            <Transition in={visible} timeout={0} classNames="fade-in">
-                <View className="wy-modal__overlay" onClick={onClose}></View>
+            <Transition in={visible}  timeout={duration} classNames="fade-in">
+              <View className="wy-modal__overlay" onClick={onClose}></View>
             </Transition>
-            <Transition in={visible} timeout={0} classNames="bottom-top">
-                <View className={classNames("wy-modal__container", className)}>
-                    { props.children }
-                </View>
+            <Transition in={visible} timeout={duration} classNames="bottom-top">
+              <View className={classNames("wy-modal__container", className)}>
+                  { props.children }
+              </View>
             </Transition>
         </View>
     )

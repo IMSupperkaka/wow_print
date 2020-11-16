@@ -133,8 +133,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         resultList.push({
             imgInfo: null,
             cropInfo: null,
-            originImage: 'https://cdn.wanqiandaikuan.com/back_cover.jpg',
-            cropImage: 'https://cdn.wanqiandaikuan.com/back_cover.jpg',
+            originImage: 'https://cdn.91daiwo.com/back_cover.jpg',
+            cropImage: 'https://cdn.91daiwo.com/back_cover.jpg',
             printNums: 1,
             synthesisList: [],
             restInfo: {
@@ -198,9 +198,9 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     <View className="cover">
                         <View className="cover-top">
                             <View className="edit-box">
-                                <View className="title-box">
-                                    <Text className="title">{coverInfo.bookName}</Text>
-                                    <Image src={editIcon} className="edit-icon" onClick={() => {
+                                <View
+                                    className="title-box"
+                                    onClick={() => {
                                         setEditVisible(true);
                                         setCoverInfo((coverInfo) => {
                                             return {
@@ -209,7 +209,9 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                                 temporaryName: coverInfo.bookName
                                             }
                                         });
-                                    }} />
+                                    }}>
+                                    <Text className="title">{coverInfo.bookName}</Text>
+                                    <Image src={editIcon} className="edit-icon" />
                                 </View>
                                 <View className="description">
                                     {coverInfo.description}
@@ -257,18 +259,10 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 type='text'
                                 maxlength={12}
                                 placeholder='最多12个字'
-                                cursorSpacing="200"
-                                adjustPosition={false}
+                                cursorSpacing="130"
+                                adjustPosition
                                 placeholderStyle="color: #C1C1C1"
                                 value={coverInfo.temporaryName}
-                                // onKeyboardHeightChange={(event) => {
-                                //     setInsertHeight(event.detail.height)
-                                // }}
-                                // onBlur={() => {
-                                //     setTimeout(() => {
-                                //         setInsertHeight(0)
-                                //     }, 200)
-                                // }}
                                 onInput={(event) => {
                                     setCoverInfo({
                                         ...coverInfo,
@@ -285,18 +279,10 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 type='text'
                                 maxlength={20}
                                 placeholder='最多20个字'
-                                cursorSpacing="200"
-                                adjustPosition={false}
+                                cursorSpacing="91"
+                                adjustPosition
                                 placeholderStyle="color: #C1C1C1"
                                 value={coverInfo.temporaryDesc}
-                                // onKeyboardHeightChange={(event) => {
-                                //     setInsertHeight(event.detail.height)
-                                // }}
-                                // onBlur={() => {
-                                //     setTimeout(() => {
-                                //         setInsertHeight(0)
-                                //     }, 200)
-                                // }}
                                 onInput={(event) => {
                                     setCoverInfo({
                                         ...coverInfo,

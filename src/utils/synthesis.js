@@ -20,9 +20,9 @@ const renderMap = {
       {
         type: 'Image',
         imageUrl: cropImage,
-        width: 2560,
+        width: 2216,
         height: 1180,
-        offsetX: 0,
+        offsetX: 172,
         offsetY: 172
       },
       {
