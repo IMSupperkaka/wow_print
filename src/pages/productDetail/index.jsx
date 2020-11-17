@@ -3,7 +3,7 @@ import Taro, { useShareAppMessage, useReady } from '@tarojs/taro'
 import { connect } from 'react-redux'
 import { View, Image, Swiper, SwiperItem } from '@tarojs/components'
 
-import './index.less'
+import styles from './index.module.less'
 import { fix } from '../../utils/utils'
 import Transition from '../../components/Transition'
 import SafeArea from '../../components/SafeArea'
@@ -62,55 +62,59 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
         })
     }
 
-    const submitBtnText = detail.category == 0 ? '确认选择' : (coupon.couponName ? '免费打印' : '立即打印');
+    let submitBtnText = detail.category == 0 ? '确认选择' : (coupon.couponName ? '免费打印' : '立即打印');
+
+    if (detail.category == 2 || detail.category == 3) {
+        submitBtnText = '立即定制';
+    }
 
     return (
-        <View className="index">
-            <View className="banner-wrap">
+        <View className={styles.index}>
+            <View className={styles['banner-wrap']}>
                 {
                     detail?.buyList?.length > 0 &&
-                    <NoticeBar className="order-notice" list={detail.buyList} renderItem={(v) => {
-                        return <View className="order-notice-item">{ v.cname }打印了{ v.printNums }张</View>
+                    <NoticeBar className={styles['order-notice']} list={detail.buyList} renderItem={(v) => {
+                        return <View className={styles['order-notice-item']}>{ v.cname }打印了{ v.printNums }张</View>
                     }}/>
                 }
-                <Swiper className="banner" current={current} onChange={(e) => {
+                <Swiper className={styles['banner']} current={current} onChange={(e) => {
                     setCurrent(e.detail.current);
                 }}>
                     {
                         detail?.productMainImages?.map((v, index) => {
                             return (
-                                <SwiperItem key={index} className="swiper-item">
-                                    <Image src={v} mode="aspectFill" />
+                                <SwiperItem key={index} className={styles['swiper-item']}>
+                                    <Image className={styles['banner-image']} src={v} mode="aspectFill" />
                                 </SwiperItem>
                             )
                         })
                     }
                 </Swiper>
-                <View className="indicator">
+                <View className={styles['indicator']}>
                     {current + 1} / {detail?.productMainImages?.length}
                 </View>
             </View>
-            <View className="product-info">
+            <View className={styles['product-info']}>
                 <View>
-                    <View className="product-price">￥{fix(detail.sellingPrice, 2)}</View>
-                    <View className="product-name">{detail.name}</View>
+                    <View className={styles['product-price']}>￥{fix(detail.sellingPrice, 2)}</View>
+                    <View className={styles['product-name']}>{detail.name}</View>
                 </View>
-                <View className="product-sale">销量 {detail.sales}</View>
+                <View className={styles['product-sale']}>销量 {detail.sales}</View>
             </View>
             <SelectCoupon productId={query.id} defaultActiveCoupon={coupon} onChange={saveCoupon}></SelectCoupon>
-            <View className="product-detail">
-                <View className="detail-title">商品详情</View>
+            <View className={styles['product-detail']}>
+                <View className={styles['detail-title']}>商品详情</View>
                 {
                     detail?.productDetailImages?.map((url, index) => {
-                        return <Image key={index} mode="widthFix" class="detail-image" src={url} />
+                        return <Image key={index} mode="widthFix" className={styles['detail-image']} src={url} />
                     })
                 }
             </View>
             <SafeArea>
                 {({ bottom }) => {
                     return (
-                        <Transition in={detail.id} timeout={0} classNames="bottom-top">
-                            <View style={{ paddingBottom: Taro.pxTransform(bottom) }} onClick={goSelectPic} className="submit-btn">
+                        <Transition in={detail.id} timeout={0} classNames={styles['bottom-top']}>
+                            <View style={{ paddingBottom: Taro.pxTransform(bottom, 750) }} onClick={goSelectPic} className={styles['submit-btn']}>
                                 { submitBtnText }
                             </View>
                         </Transition>

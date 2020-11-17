@@ -3,12 +3,13 @@ import { View, Image, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
 
-import './index.less'
+import styles from './index.module.less'
 import { SELECT_WIDTH } from '../../utils/picContent'
 import { computeCropUrl, computedBlur } from '../../utils/utils'
 import UploadCrop from '../../components/UploadCrop'
 import SafeArea from '../../components/SafeArea'
 import Upload from '../../components/Upload'
+import { CropImgProvider } from '../../components/CropImg'
 import addPic from '../../../images/cion_add_to@2x.png'
 import deleteIcon from '../../../images/icon_delete@2x.png'
 import lessSelectIcon from '../../../images/icon_Less_selected@2x.png'
@@ -166,69 +167,71 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
     const restFreeNums = (coupon.couponFreeNums || 0) - userImageList.reduce((count, v) => { return count + v.printNums }, 0);
 
     const contentStyle = {
-        height: `${Taro.pxTransform(SELECT_WIDTH / proportion)}`
+        height: `${Taro.pxTransform(SELECT_WIDTH / proportion, 750)}`
     }
 
     return (
-        <View className="index">
-            <View className="header">显示区域即为打印区域，如需调整请点击图片</View>
-            <View className="content">
-                {
-                    userImageList.map((v, index) => {
-                        return (
-                            <View className="item">
-                                <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className="delete-icon" />
-                                <View className="item-body" onClick={handleGoEdit.bind(this, index)} style={contentStyle}>
-                                    <UploadCrop
-                                        limit={9}
-                                        fileList={userImageList}
-                                        showIndex={index}
-                                        showEdit={false}
-                                        editFinish={editFinish}
-                                        onChange={onChange}
-                                        className="item-img"
-                                        width={SELECT_WIDTH}
-                                        height={SELECT_WIDTH / proportion} />
-                                </View>
-                                <View className="item-footer">
-                                    <View className="step-wrap">
-                                        <Image src={v.printNums <= 1 ? lessDisabledIcon : lessSelectIcon} onClick={handleOprate.bind(this, index, 'substract')} className="opration-btn" />
-                                        <View>{v.printNums}</View>
-                                        <Image src={plusSelectIcon} onClick={handleOprate.bind(this, index, 'add')} className="opration-btn" />
+        <CropImgProvider>
+            <View className={styles['index']}>
+                <View className={styles['header']}>显示区域即为打印区域，如需调整请点击图片</View>
+                <View className={styles['content']}>
+                    {
+                        userImageList.map((v, index) => {
+                            return (
+                                <View className={styles['item']}>
+                                    <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className={styles['delete-icon']} />
+                                    <View className={styles['item-body']} onClick={handleGoEdit.bind(this, index)} style={contentStyle}>
+                                        <UploadCrop
+                                            limit={9}
+                                            fileList={userImageList}
+                                            showIndex={index}
+                                            showEdit={false}
+                                            editFinish={editFinish}
+                                            onChange={onChange}
+                                            className={styles['item-img']}
+                                            width={SELECT_WIDTH}
+                                            height={SELECT_WIDTH / proportion} />
+                                    </View>
+                                    <View className={styles['item-footer']}>
+                                        <View className={styles['step-wrap']}>
+                                            <Image src={v.printNums <= 1 ? lessDisabledIcon : lessSelectIcon} onClick={handleOprate.bind(this, index, 'substract')} className={styles['opration-btn']} />
+                                            <View className={styles['step-value']}>{v.printNums}</View>
+                                            <Image src={plusSelectIcon} onClick={handleOprate.bind(this, index, 'add')} className={styles['opration-btn']} />
+                                        </View>
                                     </View>
                                 </View>
+                            )
+                        })
+                    }
+                    <Upload onChange={onChange} limit={9} fileList={userImageList}>
+                        <View className={`${styles['item']} ${styles['choose-item']}`}>
+                            <View className={styles['item-body']} style={contentStyle}>
+                                <Image className={styles['select-icon']} src={addPic} />
+                                添加照片
+                            </View>
+                            <View className={styles['item-footer']}></View>
+                        </View>
+                    </Upload>
+                </View>
+                <SafeArea>
+                    {({ bottom }) => {
+                        return (
+                            <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className={styles['submit-wrap']}>
+                                {
+                                    coupon.couponName &&
+                                    <View className={styles['freenums-tag']}>还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
+                                }
+                                <View className={styles['submit-left']}>
+                                    <Text className={styles['submit-left-text']}>添加照片</Text>
+                                    <Text className={styles['submit-left-text']}>已选{userImageList.length}张</Text>
+                                </View>
+                                <View className={styles['submit-right']} onClick={handleGoPrint}>去打印</View>
                             </View>
                         )
-                    })
-                }
-                <Upload onChange={onChange} limit={9} fileList={userImageList}>
-                    <View className="item choose-item">
-                        <View className="item-body" style={contentStyle}>
-                            <Image src={addPic} />
-                            添加照片
-                        </View>
-                        <View className="item-footer"></View>
-                    </View>
-                </Upload>
+                    }}
+                </SafeArea>
             </View>
-            <SafeArea>
-                {({ bottom }) => {
-                    return (
-                        <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className="submit-wrap">
-                            {
-                                coupon.couponName &&
-                                <View className="freenums-tag">还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
-                            }
-                            <View className="submit-left">
-                                <Text>添加照片</Text>
-                                <Text>已选{userImageList.length}张</Text>
-                            </View>
-                            <View className="submit-right" onClick={handleGoPrint}>去打印</View>
-                        </View>
-                    )
-                }}
-            </SafeArea>
-        </View>
+        </CropImgProvider>
     )
 }
 

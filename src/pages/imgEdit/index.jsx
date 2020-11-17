@@ -3,7 +3,7 @@ import Taro from '@tarojs/taro';
 import { connect } from 'react-redux';
 import { View, Image, Canvas } from '@tarojs/components';
 
-import './index.less';
+import styles from './index.module.less';
 import math from '../../utils/math'
 import { computeCropUrl, initImg } from '../../utils/utils'
 import { EDIT_WIDTH } from '../../utils/picContent'
@@ -21,6 +21,21 @@ let store = {
 };
 
 const radio = 750 / Taro.getSystemInfoSync().screenWidth;
+
+const getTouchPosition = (touch) => {
+  return {
+    x: touch.x || touch.pageX || 0,
+    y: touch.y || touch.pageY || 0,
+  }
+}
+
+const getTouchsPosition = (touchs) => {
+  let poristionList = [];
+  for (let i = 0; i < touchs.length; i++) {
+    poristionList.push(getTouchPosition(touchs[i]))
+  }
+  return poristionList;
+}
 
 const getDistance = (p1, p2) => {
     return Math.sqrt(Math.pow(p2.x - p1.x, 2), Math.pow(p2.y - p1.y), 2);
@@ -43,20 +58,23 @@ const ImgEdit = (props) => {
     }, [activeIndex])
 
     const onTouchStart = (e) => {
-        lastTouch = e.touches;
+        lastTouch = getTouchsPosition(e.touches);
         setIsTouch(true);
         store.originScale = scale;
         store.originTranslate = translate;
     }
 
     const onTouchMove = (e) => {
-        if (e.touches.length >= 2) {
-            const zoom = getDistance(e.touches[0], e.touches[1]) / getDistance(lastTouch[0], lastTouch[1]);
+        e.preventDefault();
+        e.stopPropagation();
+        const touchPositionList = getTouchsPosition(e.touches)
+        if (touchPositionList.length >= 2) {
+            const zoom = getDistance(touchPositionList[0], touchPositionList[1]) / getDistance(lastTouch[0], lastTouch[1]);
             const newScale = store.originScale * zoom;
             setScale(newScale);
         } else {
-            const dx = (e.touches[0].x - lastTouch[0].x) * radio;
-            const dy = (e.touches[0].y - lastTouch[0].y) * radio;
+            const dx = (touchPositionList[0].x - lastTouch[0].x) * radio;
+            const dy = (touchPositionList[0].y - lastTouch[0].y) * radio;
             setTranslate([store.originTranslate[0] + dx, store.originTranslate[1] + dy]);
         }
     }
@@ -166,10 +184,10 @@ const ImgEdit = (props) => {
         })
     }
 
-    const activeLeftIcon = <Image onClick={oprate.bind(this, 'subtraction')} className="oprate-icon" src={leftActiveIcon} />;
-    const disabledLeftIcon = <Image className="oprate-icon" src={leftDisabledIcon} />;
-    const activeRightIcon = <Image onClick={oprate.bind(this, 'plus')} className="oprate-icon" src={rightActiveIcon} />;
-    const disabledRightIcon = <Image className="oprate-icon" src={rightDisabledIcon} />;
+    const activeLeftIcon = <Image onClick={oprate.bind(this, 'subtraction')} className={styles['oprate-icon']} src={leftActiveIcon} />;
+    const disabledLeftIcon = <Image className={styles['oprate-icon']} src={leftDisabledIcon} />;
+    const activeRightIcon = <Image onClick={oprate.bind(this, 'plus')} className={styles['oprate-icon']} src={rightActiveIcon} />;
+    const disabledRightIcon = <Image className={styles['oprate-icon']} src={rightDisabledIcon} />;
 
     const cropOption = {
         ...IMG.cropInfo,
@@ -178,24 +196,24 @@ const ImgEdit = (props) => {
     }
 
     const maskStyle = {
-      borderWidth: `${Taro.pxTransform(104)} ${Taro.pxTransform(84)} calc(100vh - ${Taro.pxTransform(104)} - ${Taro.pxTransform(contentHeight)}) ${Taro.pxTransform(84)}`
+      borderWidth: `${Taro.pxTransform(104, 750)} ${Taro.pxTransform(84, 750)} calc(100vh - ${Taro.pxTransform(104, 750)} - ${Taro.pxTransform(contentHeight, 750)}) ${Taro.pxTransform(84, 750)}`
     }
 
     const contentStyle = {
-      height: `${Taro.pxTransform(contentHeight)}`
+      height: `${Taro.pxTransform(contentHeight, 750)}`
     }
 
     return (
         <View>
-            <View className="edit-content">
-                <View className="top-tip"># 单指拖动、双指缩放可调整打印范围 #</View>
-                <View className="content-wrap">
-                    <View className="mask" style={maskStyle}></View>
-                    <Canvas canvasId='canvas' style={contentStyle} disableScroll={true} className="content" onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
-                    <CropImg className="img" showIgnoreBtn={false} width={contentWidth} height={contentHeight} src={IMG.filePath || IMG.originImage} imgInfo={IMG.imgInfo} cropOption={cropOption} style={{ transitionProperty: !isTouch ? 'transform' : 'none' }}/>
+            <View className={styles['edit-content']}>
+                <View className={styles['top-tip']}># 单指拖动、双指缩放可调整打印范围 #</View>
+                <View className={styles['content-wrap']}>
+                    <View className={styles['mask']} style={maskStyle}></View>
+                    <Canvas canvasId='canvas' style={contentStyle} disableScroll={true} className={styles['content']} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
+                    <CropImg className={styles['img']} showIgnoreBtn={false} width={contentWidth} height={contentHeight} src={IMG.filePath || IMG.originImage} imgInfo={IMG.imgInfo} cropOption={cropOption} style={{ transitionProperty: !isTouch ? 'transform' : 'none' }}/>
                 </View>
-                <View className="bottom-wrap">
-                    <View className="bottom-tip">tips：灰色区域将被裁剪，不在打印范围内</View>
+                <View className={styles['bottom-wrap']}>
+                    <View className={styles['bottom-tip']}>tips：灰色区域将被裁剪，不在打印范围内</View>
                     {
                         imgList.length > 1 &&
                         <View>
@@ -213,9 +231,11 @@ const ImgEdit = (props) => {
                     }
                 </View>
             </View>
-            <View className="bottom-bar">
-                <View onClick={handleDelete}><Image className="delete" src={deleteIcon} /></View>
-                <View onClick={confirm}>完成</View>
+            <View className={styles['bottom-bar']}>
+                <View className={styles['bottom-bar-left']} onClick={handleDelete}>
+                  <Image className={styles['delete']} src={deleteIcon} />
+                </View>
+                <View className={styles['bottom-bar-confirm']} onClick={confirm}>完成</View>
             </View>
         </View>
     )

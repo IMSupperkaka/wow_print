@@ -4,7 +4,7 @@ import day from 'dayjs'
 import { usePullDownRefresh, useReachBottom, useDidShow } from '@tarojs/taro'
 import { View, ScrollView, Image, Button, Text } from '@tarojs/components'
 
-import './index.less'
+import styles from './index.module.less'
 import { list, pre } from '../../services/coupon';
 import Empty from '../../components/Empty';
 import rightArrow from '../../../images/right_arrow@2x.png';
@@ -99,40 +99,40 @@ export default () => {
     }
 
     return (
-        <View className="index">
+        <View className={styles['index']}>
             {
                 records.length > 0 ?
                 <>
-                    <View className='tips'>
+                    <View className={styles['tips']}>
                         <Text>温馨提示，每个订单只能使用一张优惠券哦～</Text>
                     </View>
-                    <View className='list'>
+                    <View className={styles['list']}>
                         {
                             records.map((item, index) => {
                                 return (
-                                    <View className='list-item' key={index}>
+                                    <View className={styles['list-item']} key={index}>
                                         {
                                             item.new &&
-                                            <View className="top">
-                                                <View className="triangle"></View>
-                                                <Text className="new">新</Text>
+                                            <View className={styles['top']}>
+                                                <View className={styles['triangle']}></View>
+                                                <Text className={styles['new']}>新</Text>
                                             </View>
                                         }
-                                        <View className='list-item-header'>
-                                            <View className="list-item-header-left">
+                                        <View className={styles['list-item-header']}>
+                                            <View className={styles['list-item-header-left']}>
                                                 <Image src={item.couponGoodImage}/>
-                                                <View className="list-item-header-text">
-                                                    <View className="name">{item.couponName}</View>
+                                                <View className={styles['list-item-header-text']}>
+                                                    <View className={styles['name']}>{item.couponName}</View>
                                                     <View>
-                                                        <View className="sill">无门槛使用</View>
-                                                        <View className="time">有效期至 {item.endTime}</View>
+                                                        <View className={styles['sill']}>无门槛使用</View>
+                                                        <View className={styles['time']}>有效期至 {item.endTime}</View>
                                                     </View>
                                                 </View>
                                             </View>
-                                            <View className="list-item-header-btn" onClick={handleUse.bind(this, item)}>使用</View>
-                                            <ExpiresText className="expires-time" endTime={item.endTime}/>
+                                            <View className={styles['list-item-header-btn']} onClick={handleUse.bind(this, item)}>使用</View>
+                                            <ExpiresText className={styles['expires-time']} endTime={item.endTime}/>
                                         </View>
-                                        <View className="list-item-desc">
+                                        <View className={styles['list-item-desc']}>
                                             <Text>{ item.couponDescription }</Text>
                                         </View>
                                     </View>
@@ -140,9 +140,9 @@ export default () => {
                             })
                         }
                     </View>
-                    <View className="fotter" onClick={goCouponList}>
+                    <View className={styles['fotter']} onClick={goCouponList}>
                         <Text>更多历史优惠券</Text>
-                        <Image src={rightArrow}/>
+                        <Image className={styles['fotter-image']} src={rightArrow}/>
                     </View>
                 </> :
                 <Empty src={couponEmptyIcon} text="有些难为情，券不在"/>

@@ -16,12 +16,18 @@ export const CropImgProvider = (props) => {
         setActiveList([]);
     }
 
+    const child = React.cloneElement(props.children, {
+        onClick: (e) => {
+            setActiveList([]);
+        }
+    })
+
     return (
         <Provider value={{
             list: activeList,
             onShow: onShow,
             onHide: onHide
-        }} >{props.children}</Provider>
+        }} >{child}</Provider>
     )
 }
 

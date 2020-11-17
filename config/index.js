@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-09-09 21:04:30
  * @LastEditors: Shawn
- * @LastEditTime: 2020-11-01 18:48:21
+ * @LastEditTime: 2020-11-14 12:11:06
  * @FilePath: \wow_print\config\index.js
  * @Description: Descrip Content
  */
@@ -63,7 +63,7 @@ const config = {
                 }
             },
             cssModules: {
-                enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
+                enable: true, // 默认为 false，如需使用 css modules 功能，则设为 true
                 config: {
                     namingPattern: 'module', // 转换模式，取值为 global/module
                     generateScopedName: '[name]__[local]___[hash:base64:5]'
@@ -71,7 +71,14 @@ const config = {
             }
         },
         devServer: {
-
+          proxy: {
+            "/api/": {
+              target: "https://testapp.wayinkeji.com",
+              pathRewrite: {"^/api/" : "/"},
+              secure: false,
+              changeOrigin: true
+            }
+          }
         }
     }
 }

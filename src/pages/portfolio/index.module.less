@@ -1,9 +1,14 @@
 .portfolio-list {
-    .at-swipe-action {
-        margin: 20px 24px;
-        background-color: #fff;
-        border-radius: 16px;
-        overflow: hidden;
+    background-color: #F6F6F6;
+    min-height: 100vh;
+    overflow: hidden;
+    :global {
+      .at-swipe-action {
+          margin: 20px 24px;
+          background-color: #fff;
+          border-radius: 16px;
+          overflow: hidden;
+      }
     }
 }
 .portfolio-item {
@@ -13,7 +18,7 @@
     padding: 24px;
     .portfolio-img-wrap {
         position: relative;
-        border-radius: 16px;
+        border-radius: 12px;
         overflow: hidden;
         margin-right: 24px;
         .portfolio-img {
@@ -43,6 +48,8 @@
     .portfolio-info {
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
+        padding: 10px 0;
         .portfolio-title {
             display: flex;
             font-size: 28px;

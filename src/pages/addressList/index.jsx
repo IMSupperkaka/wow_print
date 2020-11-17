@@ -77,7 +77,7 @@ const AddresssList = ({ dispatch }) => {
             <SafeArea>
                 {({ bottom }) => {
                     return (
-                        <View className="new-address-wrap" style={{ bottom: Taro.pxTransform(bottom + 32) }}>
+                        <View className="new-address-wrap" style={{ bottom: Taro.pxTransform(bottom + 32, 750) }}>
                             <AtButton className="new-address" type="primary" onClick={handleAddAddress}>新增收获地址</AtButton>
                         </View>
                     )

@@ -1,5 +1,6 @@
 .index {
     padding-bottom: 100px;
+    background-color: #F6F6F6;
 }
 .banner {
     // width: 750px;
@@ -8,7 +9,7 @@
         left: 0;
         top: 0;
     }
-    image {
+    .banner-image {
         width: 750px;
         height: 750px;
     }
@@ -33,26 +34,29 @@
         font-weight: 400;
         color: #FFFFFF;
         line-height: 20px;
+        z-index: 10;
     }
     .order-notice {
         position: absolute;
         top: 32px;
         left: 32px;
-        z-index: 1;
-        .wy-noticebar-content {
-            width: 237px;
-            height: 54px;
-            border-radius: 28px;
-            background-color: rgba(0, 0, 0, .4);
-            color: #fff;
-            font-size: 24px;
-            .order-notice-item {
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+        z-index: 10;
+        :global {
+          .wy-noticebar-content {
+              width: 237px;
+              height: 54px;
+              border-radius: 28px;
+              background-color: rgba(0, 0, 0, .4);
+              color: #fff;
+              font-size: 24px;
+          }
+        }
+        .order-notice-item {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     }
 }

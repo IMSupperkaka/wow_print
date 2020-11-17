@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { View, Text, Image } from '@tarojs/components'
 import { AtAvatar, AtIcon, AtDivider } from 'taro-ui'
 
-import './index.less'
+import styles from './index.module.less'
 import { info } from '../../services/user'
 import defaultAvatorPng from '../../../images/bg_avatar__default@2x.png'
 import waitpayPng from '../../../images/order_waitpay.png'
@@ -70,79 +70,79 @@ const Index = ({ user }) => {
     }
 
     return (
-        <View className='index'>
-            <View className="header">
-                <View className="avatar-wrap" onClick={handleGoAuth}>
-                    <Image src={user.info.avatarUrl || defaultAvatorPng} className="avatar"/>
-                    <View className="user-info">
-                        <View>{ user.info.nickName || '授权登录' }</View>
-                        <View>定格真我 触手可及</View>
+        <View className={styles['index']}>
+            <View className={styles['header']}>
+                <View className={styles['avatar-wrap']} onClick={handleGoAuth}>
+                    <Image src={user.info.avatarUrl || defaultAvatorPng} className={styles['avatar']}/>
+                    <View className={styles['user-info']}>
+                        <View className={styles['user-name']}>{ user.info.nickName || '授权登录' }</View>
+                        <View className={styles['user-descripe']}>定格真我 触手可及</View>
                     </View>
                 </View>
             </View>
-            <View className="my-orders">
-                <View className="title" onClick={() => { goOrder(0) }}>
-                    <Text>我的订单</Text>
-                    <View>
+            <View className={styles['my-orders']}>
+                <View className={styles['title']} onClick={() => { goOrder(0) }}>
+                    <Text className={styles['title-left']}>我的订单</Text>
+                    <View className={styles['title-right']}>
                         <Text>查看全部</Text>
                         <AtIcon value='chevron-right' size='14' color='#999'></AtIcon>
                     </View>
                 </View>
-                <View className="order-icons">
-                    <View onClick={() => { goOrder(1) }}>
-                        <Image src={waitpayPng}/>
+                <View className={styles['order-icons']}>
+                    <View className={styles['order-icons-item']} onClick={() => { goOrder(1) }}>
+                        <Image className={styles['order-icons-icon']} src={waitpayPng}/>
                         <Text>待付款</Text>
                         {
                             state.waitPayNums > 0 &&
-                            <View className="order-icons-tip">{ state.waitPayNums }</View>
+                            <View className={styles['order-icons-tip']}>{ state.waitPayNums }</View>
                         }
                     </View>
-                    <View onClick={() => { goOrder(2) }}>
-                        <Image src={deliverPng}/>
+                    <View className={styles['order-icons-item']} onClick={() => { goOrder(2) }}>
+                        <Image className={styles['order-icons-icon']} src={deliverPng}/>
                         <Text>待发货</Text>
                         {
                             state.waitShipNums > 0 &&
-                            <View className="order-icons-tip">{ state.waitShipNums }</View>
+                            <View className={styles['order-icons-tip']}>{ state.waitShipNums }</View>
                         }
                     </View>
-                    <View onClick={() => { goOrder(3) }}>
-                        <Image src={receivePng}/>
+                    <View className={styles['order-icons-item']} onClick={() => { goOrder(3) }}>
+                        <Image className={styles['order-icons-icon']} src={receivePng}/>
                         <Text>待收货</Text>
                         {
                             state.waitReceiptNums > 0 &&
-                            <View className="order-icons-tip">{ state.waitReceiptNums }</View>
+                            <View className={styles['order-icons-tip']}>{ state.waitReceiptNums }</View>
                         }
                     </View>
-                    <View onClick={goService}>
-                        <Image src={refundPng}/>
+                    <View className={styles['order-icons-item']} onClick={goService}>
+                        <Image className={styles['order-icons-icon']} src={refundPng}/>
                         <Text>退款/客服</Text>
                     </View>
                 </View>
             </View>
-            <View className="cell-wrap">
-                <View className="cell" onClick={handleGoCoupon}>
-                    <View className="cell-left">
-                        <Image className="icon-left" src={couponPng}/>
+            <View className={styles['cell-wrap']}>
+                <View className={styles['cell']} onClick={handleGoCoupon}>
+                    <View className={styles['cell-left']}>
+                        <Image className={styles['icon-left']} src={couponPng}/>
                         <Text>优惠券</Text>
                     </View>
-                    <View>
-                        <Text className="use-coupon">可使用{ state.couponCanUseNums }张</Text>
+                    <View className={styles['cell-right']}>
+                        <Text className={styles['use-coupon']}>可使用{ state.couponCanUseNums }张</Text>
                         <AtIcon value='chevron-right' size='14' color='#999'></AtIcon>
                     </View>
                 </View>
-                <View className="cell" onClick={handleGoPortfolio}>
-                    <View className="cell-left">
-                        <Image className="icon-left" src={portfolioPng}/>
+                <View className={styles['cell']} onClick={handleGoPortfolio}>
+                    <View className={styles['cell-left']}>
+                        <Image className={styles['icon-left']} src={portfolioPng}/>
                         <Text>作品集</Text>
                     </View>
-                    <View>
-                        <Text className="use-portfolio">{ state.portfolioNums }</Text>
+                    <View className={styles['cell-right']}>
+                        <Text className={styles['use-portfolio']}>{ state.portfolioNums }</Text>
                         <AtIcon value='chevron-right' size='14' color='#999'></AtIcon>
                     </View>
                 </View>
-                <View className="cell" onClick={handleGoAddress}>
-                    <View className="cell-left">
-                        <Image className="icon-left" src={addressPng}/>
+                <View className={styles['cell']} onClick={handleGoAddress}>
+                    <View className={styles['cell-left']}>
+                        <Image className={styles['icon-left']} src={addressPng}/>
                         <Text>收货地址</Text>
                     </View>
                     <AtIcon value='chevron-right' size='14' color='#999'></AtIcon>

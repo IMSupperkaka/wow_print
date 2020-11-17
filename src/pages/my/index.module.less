@@ -1,3 +1,7 @@
+.index {
+  background-color: #F6F6F6;
+  min-height: 100vh;
+}
 .header {
     height: 320px;
     background:rgba(255,99,69,1) url('../../../images/bg_wode@2x.png');
@@ -14,13 +18,13 @@
         }
         .user-info {
             margin-left: 24px;
-            & > view:first-child {
+            .user-name {
                 font-size:36px;
                 margin-bottom: 16px;
                 font-weight:600;
                 line-height:36px;
             }
-            & > view:last-child {
+            .user-descripe {
                 font-size:22px;
                 font-weight:400;
                 line-height: 18px;
@@ -42,12 +46,12 @@
         height: 81px;
         padding: 0 32px;
         border-bottom: 1px solid #F2F2F2;
-        & > text:first-child {
+        .title-left {
             font-size: 24px;
             font-weight: bold;
             color: #000;
         }
-        & > view:last-child {
+        .title-right {
             font-size:22px;
             font-weight:400;
             color:rgba(153,153,153,1);
@@ -60,12 +64,12 @@
         font-size: 24px;
         font-weight: 400;
         padding: 32px;
-        & > view {
+        & > .order-icons-item {
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            image {
+            .order-icons-icon {
                 width: 56px;
                 height: 56px;
                 margin-bottom: 12px;
@@ -108,13 +112,20 @@
             align-items: center;
             font-size: 24px;
             color: #333;
-            image {
+            .icon-left {
                 width: 36px;
                 height: 36px;
                 margin-right: 16px;
             }
         }
-        & > view:last-child {
+        :global {
+          .at-icon {
+            font-size: 28px;
+          }
+        }
+        .cell-right {
+            display: flex;
+            align-items: center;
             line-height: 28px;
         }
         .use-coupon {

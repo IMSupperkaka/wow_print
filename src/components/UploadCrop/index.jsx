@@ -17,8 +17,8 @@ export default React.memo((props) => {
     const currentImg = fileList[showIndex];
 
     const uploadBtn = (
-        <View className="upload-area" style={{ width: Taro.pxTransform(width), height: Taro.pxTransform(height) }}>
-            <Image src={uploiadPlus}/>
+        <View className="upload-area" style={{ width: Taro.pxTransform(width, 750), height: Taro.pxTransform(height, 750) }}>
+            <Image className="upload-image" src={uploiadPlus}/>
         </View>
     );
 

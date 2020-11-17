@@ -1,3 +1,3 @@
 export default {
-    navigationBarTitleText: '台历'
+    navigationBarTitleText: '创作中'
 }

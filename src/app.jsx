@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
-import { CropImgProvider } from './components/CropImg'
 import Taro from '@tarojs/taro'
 
 import { store, app } from './dva'
@@ -51,9 +50,7 @@ class App extends Component {
     render() {
         return (
             <Provider store={store}>
-                <CropImgProvider>
-                    {this.props.children}
-                </CropImgProvider>
+                {this.props.children}
             </Provider>
         )
     }

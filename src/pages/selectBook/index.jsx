@@ -9,6 +9,7 @@ import lodash from 'lodash';
 import synthesis from '../../utils/synthesis';
 import { computeCropUrl } from '../../utils/utils';
 import UploadCrop from '../../components/UploadCrop';
+import { CropImgProvider } from '../../components/CropImg';
 import SelectPicModal from '../../components/SelectPicModal';
 import BottomButton from '../../components/BottomButton';
 import Modal from '../../components/Modal';
@@ -191,115 +192,117 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
     const date = day().format('MM/DD YYYY');
 
     return (
-        <View className="index">
-            <View className="header">显示区域即为打印区域，如需调整请点击图片</View>
-            <View className="content">
-                <View className="item-box">
-                    <View className="cover">
-                        <View className="cover-top">
-                            <View className="edit-box">
-                                <View
-                                    className="title-box"
-                                    onClick={() => {
-                                        setEditVisible(true);
-                                        setCoverInfo((coverInfo) => {
-                                            return {
-                                                ...coverInfo,
-                                                temporaryDesc: coverInfo.description,
-                                                temporaryName: coverInfo.bookName
-                                            }
-                                        });
-                                    }}>
-                                    <Text className="title">{coverInfo.bookName}</Text>
-                                    <Image src={editIcon} className="edit-icon" />
+        <CropImgProvider>
+            <View className="index">
+                <View className="header">显示区域即为打印区域，如需调整请点击图片</View>
+                <View className="content">
+                    <View className="item-box">
+                        <View className="cover">
+                            <View className="cover-top">
+                                <View className="edit-box">
+                                    <View
+                                        className="title-box"
+                                        onClick={() => {
+                                            setEditVisible(true);
+                                            setCoverInfo((coverInfo) => {
+                                                return {
+                                                    ...coverInfo,
+                                                    temporaryDesc: coverInfo.description,
+                                                    temporaryName: coverInfo.bookName
+                                                }
+                                            });
+                                        }}>
+                                        <Text className="title">{coverInfo.bookName}</Text>
+                                        <Image src={editIcon} className="edit-icon" />
+                                    </View>
+                                    <View className="description">
+                                        {coverInfo.description}
+                                    </View>
                                 </View>
-                                <View className="description">
-                                    {coverInfo.description}
-                                </View>
+                                <Image src={wayin} mode="aspectFit" className="wayin" />
                             </View>
-                            <Image src={wayin} mode="aspectFit" className="wayin" />
+                            <UploadCrop beforeUpload={beforeUpload.bind(this, 0)} editFinish={editFinish.bind(this, 0)} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className="cover-con" />
+                            <View className="date-wrap">{ date }</View>
                         </View>
-                        <UploadCrop beforeUpload={beforeUpload.bind(this, 0)} editFinish={editFinish.bind(this, 0)} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className="cover-con" />
-                        <View className="date-wrap">{ date }</View>
+                        <View className="page-num">封面</View>
                     </View>
-                    <View className="page-num">封面</View>
+                    {
+                        twinsList.map((item, index) => {
+                            return (
+                                <View className="twins-item item-box" key={index}>
+                                    <View className="item-body">
+                                        {
+                                            item.map((child, i) => {
+                                                const imgIndex = index * 2 + i + 1;
+                                                const file = userImageList[imgIndex] ? [userImageList[imgIndex]] : []
+                                                return (
+                                                    <View className="choose-item" key={i}>
+                                                        <UploadCrop editFinish={editFinish.bind(this, imgIndex)} beforeUpload={beforeUpload.bind(this, imgIndex)} fileList={file} onChange={onChange} width={320} height={320} />
+                                                    </View>
+                                                )
+                                            })
+                                        }
+                                    </View>
+                                    <View className="page-num">{`${++index * 2 - 1} - ${index * 2}`}</View>
+                                </View>
+                            )
+                        })
+                    }
                 </View>
-                {
-                    twinsList.map((item, index) => {
-                        return (
-                            <View className="twins-item item-box" key={index}>
-                                <View className="item-body">
-                                    {
-                                        item.map((child, i) => {
-                                            const imgIndex = index * 2 + i + 1;
-                                            const file = userImageList[imgIndex] ? [userImageList[imgIndex]] : []
-                                            return (
-                                                <View className="choose-item" key={i}>
-                                                    <UploadCrop editFinish={editFinish.bind(this, imgIndex)} beforeUpload={beforeUpload.bind(this, imgIndex)} fileList={file} onChange={onChange} width={320} height={320} />
-                                                </View>
-                                            )
+                <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} onSave={handleSaveWorks} goPrint={submit} limit={17} />
+                <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
+                <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
+                    <View className="modal-content">
+                        <View className="input-content">
+                            <View className="input-item">
+                                <Text className="title">名称</Text>
+                                <Input
+                                    name='name'
+                                    type='text'
+                                    maxlength={12}
+                                    placeholder='最多12个字'
+                                    cursorSpacing="130"
+                                    adjustPosition
+                                    placeholderStyle="color: #C1C1C1"
+                                    value={coverInfo.temporaryName}
+                                    onInput={(event) => {
+                                        setCoverInfo({
+                                            ...coverInfo,
+                                            temporaryName: event.detail.value
                                         })
-                                    }
-                                </View>
-                                <View className="page-num">{`${++index * 2 - 1} - ${index * 2}`}</View>
+                                        return event.detail.value
+                                    }}
+                                />
                             </View>
-                        )
-                    })
-                }
+                            <View className="input-item">
+                                <Text className="title">昵称</Text>
+                                <Input
+                                    name='name'
+                                    type='text'
+                                    maxlength={20}
+                                    placeholder='最多20个字'
+                                    cursorSpacing="91"
+                                    adjustPosition
+                                    placeholderStyle="color: #C1C1C1"
+                                    value={coverInfo.temporaryDesc}
+                                    onInput={(event) => {
+                                        setCoverInfo({
+                                            ...coverInfo,
+                                            temporaryDesc: event.detail.value
+                                        })
+                                        return event.detail.value
+                                    }}
+                                />
+                            </View>
+                        </View>
+                        <View className="operate-content">
+                            <View className="left-btn" onClick={() => { setEditVisible(false) }}>取消</View>
+                            <View className={`right-btn ${coverInfo.temporaryName || coverInfo.temporaryDesc ? 'clickable' : ''}`} onClick={handleEditCover}>确认</View>
+                        </View>
+                    </View>
+                </Modal>
             </View>
-            <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} onSave={handleSaveWorks} goPrint={submit} limit={17} />
-            <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
-            <Modal visible={editVisible} onClose={() => { setEditVisible(false); setInsertHeight(0) }}>
-                <View className="modal-content">
-                    <View className="input-content">
-                        <View className="input-item">
-                            <Text className="title">名称</Text>
-                            <Input
-                                name='name'
-                                type='text'
-                                maxlength={12}
-                                placeholder='最多12个字'
-                                cursorSpacing="130"
-                                adjustPosition
-                                placeholderStyle="color: #C1C1C1"
-                                value={coverInfo.temporaryName}
-                                onInput={(event) => {
-                                    setCoverInfo({
-                                        ...coverInfo,
-                                        temporaryName: event.detail.value
-                                    })
-                                    return event.detail.value
-                                }}
-                            />
-                        </View>
-                        <View className="input-item">
-                            <Text className="title">昵称</Text>
-                            <Input
-                                name='name'
-                                type='text'
-                                maxlength={20}
-                                placeholder='最多20个字'
-                                cursorSpacing="91"
-                                adjustPosition
-                                placeholderStyle="color: #C1C1C1"
-                                value={coverInfo.temporaryDesc}
-                                onInput={(event) => {
-                                    setCoverInfo({
-                                        ...coverInfo,
-                                        temporaryDesc: event.detail.value
-                                    })
-                                    return event.detail.value
-                                }}
-                            />
-                        </View>
-                    </View>
-                    <View className="operate-content" style={{paddingBottom: insertHeight}}>
-                        <View className="left-btn" onClick={() => { setEditVisible(false) }}>取消</View>
-                        <View className={`right-btn ${coverInfo.temporaryName || coverInfo.temporaryDesc ? 'clickable' : ''}`} onClick={handleEditCover}>确认</View>
-                    </View>
-                </View>
-            </Modal>
-        </View>
+        </CropImgProvider>
     )
 }
 
