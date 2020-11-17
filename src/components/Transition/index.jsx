@@ -1,5 +1,5 @@
 // Transition 用以解决react-transition-group在Taro中进出场动画失效的单个动画组件
-import React, { useState, useRef,useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import classNames from 'classnames';
 
@@ -11,9 +11,9 @@ export default (props) => {
     let initialStatus;
 
     if (props.in) {
-      initialStatus = 'enter-active';
+        initialStatus = 'enter-active';
     } else {
-      initialStatus = 'unmounted';
+        initialStatus = 'unmounted';
     }
 
     const [state, setState] = useState(initialStatus);
@@ -23,79 +23,89 @@ export default (props) => {
     const nextCallbackRef = useRef(null);
 
     const setNextCallBack = (callback) => {
-      let active = true;
-      nextCallbackRef.current = () => {
-        if (active) {
-          active = false;
-          nextCallbackRef.current = null;
-          callback(event);
+        let active = true;
+        nextCallbackRef.current = () => {
+            if (active) {
+                active = false;
+                nextCallbackRef.current = null;
+                callback();
+            }
+        };
+        nextCallbackRef.current.cancel = () => {
+            active = false;
         }
-      };
-      nextCallbackRef.current.cancel = () => {
-        active = false;
-      }
-      return nextCallbackRef.current;
+        return nextCallbackRef.current;
     }
 
     const cancelNextCallback = () => {
-      if (nextCallbackRef.current) {
-        nextCallbackRef.current.cancel();
-        nextCallbackRef.current = null;
-      }
+        if (nextCallbackRef.current) {
+            nextCallbackRef.current.cancel();
+            nextCallbackRef.current = null;
+        }
     }
 
     const onEnter = () => {
-      setState('enter');
+        setState('enter');
     }
 
     const onEntering = () => {
-      setState('enter-active');
+        setState('enter-active');
     }
 
     const onEntered = () => {
-      setState('enter-done');
+        setState('enter-done');
     }
 
     const onExit = () => {
-      setState('exit');
+        setState('exit');
     }
 
     const onExiting = () => {
-      setState('exit-active');
+        setState('exit-active');
     }
 
     const onExited = () => {
-      setState('exit-done');
+        setState('exit-done');
     }
 
     const onTransitionEnd = (timeout, handler) => {
-      setTimeout(setNextCallBack(handler), timeout);
+        setTimeout(setNextCallBack(handler), timeout);
     }
 
     useEffect(() => {
-      if (state == 'enter-active') {
-        onTransitionEnd(timeout, () => {
-          onEntered();
-        });
-      }
-      if (state == 'exit-active') {
-        onTransitionEnd(timeout, () => {
-          onExited();
-        });
-      }
+        if (state == 'enter') {
+            setTimeout(() => {
+                onEntering();
+            }, 0)
+        }
+        if (state == 'enter-active') {
+            onTransitionEnd(timeout, () => {
+                onEntered();
+            });
+        }
+        if (state == 'exit') {
+            setTimeout(() => {
+                onExiting();
+            })
+        }
+        if (state == 'exit-active') {
+            onTransitionEnd(timeout, () => {
+                onExited();
+            });
+        }
     }, [state])
 
     useEffect(() => {
         cancelNextCallback();
         if (props.in) {
             onEnter();
-            onEntering();
         } else {
-            onExit();
-            onExiting();
+            if (state != 'unmounted') {
+                onExit();
+            }
         }
         return () => {
-          cancelNextCallback();
+            cancelNextCallback();
         }
     }, [props.in])
 
