@@ -4,7 +4,7 @@ import { View, Text } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { connect } from 'react-redux'
 
-import './index.less'
+import styles from './index.module.less'
 import Empty from '../../components/Empty'
 import SafeArea from '../../components/SafeArea'
 import { list } from '../../services/address'
@@ -51,23 +51,23 @@ const AddresssList = ({ dispatch }) => {
             {
                 addressList.length <= 0 ?
                     <Empty text="可新增地址，常回来看看" /> :
-                    <View className="address-list-wrap">
+                    <View className={styles["address-list-wrap"]}>
                         {
                             addressList.map((address) => {
                                 return (
-                                    <View className="address-item" onClick={handleClickAddressItem.bind(this, address)}>
+                                    <View className={styles["address-item"]} onClick={handleClickAddressItem.bind(this, address)}>
                                         <View>
-                                            <View className="address-user">
+                                            <View className={styles["address-user"]}>
                                                 <Text>{address.recipient}</Text>
                                                 <Text>{address.phone}</Text>
                                                 {
                                                     address.isDefault == 1 &&
-                                                    <View className="default">默认</View>
+                                                    <View className={styles["default"]}>默认</View>
                                                 }
                                             </View>
-                                            <View className="address-info">{address.province + address.city + address.area + address.address}</View>
+                                            <View className={styles["address-info"]}>{address.province + address.city + address.area + address.address}</View>
                                         </View>
-                                        <View className="edit" onClick={goEdit.bind(this, address)}>编辑</View>
+                                        <View className={styles["edit"]} onClick={goEdit.bind(this, address)}>编辑</View>
                                     </View>
                                 )
                             })
@@ -77,8 +77,8 @@ const AddresssList = ({ dispatch }) => {
             <SafeArea>
                 {({ bottom }) => {
                     return (
-                        <View className="new-address-wrap" style={{ bottom: Taro.pxTransform(bottom + 32, 750) }}>
-                            <AtButton className="new-address" type="primary" onClick={handleAddAddress}>新增收获地址</AtButton>
+                        <View className={styles["new-address-wrap"]} style={{ bottom: Taro.pxTransform(bottom + 32, 750) }}>
+                            <AtButton className={styles["new-address"]} type="primary" onClick={handleAddAddress}>新增收获地址</AtButton>
                         </View>
                     )
                 }}

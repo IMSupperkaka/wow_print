@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import Taro, { usePageScroll, useReady, useTabItemTap, useShareAppMessage } from '@tarojs/taro'
-import { View, Image, Text, Swiper, SwiperItem } from '@tarojs/components'
+import { View, Image, Text, Swiper, SwiperItem, ScrollView } from '@tarojs/components'
 
-import './index.less'
+import styles from './index.module.less';
 import { jump } from '../../utils/utils'
 import { list, index } from '../../services/home'
 import NavBar from '../../components/NavBar'
@@ -41,9 +41,15 @@ const Home = (props) => {
         getConfig();
     })
 
-    usePageScroll((e) => {
-        setScrollTop(e.scrollTop);
-    });
+    const pageScroll = (e) => {
+        console.log(e)
+        setScrollTop(e.detail.scrollTop);
+    }
+
+    // FIXME:usePageScroll在H5失效
+    // usePageScroll((e) => {
+    //     setScrollTop(e.scrollTop);
+    // });
 
     const getConfig = () => {
         index().then(({ data }) => {
@@ -95,16 +101,20 @@ const Home = (props) => {
     }
 
     return (
-        <View className='index'>
+        <ScrollView className={styles.index}
+            scrollY
+            style='height: 100vh'
+            onScroll={pageScroll}
+        >
             <NavBar style={navBarStyle} left={
-                <View className="nav-left">
-                    <Image className="nav-logo" src={logo} />
+                <View className={styles.navLeft}>
+                    <Image className={styles.navLogo} src={logo} />
                     <Text>哇印</Text>
                 </View>
             } />
             {process.env.TARO_ENV === 'weapp' && <AddToMine/>}
             <Swiper
-                className='banner'
+                className="banner"
                 circular
                 autoplay>
                 {
@@ -156,7 +166,7 @@ const Home = (props) => {
             <Dialog visible={dialog.visible} className="home-dialog" onClose={handleClose}>
                 <Image src={dialog.image} mode="widthFix" onClick={handleClickDialog}/>
             </Dialog>
-        </View>
+        </ScrollView>
     )
 }
 

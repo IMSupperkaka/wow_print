@@ -3,7 +3,7 @@ import Taro from '@tarojs/taro';
 import classNames from 'classnames';
 import { View, ScrollView, Image, Text } from '@tarojs/components';
 
-import './index.less';
+import styles from './index.module.less';
 import Modal from '../../components/Modal';
 import { detail as getDetail } from '../../services/product';
 import iconCoupon from '../../../images/icon_coupon@2x.png';
@@ -108,14 +108,14 @@ export default (props) => {
     render(activeCouponItem) :
     (
         (couponList?.length > 0 && detail.category == 1) &&
-        <View className="coupon-cell">
-            <View>
-                <Image src={iconCoupon} />
-                    优惠券
-                </View>
-            <View>
+        <View className={styles["coupon-cell"]}>
+            <View className={styles["coupon-left"]}>
+                <Image className={styles["coupon-icon"]} src={iconCoupon} />
+                优惠券
+            </View>
+            <View className={styles["coupon-right"]}>
                 {activeCouponItem?.couponName || '请选择优惠券'}
-                <Image src={couponArrow} />
+                <Image src={couponArrow} className={styles["coupon-arrow"]}/>
             </View>
         </View>
     )
@@ -131,7 +131,7 @@ export default (props) => {
     return (
         <View>
             { cellComponent }
-            <Modal className="coupon-modal" visible={isOpened} onClose={handleCloseCoupon}>
+            <Modal className={styles["coupon-modal"]} visible={isOpened} onClose={handleCloseCoupon}>
                 <View className="title">优惠券</View>
                 <ScrollView className="content" scrollY={true}>
                     {
@@ -147,7 +147,7 @@ export default (props) => {
                                     }
                                     <View className='list-item-header'>
                                         <View className="list-item-header-left">
-                                            <Image src={item.couponGoodImage} />
+                                            <Image className="coupon-img" src={item.couponGoodImage} />
                                             <View className="list-item-header-text">
                                                 <View className="name">{item.couponName}</View>
                                                 <View>

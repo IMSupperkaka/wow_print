@@ -120,7 +120,7 @@ export default () => {
                                         }
                                         <View className={styles['list-item-header']}>
                                             <View className={styles['list-item-header-left']}>
-                                                <Image src={item.couponGoodImage}/>
+                                                <Image className={styles['coupon-img']} src={item.couponGoodImage}/>
                                                 <View className={styles['list-item-header-text']}>
                                                     <View className={styles['name']}>{item.couponName}</View>
                                                     <View>

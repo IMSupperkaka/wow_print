@@ -5,7 +5,7 @@
     background: #FFFFFF;
     border-radius: 16px;
     padding: 38px;
-    & > view:first-child {
+    .code-content {
         position: relative;
         display: flex;
         align-items: center;
@@ -19,23 +19,21 @@
             height: 144px;
             margin-right: 0;
         }
-        image {
+        .barcode {
             width: 96px;
             height: 96px;
             margin-right: 24px;
         }
-        & > view {
-            & > view:first-child {
-                font-size: 32px;
-                line-height: 45px;
-                font-weight: bold;
-                color: #FF6345;
-            }
-            & > view:last-child {
-                font-size: 24px;
-                font-weight: 400;
-                color: #666666;
-            }
+        .title {
+            font-size: 32px;
+            line-height: 45px;
+            font-weight: bold;
+            color: #FF6345;
+        }
+        .desc {
+            font-size: 24px;
+            font-weight: 400;
+            color: #666666;
         }
     }
 }

@@ -1,0 +1,88 @@
+.index {
+    flex-direction: column;
+    width: 100%;
+    .tips {
+        font-size: 22px;
+        color: #B0B0B0;
+        text-align: center;
+        margin-top: 36px;
+    }
+    .list {
+        padding:32px 24px 0;
+        :global {
+            .list-item {
+                // height: 218px;
+                background-color: #FFFFFF;
+                margin-bottom: 20px;
+                padding: 0 11px 0 12px;
+                border-radius: 15px;
+                position: relative;
+                overflow: hidden;
+                .top {
+                    position: absolute;
+                    width: 48px;
+                    height: 48px;
+                    left: 0px;
+                    .triangle {
+                        display: block;
+                        border-style: dashed solid solid dashed;
+                        font-size: 0;
+                        line-height: 0;
+                        border-color: #ff7534 transparent transparent #ff7534;
+                        border-width: 24px 24px;
+                    }
+                    .new {
+                        position: absolute;
+                        top: 1px;
+                        left: 7px;
+                        color: #FFFFFF;
+                        font-size: 18px;
+                    }
+                }
+                .list-item-header {
+                    // height: 106px;
+                    padding: 24px 21px 24px 12px;
+                    border-bottom: 1px dashed #E0E0E0;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    .list-item-header-left {
+                        display: flex;
+                        .coupon-img {
+                            width: 106px;
+                            height: 106px;
+                            margin-right: 20px;
+                        }
+                        .list-item-header-text {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                            .name {
+                                color: #B0B0B0;
+                                font-size: 28px;
+                            }
+                            .sill,.time {
+                                color: #B0B0B0;
+                                font-size: 22px;
+                            }
+                        }
+                    }
+                    .list-item-header-right {
+                        flex-shrink: 0;
+                        width: 114px;
+                        height: 114px;
+                    }
+                }
+                .list-item-desc {
+                    padding-left: 12px;
+                    height: 63px;
+                    display: flex;
+                    align-items: center;
+                    font-size: 22px;
+                    color: #B0B0B0;
+                }
+            }
+
+        }
+    }
+}
