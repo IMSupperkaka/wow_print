@@ -77,10 +77,10 @@ export default ({ list = [], onChange: propOnChange, rowSelection = defaultRowSe
                     <Image onClick={(e) => { handleGoDetail(e, product) }} className="product-image" mode="aspectFill" src={product.indexImage} />
                     <View className="product-content">
                         <View className="product-name">
-                            <View>
+                            <View className="product-name-item">
                                 {product.name}
                             </View>
-                            <View>
+                            <View className="product-name-item">
                                 {product.description}
                             </View>
                         </View>

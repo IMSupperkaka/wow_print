@@ -3,7 +3,7 @@ import { View, Image, Text } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { connect } from 'react-redux'
 
-import './index.less'
+import styles from './index.module.less'
 import { fix } from '../../utils/utils'
 import Card from '../../components/Card'
 import SafeArea from '../../components/SafeArea'
@@ -169,9 +169,9 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     };
 
     return (
-        <View className="index">
-            <Card bodyClassName="address-info" onClick={handleChooseAddress}>
-                <Image src={addressIcon} />
+        <View className={styles["index"]}>
+            <Card bodyClassName={"address-info"} onClick={handleChooseAddress}>
+                <Image src={addressIcon} className="location-icon"/>
                 <View className="address-info__body">
                     {
                         addressInfo.recipient ?
@@ -189,10 +189,10 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 <View className="product-info-content">
                     <Image className="product-image" mode="aspectFill" src={productDetail?.productMainImages?.[0]} />
                     <View className="product-content">
-                        <View>
+                        <View className="picName">
                             {productDetail.name}
                         </View>
-                        <View>
+                        <View className="picNum">
                             <Text>￥{fix(productDetail.sellingPrice, 2)}</Text>
                             <Text>x{picNum}</Text>
                         </View>
@@ -242,13 +242,13 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 {({ bottom }) => {
                     return (
                         <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className="submit-wrap">
-                            <View>
-                                <Text>合计</Text>
-                                <Text>￥</Text>
-                                <Text>{NaN2Zero(payMoney)}</Text>
-                                <Text>含运费{NaN2Zero(shipMoney)}元</Text>
+                            <View className="left-info-con">
+                                <Text className="info-item">合计</Text>
+                                <Text className="info-item">￥</Text>
+                                <Text className="info-item">{NaN2Zero(payMoney)}</Text>
+                                <Text className="info-item">含运费{NaN2Zero(shipMoney)}元</Text>
                             </View>
-                            <View onClick={submitOrder}>提交订单</View>
+                            <View onClick={submitOrder} className="right-sub-btn">提交订单</View>
                         </View>
                     )
                 }}

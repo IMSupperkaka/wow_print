@@ -12,6 +12,7 @@ import AddToMine from '../../components/AddToMine'
 import logo from '../../../images/bg_kachaxionglogo@2x.png'
 
 const Home = (props) => {
+    console.log(props)
 
     const { dispatch, home: { dialog } } = props;
 
@@ -42,7 +43,6 @@ const Home = (props) => {
     })
 
     const pageScroll = (e) => {
-        console.log(e)
         setScrollTop(e.detail.scrollTop);
     }
 
