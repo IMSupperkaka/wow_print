@@ -10,7 +10,7 @@ export default (props) => {
 
     const query = Taro.getCurrentInstance().router.params;
 
-    const [current, setCurrent] = useState(query.current || 0);
+    const [current, setCurrent] = useState(query?.current || 0);
 
     const onChange = (current) => {
         setCurrent(current);

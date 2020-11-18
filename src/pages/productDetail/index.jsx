@@ -77,7 +77,10 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                         return <View className={styles['order-notice-item']}>{ v.cname }打印了{ v.printNums }张</View>
                     }}/>
                 }
-                <Swiper className={styles['banner']} current={current} onChange={(e) => {
+                <Swiper
+                    key={detail?.productMainImages?.join('_')}
+                    className={styles['banner']} 
+                    current={current} onChange={(e) => {
                     setCurrent(e.detail.current);
                 }}>
                     {

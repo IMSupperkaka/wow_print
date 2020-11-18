@@ -105,7 +105,7 @@ export default (props) => {
     });
 
     let cellComponent = typeof render === 'function' ?
-    render(activeCouponItem) :
+    render(activeCouponItem, couponList) :
     (
         (couponList?.length > 0 && detail.category == 1) &&
         <View className={styles["coupon-cell"]}>
@@ -114,7 +114,7 @@ export default (props) => {
                 优惠券
             </View>
             <View className={styles["coupon-right"]}>
-                {activeCouponItem?.couponName || '请选择优惠券'}
+                {activeCouponItem?.couponName || `${couponList?.length}张可用`}
                 <Image src={couponArrow} className={styles["coupon-arrow"]}/>
             </View>
         </View>

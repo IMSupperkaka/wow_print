@@ -12,8 +12,6 @@ import AddToMine from '../../components/AddToMine'
 import logo from '../../../images/bg_kachaxionglogo@2x.png'
 
 const Home = (props) => {
-    console.log(props)
-
     const { dispatch, home: { dialog } } = props;
 
     const [scrollTop, setScrollTop] = useState(0);
@@ -100,6 +98,8 @@ const Home = (props) => {
         })
     }
 
+    // const bannerNode
+
     return (
         <ScrollView className={styles.index}
             scrollY
@@ -113,22 +113,30 @@ const Home = (props) => {
                 </View>
             } />
             {process.env.TARO_ENV === 'weapp' && <AddToMine/>}
-            <Swiper
-                className="banner"
-                circular
-                autoplay>
-                {
-                    homeData.bannerList.map((v) => {
-                        return (
-                            <SwiperItem key={v.id} onClick={() => { jump(v.url) }}>
-                                <Image className="banner-image" mode="aspectFill" src={v.image} />
-                            </SwiperItem>
-                        )
-                    })
-                }
-            </Swiper>
+            <View className="banner-wrapper">
+                <Swiper
+                    // H5 更新Swiper key值，让Swiper重新渲染
+                    key={homeData.bannerList.join('_')}
+                    className="banner"
+                    circular
+                    autoplay
+                >
+                    {
+                        homeData.bannerList.map((v) => {
+                            return (
+                                <SwiperItem key={v.id} onClick={() => { jump(v.url) }}>
+                                    <Image className="banner-image" mode="aspectFill" src={v.image} />
+                                </SwiperItem>
+                            )
+                        })
+                    }
+                </Swiper>
+            </View>
+                
             <View className='promote-pic'>
                 <Swiper
+                    // H5 更新Swiper key值，让Swiper重新渲染
+                    key={homeData.indexBigImageList.join('_')}
                     className='promote-swiper'
                     circular
                     autoplay>
@@ -164,7 +172,7 @@ const Home = (props) => {
                 <View className="bottom-text">更多商品  持续更新</View>
             </View>
             <Dialog visible={dialog.visible} className="home-dialog" onClose={handleClose}>
-                <Image src={dialog.image} mode="widthFix" onClick={handleClickDialog}/>
+                <Image src={dialog.image} mode="widthFix" onClick={handleClickDialog} className="dialog-img"/>
             </Dialog>
         </ScrollView>
     )

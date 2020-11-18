@@ -46,6 +46,25 @@ const AddresssList = ({ dispatch }) => {
         })
     }
 
+    const handleChange = () => {
+        Taro.showModal({
+            title: '确认修改',
+            content: (
+                <>
+                    
+                </>
+            ),
+            confirmText: '确认',
+            cancelText: '取消',
+            confirmColor: '#FF6345',
+            success: (res) => {
+                if (res.confirm) {
+                    // TODO: 修改订单的请求
+                }
+            }
+        })
+    }
+
     return (
         <View>
             {
