@@ -97,9 +97,7 @@ class TaroRequest {
                             });
                             return reject(params.data);
                         }
-                        setTimeout(() => { // 防止多个请求闪烁
-                            Taro.hideLoading();
-                        }, 0)
+                        Taro.hideLoading();
                         resolve(params);
                     },
                     ...params,
