@@ -3,7 +3,7 @@ import { View, Image, Text } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { connect } from 'react-redux'
 
-import './index.less'
+import styles from './index.module.less'
 import { fix } from '../../utils/utils'
 import Card from '../../components/Card'
 import SafeArea from '../../components/SafeArea'
@@ -109,12 +109,12 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 signType: 'MD5',
                 paySign: data.data.payData.paysign,
                 success: function (res) {
-                    Taro.navigateTo({
+                    Taro.redirectTo({
                         url: `/pages/result/index?type=pay_success&id=${data.data.loanId}`
                     })
                 },
                 fail: function (res) {
-                    Taro.navigateTo({
+                    Taro.redirectTo({
                         url: `/pages/result/index?type=pay_fail&id=${data.data.loanId}`
                     })
                 },
@@ -151,6 +151,8 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     const matchMoney = matchList.filter((v) => { return selectedRowKeys.includes(v.id) }).reduce((count, v) => { return count + v.saleNum * v.sellingPrice }, 0) / 100;
     // 优惠后金额
     const afterDiscountMoney = Math.max(Number(productMoney) - Number(discountMoney), 0);
+    // 券优惠了金额
+    const couponDiscount = Math.min(Number(productMoney), Number(discountMoney))
     // (搭配总价 + 商品总价 - 优惠金额) 是否大于包邮金额
     if ((Number(matchMoney) + afterDiscountMoney) - freeShipMoney >= 0) {
         shipMoney = 0;
@@ -169,9 +171,9 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     };
 
     return (
-        <View className="index">
-            <Card bodyClassName="address-info" onClick={handleChooseAddress}>
-                <Image src={addressIcon} />
+        <View className={styles["index"]}>
+            <Card bodyClassName={"address-info"} onClick={handleChooseAddress}>
+                <Image src={addressIcon} className="location-icon"/>
                 <View className="address-info__body">
                     {
                         addressInfo.recipient ?
@@ -189,10 +191,10 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 <View className="product-info-content">
                     <Image className="product-image" mode="aspectFill" src={productDetail?.productMainImages?.[0]} />
                     <View className="product-content">
-                        <View>
+                        <View className="picName">
                             {productDetail.name}
                         </View>
-                        <View>
+                        <View className="picNum">
                             <Text>￥{fix(productDetail.sellingPrice, 2)}</Text>
                             <Text>x{picNum}</Text>
                         </View>
@@ -207,11 +209,24 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                         productId={productDetail.id}
                         defaultActiveCoupon={coupon}
                         onChange={saveCoupon}
-                        render={(coupon) => {
+                        render={(coupon, couponList) => {
                             return (
                                 <View className="product-pay-info-item">
-                                    <Text>优惠</Text>
-                                    <Text>{coupon?.couponName || '未使用优惠券'}</Text>
+                                    <View>
+                                        <Text className="discount-title">优惠</Text>
+                                        {
+                                            coupon?.couponName && <Text>{coupon?.couponName}</Text>
+                                        }
+                                    </View>
+                                    <View>
+                                        {
+                                           couponDiscount > 0 && <Text>-￥{NaN2Zero(couponDiscount)}</Text>
+                                        }
+                                        {
+                                            !coupon?.couponName && <Text>{couponList?.length}张可用</Text>
+                                        }
+                                        <Image className="address-info__arrow" src={arrowIcon} />
+                                    </View>
                                 </View>
                             )
                         }}
@@ -242,13 +257,13 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 {({ bottom }) => {
                     return (
                         <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className="submit-wrap">
-                            <View>
-                                <Text>合计</Text>
-                                <Text>￥</Text>
-                                <Text>{NaN2Zero(payMoney)}</Text>
-                                <Text>含运费{NaN2Zero(shipMoney)}元</Text>
+                            <View className="left-info-con">
+                                <Text className="info-item">合计</Text>
+                                <Text className="info-item">￥</Text>
+                                <Text className="info-item">{NaN2Zero(payMoney)}</Text>
+                                <Text className="info-item">含运费{NaN2Zero(shipMoney)}元</Text>
                             </View>
-                            <View onClick={submitOrder}>提交订单</View>
+                            <View onClick={submitOrder} className="right-sub-btn">提交订单</View>
                         </View>
                     )
                 }}

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import Taro, { usePageScroll, useReady, useTabItemTap, useShareAppMessage } from '@tarojs/taro'
-import { View, Image, Text, Swiper, SwiperItem } from '@tarojs/components'
+import { View, Image, Text, Swiper, SwiperItem, ScrollView } from '@tarojs/components'
 
-import './index.less'
+import styles from './index.module.less';
 import { jump } from '../../utils/utils'
 import { list, index } from '../../services/home'
 import NavBar from '../../components/NavBar'
@@ -12,7 +12,6 @@ import AddToMine from '../../components/AddToMine'
 import logo from '../../../images/bg_kachaxionglogo@2x.png'
 
 const Home = (props) => {
-
     const { dispatch, home: { dialog } } = props;
 
     const [scrollTop, setScrollTop] = useState(0);
@@ -41,9 +40,14 @@ const Home = (props) => {
         getConfig();
     })
 
-    usePageScroll((e) => {
-        setScrollTop(e.scrollTop);
-    });
+    const pageScroll = (e) => {
+        setScrollTop(e.detail.scrollTop);
+    }
+
+    // FIXME:usePageScroll在H5失效
+    // usePageScroll((e) => {
+    //     setScrollTop(e.scrollTop);
+    // });
 
     const getConfig = () => {
         index().then(({ data }) => {
@@ -94,31 +98,45 @@ const Home = (props) => {
         })
     }
 
+    // const bannerNode
+
     return (
-        <View className='index'>
+        <ScrollView className={styles.index}
+            scrollY
+            style='height: 100vh'
+            onScroll={pageScroll}
+        >
             <NavBar style={navBarStyle} left={
-                <View className="nav-left">
-                    <Image className="nav-logo" src={logo} />
+                <View className={styles.navLeft}>
+                    <Image className={styles.navLogo} src={logo} />
                     <Text>哇印</Text>
                 </View>
             } />
             {process.env.TARO_ENV === 'weapp' && <AddToMine/>}
-            <Swiper
-                className='banner'
-                circular
-                autoplay>
-                {
-                    homeData.bannerList.map((v) => {
-                        return (
-                            <SwiperItem key={v.id} onClick={() => { jump(v.url) }}>
-                                <Image className="banner-image" mode="aspectFill" src={v.image} />
-                            </SwiperItem>
-                        )
-                    })
-                }
-            </Swiper>
+            <View className="banner-wrapper">
+                <Swiper
+                    // H5 更新Swiper key值，让Swiper重新渲染
+                    key={homeData.bannerList.join('_')}
+                    className="banner"
+                    circular
+                    autoplay
+                >
+                    {
+                        homeData.bannerList.map((v) => {
+                            return (
+                                <SwiperItem key={v.id} onClick={() => { jump(v.url) }}>
+                                    <Image className="banner-image" mode="aspectFill" src={v.image} />
+                                </SwiperItem>
+                            )
+                        })
+                    }
+                </Swiper>
+            </View>
+                
             <View className='promote-pic'>
                 <Swiper
+                    // H5 更新Swiper key值，让Swiper重新渲染
+                    key={homeData.indexBigImageList.join('_')}
                     className='promote-swiper'
                     circular
                     autoplay>
@@ -154,9 +172,9 @@ const Home = (props) => {
                 <View className="bottom-text">更多商品  持续更新</View>
             </View>
             <Dialog visible={dialog.visible} className="home-dialog" onClose={handleClose}>
-                <Image src={dialog.image} mode="widthFix" onClick={handleClickDialog}/>
+                <Image src={dialog.image} mode="widthFix" onClick={handleClickDialog} className="dialog-img"/>
             </Dialog>
-        </View>
+        </ScrollView>
     )
 }
 

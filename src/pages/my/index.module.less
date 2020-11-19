@@ -3,10 +3,11 @@
   min-height: 100vh;
 }
 .header {
-    height: 320px;
+    height: 356px;
     background:rgba(255,99,69,1) url('../../../images/bg_wode@2x.png');
     background-size: 100% 100%;
     padding: 80px 32px 32px 32px;
+    box-sizing: border-box;
     .avatar-wrap {
         display: flex;
         align-items: center;
@@ -82,10 +83,11 @@
                 position: absolute;
                 right: -12px;
                 top: -12px;
-                width: 24px;
+                min-width: 24px;
                 height: 24px;
+                line-height: 1;
                 border: 2px solid #FF6345;
-                border-radius: 50%;
+                border-radius: 45%;
                 font-size: 18px;
                 line-height: 18px;
                 color: #FF6345;

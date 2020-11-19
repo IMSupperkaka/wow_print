@@ -4,7 +4,9 @@ export const orderStatus = new Map([
     [3, '待收货'],
     [4, '已取消'],
     [5, '已退款'],
-    [9, '已收货']
+    [9, '已收货'],
+    // TODO:新增已关闭
+    [9, '已关闭']
 ])
 
 export const sizeMap = new Map([

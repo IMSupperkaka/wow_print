@@ -4,7 +4,7 @@ import { AtIcon } from 'taro-ui'
 import classNames from 'classnames';
 import { View, Image, Button, Text } from '@tarojs/components'
 
-import './index.less'
+import styles from './index.module.less'
 import { detail, repay, cancel, receipt } from '../../services/order'
 import { orderStatus } from '../../utils/map/order'
 import address from '../../../images/icon_address@2x.png'
@@ -15,6 +15,9 @@ export default () => {
       goodsInfo: []
     });
 
+    // TODO:初始值给从订单拿到的倒计时值
+    const [countDown, setCountDown] = useState(100)
+
     useDidShow(() => {
         const query = Taro.getCurrentInstance().router.params;
         setQuery(query);
@@ -24,6 +27,18 @@ export default () => {
             setOrderDetail(data.data);
         })
     })
+
+    useEffect(() => {
+        if(orderDetail.status == '1') {
+            let timer = setTimeout(() => {
+                // TODO:初始值给从订单拿到的倒计时值
+                setCountDown(countDown - 1)
+            }, 1000)
+            if(!+countDown) {
+                clearTimeout(timer)
+            }
+        }
+    }, [countDown, orderDetail.status])
 
     const handleCancel = () => {
         Taro.showModal({
@@ -123,24 +138,35 @@ export default () => {
         })
     }
 
+    const handleChooseAddress = () => {
+        Taro.navigateTo({
+            url: `/pages/addressList/index?type=choose`
+        })
+    }
+
     const handleGoLog = () => {
       Taro.navigateTo({
           url: `/pages/logisticsDetails/index?id=${query.id}`
       })
     }
 
+    //TODO: 背景置灰加一个已关闭的状态
     const greyHeader = [4, 5].includes(orderDetail.status);
 
     return (
-        <View>
+        <View className={styles["order-detail"]}>
             <View className={classNames('header', greyHeader && 'grey')}>
                 <Text>{ orderStatus.get(orderDetail.status) }</Text>
+                {
+                    orderDetail.status == 1 && 
+                    <Text>{ countDown }后订单关闭</Text>
+                }
             </View>
             <View className="address-info">
-                <Image src={address}/>
-                <View>
-                    <View>{ orderDetail.recipient } { orderDetail.phone }</View>
-                    <View>{ orderDetail.province + orderDetail.city + orderDetail.area + orderDetail.address }</View>
+                <Image src={address} className="position-icon"/>
+                <View className="address">
+                    <View className="address-item">{ orderDetail.recipient } { orderDetail.phone }</View>
+                    <View className="address-item">{ orderDetail.province + orderDetail.city + orderDetail.area + orderDetail.address }</View>
                 </View>
             </View>
             <View className="product-info">
@@ -150,7 +176,7 @@ export default () => {
                       <View className="product-info-content">
                         <Image className="product-image" mode="aspectFill" src={goodsInfo.indexImage}/>
                         <View className="product-content">
-                            <View>
+                            <View className="product-list">
                                 <View className="product-name">
                                     { goodsInfo.goodName }
                                     {
@@ -166,7 +192,7 @@ export default () => {
                                     </View>
                                 }
                             </View>
-                            <View>
+                            <View className="num-content">
                                 <Text>￥{ (goodsInfo.sellingPrice / 100).toFixed(2) }</Text>
                                 <Text>x{ goodsInfo.goodsNums }</Text>
                             </View>
@@ -176,43 +202,42 @@ export default () => {
                   })
                 }
                 <View className="product-pay-info">
-                    <View>
+                    <View className="pay-item">
                         <Text>商品总价</Text>
                         <Text>￥{ (orderDetail.money / 100 + orderDetail.discountMoney / 100 - orderDetail.shipMoney / 100).toFixed(2) }</Text>
                     </View>
                     {
                       orderDetail.couponName &&
-                      <View>
+                      <View className="pay-item">
                         <Text>优惠</Text>
                         <Text>{ orderDetail.couponName }</Text>
                       </View>
                     }
-                    <View>
+                    <View className="pay-item">
                         <Text>运费</Text>
                         <Text>￥{ (orderDetail.shipMoney / 100).toFixed(2) }</Text>
                     </View>
-                    <View className="devide"></View>
-                    <View>
+                    <View className="pay-item">
                         <Text>合计</Text>
-                        <Text>￥{ (orderDetail.money / 100).toFixed(2) }</Text>
+                        <Text className="total-amount">￥{ (orderDetail.money / 100).toFixed(2) }</Text>
                     </View>
                 </View>
             </View>
             <View className="order-info">
-                <View>
+                <View className="order-info-item">
                     <View>订单编号</View>
                     <View>
                         <Text>{ orderDetail.loanNo }</Text>
                         <Text onClick={handleCopy.bind(this, orderDetail.loanNo)} className="copy">复制</Text>
                     </View>
                 </View>
-                <View>
+                <View className="order-info-item">
                     <View>支付方式</View>
                     <View>
                         微信支付
                     </View>
                 </View>
-                <View>
+                <View className="order-info-item">
                     <View>创建时间</View>
                     <View>
                         { orderDetail.createTime }
@@ -233,6 +258,10 @@ export default () => {
                     {
                         orderDetail.status == 3 &&
                         <Button onClick={handleReceived} className="radius-btn primary-outline-btn">确认收货</Button>
+                    }
+                    {
+                        orderDetail.status == 1 &&
+                        <Button onClick={handleChooseAddress} className="radius-btn outline-btn">修改地址</Button>
                     }
                     {
                         orderDetail.status == 1 &&

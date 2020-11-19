@@ -45,6 +45,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         activeRef.current = activeIndex;
     }, [activeIndex])
 
+    const [insertHeight, setInsertHeight] = useState();
+
     const [visible, setVisible] = useState(false);
 
     const [coverInfo, setCoverInfo] = useState({
@@ -259,10 +261,10 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                     type='text'
                                     maxlength={12}
                                     placeholder='最多12个字'
+                                    cursorSpacing="130"
                                     adjustPosition
                                     placeholderStyle="color: #C1C1C1"
                                     value={coverInfo.temporaryName}
-                                    cursorSpacing="130"
                                     onInput={(event) => {
                                         setCoverInfo({
                                             ...coverInfo,

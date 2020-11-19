@@ -10,7 +10,7 @@ export default (props) => {
 
     const query = Taro.getCurrentInstance().router.params;
 
-    const [current, setCurrent] = useState(query.current || 0);
+    const [current, setCurrent] = useState(query?.current || 0);
 
     const onChange = (current) => {
         setCurrent(current);
@@ -36,6 +36,10 @@ export default (props) => {
                 </TabPanel>
                 <TabPanel title="已退款">
                     <OrderList active={current == 5} status={5}/>
+                </TabPanel>
+                {/* TODO:修改已关的status */}
+                <TabPanel title="已关闭">
+                    <OrderList active={current == 6} status={5}/>
                 </TabPanel>
             </Tabs>
         </View>

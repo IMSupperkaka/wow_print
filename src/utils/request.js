@@ -75,8 +75,8 @@ class TaroRequest {
                 });
                 Taro.request({
                     complete: (params) => {
-                        if (params.data.code != '10000') {
-                            if (params.data.code == '10025') {
+                        if (params.data?.code != '10000') {
+                            if (params.data?.code == '10025') {
                                 if (process.env.TARO_ENV == 'h5') {
                                   return Taro.navigateTo({
                                     url: `/pages/authInfo/index`
@@ -92,7 +92,7 @@ class TaroRequest {
                                 })
                             }
                             Taro.showToast({
-                                title: params.data.msg || '服务器开小差了~',
+                                title: params.data?.msg || '服务器开小差了~',
                                 icon: 'none'
                             });
                             return reject(params.data);

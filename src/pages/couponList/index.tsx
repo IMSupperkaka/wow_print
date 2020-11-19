@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Taro, { usePullDownRefresh, useReachBottom } from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
 
-import './index.less'
+import styles from './index.module.less'
 import { list } from '../../services/coupon';
 import List from '../../components/List';
 import Empty from '../../components/Empty';
@@ -59,17 +59,17 @@ export default () => {
     }
 
     return (
-        <View className="index">
+        <View className={styles['index']}>
             {
                 records.length > 0 ?
-                <View className='list'>
+                <View className={styles['list']}>
                     {
                         records.map((item, index) => {
                             return (
                                 <View className='list-item' key={index}>
                                     <View className='list-item-header'>
                                         <View className="list-item-header-left">
-                                            <Image src={item.couponGoodImage}/>
+                                            <Image className="coupon-img" src={item.couponGoodImage}/>
                                             <View className="list-item-header-text">
                                                 <View className="name">{item.couponName}</View>
                                                 <View>

@@ -77,7 +77,10 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                         return <View className={styles['order-notice-item']}>{ v.cname }打印了{ v.printNums }张</View>
                     }}/>
                 }
-                <Swiper className={styles['banner']} current={current} onChange={(e) => {
+                <Swiper
+                    key={detail?.productMainImages?.join('_')}
+                    className={styles['banner']} 
+                    current={current} onChange={(e) => {
                     setCurrent(e.detail.current);
                 }}>
                     {
@@ -106,7 +109,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 <View className={styles['detail-title']}>商品详情</View>
                 {
                     detail?.productDetailImages?.map((url, index) => {
-                        return <Image key={index} mode="widthFix" className={styles['detail-image']} src={url} />
+                        return <Image key={index} mode="widthFix" style={{height: "auto"}} className={styles['detail-image']} src={url}/>
                     })
                 }
             </View>
