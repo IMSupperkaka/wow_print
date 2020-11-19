@@ -115,13 +115,32 @@ const CropImg = (props) => {
         return <View>Loading...</View>;
     }
 
-    const { fWidth, fHeight, rotateMatrix } = initImgInfo;
-    const { translate, scale } = cropOption || defaultCropOption;
+    const { fWidth, fHeight } = initImgInfo;
+    const { translate, scale, rotate = 0, mirror = false } = cropOption || defaultCropOption;
 
     const scalea = width / EDIT_WIDTH;
+    // 位移矩阵
     const translateMatrix = math.matrix([[1, 0, translate[0] * scalea / radio], [0, 1, translate[1] * scalea / radio], [0, 0, 1]]);
+    // 缩放矩阵
     const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
-    const matrix = math.multiply(scaleMatrix, translateMatrix, rotateMatrix);
+    // 旋转矩阵
+    // a = Math.cos(deg); b = -Math.sin(deg); c = Math.sin(deg); d = Math.cos(deg); deg为旋转弧度 rotate / 180 * Math.PI
+    const deg = rotate / 180 * Math.PI;
+    const rotateMatrix = math.matrix([[Math.cos(deg), Math.sin(deg), 0], [-Math.sin(deg), Math.cos(deg), 0], [0, 0, 1]]);
+    // 镜像矩阵 
+    // a = (1-k*k)/(k*k+1); b = 2k/(k*k+1); c = 2k/(k*k+1); d = (k*k-1)/(k*k+1); k为斜率
+    // matrix(a,b,c,d,e,f);
+    // math.matrix([[a, c, e], [b, d, f], [0, 0, 1])
+    const mirrorMatrix = math.matrix([[-1, 0, 0], [0, 1, 0], [0, 0, 1]]);
+
+    // 依次执行旋转 缩放 镜像 位移 顺序不能错
+    let matrix = math.multiply(scaleMatrix, rotateMatrix);
+
+    if (mirror) {
+        matrix = math.multiply(mirrorMatrix, matrix);
+    }
+
+    matrix = math.multiply(translateMatrix, matrix)
 
     const transformStyle = {
         transformOrigin: '50% 50%',

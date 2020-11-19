@@ -9,6 +9,8 @@ import { computeCropUrl, initImg } from '../../utils/utils'
 import { EDIT_WIDTH } from '../../utils/picContent'
 import CropImg from '../../components/CropImg'
 import deleteIcon from '../../../images/icon_delete／2@2x.png'
+import mirrorIcon from '../../../images/icon_Mirror@3x.png'
+import rotateIcon from '../../../images/icon_90Spin@2x.png'
 import leftActiveIcon from '../../../images/icon_active_left@2x.png'
 import leftDisabledIcon from '../../../images/icon_disabled_left@2x.png'
 import rightActiveIcon from '../../../images/icon_active_right@2x.png'
@@ -23,18 +25,18 @@ let store = {
 const radio = 750 / Taro.getSystemInfoSync().screenWidth;
 
 const getTouchPosition = (touch) => {
-  return {
-    x: touch.x || touch.pageX || 0,
-    y: touch.y || touch.pageY || 0,
-  }
+    return {
+        x: touch.x || touch.pageX || 0,
+        y: touch.y || touch.pageY || 0,
+    }
 }
 
 const getTouchsPosition = (touchs) => {
-  let poristionList = [];
-  for (let i = 0; i < touchs.length; i++) {
-    poristionList.push(getTouchPosition(touchs[i]))
-  }
-  return poristionList;
+    let poristionList = [];
+    for (let i = 0; i < touchs.length; i++) {
+        poristionList.push(getTouchPosition(touchs[i]))
+    }
+    return poristionList;
 }
 
 const getDistance = (p1, p2) => {
@@ -50,11 +52,15 @@ const ImgEdit = (props) => {
     const [isTouch, setIsTouch] = useState(false);
     const [translate, setTranslate] = useState([0, 0]);
     const [scale, setScale] = useState(1);
+    const [rotate, setRotate] = useState(0);
+    const [mirror, setMirror] = useState(false);
 
     useEffect(() => {
         const currentImg = imgList[activeIndex];
         setTranslate(currentImg.cropInfo.translate);
         setScale(currentImg.cropInfo.scale);
+        setRotate(currentImg.cropInfo.rotate);
+        setMirror(currentImg.cropInfo.mirror);
     }, [activeIndex])
 
     const onTouchStart = (e) => {
@@ -99,46 +105,17 @@ const ImgEdit = (props) => {
         let resetx = dx;
         let resety = dy;
 
-        const limitPosition = {
-          left: -contentWidth / 2,
-          top: -contentHeight / 2,
-          right: contentWidth / 2,
-          bottom: contentHeight / 2
-        };
-        const leftTopPostion = math.multiply(rotateMatrix, math.matrix([-fWidth / 2, -fHeight / 2, 1]));
-        const rightBottomPosition = math.multiply(rotateMatrix, math.matrix([fWidth / 2, fHeight / 2, 1]));
         const scaleMatrix = math.matrix([[resetScale, 0, 0], [0, resetScale, 0], [0, 0, 1]]);
         const translateMatrix = math.matrix([[1, 0, translate[0]], [0, 1, translate[1]], [0, 0, 1]]);
-        const leftTop = math.multiply(scaleMatrix, translateMatrix, leftTopPostion);
-        const rightBottom = math.multiply(scaleMatrix, translateMatrix, rightBottomPosition);
 
-        // TODO: 消除旋转判断
-        if (rotateDeg == 90) { // 顺时针旋转90度
-          if (leftTop._data[0] < limitPosition.right) { // 右侧有空隙
-            resetx = (contentWidth / 2) / resetScale - leftTopPostion._data[0];
-          }
-          if (leftTop._data[1] > limitPosition.top) { // 上侧有空隙
-            resety = - (contentHeight / 2) / resetScale - leftTopPostion._data[1];
-          }
-          if (rightBottom._data[0] > limitPosition.left) { // 左侧有空隙
-            resetx = -(contentWidth / 2) / resetScale - rightBottomPosition._data[0];
-          }
-          if (rightBottom._data[1] < limitPosition.bottom) { // 下侧有空隙
-            resety = (contentHeight / 2) / resetScale - rightBottomPosition._data[1];
-          }
-        } else {
-          if (leftTop._data[0] > limitPosition.left) { // 左侧有空隙
-            resetx = -(contentWidth / 2) / resetScale - leftTopPostion._data[0];
-          }
-          if (leftTop._data[1] > limitPosition.top) { // 上侧有空隙
-              resety = - (contentHeight / 2) / resetScale - leftTopPostion._data[1];
-          }
-          if (rightBottom._data[0] < limitPosition.right) { // 右侧有空隙
-            resetx = (contentWidth / 2) / resetScale - rightBottomPosition._data[0];
-          }
-          if (rightBottom._data[1] < limitPosition.bottom) { // 下侧有空隙
-            resety = (contentHeight / 2) / resetScale - rightBottomPosition._data[1];
-          }
+        const centerPosition = math.matrix([0, 0, 1]);
+        const afterCenterPosition = math.multiply(translateMatrix, scaleMatrix, centerPosition);
+
+        if (Math.abs(afterCenterPosition._data[0]) > (fWidth * resetScale - contentWidth) / 2) {
+            resetx = (afterCenterPosition._data[0] > 0 ? 1 : -1) * (fWidth * resetScale - contentWidth) / 2;
+        }
+        if (Math.abs(afterCenterPosition._data[1]) > (fHeight * resetScale - contentHeight) / 2) {
+            resety = (afterCenterPosition._data[1] > 0 ? 1 : -1) * (fHeight * resetScale - contentHeight) / 2;
         }
 
         setIsTouch(false);
@@ -146,7 +123,7 @@ const ImgEdit = (props) => {
         setTranslate([resetx, resety]);
         const cloneList = [...imgList];
         cloneList[activeIndex].cropInfo = {
-            ...IMG.cropInfo,
+            ...cloneList[activeIndex].cropInfo,
             translate: [resetx, resety],
             scale: resetScale
         };
@@ -177,6 +154,31 @@ const ImgEdit = (props) => {
         })
     }
 
+    const handleRotate = () => {
+        setRotate((rotate) => {
+            const cloneList = [...imgList];
+            const newRotate = (rotate || 0) + 90;
+            cloneList[activeIndex].cropInfo = {
+                ...cloneList[activeIndex].cropInfo,
+                rotate: newRotate
+            };
+            Taro.eventCenter.trigger('editFinish', cloneList);
+            return newRotate;
+        });
+    }
+
+    const handleMirror = () => {
+        setMirror((mirror) => {
+            const cloneList = [...imgList];
+            cloneList[activeIndex].cropInfo = {
+                ...cloneList[activeIndex].cropInfo,
+                mirror: !mirror
+            };
+            Taro.eventCenter.trigger('editFinish', cloneList);
+            return !mirror;
+        });
+    }
+
     const oprate = (type) => {
         dispatch({
             type: 'editimg/saveActiveIndex',
@@ -196,11 +198,11 @@ const ImgEdit = (props) => {
     }
 
     const maskStyle = {
-      borderWidth: `${Taro.pxTransform(104, 750)} ${Taro.pxTransform(84, 750)} calc(100vh - ${Taro.pxTransform(104, 750)} - ${Taro.pxTransform(contentHeight, 750)}) ${Taro.pxTransform(84, 750)}`
+        borderWidth: `${Taro.pxTransform(104, 750)} ${Taro.pxTransform(84, 750)} calc(100vh - ${Taro.pxTransform(104, 750)} - ${Taro.pxTransform(contentHeight, 750)}) ${Taro.pxTransform(84, 750)}`
     }
 
     const contentStyle = {
-      height: `${Taro.pxTransform(contentHeight, 750)}`
+        height: `${Taro.pxTransform(contentHeight, 750)}`
     }
 
     return (
@@ -210,7 +212,7 @@ const ImgEdit = (props) => {
                 <View className={styles['content-wrap']}>
                     <View className={styles['mask']} style={maskStyle}></View>
                     <Canvas canvasId='canvas' style={contentStyle} disableScroll={true} className={styles['content']} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
-                    <CropImg className={styles['img']} showIgnoreBtn={false} width={contentWidth} height={contentHeight} src={IMG.filePath || IMG.originImage} imgInfo={IMG.imgInfo} cropOption={cropOption} style={{ transitionProperty: !isTouch ? 'transform' : 'none' }}/>
+                    <CropImg className={styles['img']} showIgnoreBtn={false} width={contentWidth} height={contentHeight} src={IMG.filePath || IMG.originImage} imgInfo={IMG.imgInfo} cropOption={cropOption} style={{ transitionProperty: !isTouch ? 'transform' : 'none' }} />
                 </View>
                 <View className={styles['bottom-wrap']}>
                     <View className={styles['bottom-tip']}>tips：灰色区域将被裁剪，不在打印范围内</View>
@@ -233,7 +235,13 @@ const ImgEdit = (props) => {
             </View>
             <View className={styles['bottom-bar']}>
                 <View className={styles['bottom-bar-left']} onClick={handleDelete}>
-                  <Image className={styles['delete']} src={deleteIcon} />
+                    <Image className={styles['icon']} src={deleteIcon} />
+                </View>
+                <View className={styles['bottom-bar-left']} onClick={handleRotate}>
+                    <Image className={styles['icon']} src={rotateIcon} />
+                </View>
+                <View className={styles['bottom-bar-left']} onClick={handleMirror}>
+                    <Image className={styles['icon']} src={mirrorIcon} />
                 </View>
                 <View className={styles['bottom-bar-confirm']} onClick={confirm}>完成</View>
             </View>
