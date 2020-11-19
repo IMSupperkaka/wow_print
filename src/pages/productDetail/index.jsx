@@ -109,7 +109,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 <View className={styles['detail-title']}>商品详情</View>
                 {
                     detail?.productDetailImages?.map((url, index) => {
-                        return <Image key={index} mode="widthFix" className={styles['detail-image']} src={url} />
+                        return <Image key={index} mode="widthFix" style={{height: "auto"}} className={styles['detail-image']} src={url}/>
                     })
                 }
             </View>
