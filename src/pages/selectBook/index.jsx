@@ -96,7 +96,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
     const handleResultList = () => {
         const resultList = modelList.map((item, index) => {
             let img = userImageList[index] || null;
-            const content = index == 0 ? { contentWidth: 555, contentHeight: 472 } : { contentWidth: 320, contentHeight: 320 };
+            const content = index == 0 ? { contentWidth: 555, contentHeight: 472 } : { contentWidth: 320, contentHeight: 328.5 };
             if (img) {
 
                 const cropImage = computeCropUrl(img.originImage, { // 裁剪后地址
@@ -237,7 +237,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                                 const file = userImageList[imgIndex] ? [userImageList[imgIndex]] : []
                                                 return (
                                                     <View className="choose-item" key={i}>
-                                                        <UploadCrop editFinish={editFinish.bind(this, imgIndex)} beforeUpload={beforeUpload.bind(this, imgIndex)} fileList={file} onChange={onChange} width={320} height={320} />
+                                                        <UploadCrop editFinish={editFinish.bind(this, imgIndex)} beforeUpload={beforeUpload.bind(this, imgIndex)} fileList={file} onChange={onChange} width={320} height={328.5} />
                                                     </View>
                                                 )
                                             })

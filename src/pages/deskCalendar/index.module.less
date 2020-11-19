@@ -20,7 +20,7 @@
     margin: 0 auto;
     background-color: #fff;
     overflow: hidden;
-    box-shadow: 0 4px ;
+    box-shadow: 0 4px 16px 2px rgba(0,0,0,.1);
     &.cover {
         position: relative;
         .calender-uploader {
@@ -31,11 +31,26 @@
             display: flex;
             align-items: center;
             position: absolute;
-            top: 358px;
+            top: 354px;
             left: 50%;
             transform: translateX(-50%);
             color: #666;
             z-index: 2;
+            padding: 5px 14px;
+            &::after {
+                box-sizing: border-box;
+                content: "";
+                display: block;
+                position: absolute;
+                top: -50%;
+                right: -50%;
+                bottom: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                border: 1px dashed #666666;
+                transform: scale(.5);
+            }
             .title {
                 font-size: 18px;
                 line-height: 18px;

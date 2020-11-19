@@ -143,8 +143,8 @@ const renderMap = {
     return [
       {
         imageUrl: cropImage,
-        width: 1280,
-        height: 1280,
+        width: 2560,
+        height: 2628,
         offsetX: 0,
         offsetY: 0
       }
