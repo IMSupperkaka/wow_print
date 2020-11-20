@@ -110,3 +110,50 @@ export const jump = (url) => {
         })
     }
 }
+
+/**
+ * 获取H5页面参数对象
+ * @param {*} url 完整的页面路径
+ * @param {*} key 要取的页面参数
+ */
+export const getH5Params = (url, key) => {
+    let paramsString = url.split("?")[1]
+    let paramsArray = paramsString.split("&")
+    let paramsObject = {}
+    paramsArray.forEach((item, index) => {
+        let ikey = item.split("=")[0] || index
+        let ivalue = item.split("=")[1] || ""
+        paramsObject[ikey] = ivalue
+    })
+    if(key) {
+        return paramsObject[key]
+    }
+    return paramsObject
+}
+
+/**
+ * 获取H5页面参数对象
+ * @param {*} key 要取的页面参数
+ */
+export const getRouterParams = (key) => {
+    if(process.env.TARO_ENV === 'h5') {
+        let paramsObject = {},
+        url = Taro.getCurrentInstance().page.path;
+        let paramsString = url.split("?")[1];
+        let paramsArray = paramsString.split("&");
+        paramsArray.forEach((item, index) => {
+            let ikey = item.split("=")[0] || index
+            let ivalue = item.split("=")[1] || ""
+            paramsObject[ikey] = ivalue
+        })
+        if(key) {
+            return paramsObject[key]
+        }
+        return paramsObject
+    } else {
+        if(key) {
+            return Taro.getCurrentInstance().router.params[key]
+        }
+        return Taro.getCurrentInstance().router.params;
+    }
+}

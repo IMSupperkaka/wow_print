@@ -8,6 +8,7 @@ import styles from './index.module.less'
 import { detail, repay, cancel, receipt } from '../../services/order'
 import { orderStatus } from '../../utils/map/order'
 import address from '../../../images/icon_address@2x.png'
+import { getRouterParams } from '../../utils/utils'
 
 export default () => {
     const [query, setQuery] = useState({});
@@ -19,7 +20,7 @@ export default () => {
     const [countDown, setCountDown] = useState(100)
 
     useDidShow(() => {
-        const query = Taro.getCurrentInstance().router.params;
+        let query = getRouterParams()
         setQuery(query);
         detail({
             loanId: query.id
@@ -102,7 +103,6 @@ export default () => {
     }
 
     const goPreview = () => {
-
         if (orderDetail.imageSynthesisStatus != 1) {
             return Taro.showToast({
                 title:'杰作生成中，稍后再看哦',
@@ -140,7 +140,7 @@ export default () => {
 
     const handleChooseAddress = () => {
         Taro.navigateTo({
-            url: `/pages/addressList/index?type=choose`
+            url: `/pages/addressList/index?type=change&id=${query.id}`
         })
     }
 

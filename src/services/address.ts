@@ -37,3 +37,12 @@ export const del = (id) => {
         method: 'DELETE'
     })
 }
+
+// 待付款订单修改地址
+export const change = (data) => {
+    return TaroRequest.request({
+        url: `/loan/changeAddress`,
+        method: 'GET',
+        data
+    })
+}

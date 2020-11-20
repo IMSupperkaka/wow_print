@@ -7,10 +7,15 @@ import { connect } from 'react-redux'
 import styles from './index.module.less'
 import Empty from '../../components/Empty'
 import SafeArea from '../../components/SafeArea'
-import { list } from '../../services/address'
+import { list, change } from '../../services/address'
+import Toast from '../../components/Toast'
 
 const AddresssList = ({ dispatch }) => {
     const [addressList, setAddressList] = useState([]);
+
+    const [dialogVisible, setDialogVisible] = useState(false);
+
+    const [addressItem, setAddressItem] = useState({});
 
     useDidShow(() => {
         list().then(({ data }) => {
@@ -33,10 +38,13 @@ const AddresssList = ({ dispatch }) => {
                 type: 'confirmOrder/saveAddressInfo',
                 payload: address
             })
-        } else {
+        } else if (querInfo.type == 'edit') {
             Taro.navigateTo({
                 url: `/pages/addressEdit/index?type=edit&id=${address.id}`
             })
+        } else if (querInfo.type == 'change') {
+            setAddressItem(address)
+            setDialogVisible(true)
         }
     }
 
@@ -46,22 +54,18 @@ const AddresssList = ({ dispatch }) => {
         })
     }
 
-    const handleChange = () => {
-        Taro.showModal({
-            title: '确认修改',
-            content: (
-                <>
-                    
-                </>
-            ),
-            confirmText: '确认',
-            cancelText: '取消',
-            confirmColor: '#FF6345',
-            success: (res) => {
-                if (res.confirm) {
-                    // TODO: 修改订单的请求
-                }
-            }
+    const confrimChange = () => {
+        const querInfo = Taro.getCurrentInstance().router.params;
+        change({
+            loanId: querInfo.id,
+            addressId: addressItem.id
+        }).then(() => {
+            setDialogVisible(false)
+            Taro.showToast({
+                title: '地址修改成功',
+                icon: 'none',
+                duration: 2000
+            })
         })
     }
 
@@ -102,6 +106,17 @@ const AddresssList = ({ dispatch }) => {
                     )
                 }}
             </SafeArea>
+            <Toast title="确认修改" visible={dialogVisible} className="home-dialog" onClose={() => { setDialogVisible(false) }} onSuccess={confrimChange}>
+                <View className={styles["dialog-content"]}>
+                    <View className={styles["info-item"]}>
+                        <Text className={styles["name"]}>{addressItem.recipient}</Text>
+                        <Text>{addressItem.phone}</Text>
+                    </View>
+                    <View className={styles["info-item"]}>
+                        {`${addressItem.province} ${addressItem.city} ${addressItem.area} ${addressItem.address}`}
+                    </View>
+                </View>
+            </Toast>
         </View>
     )
 }
