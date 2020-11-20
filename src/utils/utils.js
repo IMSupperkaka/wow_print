@@ -132,11 +132,11 @@ export const getH5Params = (url, key) => {
 }
 
 /**
- * 获取H5页面参数对象
+ * 获取页面参数对象 兼容h5/weapp
  * @param {*} key 要取的页面参数
  */
 export const getRouterParams = (key) => {
-    if(process.env.TARO_ENV === 'h5') {
+    if(Taro.getEnv() == 'WEB') {
         let paramsObject = {},
         url = Taro.getCurrentInstance().page.path;
         let paramsString = url.split("?")[1];

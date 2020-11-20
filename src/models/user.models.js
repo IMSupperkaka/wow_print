@@ -60,7 +60,6 @@ export default {
     },
     reducers: {
         setLoadFinish(state, { payload }) {
-            console.log(1)
             return {
                 ...state,
                 loadFinish: true

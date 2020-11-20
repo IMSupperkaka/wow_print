@@ -21,7 +21,6 @@ export default (props) => {
     }, [])
 
     const onTransition = (e) => {
-        console.log(left, e.detail.dx, dx)
         setLeft(left + e.detail.dx - dx);
         setEnableScroll(false);
         setDx(e.detail.dx);

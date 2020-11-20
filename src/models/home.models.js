@@ -37,6 +37,7 @@ export default {
                 }
             })
             // TODO:onLaunch时dispatch本函数，在这里通过控制visible来控制弹框弹出，规则修改写在这里。
+            console.log('dakai')
             if (!couponJudge.data.data.isHaveCoupon) {
                 return yield put({
                     type: 'saveDialog',

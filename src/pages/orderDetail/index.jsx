@@ -171,9 +171,9 @@ export default () => {
             </View>
             <View className="product-info">
                 {
-                  orderDetail.goodsInfo.map((goodsInfo) => {
+                  orderDetail.goodsInfo.map((goodsInfo, index) => {
                     return (
-                      <View className="product-info-content">
+                      <View key={index} className="product-info-content">
                         <Image className="product-image" mode="aspectFill" src={goodsInfo.indexImage}/>
                         <View className="product-content">
                             <View className="product-list">
