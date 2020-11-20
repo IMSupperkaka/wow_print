@@ -80,11 +80,37 @@ export const initImg = (imginfo, content) => {
       cloneImginfo.rotateDeg = 0;
       cloneImginfo.rotateMatrix = math.matrix([[Math.cos(0), Math.sin(0), 0], [-Math.sin(0), Math.cos(0), 0], [0, 0, 1]]);
   }
-  const centerPoint = [content.width / 2, content.height / 2, 1];
-  const afterCenterPoint = [cloneImginfo.fWidth / 2, cloneImginfo.fHeight / 2, 1];
-  const centerOffset = [centerPoint[0] - afterCenterPoint[0], centerPoint[1] - afterCenterPoint[1]];
-  cloneImginfo.centerOffset = centerOffset;
   return cloneImginfo;
+}
+
+export const fitImg = ({ width, height, contentWidth, contentHeight, deg }) => {
+    const p = width / height;
+    const cp = contentWidth / contentHeight;
+    let tWidth = width;
+    let tHeight = height;
+    if (deg % 180 == 0) {
+        if (p > cp) {
+            tHeight = contentHeight;
+            tWidth = p * tHeight;
+        } else {
+            fWidth = contentWidth;
+            tHeight = tWidth / p;
+        }
+    } else {
+        if (p > cp) {
+            tHeight = contentWidth;
+            tWidth = p * tHeight;
+        } else {
+            tWidth = contentHeight;
+            tHeight = tWidth / p;
+        }
+    }
+    return {
+        tWidth, // 图片真实宽度
+        tHeight, // 图片真实高度
+        fWidth: deg % 180 == 0 ? tWidth : tHeight, // 显示的宽度
+        fHeight: deg % 180 == 0 ? tHeight : tWidth // 显示的高度
+    }
 }
 
 export const fix = (num, prefix = 0) => {

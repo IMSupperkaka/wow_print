@@ -5,7 +5,7 @@ import { View, Image, Canvas } from '@tarojs/components';
 
 import styles from './index.module.less';
 import math from '../../utils/math'
-import { computeCropUrl, initImg } from '../../utils/utils'
+import { fitImg } from '../../utils/utils'
 import { EDIT_WIDTH } from '../../utils/picContent'
 import CropImg from '../../components/CropImg'
 import deleteIcon from '../../../images/icon_delete／2@2x.png'
@@ -41,6 +41,44 @@ const getTouchsPosition = (touchs) => {
 
 const getDistance = (p1, p2) => {
     return Math.sqrt(Math.pow(p2.x - p1.x, 2), Math.pow(p2.y - p1.y), 2);
+}
+
+const resetPosition = ({ imgInfo, contentWidth, contentHeight, scale, translate, rotate }) => {
+
+    let resetx = translate[0];
+    let resety = translate[1];
+
+    const { fWidth, fHeight } = fitImg({
+        ...imgInfo,
+        contentWidth: contentWidth,
+        contentHeight: contentHeight,
+        deg: rotate
+    })
+
+    const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
+    const translateMatrix = math.matrix([[1, 0, translate[0]], [0, 1, translate[1]], [0, 0, 1]]);
+
+    // 中心点坐标
+    const centerPosition = math.matrix([0, 0, 1]);
+    // 操作后中心点坐标
+    const afterCenterPosition = math.multiply(translateMatrix, scaleMatrix, centerPosition);
+    // 
+    const limit = {
+        x: (fWidth * scale - contentWidth) / 2,
+        y: (fHeight * scale - contentHeight) / 2
+    }
+
+    if (Math.abs(afterCenterPosition._data[0]) > limit.x) {
+        resetx = (afterCenterPosition._data[0] > 0 ? 1 : -1) * limit.x;
+    }
+
+    if (Math.abs(afterCenterPosition._data[1]) > limit.y) {
+        resety = (afterCenterPosition._data[1] > 0 ? 1 : -1) * limit.y;
+    }
+    return {
+        resetx,
+        resety
+    }
 }
 
 const ImgEdit = (props) => {
@@ -88,12 +126,6 @@ const ImgEdit = (props) => {
     const onTouchEnd = (e) => {
         const [dx, dy] = translate;
         let resetScale = scale;
-        const { fWidth, fHeight, rotateMatrix, rotateDeg } = initImg({
-            ...IMG.imgInfo,
-            origin: [0.5, 0.5],
-            scale: resetScale,
-            translate: translate
-        }, { width: EDIT_WIDTH, height: EDIT_WIDTH / IMG.proportion })
         if (scale < 1) {
             resetScale = 1;
             Taro.vibrateShort();
@@ -102,21 +134,8 @@ const ImgEdit = (props) => {
             resetScale = 3;
             Taro.vibrateShort();
         }
-        let resetx = dx;
-        let resety = dy;
 
-        const scaleMatrix = math.matrix([[resetScale, 0, 0], [0, resetScale, 0], [0, 0, 1]]);
-        const translateMatrix = math.matrix([[1, 0, translate[0]], [0, 1, translate[1]], [0, 0, 1]]);
-
-        const centerPosition = math.matrix([0, 0, 1]);
-        const afterCenterPosition = math.multiply(translateMatrix, scaleMatrix, centerPosition);
-
-        if (Math.abs(afterCenterPosition._data[0]) > (fWidth * resetScale - contentWidth) / 2) {
-            resetx = (afterCenterPosition._data[0] > 0 ? 1 : -1) * (fWidth * resetScale - contentWidth) / 2;
-        }
-        if (Math.abs(afterCenterPosition._data[1]) > (fHeight * resetScale - contentHeight) / 2) {
-            resety = (afterCenterPosition._data[1] > 0 ? 1 : -1) * (fHeight * resetScale - contentHeight) / 2;
-        }
+        const { resetx, resety } = resetPosition({ imgInfo: IMG.imgInfo, contentWidth: contentWidth, contentHeight: contentHeight, translate, rotate, scale: resetScale });
 
         setIsTouch(false);
         setScale(resetScale);
@@ -157,9 +176,12 @@ const ImgEdit = (props) => {
     const handleRotate = () => {
         setRotate((rotate) => {
             const cloneList = [...imgList];
-            const newRotate = (rotate || 0) + 90;
+            const newRotate = (rotate || 0) - 90;
+            const { resetx, resety } = resetPosition({ imgInfo: IMG.imgInfo, contentWidth: contentWidth, contentHeight: contentHeight, translate, rotate: newRotate, scale });
+            setTranslate([resetx, resety]);
             cloneList[activeIndex].cropInfo = {
                 ...cloneList[activeIndex].cropInfo,
+                translate: [resetx, resety],
                 rotate: newRotate
             };
             Taro.eventCenter.trigger('editFinish', cloneList);

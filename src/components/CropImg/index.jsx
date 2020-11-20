@@ -8,7 +8,7 @@ import './index.less'
 import { CropImgProvider, CropImgConsumer } from './context'
 import Transition from '../Transition'
 import { EDIT_WIDTH } from '../../utils/picContent'
-import { initImg, computedBlur } from '../../utils/utils'
+import { fitImg, computedBlur } from '../../utils/utils'
 
 let globalKey = 0;
 
@@ -36,20 +36,6 @@ const CropImg = (props) => {
     const [state, setState] = useState({
         ignoreBlur: cropOption?.ignoreBlur || false // 是否忽略模糊
     });
-
-    const [initImgInfo, setInitImgInfo] = useState({
-        fWidth: 0
-    });
-
-    useEffect(() => {
-        const info = initImg({
-            ...imgInfo,
-            origin: [0.5, 0.5],
-            scale: 1,
-            translate: [0, 0]
-        }, { width: EDIT_WIDTH, height: EDIT_WIDTH / proportion });
-        setInitImgInfo(info);
-    }, [imgInfo])
 
     useEffect(() => {
         setState((state) => {
@@ -111,11 +97,13 @@ const CropImg = (props) => {
 
     const proportion = width / height;
 
-    if (initImgInfo.fWidth <= 0) {
-        return <View>Loading...</View>;
-    }
+    const { tWidth, tHeight } = fitImg({
+        ...imgInfo,
+        contentWidth: EDIT_WIDTH,
+        contentHeight: EDIT_WIDTH / proportion,
+        deg: cropOption.rotate || 0
+    });
 
-    const { fWidth, fHeight } = initImgInfo;
     const { translate, scale, rotate = 0, mirror = false } = cropOption || defaultCropOption;
 
     const scalea = width / EDIT_WIDTH;
@@ -144,9 +132,9 @@ const CropImg = (props) => {
 
     const transformStyle = {
         transformOrigin: '50% 50%',
-        transform: `matrix(${matrix._data[0][0]}, ${matrix._data[1][0]}, ${matrix._data[0][1]}, ${matrix._data[1][1]}, ${matrix._data[0][2]}, ${matrix._data[1][2]})`,
-        width: Taro.pxTransform(fWidth * scalea, 750),
-        height: Taro.pxTransform(fHeight * scalea, 750)
+        transform: `matrix(${matrix._data[0][0].toFixed(6)}, ${matrix._data[1][0].toFixed(6)}, ${matrix._data[0][1].toFixed(6)}, ${matrix._data[1][1].toFixed(6)}, ${matrix._data[0][2].toFixed(6)}, ${matrix._data[1][2].toFixed(6)})`,
+        width: Taro.pxTransform(tWidth * scalea, 750),
+        height: Taro.pxTransform(tHeight * scalea, 750)
     }
 
     const blur = computedBlur({
@@ -154,8 +142,8 @@ const CropImg = (props) => {
         contentHeight: EDIT_WIDTH / proportion,
         width: imgInfo.width,
         height: imgInfo.height,
-        afterWidth: fWidth * scale,
-        afterHieght: fHeight * scale,
+        afterWidth: tWidth * scale,
+        afterHieght: tHeight * scale,
         printWidth: 10,
         printHeight: 10 / (width / height)
     });
