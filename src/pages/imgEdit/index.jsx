@@ -43,16 +43,33 @@ const getDistance = (p1, p2) => {
     return Math.sqrt(Math.pow(p2.x - p1.x, 2), Math.pow(p2.y - p1.y), 2);
 }
 
+const getDeg = (startTouches, endTouches) => {
+    const startDeg = Math.atan((startTouches[1].y - startTouches[0].y) / (endTouches[1].x - endTouches[0].x));
+    const endDeg = Math.atan((endTouches[1].y - endTouches[0].y) / (endTouches[1].x - endTouches[0].x));
+    return (endDeg - startDeg) / ( 2 * Math.PI) * 360;
+}
+
+const similarNumber = (array, num) => {
+    let db = [Math.abs(num - array[0]), 0];
+    for (let i = 1; i < array.length; i++) {
+        if (Math.abs(num - array[i]) < db[0]) {
+            db = [Math.abs(num - array[i]), i]
+        }
+    }
+    return array[db[1]];
+}
+
 const resetPosition = ({ imgInfo, contentWidth, contentHeight, scale, translate, rotate }) => {
 
     let resetx = translate[0];
     let resety = translate[1];
+    let resetRotate = similarNumber([0,-90,-180,-270,-360,90,180,270,360], rotate) % 360;
 
     const { fWidth, fHeight } = fitImg({
         ...imgInfo,
         contentWidth: contentWidth,
         contentHeight: contentHeight,
-        deg: rotate
+        deg: resetRotate
     })
 
     const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
@@ -62,7 +79,7 @@ const resetPosition = ({ imgInfo, contentWidth, contentHeight, scale, translate,
     const centerPosition = math.matrix([0, 0, 1]);
     // 操作后中心点坐标
     const afterCenterPosition = math.multiply(translateMatrix, scaleMatrix, centerPosition);
-    // 
+    
     const limit = {
         x: (fWidth * scale - contentWidth) / 2,
         y: (fHeight * scale - contentHeight) / 2
@@ -77,7 +94,8 @@ const resetPosition = ({ imgInfo, contentWidth, contentHeight, scale, translate,
     }
     return {
         resetx,
-        resety
+        resety,
+        resetRotate
     }
 }
 
@@ -97,7 +115,7 @@ const ImgEdit = (props) => {
         const currentImg = imgList[activeIndex];
         setTranslate(currentImg.cropInfo.translate);
         setScale(currentImg.cropInfo.scale);
-        setRotate(currentImg.cropInfo.rotate);
+        setRotate(currentImg.cropInfo.rotate || 0);
         setMirror(currentImg.cropInfo.mirror);
     }, [activeIndex])
 
@@ -106,15 +124,23 @@ const ImgEdit = (props) => {
         setIsTouch(true);
         store.originScale = scale;
         store.originTranslate = translate;
+        store.originDeg = rotate;
     }
 
     const onTouchMove = (e) => {
         e.preventDefault();
         e.stopPropagation();
         const touchPositionList = getTouchsPosition(e.touches)
-        if (touchPositionList.length >= 2) {
+        if (touchPositionList.length >= 2) { // 双指
             const zoom = getDistance(touchPositionList[0], touchPositionList[1]) / getDistance(lastTouch[0], lastTouch[1]);
             const newScale = store.originScale * zoom;
+            // 反三角函数计算弧度
+            const deg = getDeg(lastTouch, touchPositionList) % 360;
+            if (mirror) {
+                setRotate(store.originDeg + deg);
+            } else {
+                setRotate(store.originDeg - deg);
+            }
             setScale(newScale);
         } else {
             const dx = (touchPositionList[0].x - lastTouch[0].x) * radio;
@@ -124,7 +150,6 @@ const ImgEdit = (props) => {
     }
 
     const onTouchEnd = (e) => {
-        const [dx, dy] = translate;
         let resetScale = scale;
         if (scale < 1) {
             resetScale = 1;
@@ -135,16 +160,18 @@ const ImgEdit = (props) => {
             Taro.vibrateShort();
         }
 
-        const { resetx, resety } = resetPosition({ imgInfo: IMG.imgInfo, contentWidth: contentWidth, contentHeight: contentHeight, translate, rotate, scale: resetScale });
+        const { resetx, resety, resetRotate } = resetPosition({ imgInfo: IMG.imgInfo, contentWidth: contentWidth, contentHeight: contentHeight, translate, rotate, scale: resetScale });
 
         setIsTouch(false);
         setScale(resetScale);
+        setRotate(resetRotate);
         setTranslate([resetx, resety]);
         const cloneList = [...imgList];
         cloneList[activeIndex].cropInfo = {
             ...cloneList[activeIndex].cropInfo,
             translate: [resetx, resety],
-            scale: resetScale
+            scale: resetScale,
+            rotate: resetRotate
         };
         Taro.eventCenter.trigger('editFinish', cloneList);
     }
@@ -176,7 +203,7 @@ const ImgEdit = (props) => {
     const handleRotate = () => {
         setRotate((rotate) => {
             const cloneList = [...imgList];
-            const newRotate = (rotate || 0) - 90;
+            const newRotate = mirror ? ((rotate || 0) + 90) % 360 : ((rotate || 0) - 90) % 360;
             const { resetx, resety } = resetPosition({ imgInfo: IMG.imgInfo, contentWidth: contentWidth, contentHeight: contentHeight, translate, rotate: newRotate, scale });
             setTranslate([resetx, resety]);
             cloneList[activeIndex].cropInfo = {
@@ -216,7 +243,8 @@ const ImgEdit = (props) => {
     const cropOption = {
         ...IMG.cropInfo,
         translate,
-        scale
+        scale,
+        rotate: rotate
     }
 
     const maskStyle = {
@@ -229,11 +257,12 @@ const ImgEdit = (props) => {
 
     return (
         <View>
+            <Canvas canvasId='canvas' disableScroll={true} className={styles['edit-canvas']} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
             <View className={styles['edit-content']}>
                 <View className={styles['top-tip']}># 单指拖动、双指缩放可调整打印范围 #</View>
                 <View className={styles['content-wrap']}>
                     <View className={styles['mask']} style={maskStyle}></View>
-                    <Canvas canvasId='canvas' style={contentStyle} disableScroll={true} className={styles['content']} onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}></Canvas>
+                    <View style={contentStyle} className={styles['content']}></View>
                     <CropImg className={styles['img']} showIgnoreBtn={false} width={contentWidth} height={contentHeight} src={IMG.filePath || IMG.originImage} imgInfo={IMG.imgInfo} cropOption={cropOption} style={{ transitionProperty: !isTouch ? 'transform' : 'none' }} />
                 </View>
                 <View className={styles['bottom-wrap']}>

@@ -12,27 +12,32 @@ import { EDIT_WIDTH } from './picContent';
 const defaultCropInfo = { scale: 1, translate: [0, 0] }
 
 export const computeCropUrl = (url, imgInfo, cropInfo) => {
-    const { fWidth, fHeight, rotateMatrix, rotateDeg } = initImg(imgInfo, {
-        width: imgInfo.contentWidth,
-        height: imgInfo.contentHeight
+    const { deg } = cropInfo;
+    const { fWidth, fHeight } = fitImg({
+        ...imgInfo,
+        contentWidth: imgInfo.contentWidth,
+        contentHeight: imgInfo.contentHeight,
+        deg
     });
     const { width } = imgInfo;
     const { scale, translate } = cropInfo || defaultCropInfo;
     // 当前剪裁宽度的位移 操作时产生的位移需要换算到剪裁宽度
     const scaleTranslate = imgInfo.contentWidth / EDIT_WIDTH;
+    // 旋转矩阵
+    const rotateMatrix = math.matrix([[Math.cos(deg), Math.sin(deg), 0], [-Math.sin(deg), Math.cos(deg), 0], [0, 0, 1]]);
     // 缩放矩阵
     const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
     // 位移矩阵
     const translateMatrix = math.matrix([[1, 0, translate[0] * scaleTranslate], [0, 1, translate[1] * scaleTranslate], [0, 0, 1]]);
     // TODO:消除rotateDeg判断
     // 原始左上点坐标
-    const leftTopPosition = rotateDeg == 0 ? math.matrix([-fWidth / 2, -fHeight / 2, 1]) : math.matrix([-fWidth / 2, fHeight / 2, 1]);
+    const leftTopPosition = deg == 0 ? math.matrix([-fWidth / 2, -fHeight / 2, 1]) : math.matrix([-fWidth / 2, fHeight / 2, 1]);
     // 操作后左上点坐标
     const leftTop = math.multiply(scaleMatrix, translateMatrix, rotateMatrix, leftTopPosition);
     // 原图剪裁区域的比例
     const as = fWidth / width * scale;
     // TODO: 当原图orientation非up时 通过七牛剪裁参数不正确
-    const cropUrl = `${url}?imageMogr2/rotate/${rotateDeg}/auto-orient/crop/!${Math.round(imgInfo.contentWidth / as)}x${Math.round(imgInfo.contentHeight / as)}a${-Math.round((leftTop._data[0] + imgInfo.contentWidth / 2) / as)}a${-Math.round((leftTop._data[1] + imgInfo.contentHeight / 2) / as)}`;
+    const cropUrl = `${url}?imageMogr2/rotate/${deg}/auto-orient/crop/!${Math.round(imgInfo.contentWidth / as)}x${Math.round(imgInfo.contentHeight / as)}a${-Math.round((leftTop._data[0] + imgInfo.contentWidth / 2) / as)}a${-Math.round((leftTop._data[1] + imgInfo.contentHeight / 2) / as)}`;
     return cropUrl;
 }
 
@@ -53,37 +58,7 @@ export const computedBlur = ({ contentWidth, contentHeight, width, height, after
     return blur
 }
 
-export const initImg = (imginfo, content) => {
-  const cloneImginfo = JSON.parse(JSON.stringify(imginfo));
-  const aspectRadio = imginfo.width / imginfo.height;
-  const contentRadio = content.width / content.height;
-  // TODO:简化流程
-  if (aspectRadio > 1) {
-      const deg = 1.5 * Math.PI;
-      cloneImginfo.rotateDeg = 90;
-      cloneImginfo.rotateMatrix = math.matrix([[Math.cos(deg), Math.sin(deg), 0], [-Math.sin(deg), Math.cos(deg), 0], [0, 0, 1]]);
-      if (1 / aspectRadio > contentRadio) {
-          cloneImginfo.fWidth = content.height;
-          cloneImginfo.fHeight = cloneImginfo.fWidth / aspectRadio;
-      } else {
-          cloneImginfo.fHeight = content.width;
-          cloneImginfo.fWidth = cloneImginfo.fHeight * aspectRadio;
-      }
-  } else {
-      if (aspectRadio > contentRadio) {
-          cloneImginfo.fHeight = content.height;
-          cloneImginfo.fWidth = cloneImginfo.fHeight * aspectRadio;
-      } else {
-          cloneImginfo.fWidth = content.width;
-          cloneImginfo.fHeight = cloneImginfo.fWidth / aspectRadio;
-      }
-      cloneImginfo.rotateDeg = 0;
-      cloneImginfo.rotateMatrix = math.matrix([[Math.cos(0), Math.sin(0), 0], [-Math.sin(0), Math.cos(0), 0], [0, 0, 1]]);
-  }
-  return cloneImginfo;
-}
-
-export const fitImg = ({ width, height, contentWidth, contentHeight, deg }) => {
+export const fitImg = ({ width, height, contentWidth, contentHeight, deg = 0 }) => {
     const p = width / height;
     const cp = contentWidth / contentHeight;
     let tWidth = width;
@@ -93,16 +68,16 @@ export const fitImg = ({ width, height, contentWidth, contentHeight, deg }) => {
             tHeight = contentHeight;
             tWidth = p * tHeight;
         } else {
-            fWidth = contentWidth;
+            tWidth = contentWidth;
             tHeight = tWidth / p;
         }
     } else {
-        if (p > cp) {
-            tHeight = contentWidth;
-            tWidth = p * tHeight;
-        } else {
+        if (1 / p >= cp) {
             tWidth = contentHeight;
             tHeight = tWidth / p;
+        } else {
+            tHeight = contentWidth;
+            tWidth = p * tHeight;
         }
     }
     return {
