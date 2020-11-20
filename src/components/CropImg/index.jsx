@@ -8,7 +8,7 @@ import './index.less'
 import { CropImgProvider, CropImgConsumer } from './context'
 import Transition from '../Transition'
 import { EDIT_WIDTH } from '../../utils/picContent'
-import { initImg, computedBlur } from '../../utils/utils'
+import { fitImg, computedBlur } from '../../utils/utils'
 
 let globalKey = 0;
 
@@ -36,20 +36,6 @@ const CropImg = (props) => {
     const [state, setState] = useState({
         ignoreBlur: cropOption?.ignoreBlur || false // 是否忽略模糊
     });
-
-    const [initImgInfo, setInitImgInfo] = useState({
-        fWidth: 0
-    });
-
-    useEffect(() => {
-        const info = initImg({
-            ...imgInfo,
-            origin: [0.5, 0.5],
-            scale: 1,
-            translate: [0, 0]
-        }, { width: EDIT_WIDTH, height: EDIT_WIDTH / proportion });
-        setInitImgInfo(info);
-    }, [imgInfo])
 
     useEffect(() => {
         setState((state) => {
@@ -111,23 +97,44 @@ const CropImg = (props) => {
 
     const proportion = width / height;
 
-    if (initImgInfo.fWidth <= 0) {
-        return <View>Loading...</View>;
-    }
+    const { tWidth, tHeight } = fitImg({
+        ...imgInfo,
+        contentWidth: EDIT_WIDTH,
+        contentHeight: EDIT_WIDTH / proportion,
+        deg: cropOption.rotate || 0
+    });
 
-    const { fWidth, fHeight, rotateMatrix } = initImgInfo;
-    const { translate, scale } = cropOption || defaultCropOption;
+    const { translate, scale, rotate = 0, mirror = false } = cropOption || defaultCropOption;
 
     const scalea = width / EDIT_WIDTH;
+    // 位移矩阵
     const translateMatrix = math.matrix([[1, 0, translate[0] * scalea / radio], [0, 1, translate[1] * scalea / radio], [0, 0, 1]]);
+    // 缩放矩阵
     const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
-    const matrix = math.multiply(scaleMatrix, translateMatrix, rotateMatrix);
+    // 旋转矩阵
+    // a = Math.cos(deg); b = -Math.sin(deg); c = Math.sin(deg); d = Math.cos(deg); deg为旋转弧度 rotate / 180 * Math.PI
+    const deg = rotate / 180 * Math.PI;
+    const rotateMatrix = math.matrix([[Math.cos(deg), Math.sin(deg), 0], [-Math.sin(deg), Math.cos(deg), 0], [0, 0, 1]]);
+    // 镜像矩阵 
+    // a = (1-k*k)/(k*k+1); b = 2k/(k*k+1); c = 2k/(k*k+1); d = (k*k-1)/(k*k+1); k为斜率
+    // matrix(a,b,c,d,e,f);
+    // math.matrix([[a, c, e], [b, d, f], [0, 0, 1])
+    const mirrorMatrix = math.matrix([[-1, 0, 0], [0, 1, 0], [0, 0, 1]]);
+
+    // 依次执行旋转 缩放 镜像 位移 顺序不能错
+    let matrix = math.multiply(scaleMatrix, rotateMatrix);
+
+    if (mirror) {
+        matrix = math.multiply(mirrorMatrix, matrix);
+    }
+
+    matrix = math.multiply(translateMatrix, matrix)
 
     const transformStyle = {
         transformOrigin: '50% 50%',
-        transform: `matrix(${matrix._data[0][0]}, ${matrix._data[1][0]}, ${matrix._data[0][1]}, ${matrix._data[1][1]}, ${matrix._data[0][2]}, ${matrix._data[1][2]})`,
-        width: Taro.pxTransform(fWidth * scalea, 750),
-        height: Taro.pxTransform(fHeight * scalea, 750)
+        transform: `matrix(${matrix._data[0][0].toFixed(6)}, ${matrix._data[1][0].toFixed(6)}, ${matrix._data[0][1].toFixed(6)}, ${matrix._data[1][1].toFixed(6)}, ${matrix._data[0][2].toFixed(6)}, ${matrix._data[1][2].toFixed(6)})`,
+        width: Taro.pxTransform(tWidth * scalea, 750),
+        height: Taro.pxTransform(tHeight * scalea, 750)
     }
 
     const blur = computedBlur({
@@ -135,8 +142,8 @@ const CropImg = (props) => {
         contentHeight: EDIT_WIDTH / proportion,
         width: imgInfo.width,
         height: imgInfo.height,
-        afterWidth: fWidth * scale,
-        afterHieght: fHeight * scale,
+        afterWidth: tWidth * scale,
+        afterHieght: tHeight * scale,
         printWidth: 10,
         printHeight: 10 / (width / height)
     });
