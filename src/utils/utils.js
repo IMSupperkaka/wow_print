@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-09-28 21:46:46
  * @LastEditors: Shawn
- * @LastEditTime: 2020-11-01 21:05:05
+ * @LastEditTime: 2020-11-22 14:20:49
  * @FilePath: \wow_print\src\utils\utils.js
  * @Description: Descrip Content
  */
@@ -63,7 +63,8 @@ export const fitImg = ({ width, height, contentWidth, contentHeight, deg = 0 }) 
     const cp = contentWidth / contentHeight;
     let tWidth = width;
     let tHeight = height;
-    if (deg % 180 == 0) {
+    let approachDeg = approach([0,-90,-180,-270,-360,90,180,270,360], deg)
+    if (approachDeg % 180 == 0) {
         if (p > cp) {
             tHeight = contentHeight;
             tWidth = p * tHeight;
@@ -83,8 +84,8 @@ export const fitImg = ({ width, height, contentWidth, contentHeight, deg = 0 }) 
     return {
         tWidth, // 图片真实宽度
         tHeight, // 图片真实高度
-        fWidth: deg % 180 == 0 ? tWidth : tHeight, // 显示的宽度
-        fHeight: deg % 180 == 0 ? tHeight : tWidth // 显示的高度
+        fWidth: approachDeg % 180 == 0 ? tWidth : tHeight, // 显示的宽度
+        fHeight: approachDeg % 180 == 0 ? tHeight : tWidth // 显示的高度
     }
 }
 
@@ -93,6 +94,34 @@ export const fix = (num, prefix = 0) => {
         return 0;
     }
     return (num / 100).toFixed(prefix);
+}
+
+export const throttle = (callback, time) => {
+
+  let during = false;
+  let timer = null;
+
+  return (...params) => {
+    if (during) {
+      return;
+    }
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      during = false;
+    }, time);
+    during = true;
+    callback(...params);
+  }
+}
+
+export const approach = (array, num) => {
+  let db = [Math.abs(num - array[0]), 0];
+  for (let i = 1; i < array.length; i++) {
+      if (Math.abs(num - array[i]) < db[0]) {
+          db = [Math.abs(num - array[i]), i]
+      }
+  }
+  return array[db[1]];
 }
 
 export const jump = (url) => {
