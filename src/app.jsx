@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
+import { View } from '@tarojs/components';
 import Taro from '@tarojs/taro'
 
 import { store, app } from './dva'
@@ -50,6 +51,7 @@ class App extends Component {
     render() {
         return (
             <Provider store={store}>
+                <View>11</View>
                 {this.props.children}
             </Provider>
         )

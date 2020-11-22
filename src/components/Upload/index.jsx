@@ -73,7 +73,7 @@ export default React.forwardRef((props, ref) => {
     }
 
     const handleChoose = () => {
-        if (typeof beforeUpload == 'function') { // return false in beforeuUpload function to stop upload;
+        if (typeof beforeUpload == 'function') {
             const result = beforeUpload();
             if (result === false) {
                 return false;
@@ -103,7 +103,6 @@ export default React.forwardRef((props, ref) => {
                           filePath: v.filePath
                       }).then((res) => {
                           compressImg({ filePath: v.filePath, width: imgInfo.width, height: imgInfo.height }).then((filePath) => {
-                            console.log(filePath);
                             progress({
                               ...v,
                               filePath
@@ -119,7 +118,7 @@ export default React.forwardRef((props, ref) => {
     const compressImg = ({ filePath, width, height }) => {
       return new Promise((resolve, reject) => {
         const context = Taro.createCanvasContext('compress-canvas');
-        const drawWidth = width > height ? 500 : 500 * (width / height) ;
+        const drawWidth = width > height ? 500 : 500 * (width / height);
         const drawHeight = width > height ? (500 / (width / height)) : 500;
         context.drawImage(filePath, 0, 0, drawWidth, drawHeight)
         context.draw(false, () => {
@@ -131,6 +130,9 @@ export default React.forwardRef((props, ref) => {
             quality: 1,
             success: ({ tempFilePath }) => {
               resolve(tempFilePath);
+            },
+            complete: (result) => {
+              console.log(result);
             }
           });
         })
@@ -150,7 +152,7 @@ export default React.forwardRef((props, ref) => {
     }
 
     return (
-        <View>
+        <View className={props.className}>
             { chooseArea }
             <Dialog className="upload-dialog" title={`已上传${uploadDialogProps.doneCount}/${uploadDialogProps.totalCount}张`} visible={uploadDialogProps.visible}>
                 <View>正在拼命上传中，请耐心等待哦～</View>

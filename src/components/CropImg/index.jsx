@@ -31,20 +31,22 @@ export {
 
 const CropImg = (props) => {
 
-    const { width, height, src, className, style = {}, cropOption, imgInfo, showEdit = true, showIgnoreBtn = true, ...resetProps } = props;
+    const { width, height, src, className, style = {}, cropOption, showEdit = true, showIgnoreBtn = true, ...resetProps } = props;
 
-    const [state, setState] = useState({
-        ignoreBlur: cropOption?.ignoreBlur || false // 是否忽略模糊
-    });
+    const [imgInfo, setImgInfo] = useState(null);
 
     useEffect(() => {
-        setState((state) => {
-            return {
-                ...state,
-                ignoreBlur: cropOption.ignoreBlur
-            }
+      if (props.imgInfo) {
+        setImgInfo(props.imgInfo);
+      } else {
+        Taro.getImageInfo({
+          src: src,
+          success: (imgres) => {
+            setImgInfo(imgres);
+          }
         })
-    }, [cropOption])
+      }
+    }, [src])
 
     useEffect(() => {
 
@@ -95,18 +97,20 @@ const CropImg = (props) => {
         props.onIgnore();
     }
 
+    if (!imgInfo) {
+      return false;
+    }
+
     const proportion = width / height;
 
     const approachRotate = approach([0,-90,-180,-270,-360,90,180,270,360], cropOption.rotate);
 
-    const { tWidth, tHeight } = useMemo(() => {
-      return fitImg({
-          ...imgInfo,
-          contentWidth: EDIT_WIDTH,
-          contentHeight: EDIT_WIDTH / proportion,
-          deg: approachRotate
-      });
-    }, [imgInfo, approachRotate])
+    const { tWidth, tHeight } = fitImg({
+      ...imgInfo,
+      contentWidth: EDIT_WIDTH,
+      contentHeight: EDIT_WIDTH / proportion,
+      deg: approachRotate
+    });
 
     const { translate, scale, rotate = 0, mirror = false } = cropOption || defaultCropOption;
 
@@ -141,25 +145,23 @@ const CropImg = (props) => {
         height: Taro.pxTransform(tHeight * scalea, 750)
     }
 
-    const blur = useMemo(() => {
-      return computedBlur({
-          contentWidth: EDIT_WIDTH,
-          contentHeight: EDIT_WIDTH / proportion,
-          width: imgInfo.width,
-          height: imgInfo.height,
-          afterWidth: tWidth * scale,
-          afterHieght: tHeight * scale,
-          printWidth: 10,
-          printHeight: 10 / (width / height)
-      });
-    }, [imgInfo, tWidth, tHeight])
+    const blur = computedBlur({
+        contentWidth: EDIT_WIDTH,
+        contentHeight: EDIT_WIDTH / proportion,
+        width: imgInfo.width,
+        height: imgInfo.height,
+        afterWidth: tWidth * scale,
+        afterHieght: tHeight * scale,
+        printWidth: 10,
+        printHeight: 10 / (width / height)
+    });
 
-    const showBlur = blur && !state.ignoreBlur;
+    const showBlur = blur && !cropOption.ignoreBlur;
 
     const editVisible = props.editVisible && !showBlur;
 
     return (
-        <View onClick={toogleEdit} style={{ width: Taro.pxTransform(width, 750), height: Taro.pxTransform(height, 750) }} {...resetProps} className={classNames('cropimg-wrap', className)}>
+        <View onClick={toogleEdit} style={{ width: Taro.pxTransform(width, 750), height: Taro.pxTransform(height, 750), ...style }} {...resetProps} className={classNames('cropimg-wrap', className)}>
             <View className="mask-box">
                 <Transition in={showBlur && showIgnoreBtn} timeout={300} classNames="bottom-top">
                     <View className="mask-bottom">
@@ -182,7 +184,7 @@ const CropImg = (props) => {
                     </View>
                 </Transition>
             </View>
-            <Img style={{ ...transformStyle, ...style }} src={src}/>
+            <Img style={transformStyle} src={src}/>
         </View>
     )
 }
