@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useImperativeHandle,forwardRef } from 'react'
 import Taro from '@tarojs/taro'
 import math from '../../utils/math'
 import classNames from 'classnames'
-import { View, Image, Text } from '@tarojs/components'
+import { Canvas, View, Image, Text } from '@tarojs/components'
 
 import './index.less'
 import { CropImgProvider, CropImgConsumer } from './context'
 import Transition from '../Transition'
 import { EDIT_WIDTH } from '../../utils/picContent'
-import { fitImg, computedBlur } from '../../utils/utils'
+import { fitImg, approach, computedBlur } from '../../utils/utils'
 
 let globalKey = 0;
 
@@ -31,20 +31,22 @@ export {
 
 const CropImg = (props) => {
 
-    const { width, height, src, className, style = {}, cropOption, imgInfo, showEdit = true, showIgnoreBtn = true, ...resetProps } = props;
+    const { width, height, src, className, style = {}, cropOption, showEdit = true, showIgnoreBtn = true, ...resetProps } = props;
 
-    const [state, setState] = useState({
-        ignoreBlur: cropOption?.ignoreBlur || false // 是否忽略模糊
-    });
+    const [imgInfo, setImgInfo] = useState(null);
 
     useEffect(() => {
-        setState((state) => {
-            return {
-                ...state,
-                ignoreBlur: cropOption.ignoreBlur
-            }
+      if (props.imgInfo) {
+        setImgInfo(props.imgInfo);
+      } else {
+        Taro.getImageInfo({
+          src: src,
+          success: (imgres) => {
+            setImgInfo(imgres);
+          }
         })
-    }, [cropOption])
+      }
+    }, [src])
 
     useEffect(() => {
 
@@ -95,13 +97,19 @@ const CropImg = (props) => {
         props.onIgnore();
     }
 
+    if (!imgInfo) {
+      return false;
+    }
+
     const proportion = width / height;
 
+    const approachRotate = approach([0,-90,-180,-270,-360,90,180,270,360], cropOption.rotate);
+
     const { tWidth, tHeight } = fitImg({
-        ...imgInfo,
-        contentWidth: EDIT_WIDTH,
-        contentHeight: EDIT_WIDTH / proportion,
-        deg: cropOption.rotate || 0
+      ...imgInfo,
+      contentWidth: EDIT_WIDTH,
+      contentHeight: EDIT_WIDTH / proportion,
+      deg: approachRotate
     });
 
     const { translate, scale, rotate = 0, mirror = false } = cropOption || defaultCropOption;
@@ -115,14 +123,14 @@ const CropImg = (props) => {
     // a = Math.cos(deg); b = -Math.sin(deg); c = Math.sin(deg); d = Math.cos(deg); deg为旋转弧度 rotate / 180 * Math.PI
     const deg = rotate / 180 * Math.PI;
     const rotateMatrix = math.matrix([[Math.cos(deg), Math.sin(deg), 0], [-Math.sin(deg), Math.cos(deg), 0], [0, 0, 1]]);
-    // 镜像矩阵 
+    // 镜像矩阵
     // a = (1-k*k)/(k*k+1); b = 2k/(k*k+1); c = 2k/(k*k+1); d = (k*k-1)/(k*k+1); k为斜率
     // matrix(a,b,c,d,e,f);
     // math.matrix([[a, c, e], [b, d, f], [0, 0, 1])
     const mirrorMatrix = math.matrix([[-1, 0, 0], [0, 1, 0], [0, 0, 1]]);
 
     // 依次执行旋转 缩放 镜像 位移 顺序不能错
-    let matrix = math.multiply(scaleMatrix, rotateMatrix);
+    let matrix = math.multiply(rotateMatrix, scaleMatrix);
 
     if (mirror) {
         matrix = math.multiply(mirrorMatrix, matrix);
@@ -148,12 +156,12 @@ const CropImg = (props) => {
         printHeight: 10 / (width / height)
     });
 
-    const showBlur = blur && !state.ignoreBlur;
+    const showBlur = blur && !cropOption.ignoreBlur;
 
     const editVisible = props.editVisible && !showBlur;
 
     return (
-        <View onClick={toogleEdit} style={{ width: Taro.pxTransform(width, 750), height: Taro.pxTransform(height, 750) }} {...resetProps} className={classNames('cropimg-wrap', className)}>
+        <View onClick={toogleEdit} style={{ width: Taro.pxTransform(width, 750), height: Taro.pxTransform(height, 750), ...style }} {...resetProps} className={classNames('cropimg-wrap', className)}>
             <View className="mask-box">
                 <Transition in={showBlur && showIgnoreBtn} timeout={300} classNames="bottom-top">
                     <View className="mask-bottom">
@@ -176,7 +184,12 @@ const CropImg = (props) => {
                     </View>
                 </Transition>
             </View>
-            <Img style={{ ...transformStyle, ...style }} src={src}/>
+            <View className="crop-img-extra-box">
+              {props.extra && props.extra(transformStyle)}
+            </View>
+            <View className="crop-img-box">
+              <Img style={transformStyle} src={src}/>
+            </View>
         </View>
     )
 }

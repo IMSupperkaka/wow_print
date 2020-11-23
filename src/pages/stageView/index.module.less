@@ -1,0 +1,114 @@
+.hidden-upload {
+  position: fixed;
+  left: -9999;
+  top: -9999;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+.tips-wrap {
+  position: fixed;
+  width: 100%;
+  top: 30px;
+  line-height: 48px;
+  .tips-content {
+    text-align: center;
+    font-size: 24px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #999999;
+  }
+  .tips-icon {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    right: 28px;
+    top: 0;
+  }
+}
+.edit-container {
+  display: flex;
+  height: calc(100vh - 534px);
+  justify-content: center;
+  align-items: center;
+  .edit-stage {
+    position: relative;
+    width: 604px;
+    height: 440px;
+    .edit-stage-background{
+      position: relative;
+      pointer-events: none;
+      z-index: 1;
+    }
+    :global {
+      .crop-img-box {
+        overflow: hidden;
+      }
+    }
+    .crop-img-extra {
+      border: 2px solid #000;
+      flex-shrink: 0;
+      .crop-extra-zoom {
+        position: absolute;
+        right: -24px;
+        top: -24px;
+        width: 48px;
+        height: 48px;
+      }
+    }
+  }
+}
+.bottom-selector {
+    width: 100%;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    background-color: #fff;
+    font-size: 24px;
+    color: #666666;
+    .tab-content {
+      box-sizing: border-box;
+      display: grid;
+      grid-template-rows: 160px 160px 160px 160px;
+      grid-template-columns: 160px 160px 160px 160px;
+      grid-gap: 16px;
+      padding: 32px;
+      overflow-y: auto;
+    }
+    .upload-area {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .upload-icon {
+        width: 56px;
+        height: 56px;
+      }
+    }
+    .pic-item {
+      box-sizing: border-box;
+      width: 160px;
+      height: 160px;
+      background: #F6F6F6;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      &.active {
+        border: 1px solid #FF6345;
+      }
+      .pic {
+        width: 160px;
+        height: 160px;
+      }
+    }
+    .bottom-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 98px;
+        padding: 0 32px;
+    }
+    :global {
+        .wy-tabs__content {
+            height: 350px;
+        }
+    }
+}

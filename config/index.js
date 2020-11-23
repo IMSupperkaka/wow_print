@@ -70,15 +70,18 @@ const config = {
                 }
             }
         },
+        router: {
+            mode: 'hash'
+        },
         devServer: {
-          proxy: {
-            "/api/": {
-              target: "https://testapp.wayinkeji.com",
-              pathRewrite: {"^/api/" : "/"},
-              secure: false,
-              changeOrigin: true
+            proxy: {
+                "/api/": {
+                    target: "https://testapp.wayinkeji.com",
+                    pathRewrite: { "^/api/": "/" },
+                    secure: false,
+                    changeOrigin: true
+                }
             }
-          }
         }
     }
 }

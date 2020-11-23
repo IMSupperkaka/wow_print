@@ -5,7 +5,7 @@ import { View, Image, Canvas } from '@tarojs/components';
 
 import styles from './index.module.less';
 import math from '../../utils/math'
-import { fitImg } from '../../utils/utils'
+import { fitImg, approach, throttle } from '../../utils/utils'
 import { EDIT_WIDTH } from '../../utils/picContent'
 import CropImg from '../../components/CropImg'
 import deleteIcon from '../../../images/icon_delete／2@2x.png'
@@ -49,21 +49,11 @@ const getDeg = (startTouches, endTouches) => {
     return (endDeg - startDeg) / ( 2 * Math.PI) * 360;
 }
 
-const similarNumber = (array, num) => {
-    let db = [Math.abs(num - array[0]), 0];
-    for (let i = 1; i < array.length; i++) {
-        if (Math.abs(num - array[i]) < db[0]) {
-            db = [Math.abs(num - array[i]), i]
-        }
-    }
-    return array[db[1]];
-}
-
 const resetPosition = ({ imgInfo, contentWidth, contentHeight, scale, translate, rotate }) => {
 
     let resetx = translate[0];
     let resety = translate[1];
-    let resetRotate = similarNumber([0,-90,-180,-270,-360,90,180,270,360], rotate) % 360;
+    let resetRotate = approach([0,-90,-180,-270,-360,90,180,270,360], rotate) % 360;
 
     const { fWidth, fHeight } = fitImg({
         ...imgInfo,
@@ -79,7 +69,7 @@ const resetPosition = ({ imgInfo, contentWidth, contentHeight, scale, translate,
     const centerPosition = math.matrix([0, 0, 1]);
     // 操作后中心点坐标
     const afterCenterPosition = math.multiply(translateMatrix, scaleMatrix, centerPosition);
-    
+
     const limit = {
         x: (fWidth * scale - contentWidth) / 2,
         y: (fHeight * scale - contentHeight) / 2
@@ -122,9 +112,12 @@ const ImgEdit = (props) => {
     const onTouchStart = (e) => {
         lastTouch = getTouchsPosition(e.touches);
         setIsTouch(true);
-        store.originScale = scale;
         store.originTranslate = translate;
         store.originDeg = rotate;
+        if (lastTouch.length >= 2) {
+            store.hypotenuse = getDistance(lastTouch[0], lastTouch[1]);
+            store.originScale = scale;
+        }
     }
 
     const onTouchMove = (e) => {
@@ -132,8 +125,8 @@ const ImgEdit = (props) => {
         e.stopPropagation();
         const touchPositionList = getTouchsPosition(e.touches)
         if (touchPositionList.length >= 2) { // 双指
-            const zoom = getDistance(touchPositionList[0], touchPositionList[1]) / getDistance(lastTouch[0], lastTouch[1]);
-            const newScale = store.originScale * zoom;
+            const hypotenuse = getDistance(touchPositionList[0], touchPositionList[1]);
+            const newScale = store.originScale * (hypotenuse / store.hypotenuse);
             // 反三角函数计算弧度
             const deg = getDeg(lastTouch, touchPositionList) % 360;
             if (mirror) {
@@ -243,7 +236,7 @@ const ImgEdit = (props) => {
     const cropOption = {
         ...IMG.cropInfo,
         translate,
-        scale,
+        scale: scale,
         rotate: rotate
     }
 

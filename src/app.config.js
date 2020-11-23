@@ -21,6 +21,7 @@ export default {
         'pages/logisticsDetails/index',
         'pages/portfolio/index',
         'pages/deskCalendar/index',
+        'pages/stageView/index',
         'pages/xdPromote/index'
     ],
     tabBar: {
