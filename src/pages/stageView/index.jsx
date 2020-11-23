@@ -12,6 +12,7 @@ import styles from './index.module.less';
 import addIcon from '../../../images/cion_add_to5@2x.png';
 import tipsOnIcon from '../../../images/icon_prompt_on@2x.png';
 import tipsOffIcon from '../../../images/icon_prompt_off@2x.png';
+import iconZoom from '../../../images/icon_zoom@2x.png';
 
 const Tips = () => {
 
@@ -41,6 +42,8 @@ export default () => {
 
     const [activeModelIndex, setActiveModelIndexIndex] = useState(0);
 
+    const [activeEditAreaIndex, setActiveEditAreaIndex] = useState(null);
+
     const [modelList, setModelList] = useState([
       {
         name: "模板001",
@@ -54,7 +57,7 @@ export default () => {
             x: 0,
             y: 0,
             width: 604,
-            height: 440,
+            height: 330,
             defaultImg: "https://cdn.91jiekuan.com/Ftptl0OYThDemOJt7Zi-DDfhuYHf"
           }
         ]
@@ -88,6 +91,14 @@ export default () => {
       uploadRef.current.handleChoose()
     }
 
+    const handleToggleEdit = (index) => {
+      if (activeEditAreaIndex != index) {
+        setActiveEditAreaIndex(index);
+      } else {
+        setActiveEditAreaIndex(null);
+      }
+    }
+
     const activeModel = modelList[activeModelIndex];
 
     return (
@@ -99,7 +110,7 @@ export default () => {
               <View className={styles['edit-stage']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
                 <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath}/>
                 {
-                  activeModel.editArea.map(({ width, height, x, y, defaultImg }) => {
+                  activeModel.editArea.map(({ width, height, x, y, defaultImg }, index) => {
 
                     const cropOption = {
                       rotate: 0,
@@ -112,11 +123,22 @@ export default () => {
                       position: 'absolute',
                       top: Taro.pxTransform(x, 750),
                       left: Taro.pxTransform(y, 750),
-                      zIndex: -1,
-                      overflow: 'hidden'
+                      zIndex: 0
                     }
 
-                    return <CropImg style={style} showIgnoreBtn={false} width={width} height={height} src={defaultImg} cropOption={cropOption}/>
+                    return <CropImg onClick={handleToggleEdit.bind(this, index)} extra={(transformStyle) => {
+                      return (
+                        <Transition in={activeEditAreaIndex == index} timeout={300} classNames="fade-in">
+                          <View className={styles['crop-img-extra']} style={transformStyle}>
+                            <Image src={iconZoom} className={styles['crop-extra-zoom']} />
+                            <View className={styles['crop-extra-bottom']}>
+                              <View>调整</View>
+                              <View>换图</View>
+                            </View>
+                          </View>
+                        </Transition>
+                      )
+                    }} style={style} showIgnoreBtn={false} width={width} height={height} src={defaultImg} cropOption={cropOption}/>
                   })
                 }
               </View>

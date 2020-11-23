@@ -184,7 +184,12 @@ const CropImg = (props) => {
                     </View>
                 </Transition>
             </View>
-            <Img style={transformStyle} src={src}/>
+            <View className="crop-img-extra-box">
+              {props.extra && props.extra(transformStyle)}
+            </View>
+            <View className="crop-img-box">
+              <Img style={transformStyle} src={src}/>
+            </View>
         </View>
     )
 }
