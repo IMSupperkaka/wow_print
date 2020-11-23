@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useImperativeHandle,forwardRef } from 'react'
+import React, { useState, useEffect, useMemo, useImperativeHandle, forwardRef } from 'react'
 import Taro from '@tarojs/taro'
 import math from '../../utils/math'
 import classNames from 'classnames'
@@ -20,7 +20,7 @@ const defaultCropOption = {
 }
 
 const Img = React.memo((props) => {
-    return <Image style={props.style} src={props.src} mode="widthFix" className="crop-image"/>
+    return <Image style={props.style} src={props.src} mode="widthFix" className="crop-image" {...props} />
 }, (prevProps, nextProps) => {
     return JSON.stringify(prevProps) === JSON.stringify(nextProps);
 })
@@ -31,21 +31,21 @@ export {
 
 const CropImg = (props) => {
 
-    const { width, height, src, className, style = {}, cropOption, showEdit = true, showIgnoreBtn = true, ...resetProps } = props;
+    const { width, height, src, className, style = {}, cropOption, showEdit = true, showIgnoreBtn = true, animate = false, ...resetProps } = props;
 
     const [imgInfo, setImgInfo] = useState(null);
 
     useEffect(() => {
-      if (props.imgInfo) {
-        setImgInfo(props.imgInfo);
-      } else {
-        Taro.getImageInfo({
-          src: src,
-          success: (imgres) => {
-            setImgInfo(imgres);
-          }
-        })
-      }
+        if (props.imgInfo) {
+            setImgInfo(props.imgInfo);
+        } else {
+            Taro.getImageInfo({
+                src: src,
+                success: (imgres) => {
+                    setImgInfo(imgres);
+                }
+            })
+        }
     }, [src])
 
     useEffect(() => {
@@ -97,19 +97,29 @@ const CropImg = (props) => {
         props.onIgnore();
     }
 
+    const handleTouchMove = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log(e);
+    }
+
+    const handleTouchEnd = () => {
+
+    }
+
     if (!imgInfo) {
-      return false;
+        return false;
     }
 
     const proportion = width / height;
 
-    const approachRotate = approach([0,-90,-180,-270,-360,90,180,270,360], cropOption.rotate);
+    const approachRotate = approach([0, -90, -180, -270, -360, 90, 180, 270, 360], cropOption.rotate);
 
     const { tWidth, tHeight } = fitImg({
-      ...imgInfo,
-      contentWidth: EDIT_WIDTH,
-      contentHeight: EDIT_WIDTH / proportion,
-      deg: approachRotate
+        ...imgInfo,
+        contentWidth: EDIT_WIDTH,
+        contentHeight: EDIT_WIDTH / proportion,
+        deg: approachRotate
     });
 
     const { translate, scale, rotate = 0, mirror = false } = cropOption || defaultCropOption;
@@ -142,7 +152,8 @@ const CropImg = (props) => {
         transformOrigin: '50% 50%',
         transform: `matrix(${matrix._data[0][0].toFixed(6)}, ${matrix._data[1][0].toFixed(6)}, ${matrix._data[0][1].toFixed(6)}, ${matrix._data[1][1].toFixed(6)}, ${matrix._data[0][2].toFixed(6)}, ${matrix._data[1][2].toFixed(6)})`,
         width: Taro.pxTransform(tWidth * scalea, 750),
-        height: Taro.pxTransform(tHeight * scalea, 750)
+        height: Taro.pxTransform(tHeight * scalea, 750),
+        transition: animate ? 'all .2s' : 'none'
     }
 
     const blur = computedBlur({
@@ -185,10 +196,10 @@ const CropImg = (props) => {
                 </Transition>
             </View>
             <View className="crop-img-extra-box">
-              {props.extra && props.extra(transformStyle)}
+                {props.extra && props.extra(transformStyle)}
             </View>
             <View className="crop-img-box">
-              <Img style={transformStyle} src={src}/>
+                <Img style={transformStyle} src={src} />
             </View>
         </View>
     )
@@ -206,7 +217,7 @@ export default (props) => {
         <CropImgConsumer>
             {({ list = [], onShow, onHide }) => {
                 const editVisible = list.includes(cropKey);
-                return <CropImg {...props} list={list} onShow={() => { onShow(cropKey) }} onHide={() => { onHide(cropKey) }} editVisible={editVisible}/>
+                return <CropImg {...props} list={list} onShow={() => { onShow(cropKey) }} onHide={() => { onHide(cropKey) }} editVisible={editVisible} />
             }}
         </CropImgConsumer>
     )
