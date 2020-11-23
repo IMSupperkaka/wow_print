@@ -178,7 +178,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                     {
                         userImageList.map((v, index) => {
                             return (
-                                <View className={styles['item']}>
+                                <View className={styles['item']} key={index}>
                                     <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className={styles['delete-icon']} />
                                     <View className={styles['item-body']} onClick={handleGoEdit.bind(this, index)} style={contentStyle}>
                                         <UploadCrop
