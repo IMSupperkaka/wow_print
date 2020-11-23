@@ -218,7 +218,7 @@ export default () => {
                         <Text>￥{ (orderDetail.shipMoney / 100).toFixed(2) }</Text>
                     </View>
                     <View className="devide"></View>
-                    <View>
+                    <View className="pay-item">
                         <Text>合计</Text>
                         <Text className="total-amount">￥{ (orderDetail.money / 100).toFixed(2) }</Text>
                     </View>
