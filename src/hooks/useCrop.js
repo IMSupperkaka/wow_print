@@ -22,12 +22,22 @@ const getTouchsPosition = (touchs) => {
 }
 
 const getDistance = (p1, p2) => {
-    return Math.sqrt(Math.pow(p2.x - p1.x, 2), Math.pow(p2.y - p1.y), 2);
+    return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 }
 
 const getDeg = (startTouches, endTouches) => {
-    const startDeg = Math.atan((startTouches[1].y - startTouches[0].y) / (endTouches[1].x - endTouches[0].x));
-    const endDeg = Math.atan((endTouches[1].y - endTouches[0].y) / (endTouches[1].x - endTouches[0].x));
+    const starth = startTouches[1].y - startTouches[0].y;
+    const startw = startTouches[1].x - startTouches[0].x;
+    const endh = endTouches[1].y - endTouches[0].y;
+    const endw = endTouches[1].x - endTouches[0].x;
+    let startDeg = Math.atan(starth / startw);
+    let endDeg = Math.atan(endh / endw);
+    if (startw < 0) {
+        startDeg = startDeg - Math.PI;
+    }
+    if (endw < 0) {
+        endDeg = endDeg - Math.PI;
+    }
     return (endDeg - startDeg) / ( 2 * Math.PI) * 360;
 }
 
@@ -124,6 +134,18 @@ export default (props) => {
 
     const touchStart = (e) => {
         const nowlastTouch = getTouchsPosition(e.touches);
+        const { tWidth, tHeight } = fitImg({
+            width,
+            height,
+            contentWidth: contentWidth,
+            contentHeight: contentHeight,
+            deg: rotate
+        })
+        const arc = Math.atan(tWidth / tHeight) - rotate / 360 * 2 * Math.PI;
+        const centerPoint = [{
+            x: nowlastTouch[0].x - Math.sqrt(Math.pow(tWidth / radio, 2) + Math.pow(tHeight / radio, 2)) / 2 * Math.sin(arc),
+            y: nowlastTouch[0].y + Math.sqrt(Math.pow(tWidth / radio, 2) + Math.pow(tHeight / radio, 2)) / 2 * Math.cos(arc)
+        }];
         dispatch({
             type: 'save',
             payload: {
@@ -138,7 +160,8 @@ export default (props) => {
                 originTranslate: translate,
                 originDeg: rotate,
                 originScale: scale,
-                hypotenuse: nowlastTouch.length >= 2 ? getDistance(nowlastTouch[0], nowlastTouch[1]) : 0
+                hypotenuse: nowlastTouch.length >= 2 ? getDistance(nowlastTouch[0], nowlastTouch[1]) : getDistance(nowlastTouch[0], centerPoint[0]),
+                centerPoint
             }
         })
     }
@@ -160,18 +183,21 @@ export default (props) => {
                 }
             })
         } else {
-            const centerPoint = [0, 0];
-            console.log(touchPositionList)
             let payload = {};
             if (store.behavior.includes('translate')) {
                 const dx = (touchPositionList[0].x - lastTouch[0].x) * radio;
                 const dy = (touchPositionList[0].y - lastTouch[0].y) * radio;
                 payload.translate = [store.originTranslate[0] + dx, store.originTranslate[1] + dy];
             }
-            // if (store.behavior.includes('zoom')) {
-            //     const deg = getDeg(lastTouch, touchPositionList) % 360;
-            //     payload.rotate = mirror ? store.originDeg + deg : store.originDeg - deg
-            // }
+            if (store.behavior.includes('rotate')) {
+                const deg = getDeg([...store.centerPoint, ...lastTouch], [...store.centerPoint, ...touchPositionList]) % 360;
+                payload.rotate = mirror ? store.originDeg + deg : store.originDeg - deg;
+            }
+            if (store.behavior.includes('zoom')) {
+                const hypotenuse = getDistance(touchPositionList[0], store.centerPoint[0]);
+                const newScale = store.originScale * (hypotenuse / store.hypotenuse);
+                payload.scale = newScale;
+            }
             dispatch({
                 type: 'save',
                 payload: payload
@@ -214,8 +240,9 @@ export default (props) => {
             }
         }
 
-        props.onChange && props.onChange({
-            translate, scale, rotate, mirror, isTouch
+        props.onFinish && props.onFinish({
+            translate, scale, rotate, mirror, isTouch,
+            ...payload
         });
 
         dispatch({
@@ -259,7 +286,6 @@ export default (props) => {
                     payload.rotate = resetRotate;
                 }
             }
-            props.onChange && props.onChange(payload);
             dispatch({
                 type: 'save',
                 payload: payload

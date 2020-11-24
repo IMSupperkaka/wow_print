@@ -3,6 +3,7 @@ import Taro from '@tarojs/taro';
 import classnames from 'classnames';
 import { View, Image, Button } from '@tarojs/components';
 
+import math from '../../../utils/math'
 import useCrop from '../../../hooks/useCrop';
 import Upload from '../../../components/Upload';
 import Tabs from '../../../components/Tabs';
@@ -14,6 +15,8 @@ import addIcon from '../../../../images/cion_add_to5@2x.png';
 import tipsOnIcon from '../../../../images/icon_prompt_on@2x.png';
 import tipsOffIcon from '../../../../images/icon_prompt_off@2x.png';
 import iconZoom from '../../../../images/icon_zoom@2x.png';
+import iconFold from '../../images/icon_edit_fold@2x.png';
+import iconUnFold from '../../images/icon_edit_un_fold@2x.png';
 
 const Tips = () => {
 
@@ -39,6 +42,8 @@ export default () => {
 
     const [current, setCurrent] = useState(0);
 
+    const [fold, setFold] = useState(false);
+
     const [fileList, setFileList] = useState([]);
 
     const [activeModelIndex, setActiveModelIndexIndex] = useState(0);
@@ -56,7 +61,14 @@ export default () => {
         touchProps,
         mutate
     } = useCrop({
-        forcefit: ['translate']
+        forcefit: ['translate'],
+        onFinish: (cropInfo) => {
+            setModelList((modelList) => {
+                const cloneList = [...modelList];
+                cloneList[activeModelIndex].editArea[activeEditAreaIndex].img.cropInfo = cropInfo;
+                return cloneList;
+            })
+        }
     });
 
     const [modelList, setModelList] = useState([
@@ -73,7 +85,9 @@ export default () => {
                     y: 0,
                     width: 604,
                     height: 330,
-                    defaultImg: "https://cdn.91jiekuan.com/Ftptl0OYThDemOJt7Zi-DDfhuYHf"
+                    img: {
+                        filePath: "https://cdn.91jiekuan.com/Ftptl0OYThDemOJt7Zi-DDfhuYHf"
+                    }
                 }
             ]
         },
@@ -90,7 +104,9 @@ export default () => {
                     y: 0,
                     width: 604,
                     height: 440,
-                    defaultImg: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1606048623706&di=966a18a4a0424fb413a8c908608f9e65&imgtype=0&src=http%3A%2F%2Fp0.qhimgs4.com%2Ft0178ceae651f69d823.jpg"
+                    img: {
+                        filePath: "https://cdn.91jiekuan.com/Ftptl0OYThDemOJt7Zi-DDfhuYHf"
+                    }
                 }
             ]
         }
@@ -99,6 +115,13 @@ export default () => {
     const uploadRef = useRef();
 
     const handleOnchange = (file, fileList) => {
+        if (file.status == 'done' && activeEditAreaIndex != null) {
+            setModelList((modelList) => {
+                const cloneList = [...modelList];
+                cloneList[activeModelIndex].editArea[activeEditAreaIndex].img = file;
+                return cloneList;
+            })
+        }
         setFileList(fileList)
     }
 
@@ -109,22 +132,53 @@ export default () => {
     const handleToggleEdit = (index) => {
         if (activeEditAreaIndex != index) {
             const activeArea = modelList[activeModelIndex].editArea[index];
-            const img = activeArea.activeImg || activeArea.defaultImg;
+            const img = activeArea.img;
+            setActiveEditAreaIndex(index);
             Taro.getImageInfo({
-                src: img,
+                src: img.filePath,
                 success: (res) => {
-                    setActiveEditAreaIndex(index);
                     mutate({
                         width: res.width,
                         height: res.height,
                         contentWidth: activeArea.width,
-                        contentHeight: activeArea.height
+                        contentHeight: activeArea.height,
+                        ...img.cropInfo
                     })
                 }
             })
         } else {
             setActiveEditAreaIndex(null);
         }
+    }
+
+    const handleMirror = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        mutate({
+            mirror: !mirror
+        })
+    }
+
+    const handleChangePic = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        uploadRef.current.handleChoose()
+    }
+
+    const handleChoosePic = (img) => {
+        if (activeEditAreaIndex != null) {
+            setModelList((modelList) => {
+                const cloneList = [...modelList];
+                cloneList[activeModelIndex].editArea[activeEditAreaIndex].img = img;
+                return cloneList;
+            })
+        }
+    }
+
+    const toggleFold = () => {
+        setFold((fold) => {
+            return !fold;
+        })
     }
 
     const activeModel = modelList[activeModelIndex];
@@ -134,11 +188,11 @@ export default () => {
             <Tips />
             {/* swiper中fixed定位不会定位在window上 暂时先放在外面调用 */}
             <Upload className={styles['hidden-upload']} ref={uploadRef} fileList={fileList} onChange={handleOnchange} limit={9}></Upload>
-            <View className={styles['edit-container']} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+            <View className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}>
                 <View className={styles['edit-stage']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
                     <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
                     {
-                        activeModel.editArea.map(({ width, height, x, y, defaultImg }, index) => {
+                        activeModel.editArea.map(({ width, height, x, y, img }, index) => {
 
                             const cropOption = {
                                 rotate,
@@ -155,24 +209,26 @@ export default () => {
                                 zIndex: 0
                             }
 
-                            return <CropImg onClick={handleToggleEdit.bind(this, index)} extra={(transformStyle) => {
+                            return <CropImg onClick={handleToggleEdit.bind(this, index)} extra={({
+                                transformStyle
+                            }) => {
                                 return (
-                                    <Transition in={activeEditAreaIndex == index} timeout={300} classNames="fade-in">
-                                        <View {...touchProps} className={styles['crop-img-extra']} style={transformStyle}>
-                                            <Image data-behavior={['zoom', 'rotate']} src={iconZoom} className={styles['crop-extra-zoom']} />
-                                            <View className={styles['crop-extra-bottom']}>
-                                                <View>调整</View>
-                                                <View>换图</View>
-                                            </View>
+                                    activeEditAreaIndex == index &&
+                                    <View {...touchProps} className={styles['crop-img-extra']} style={transformStyle}>
+                                        <Image data-behavior={['zoom', 'rotate']} src={iconZoom} className={classnames(styles['crop-extra-zoom'], mirror && styles['mirror'])} />
+                                        <View className={classnames(styles['crop-extra-bottom'], mirror && styles['mirror'])}>
+                                            <View onClick={handleMirror}>镜像</View>
+                                            <View onClick={handleChangePic}>换图</View>
                                         </View>
-                                    </Transition>
+                                    </View>
                                 )
-                            }} style={style} showIgnoreBtn={false} width={width} height={height} src={defaultImg} cropOption={cropOption} animate={!isTouch}/>
+                            }} style={style} showIgnoreBtn={false} width={width} height={height} src={img.filePath} cropOption={cropOption} animate={!isTouch}/>
                         })
                     }
                 </View>
             </View>
-            <View className={styles['bottom-selector']}>
+            <View className={classnames(styles['bottom-selector'], fold && styles['fold'])}>
+                <Image onClick={toggleFold} src={fold ? iconFold : iconUnFold} className={styles['fold']}/>
                 <Tabs current={current} onChange={setCurrent}>
                     <TabPanel title="图片" className={styles['tab-content']}>
                         <View onClick={handleUpload} className={`${styles['upload-area']} ${styles['pic-item']}`}>
@@ -181,7 +237,7 @@ export default () => {
                         {
                             fileList.map((v) => {
                                 return (
-                                    <View className={styles['pic-item']}>
+                                    <View className={styles['pic-item']} onClick={handleChoosePic.bind(this, v)}>
                                         <Image className={styles['pic']} src={v.filePath} mode="aspectFill" />
                                     </View>
                                 )

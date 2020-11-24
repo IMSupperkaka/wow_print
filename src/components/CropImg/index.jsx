@@ -97,16 +97,6 @@ const CropImg = (props) => {
         props.onIgnore();
     }
 
-    const handleTouchMove = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log(e);
-    }
-
-    const handleTouchEnd = () => {
-
-    }
-
     if (!imgInfo) {
         return false;
     }
@@ -153,7 +143,7 @@ const CropImg = (props) => {
         transform: `matrix(${matrix._data[0][0].toFixed(6)}, ${matrix._data[1][0].toFixed(6)}, ${matrix._data[0][1].toFixed(6)}, ${matrix._data[1][1].toFixed(6)}, ${matrix._data[0][2].toFixed(6)}, ${matrix._data[1][2].toFixed(6)})`,
         width: Taro.pxTransform(tWidth * scalea, 750),
         height: Taro.pxTransform(tHeight * scalea, 750),
-        transition: animate ? 'all .2s' : 'none'
+        transition: animate ? 'transform .2s' : 'none'
     }
 
     const blur = computedBlur({
@@ -196,7 +186,13 @@ const CropImg = (props) => {
                 </Transition>
             </View>
             <View className="crop-img-extra-box">
-                {props.extra && props.extra(transformStyle)}
+                {props.extra && props.extra({
+                    transformStyle,
+                    mirrorMatrix,
+                    translateMatrix,
+                    scaleMatrix,
+                    rotateMatrix
+                })}
             </View>
             <View className="crop-img-box">
                 <Img style={transformStyle} src={src} />

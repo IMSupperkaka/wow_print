@@ -130,7 +130,7 @@ const ImgEdit = (props) => {
                 <View className={styles['content-wrap']}>
                     <View className={styles['mask']} style={maskStyle}></View>
                     <View style={contentStyle} className={styles['content']}></View>
-                    <CropImg className={styles['img']} showIgnoreBtn={false} width={contentWidth} height={contentHeight} src={IMG.filePath || IMG.originImage} imgInfo={IMG.imgInfo} cropOption={cropOption} animate={isTouch} />
+                    <CropImg className={styles['img']} showIgnoreBtn={false} width={contentWidth} height={contentHeight} src={IMG.filePath || IMG.originImage} imgInfo={IMG.imgInfo} cropOption={cropOption} animate={!isTouch} />
                 </View>
                 <View className={styles['bottom-wrap']}>
                     <View className={styles['bottom-tip']}>tips：灰色区域将被裁剪，不在打印范围内</View>

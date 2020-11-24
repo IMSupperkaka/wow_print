@@ -10,7 +10,7 @@ import uploiadPlus from '../../../images/upload-plus@2x.png';
 
 export default React.memo((props) => {
 
-    const { width, height, editFinish, limit = 1, showIndex = 0, fileList = [], showEdit = true, ...restProps } = props;
+    const { width, height, editFinish, limit = 1, showIndex = 0, fileList = [], showEdit = true, className, ...restProps } = props;
 
     const upload = useRef();
 
@@ -51,7 +51,7 @@ export default React.memo((props) => {
     }
 
     return (
-        <View className={props.className}>
+        <View className={className}>
             {
                 currentImg &&
                 <View className="crop-img-wrap">
