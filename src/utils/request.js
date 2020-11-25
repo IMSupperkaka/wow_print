@@ -53,7 +53,6 @@ class TaroRequest {
                     },
                     success: function (res){
                         const response = JSON.parse(res.data);
-                        console.log(res.data)
                         resolve({
                             data: `https://cdn.91jiekuan.com/${response.key}`
                         });
