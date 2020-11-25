@@ -16,7 +16,6 @@ export default () => {
       goodsInfo: []
     });
 
-    // TODO:初始值给从订单拿到的倒计时值
     const [countDown, setCountDown] = useState(null)
 
     useDidShow(() => {
