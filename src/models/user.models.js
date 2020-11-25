@@ -1,17 +1,18 @@
 /*
  * @Date: 2020-09-09 21:04:30
  * @LastEditors: Shawn
- * @LastEditTime: 2020-11-14 23:31:35
+ * @LastEditTime: 2020-11-26 01:10:03
  * @FilePath: \wow_print\src\models\user.models.js
  * @Description: Descrip Content
  */
 import Taro from '@tarojs/taro'
 
-import { login, saveinfo } from '../services/user';
+import { getRouterParams } from '../utils/utils';
+import { login, smsLogin, saveinfo } from '../services/user';
 
 const delay = (ms) => new Promise((resolve) => {
     setTimeout(resolve, ms);
-  });
+});
 
 export default {
     namespace: 'user',
@@ -56,6 +57,28 @@ export default {
                 payload: response.data.data || {}
             })
             payload.success && payload.success();
+        },
+        *smsLogin({ payload }, { call, put }) {
+          try {
+            const response = yield call(smsLogin, payload);
+            if (response.data.data.channel) {
+                Taro.setStorageSync('channel', payload.channel);
+            }
+            yield put({
+                type: 'saveUserInfo',
+                payload: response.data.data || {}
+            })
+            const redirect = getRouterParams('redirect');
+            if (redirect) {
+                Taro.redirectTo({
+                    url: redirect
+                })
+            } else {
+                Taro.navigateBack();
+            }
+          } catch (error) {
+            console.error(error)
+          }
         }
     },
     reducers: {
