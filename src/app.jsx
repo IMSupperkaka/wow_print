@@ -51,7 +51,6 @@ class App extends Component {
     render() {
         return (
             <Provider store={store}>
-                <View>11</View>
                 {this.props.children}
             </Provider>
         )

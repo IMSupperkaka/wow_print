@@ -7,6 +7,14 @@ export const login = (code) => {
     })
 }
 
+export const smsLogin = (data) => {
+    return TaroRequest.request({
+        url: `/h5/user/login`,
+        method: 'POST',
+        data
+    })
+}
+
 export const saveinfo = (data) => {
     return TaroRequest.request({
         url: `/app/user/info`,

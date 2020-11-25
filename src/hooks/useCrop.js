@@ -75,11 +75,61 @@ const resetPosition = ({ width, height, contentWidth, contentHeight, scale, tran
     if (Math.abs(afterCenterPosition._data[1]) > limit.y) {
         resety = (afterCenterPosition._data[1] > 0 ? 1 : -1) * limit.y;
     }
+
     return {
         resetx,
         resety,
         resetRotate
     }
+}
+
+const buildTransformStyle = ({ isTouch, width, height, editwidth, contentWidth, contentHeight, mirror, rotate, translate, scale}) => {
+
+    const approachRotate = approach([0, -90, -180, -270, -360, 90, 180, 270, 360], rotate);
+
+    const { tWidth, tHeight } = fitImg({
+        width,
+        height,
+        contentWidth: contentWidth,
+        contentHeight: contentHeight,
+        deg: approachRotate
+    });
+
+    console.log(editwidth)
+
+    const scalea = contentWidth / editwidth;
+    // 位移矩阵
+    const translateMatrix = math.matrix([[1, 0, translate[0] * scalea / radio], [0, 1, translate[1] * scalea / radio], [0, 0, 1]]);
+    // 缩放矩阵
+    const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
+    // 旋转矩阵
+    // a = Math.cos(deg); b = -Math.sin(deg); c = Math.sin(deg); d = Math.cos(deg); deg为旋转弧度 rotate / 180 * Math.PI
+    const deg = rotate / 180 * Math.PI;
+    const rotateMatrix = math.matrix([[Math.cos(deg), Math.sin(deg), 0], [-Math.sin(deg), Math.cos(deg), 0], [0, 0, 1]]);
+    // 镜像矩阵
+    // a = (1-k*k)/(k*k+1); b = 2k/(k*k+1); c = 2k/(k*k+1); d = (k*k-1)/(k*k+1); k为斜率
+    // matrix(a,b,c,d,e,f);
+    // math.matrix([[a, c, e], [b, d, f], [0, 0, 1])
+    const mirrorMatrix = math.matrix([[-1, 0, 0], [0, 1, 0], [0, 0, 1]]);
+
+    // 依次执行旋转 缩放 镜像 位移 顺序不能错
+    let matrix = math.multiply(rotateMatrix, scaleMatrix);
+
+    if (mirror) {
+        matrix = math.multiply(mirrorMatrix, matrix);
+    }
+
+    matrix = math.multiply(translateMatrix, matrix)
+
+    const transformStyle = {
+        transformOrigin: '50% 50%',
+        transform: `matrix(${matrix._data[0][0].toFixed(6)}, ${matrix._data[1][0].toFixed(6)}, ${matrix._data[0][1].toFixed(6)}, ${matrix._data[1][1].toFixed(6)}, ${matrix._data[0][2].toFixed(6)}, ${matrix._data[1][2].toFixed(6)})`,
+        width: Taro.pxTransform(tWidth, 750),
+        height: Taro.pxTransform(tHeight, 750),
+        transition: !isTouch ? 'transform .2s' : 'none'
+    }
+
+    return transformStyle;
 }
 
 const cropReducer = (state, action) => {
@@ -104,19 +154,7 @@ export default (props) => {
 
     const { forcefit = false } = props;
 
-    const [{
-        translate,
-        scale,
-        rotate,
-        mirror,
-        store,
-        isTouch,
-        lastTouch,
-        width,
-        height,
-        contentWidth,
-        contentHeight
-    }, dispatch] = useReducer(cropReducer, {
+    const [state, dispatch] = useReducer(cropReducer, {
         store: {
             behavior: ['translate']
         },
@@ -126,11 +164,26 @@ export default (props) => {
         translate: [0, 0],
         isTouch: false,
         lastTouch: [],
+        editwidth: props.editwidth || props.contentWidth,
         width: props.width || 0,
         height: props.height || 0,
         contentWidth: props.contentWidth || 0,
         contentHeight: props.contentHeight || 0
     })
+
+    const {
+        width,
+        height,
+        contentWidth,
+        contentHeight,
+        translate,
+        scale,
+        rotate,
+        mirror,
+        store,
+        isTouch,
+        lastTouch
+    } = state;
 
     const touchStart = (e) => {
         const nowlastTouch = getTouchsPosition(e.touches);
@@ -252,22 +305,18 @@ export default (props) => {
     }
 
     return {
-        state: {
-            translate,
-            scale,
-            rotate,
-            mirror,
-            store,
-            isTouch,
-            lastTouch
-        },
+        state: state,
         touchProps: {
             onTouchMove: touchMove,
             onTouchEnd: touchEnd,
             onTouchStart: touchStart
         },
+        transformStyle: buildTransformStyle(state),
         mutate: (state) => {
             let payload = state;
+            if (state.editwidth || state.contentWidth) {
+                payload.editwidth = state.editwidth || state.contentWidth
+            }
             if (forcefit) {
                 const { resetx, resety, resetRotate } = resetPosition({
                     width,
@@ -286,6 +335,10 @@ export default (props) => {
                     payload.rotate = resetRotate;
                 }
             }
+            props.onFinish && props.onFinish({
+                translate, scale, rotate, mirror, isTouch,
+                ...payload
+            });
             dispatch({
                 type: 'save',
                 payload: payload

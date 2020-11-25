@@ -31,7 +31,7 @@ export {
 
 const CropImg = (props) => {
 
-    const { width, height, src, className, style = {}, cropOption, showEdit = true, showIgnoreBtn = true, animate = false, ...resetProps } = props;
+    const { width, height, editwidth = EDIT_WIDTH, src, className, style = {}, cropOption, showEdit = true, showIgnoreBtn = true, animate = false, ...resetProps } = props;
 
     const [imgInfo, setImgInfo] = useState(null);
 
@@ -101,20 +101,18 @@ const CropImg = (props) => {
         return false;
     }
 
-    const proportion = width / height;
-
     const approachRotate = approach([0, -90, -180, -270, -360, 90, 180, 270, 360], cropOption.rotate);
 
-    const { tWidth, tHeight } = fitImg({
+    const { fWidth, fHeight, tWidth, tHeight } = fitImg({
         ...imgInfo,
-        contentWidth: EDIT_WIDTH,
-        contentHeight: EDIT_WIDTH / proportion,
+        contentWidth: width,
+        contentHeight: height,
         deg: approachRotate
     });
 
     const { translate, scale, rotate = 0, mirror = false } = cropOption || defaultCropOption;
 
-    const scalea = width / EDIT_WIDTH;
+    const scalea = width / editwidth;
     // 位移矩阵
     const translateMatrix = math.matrix([[1, 0, translate[0] * scalea / radio], [0, 1, translate[1] * scalea / radio], [0, 0, 1]]);
     // 缩放矩阵
@@ -141,18 +139,18 @@ const CropImg = (props) => {
     const transformStyle = {
         transformOrigin: '50% 50%',
         transform: `matrix(${matrix._data[0][0].toFixed(6)}, ${matrix._data[1][0].toFixed(6)}, ${matrix._data[0][1].toFixed(6)}, ${matrix._data[1][1].toFixed(6)}, ${matrix._data[0][2].toFixed(6)}, ${matrix._data[1][2].toFixed(6)})`,
-        width: Taro.pxTransform(tWidth * scalea, 750),
-        height: Taro.pxTransform(tHeight * scalea, 750),
+        width: Taro.pxTransform(tWidth, 750),
+        height: Taro.pxTransform(tHeight, 750),
         transition: animate ? 'transform .2s' : 'none'
     }
 
     const blur = computedBlur({
-        contentWidth: EDIT_WIDTH,
-        contentHeight: EDIT_WIDTH / proportion,
+        contentWidth: width,
+        contentHeight: height,
         width: imgInfo.width,
         height: imgInfo.height,
-        afterWidth: tWidth * scale,
-        afterHieght: tHeight * scale,
+        afterWidth: fWidth * scale,
+        afterHieght: fHeight * scale,
         printWidth: 10,
         printHeight: 10 / (width / height)
     });

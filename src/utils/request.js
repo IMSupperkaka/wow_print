@@ -15,10 +15,10 @@ const tokeninterceptor = function (chain) {
 }
 
 const getBaseUrl = () => {
-  if (Taro.getEnv() == 'WEB') {
-    return '/api';
-  }
-  return BASE_URL;
+    if (Taro.getEnv() == 'WEB') {
+        return '/api';
+    }
+    return BASE_URL;
 }
 
 class TaroRequest {
@@ -45,15 +45,11 @@ class TaroRequest {
                     url: 'https://up.qiniup.com',
                     filePath: params.filePath,
                     name: params.name,
-                    header: {
-                        "Content-Type": "multipart/form-data"
-                    },
                     formData: {
                         token: data.data
                     },
-                    success: function (res){
+                    success: function (res) {
                         const response = JSON.parse(res.data);
-                        console.log(res.data)
                         resolve({
                             data: `https://cdn.91jiekuan.com/${response.key}`
                         });
@@ -79,9 +75,9 @@ class TaroRequest {
                         if (params.data?.code != '10000') {
                             if (params.data?.code == '10025') {
                                 if (process.env.TARO_ENV == 'h5') {
-                                  return Taro.navigateTo({
-                                    url: `/pages/authInfo/index`
-                                  })
+                                    return Taro.navigateTo({
+                                        url: `/pages/login/index`
+                                    })
                                 }
                                 return dispatch({
                                     type: 'user/login',

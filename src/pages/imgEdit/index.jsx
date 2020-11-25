@@ -38,11 +38,11 @@ const ImgEdit = (props) => {
         contentWidth: contentWidth,
         contentHeight: contentHeight,
         forcefit: ['translate', 'rotate'],
-        onChange: (state) => {
+        onFinish: (cropInfo) => {
             const cloneList = [...imgList];
             cloneList[activeIndex].cropInfo = {
                 ...cloneList[activeIndex].cropInfo,
-                ...state
+                ...cropInfo
             };
             Taro.eventCenter.trigger('editFinish', cloneList); 
         }

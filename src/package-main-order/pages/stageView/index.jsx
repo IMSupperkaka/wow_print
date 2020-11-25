@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import classnames from 'classnames';
 import { View, Image, Button } from '@tarojs/components';
@@ -11,6 +11,7 @@ import TabPanel from '../../../components/TabPanel';
 import Transition from '../../../components/Transition';
 import CropImg from '../../../components/CropImg';
 import styles from './index.module.less';
+import stageBg from '../../images/bg_fram@2x.png';
 import addIcon from '../../../../images/cion_add_to5@2x.png';
 import tipsOnIcon from '../../../../images/icon_prompt_on@2x.png';
 import tipsOffIcon from '../../../../images/icon_prompt_off@2x.png';
@@ -58,6 +59,7 @@ export default () => {
             mirror,
             isTouch
         },
+        transformStyle,
         touchProps,
         mutate
     } = useCrop({
@@ -114,13 +116,29 @@ export default () => {
 
     const uploadRef = useRef();
 
+    useEffect(() => {
+        if (activeEditAreaIndex == null) {
+            return;
+        }
+        const activeArea = modelList[activeModelIndex].editArea[activeEditAreaIndex];
+        const img = activeArea.img;
+        if (!img.imgInfo) {
+            Taro.getImageInfo({
+                src: img.filePath,
+                success: (res) => {
+                    mutateActiveImg({
+                        imgInfo: res
+                    });
+                }
+            })
+        } else {
+            mutateActiveImg();
+        }
+    }, [activeModelIndex, activeEditAreaIndex])
+
     const handleOnchange = (file, fileList) => {
         if (file.status == 'done' && activeEditAreaIndex != null) {
-            setModelList((modelList) => {
-                const cloneList = [...modelList];
-                cloneList[activeModelIndex].editArea[activeEditAreaIndex].img = file;
-                return cloneList;
-            })
+            mutateActiveImg(file)
         }
         setFileList(fileList)
     }
@@ -129,26 +147,33 @@ export default () => {
         uploadRef.current.handleChoose()
     }
 
-    const handleToggleEdit = (index) => {
-        if (activeEditAreaIndex != index) {
-            const activeArea = modelList[activeModelIndex].editArea[index];
-            const img = activeArea.img;
-            setActiveEditAreaIndex(index);
-            Taro.getImageInfo({
-                src: img.filePath,
-                success: (res) => {
-                    mutate({
-                        width: res.width,
-                        height: res.height,
-                        contentWidth: activeArea.width,
-                        contentHeight: activeArea.height,
-                        ...img.cropInfo
-                    })
-                }
+    const mutateActiveImg = (img = {}) => {
+        setModelList(() => {
+            const cloneList = [...modelList];
+            const activeArea = cloneList[activeModelIndex].editArea[activeEditAreaIndex];
+            activeArea.img = {
+                ...activeArea.img,
+                ...img
+            }
+            mutate({
+                width: activeArea.img.imgInfo.width,
+                height: activeArea.img.imgInfo.height,
+                contentWidth: activeArea.width,
+                contentHeight: activeArea.height,
+                ...activeArea.img.cropInfo
             })
-        } else {
-            setActiveEditAreaIndex(null);
-        }
+            return cloneList;
+        })
+    }
+
+    const handleShowEdit = (index, e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        setActiveEditAreaIndex(index);
+    }
+
+    const handleHideEdit = () => {
+        setActiveEditAreaIndex(null);
     }
 
     const handleMirror = (e) => {
@@ -167,11 +192,7 @@ export default () => {
 
     const handleChoosePic = (img) => {
         if (activeEditAreaIndex != null) {
-            setModelList((modelList) => {
-                const cloneList = [...modelList];
-                cloneList[activeModelIndex].editArea[activeEditAreaIndex].img = img;
-                return cloneList;
-            })
+            mutateActiveImg(img);
         }
     }
 
@@ -183,13 +204,38 @@ export default () => {
 
     const activeModel = modelList[activeModelIndex];
 
+    const { width, height, x, y } = activeModel.editArea[activeEditAreaIndex || 0];
+
+    const activeAreaStyle = {
+        position: 'absolute',
+        width: Taro.pxTransform(width, 750),
+        height: Taro.pxTransform(height, 750),
+        top: Taro.pxTransform(x, 750),
+        left: Taro.pxTransform(y, 750)
+    }
+
     return (
         <View className={styles['index']}>
             <Tips />
             {/* swiper中fixed定位不会定位在window上 暂时先放在外面调用 */}
             <Upload className={styles['hidden-upload']} ref={uploadRef} fileList={fileList} onChange={handleOnchange} limit={9}></Upload>
             <View className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+                {
+                    (activeEditAreaIndex != null && width) &&
+                    <View onClick={handleHideEdit} className={styles['edit-stage-absolute']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
+                        <View style={activeAreaStyle} className={styles['crop-img-extra-wrap']}>
+                            <View {...touchProps} className={styles['crop-img-extra']} style={transformStyle}>
+                                <Image data-behavior={['zoom', 'rotate']} src={iconZoom} className={classnames(styles['crop-extra-zoom'], mirror && styles['mirror'])} />
+                                <View className={classnames(styles['crop-extra-bottom'], mirror && styles['mirror'])}>
+                                    <View onClick={handleMirror}>镜像</View>
+                                    <View onClick={handleChangePic}>换图</View>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                }
                 <View className={styles['edit-stage']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
+                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-bg']} src={stageBg}/>
                     <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
                     {
                         activeModel.editArea.map(({ width, height, x, y, img }, index) => {
@@ -205,24 +251,10 @@ export default () => {
                             const style = {
                                 position: 'absolute',
                                 top: Taro.pxTransform(x, 750),
-                                left: Taro.pxTransform(y, 750),
-                                zIndex: 0
+                                left: Taro.pxTransform(y, 750)
                             }
 
-                            return <CropImg onClick={handleToggleEdit.bind(this, index)} extra={({
-                                transformStyle
-                            }) => {
-                                return (
-                                    activeEditAreaIndex == index &&
-                                    <View {...touchProps} className={styles['crop-img-extra']} style={transformStyle}>
-                                        <Image data-behavior={['zoom', 'rotate']} src={iconZoom} className={classnames(styles['crop-extra-zoom'], mirror && styles['mirror'])} />
-                                        <View className={classnames(styles['crop-extra-bottom'], mirror && styles['mirror'])}>
-                                            <View onClick={handleMirror}>镜像</View>
-                                            <View onClick={handleChangePic}>换图</View>
-                                        </View>
-                                    </View>
-                                )
-                            }} style={style} showIgnoreBtn={false} width={width} height={height} src={img.filePath} cropOption={cropOption} animate={!isTouch}/>
+                            return <CropImg onClick={handleShowEdit.bind(this, index)} style={style} showIgnoreBtn={false} width={width} height={height} editwidth={width} src={img.filePath} cropOption={cropOption} animate={!isTouch}/>
                         })
                     }
                 </View>
