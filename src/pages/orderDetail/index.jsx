@@ -17,7 +17,7 @@ export default () => {
     });
 
     // TODO:初始值给从订单拿到的倒计时值
-    const [countDown, setCountDown] = useState(100)
+    const [countDown, setCountDown] = useState(null)
 
     useDidShow(() => {
         let query = getRouterParams()
@@ -30,16 +30,33 @@ export default () => {
     })
 
     useEffect(() => {
+        let timer = null;
         if(orderDetail.status == '1') {
-            let timer = setTimeout(() => {
-                // TODO:初始值给从订单拿到的倒计时值
-                setCountDown(countDown - 1)
+            timer = setTimeout(() => {
+                let closeTime = new Date(orderDetail.expiredTime).getTime();
+                let currentTime = new Date().getTime()
+                let timeSub = closeTime - currentTime
+                if(timeSub > 0) {
+                   let newCountDown = turnHMS(timeSub)
+                    setCountDown(newCountDown)
+                }
             }, 1000)
-            if(!+countDown) {
+            if(countDown === '00:00:00') {
                 clearTimeout(timer)
             }
         }
+        return () => {clearTimeout(timer)}
     }, [countDown, orderDetail.status])
+
+    // 时间戳差值转换时分秒
+    const turnHMS = (time) => {
+        let hms = time / 1000;
+        let hour = parseInt(hms / (60 * 60))
+        let minutes = parseInt((hms % (60 * 60)) / 60) 
+        let seconds = parseInt((hms % (60 * 60)) % 60)
+        hms = `${hour.toString().length == 2 ? hour : '0' + hour}:${minutes.toString().length == 2 ? minutes : '0' + minutes}:${seconds.toString().length == 2 ? seconds : '0' + seconds}`
+        return hms
+    }
 
     const handleCancel = () => {
         Taro.showModal({
@@ -150,16 +167,15 @@ export default () => {
       })
     }
 
-    //TODO: 背景置灰加一个已关闭的状态
-    const greyHeader = [4, 5].includes(orderDetail.status);
+    const greyHeader = [4, 5, 6].includes(orderDetail.status);
 
     return (
         <View className={styles["order-detail"]}>
             <View className={classNames('header', greyHeader && 'grey')}>
                 <Text>{ orderStatus.get(orderDetail.status) }</Text>
                 {
-                    orderDetail.status == 1 && 
-                    <Text>{ countDown }后订单关闭</Text>
+                    orderDetail.status == 1 && orderDetail.expiredTime &&
+                    <Text className="count-down">{ countDown }后订单关闭</Text>
                 }
             </View>
             <View className="address-info">
