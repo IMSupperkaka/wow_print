@@ -21,7 +21,6 @@ export default {
         'pages/logisticsDetails/index',
         'pages/portfolio/index',
         'pages/deskCalendar/index',
-        'pages/stageView/index',
         'pages/xdPromote/index'
     ],
     tabBar: {
@@ -49,6 +48,15 @@ export default {
             }
         ]
     },
+    subPackages: [
+        {
+            root: 'package-main-order',
+            name: 'main-order',
+            pages: [
+                'pages/stageView/index'
+            ]
+        }
+    ],
     window: {
         navigationBarBackgroundColor: '#fff',
         navigationBarTextStyle: 'black',

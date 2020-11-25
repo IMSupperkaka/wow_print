@@ -1,8 +1,10 @@
+.index {
+    height: 100vh;
+    overflow: hidden;
+}
 .hidden-upload {
-  position: fixed;
   left: -9999;
   top: -9999;
-  visibility: hidden;
   width: 0;
   height: 0;
 }
@@ -31,10 +33,16 @@
   height: calc(100vh - 534px);
   justify-content: center;
   align-items: center;
+  overflow: hidden;
+  transition: height .3s ease-in-out;
+  &.fold {
+    height: calc(100vh - 93px);
+  }
   .edit-stage {
     position: relative;
     width: 604px;
     height: 440px;
+    background-color: #fff;
     .edit-stage-background{
       position: relative;
       pointer-events: none;
@@ -44,9 +52,12 @@
       .crop-img-box {
         overflow: hidden;
       }
+      .crop-img-extra-box {
+        z-index: 2;
+      }
     }
     .crop-img-extra {
-      border: 2px solid #000;
+      border: 4px solid rgba(0,0,0,.7);
       flex-shrink: 0;
       .crop-extra-zoom {
         position: absolute;
@@ -54,7 +65,33 @@
         top: -24px;
         width: 48px;
         height: 48px;
+        &.mirror {
+            left: -24px;
+            right: auto;
+            transform: matrix(-1, 0, 0, 1, 0, 0);
+        }
       }
+    }
+    .crop-extra-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        width: 177px;
+        height: 52px;
+        position: absolute;
+        left: -4px;
+        bottom: -56px;
+        background-color: rgba(0,0,0,.7);
+        font-size: 24px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #FFFFFF;
+        border-radius: 0px 0px 10px 10px;
+        &.mirror {
+            right: -4px;
+            left: auto;
+            transform: matrix(-1, 0, 0, 1, 0, 0);
+        }
     }
   }
 }
@@ -66,6 +103,14 @@
     background-color: #fff;
     font-size: 24px;
     color: #666666;
+    .fold {
+        position: absolute;
+        width: 80px;
+        height: 24px;
+        left: 50%;
+        top: 0;
+        transform: translate(-50%, -100%);
+    }
     .tab-content {
       box-sizing: border-box;
       display: grid;
@@ -109,6 +154,14 @@
     :global {
         .wy-tabs__content {
             height: 350px;
+            transition: height .3s ease-in-out;
+        }
+    }
+    &.fold {
+        :global {
+            .wy-tabs__content {
+                height: 0px;
+            }
         }
     }
 }
