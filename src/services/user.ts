@@ -14,11 +14,12 @@ export const login = (code) => {
     })
 }
 
-export const sms = () => {
-  return TaroRequest.request({
-      url: `/app/sms`,
-      method: 'GET'
-  })
+export const sms = (data) => {
+    return TaroRequest.request({
+        url: `/app/sms`,
+        method: 'POST',
+        data
+    })
 }
 
 export const smsLogin = (data) => {

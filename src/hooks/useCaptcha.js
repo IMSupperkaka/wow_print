@@ -11,58 +11,62 @@ import { loadNECaptcha } from '../utils/captcha';
 
 export default (props) => {
 
-  const [loading, setLoading] = useState(false);
-  const [time, setTime] = useState(60);
-  const instance = useRef();
-  const timer = useRef();
+    const [loading, setLoading] = useState(false);
+    const [time, setTime] = useState(60);
+    const instance = useRef();
+    const timer = useRef();
 
-  useEffect(() => {
-    if (timer.current && time <= 0) {
-      clearInterval(timer.current);
-      setTime(60);
+    useEffect(() => {
+        if (timer.current && time <= 0) {
+            clearInterval(timer.current);
+            setTime(60);
+        }
+    }, [time])
+
+    const startCount = () => {
+        timer.current = setInterval(() => {
+            setTime((time) => {
+                return --time;
+            })
+        }, 1000);
     }
-  }, [time])
 
-  const startCount = () => {
-    timer.current = setInterval(() => {
-      setTime((time) => {
-        return --time;
-      })
-    }, 1000);
-  }
-
-  const onClose = () => {
-    instance.current.refresh();
-  }
-
-  const onVerify = (err, data) => {
-    if (err) {
-        return;
+    const onClose = () => {
+        instance.current.refresh();
     }
-    const result = props.onVerify(data);
-    instance.current.refresh();
-    if (typeof result?.then === 'function') {
-      return result.then(() => {
-        startCount();
-      })
+
+    const onVerify = (err, data) => {
+        if (err) {
+            return;
+        }
+        const result = props.onVerify({
+            captchaId: props.captchaId,
+            ...data
+        });
+        instance.current.refresh();
+        if (typeof result?.then === 'function') {
+            return result.then(() => {
+                startCount();
+            })
+        }
     }
-  }
 
-  useEffect(() => {
-    setLoading(true);
-    loadNECaptcha({
-      onClose: onClose,
-      onVerify: onVerify
-    }).then((captcha) => {
-      instance.current = captcha;
-      setLoading(false);
-    })
-  }, [])
+    useEffect(() => {
+        setLoading(true);
+        loadNECaptcha({
+            captchaId: props.captchaId,
+            onClose: onClose,
+            onVerify: onVerify
+        }).then((captcha) => {
+            instance.current = captcha;
+            setLoading(false);
+        })
+    }, [])
 
-  return {
-    loading,
-    time,
-    captcha: instance.current
-  }
+    return {
+        loading,
+        time,
+        captcha: instance.current
+    }
 
 }

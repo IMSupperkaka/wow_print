@@ -167,19 +167,16 @@ export const getH5Params = (url, key) => {
  */
 export const getRouterParams = (key) => {
     if(Taro.getEnv() == 'WEB') {
-        let paramsObject = {},
-        url = Taro.getCurrentInstance().page.path;
-        let paramsString = url.split("?")[1];
-        let paramsArray = paramsString.split("&");
-        paramsArray.forEach((item, index) => {
-            let ikey = item.split("=")[0] || index
-            let ivalue = item.split("=")[1] || ""
-            paramsObject[ikey] = ivalue
-        })
+        const search = location.href.split('?')[1];
+        const params = search ? search.split('&').reduce((result, v) => {
+            const array = v.split('=');
+            result[array[0]] = decodeURIComponent(array[1]);
+            return result;
+        }, {}) : {}
         if(key) {
-            return paramsObject[key]
-        }
-        return paramsObject
+            return params[key]
+        };
+        return params
     } else {
         if(key) {
             return Taro.getCurrentInstance().router.params[key]
