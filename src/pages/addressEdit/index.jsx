@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Image, Input, Switch, Picker, Text } from '@tarojs/components';
 import { AtButton } from 'taro-ui';
-import Cell from '../../components/Cell';
 
+import Cell from '../../components/Cell';
+import RegionPicker from '../../components/RegionPicker';
 import styles from './index.module.less';
 import wechatIcon from '../../../images/icon_wechat@2x.png';
 import { add, edit, detail, del } from '../../services/address';
@@ -163,13 +164,13 @@ export default () => {
                         }}
                     />
                 </Cell>
-                <Picker value={form.region} mode='region' onChange={onChange}>
+                <RegionPicker value={form.region} onChange={onChange}>
                     <Cell title={
                         form.region.length > 0 ?
                             form.region.join('') :
                             <Text>所在地区</Text>
                     } isLink />
-                </Picker>
+                </RegionPicker>
                 <Cell>
                     <Input
                         className={styles['cell-input']}

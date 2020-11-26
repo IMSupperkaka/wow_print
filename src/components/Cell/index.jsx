@@ -13,7 +13,7 @@ export default (props) => {
         <View className={classNames('wy-cell', props.className)} onClick={props.onClick}>
             {
                 title &&
-                <View>{ title}</View>
+                <View className="wy-cell_title">{ title}</View>
             }
             {
                 hasValue &&

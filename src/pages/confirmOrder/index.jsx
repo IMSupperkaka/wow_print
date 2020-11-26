@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import styles from './index.module.less'
 import { fix } from '../../utils/utils'
 import Card from '../../components/Card'
+import Pay, { usePay } from '../../components/Pay'
 import SafeArea from '../../components/SafeArea'
 import SelectCoupon from '../../page-components/SelectCoupon'
 import ProductList from './productList'
@@ -26,6 +27,50 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     const [productDetail, setProductDetail] = useState({});
     const [matchList, setMatchList] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+    const { payProps, pay } = usePay({
+        confirmPay: ({ payType }) => {
+            return create({
+                addressId: addressInfo.id,
+                couponUserId: coupon.id,
+                payType,
+                goodsInfo: [
+                    {
+                        goodIsMaster: 1,
+                        goodsNums: 1,
+                        goodId: goodId,
+                        userImageList: userImageList.map((v) => {
+                            return {
+                                ...v,
+                                filePath: null
+                            }
+                        })
+                    },
+                    ...selectedRowKeys.map((id) => {
+                        var item = matchList.find((v) => { return v.id == id });
+                        return {
+                            goodIsMaster: 0,
+                            goodsNums: item.saleNum,
+                            goodId: item.id
+                        }
+                    })
+                ]
+            })
+        },
+        onSuccess: ({ data }) => {
+            Taro.redirectTo({
+                url: `/pages/result/index?type=pay_success&id=${data.data.loanId}`
+            })
+        },
+        onFail: ({ data }) => {
+            Taro.redirectTo({
+                url: `/pages/result/index?type=pay_fail&id=${data.data.loanId}`
+            })
+        },
+        complete: () => {
+            Taro.eventCenter.trigger('finishOrder', goodId);
+        }
+    });
 
     useEffect(() => {
         Taro.eventCenter.on('confirmSelectMatch', (id) => {
@@ -82,47 +127,9 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 icon: 'none'
             })
         }
-        create({
-            addressId: addressInfo.id,
-            couponUserId: coupon.id,
-            goodsInfo: [
-                {
-                    goodIsMaster: 1,
-                    goodsNums: 1,
-                    goodId: goodId,
-                    userImageList: userImageList
-                },
-                ...selectedRowKeys.map((id) => {
-                    var item = matchList.find((v) => { return v.id == id });
-                    return {
-                        goodIsMaster: 0,
-                        goodsNums: item.saleNum,
-                        goodId: item.id
-                    }
-                })
-            ]
-        }).then(({ data }) => {
-            Taro.requestPayment({
-                timeStamp: data.data.payData.timestamp,
-                nonceStr: data.data.payData.nonce_str,
-                package: data.data.payData.pay_package,
-                signType: 'MD5',
-                paySign: data.data.payData.paysign,
-                success: function (res) {
-                    Taro.redirectTo({
-                        url: `/pages/result/index?type=pay_success&id=${data.data.loanId}`
-                    })
-                },
-                fail: function (res) {
-                    Taro.redirectTo({
-                        url: `/pages/result/index?type=pay_fail&id=${data.data.loanId}`
-                    })
-                },
-                complete: () => {
-                    Taro.eventCenter.trigger('finishOrder', goodId);
-                }
-            })
-        })
+        openPay({
+            money: 
+        });
     }
 
     const handleChooseAddress = () => {
@@ -268,6 +275,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                     )
                 }}
             </SafeArea>
+            <Pay {...payProps}/>
         </View>
     )
 }
