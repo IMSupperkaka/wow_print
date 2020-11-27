@@ -10,19 +10,24 @@ export const usePay = (props) => {
     const [visible, setVisible] = useState(false);
     const [money, setMoney] = useState(0);
 
+    const confirmPay = ({ payType }) => {
+        const response = props.confirmPay({
+            payType
+        });
+        if (response.then === 'function') {
+            response.then(() => {
+                pay(response);
+            })
+        } else {
+            pay(response);
+        }
+    }
+
     const openPay = ({ money }) => {
         if (process.env.TARO_ENV == 'weapp') {
-            const response = props.confirmPay({
+            return confirmPay({
                 payType: 'JSAPI'
             });
-            if (response.then === 'function') {
-                response.then(() => {
-                    pay(response);
-                })
-            } else {
-                pay(response);
-            }
-            return;
         }
         if (process.env.TARO_ENV == 'h5') {
             setVisible(true);
@@ -49,7 +54,7 @@ export const usePay = (props) => {
         payProps: {
             visible,
             money,
-            confirmPay: props.confirmPay
+            confirmPay
         },
         openPay,
         pay
@@ -58,16 +63,31 @@ export const usePay = (props) => {
 
 export default (props) => {
 
+    const { confirmPay } = props;
+
     const [payType, setPayType] = useState('wechat');
 
-    const confirmPay = () => {
-        const response = props.confirmPay({ payType });
+    const handleConfirm = () => {
+        let payMethod;
+        if (payType == 'wechat') {
+            if (process.env.TARO_ENV == 'h5') {
+                payMethod = 'MWEB';
+            } else {
+                payMethod = 'JSAPI';
+            }
+        }
+        if (payType == 'alipay') {
+            payMethod = 'WAP';
+        }
+        confirmPay({
+            payType: payMethod
+        });
     }
 
     return (
         <Modal visible={props.visible}>
             <View>请选择支付方式</View>
-            <Button className="primary-btn" onClick={confirmPay}>确认支付</Button>
+            <Button className="primary-btn" onClick={handleConfirm}>确认支付</Button>
         </Modal>
     )
 }

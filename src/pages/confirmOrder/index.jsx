@@ -28,12 +28,12 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     const [matchList, setMatchList] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-    const { payProps, pay } = usePay({
+    const { payProps, openPay } = usePay({
         confirmPay: ({ payType }) => {
             return create({
                 addressId: addressInfo.id,
                 couponUserId: coupon.id,
-                payType,
+                payMethod: payType,
                 goodsInfo: [
                     {
                         goodIsMaster: 1,
@@ -128,7 +128,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
             })
         }
         openPay({
-            money: 
+            money: payMoney
         });
     }
 
