@@ -65,6 +65,8 @@ export default {
                 case 3:
                     path = `/pages/deskCalendar/index`
                     break;
+                case 4:
+                    path = `/package-main-order/pages/stageView/index`
             }
 
             if (goConfirmOrder) {

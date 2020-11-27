@@ -75,6 +75,15 @@ $color-brand: #FF6345;
     &::after {
         border-color: #FF6345;
     }
+    &:hover {
+        background-color: #FF6345!important;
+        color: #fff!important;
+    }
+    &:active {
+        background-color: #FF6345!important;
+        color: #fff!important;
+        opacity: .7;
+    }
 }
 .outline-btn {
     color: #666666;

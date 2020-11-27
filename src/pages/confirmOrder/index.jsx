@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import styles from './index.module.less'
 import { fix } from '../../utils/utils'
 import Card from '../../components/Card'
-import Pay, { usePay } from '../../components/Pay'
+import Pay from '../../components/Pay'
 import SafeArea from '../../components/SafeArea'
 import SelectCoupon from '../../page-components/SelectCoupon'
 import ProductList from './productList'
@@ -28,7 +28,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     const [matchList, setMatchList] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-    const { payProps, openPay } = usePay({
+    const { payProps, openPay } = Pay.usePay({
         confirmPay: ({ payType }) => {
             return create({
                 addressId: addressInfo.id,
@@ -55,16 +55,21 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                         }
                     })
                 ]
+            }).then((res) => {
+                return {
+                    payData: res.data.data.payData,
+                    loanId: res.data.data.loanId
+                }
             })
         },
-        onSuccess: ({ data }) => {
+        onSuccess: ({ loanId }) => {
             Taro.redirectTo({
-                url: `/pages/result/index?type=pay_success&id=${data.data.loanId}`
+                url: `/pages/result/index?type=pay_success&id=${loanId}`
             })
         },
-        onFail: ({ data }) => {
+        onFail: ({ loanId }) => {
             Taro.redirectTo({
-                url: `/pages/result/index?type=pay_fail&id=${data.data.loanId}`
+                url: `/pages/result/index?type=pay_fail&id=${loanId}`
             })
         },
         complete: () => {

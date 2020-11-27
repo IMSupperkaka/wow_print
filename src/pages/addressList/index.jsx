@@ -101,7 +101,7 @@ const AddresssList = ({ dispatch }) => {
                 {({ bottom }) => {
                     return (
                         <View className={styles["new-address-wrap"]} style={{ bottom: Taro.pxTransform(bottom + 32, 750) }}>
-                            <AtButton className={styles["new-address"]} type="primary" onClick={handleAddAddress}>新增收获地址</AtButton>
+                            <AtButton className={styles["new-address"]} type="primary" onClick={handleAddAddress}>新增收货地址</AtButton>
                         </View>
                     )
                 }}

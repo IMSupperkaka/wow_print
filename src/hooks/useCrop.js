@@ -206,6 +206,7 @@ export default (props) => {
                 lastTouch: nowlastTouch
             }
         })
+        console.log(e);
         dispatch({
             type: 'saveStore',
             payload: {

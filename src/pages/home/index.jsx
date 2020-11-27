@@ -103,7 +103,6 @@ const Home = (props) => {
     return (
         <ScrollView className={styles.index}
             scrollY
-            style='height: 100vh'
             onScroll={pageScroll}
         >
             <NavBar style={navBarStyle} left={

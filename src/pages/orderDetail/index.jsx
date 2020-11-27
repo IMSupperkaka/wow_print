@@ -9,8 +9,10 @@ import { detail, repay, cancel, receipt } from '../../services/order'
 import { orderStatus } from '../../utils/map/order'
 import address from '../../../images/icon_address@2x.png'
 import { getRouterParams } from '../../utils/utils'
+import Pay from '../../components/Pay'
 
 export default () => {
+
     const [query, setQuery] = useState({});
     const [orderDetail, setOrderDetail] = useState({
       goodsInfo: []
@@ -18,6 +20,28 @@ export default () => {
 
     // TODO:初始值给从订单拿到的倒计时值
     const [countDown, setCountDown] = useState(null)
+
+    const { payProps, openPay } = Pay.usePay({
+        confirmPay: ({ payType }) => {
+            return repay({
+                payMethod: payType,
+                loanId: query.id
+            })
+        },
+        onSuccess: () => {
+            Taro.eventCenter.trigger('updateOrderStatus', query.id);
+            Taro.navigateTo({
+                url: `/pages/result/index?type=pay_success&id=${query.id}`
+            })
+        },
+        onFail: () => {
+            Taro.showToast({
+                title:'取消支付',
+                icon:'none',
+                duration:1000
+            })
+        }
+    })
 
     useDidShow(() => {
         let query = getRouterParams()
@@ -81,30 +105,9 @@ export default () => {
     }
 
     const handleRepay = () => {
-        repay({
-            loanId: query.id
-        }).then(({ data }) => {
-            Taro.requestPayment({
-                timeStamp: data.data.timestamp,
-                nonceStr: data.data.nonce_str,
-                package: data.data.pay_package,
-                signType: 'MD5',
-                paySign: data.data.paysign,
-                success: function (res) {
-                    Taro.eventCenter.trigger('updateOrderStatus', query.id);
-                    Taro.navigateTo({
-                        url: `/pages/result/index?type=pay_success&id=${query.id}`
-                    })
-                },
-                fail: function (res) {
-                    Taro.showToast({
-                        title:'取消支付',
-                        icon:'none',
-                        duration:1000
-                    })
-                }
-            })
-        })
+        openPay({
+            money: orderDetail.money
+        });
     }
 
     const handleCopy = (data) => {
@@ -290,6 +293,7 @@ export default () => {
                     }
                 </View>
             </View>
+            <Pay {...payProps}/>
         </View>
     )
 }

@@ -6,7 +6,8 @@ import { View, Text, Image, Button, Form, Input } from '@tarojs/components';
 
 import useCaptcha from '../../hooks/useCaptcha';
 import styles from './index.module.less';
-import { smsLogin, sms } from '../../services/user';
+import { sms } from '../../services/user';
+import loginLogo from '../../../images/bg_wayin_avatar@2x.png';
 
 const handleGoService = () => {
     const url = encodeURIComponent(`${BASE_WEB_URL}/agreement.html\?key=user_service_agreement`);
@@ -84,7 +85,7 @@ const Login = ({ dispatch }) => {
 
     return (
         <View className={styles['page']}>
-            <Image className={styles['login-logo']} />
+            <Image className={styles['login-logo']} src={loginLogo}/>
             <View className={styles['login-title']}>欢迎登陆哇印</View>
             <Form onSubmit={formSubmit}>
                 <View className={styles['login-form']}>
