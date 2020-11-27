@@ -3,6 +3,7 @@ import Taro from '@tarojs/taro';
 import { jump } from '../utils/utils';
 import { judge, popup } from '../services/home';
 import { receive } from '../services/coupon';
+import { null } from 'mathjs';
 
 export default {
     namespace: 'home',
@@ -37,7 +38,6 @@ export default {
                 }
             })
             // TODO:onLaunch时dispatch本函数，在这里通过控制visible来控制弹框弹出，规则修改写在这里。
-            console.log('dakai')
             if (!couponJudge.data.data.isHaveCoupon) {
                 return yield put({
                     type: 'saveDialog',
@@ -49,6 +49,25 @@ export default {
                 })
             }
             if (popupList.data.data.length > 0) {
+                // let popupStorage = Taro.setStorageSync("popup0Rule");
+                // if(popupStorage) {
+                //     popupStorage.forEach((item) => {
+                //         let curIndex = popupList.findIndex((oi) => (oi.id == item.id));
+                //     })
+                // }
+                // let curPopupList = popupList.map((item) => {
+                //     let curIndex = popupStorage.findIndex((oi) => (oi.id == item.id));
+                //     let oldItem = curIndex >= 0 ? popupStorage[curIndex] : {};
+                //     return {
+                //         id: item.id,
+                //         // 天数重置时间
+                //         resetTimeLimit: moment().add(item.intervalDays, 'days'),
+                //         // 次数限制
+                //         numLimit: item.daysShowTimes,
+                //         // 已弹次数
+                //         num: oldItem.num ? (oldItem.num + 1) : 0
+                //     }
+                // })
                 yield put({
                     type: 'savePopup',
                     payload: {
