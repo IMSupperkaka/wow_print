@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-09-09 21:04:30
  * @LastEditors: Shawn
- * @LastEditTime: 2020-11-14 12:11:06
+ * @LastEditTime: 2020-11-26 01:08:34
  * @FilePath: \wow_print\config\index.js
  * @Description: Descrip Content
  */
@@ -71,7 +71,7 @@ const config = {
             }
         },
         router: {
-            mode: 'hash'
+            mode: 'browser'
         },
         devServer: {
             proxy: {

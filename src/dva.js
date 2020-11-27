@@ -1,6 +1,7 @@
 
 import Taro from '@tarojs/taro'
 import { create } from 'dva-core'
+import persistEnhancer from './dva-persist'
 import models from './models'
 
 let dispatch
@@ -19,13 +20,17 @@ function createApp(opt) {
     dispatch = store.dispatch
 
     app.dispatch = dispatch
+
     return app
 }
 
 const dvaApp = createApp({
     initialState: {},
     enableLog: false,
-    models: models
+    models: models,
+    extraEnhancers: [
+        persistEnhancer()
+    ]
 })
 
 export const store = dvaApp.getStore();

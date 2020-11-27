@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build-test:weapp": "set BUILD_ENV=test&&taro build --type weapp",
+    "build-test:h5": "set BUILD_ENV=test&&taro build --type h5",
     "build:weapp": "taro build --type weapp",
     "build:swan": "taro build --type swan",
     "build:alipay": "taro build --type alipay",
@@ -52,6 +53,7 @@
     "dva-core": "^2.0.2",
     "dva-loading": "^3.0.20",
     "dva-model-extend": "^0.1.2",
+    "dva-model-persist": "^1.0.0",
     "mathjs": "^7.5.1",
     "node-sass": "^4.14.1",
     "qiniu-js": "^3.1.1",
@@ -62,6 +64,7 @@
     "react-transition-group": "^4.4.1",
     "redux": "^4.0.0",
     "redux-logger": "^3.0.6",
+    "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
     "taro-list": "^1.0.8",
     "taro-listview": "^2.0.2",

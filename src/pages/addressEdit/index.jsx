@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Image, Input, Switch, Picker, Text } from '@tarojs/components';
 import { AtButton } from 'taro-ui';
-import Cell from '../../components/Cell';
 
-import './index.less';
+import Cell from '../../components/Cell';
+import RegionPicker from '../../components/RegionPicker';
+import styles from './index.module.less';
 import wechatIcon from '../../../images/icon_wechat@2x.png';
 import { add, edit, detail, del } from '../../services/address';
 import { useEffect } from 'react';
@@ -126,10 +127,10 @@ export default () => {
 
     return (
         <View>
-            <View className="address-wrap">
+            <View className={styles['address-wrap']}>
                 <Cell>
                     <Input
-                        className="cell-input"
+                        className={styles['cell-input']}
                         name='recipient'
                         type='text'
                         maxLength={10}
@@ -147,7 +148,7 @@ export default () => {
                 </Cell>
                 <Cell>
                     <Input
-                        className="cell-input"
+                        className={styles['cell-input']}
                         name='phone'
                         type='number'
                         maxLength={11}
@@ -163,16 +164,16 @@ export default () => {
                         }}
                     />
                 </Cell>
-                <Picker value={form.region} mode='region' onChange={onChange}>
+                <RegionPicker value={form.region} onChange={onChange}>
                     <Cell title={
                         form.region.length > 0 ?
-                        form.region.join('') :
-                        <Text>所在地区</Text>
-                    } isLink/>
-                </Picker>
+                            form.region.join('') :
+                            <Text>所在地区</Text>
+                    } isLink />
+                </RegionPicker>
                 <Cell>
                     <Input
-                        className="cell-input"
+                        className={styles['cell-input']}
                         name='address'
                         type='text'
                         maxLength={50}
@@ -189,23 +190,26 @@ export default () => {
                     />
                 </Cell>
             </View>
-            <Cell className="set-default" title="设为默认地址">
-                <Switch className="switch" color="#FF6345" checked={form.isDefault} onChange={(event) => {
+            <Cell className={styles['set-default']} title="设为默认地址">
+                <Switch className={styles['switch']} color="#FF6345" checked={form.isDefault} onChange={(event) => {
                     setForm({
                         ...form,
                         isDefault: event.detail.value
                     })
-                }}/>
+                }} />
             </Cell>
             {
                 query.type == 'edit' &&
-                <Cell onClick={handleDelete} className="delete-address" title="删除该收获地址"/>
+                <Cell onClick={handleDelete} className={styles['delete-address']} title="删除该收货地址" />
             }
-            <AtButton disabled={!isValid} className="save-btn" type="primary" onClick={handleSave}>保存并使用</AtButton>
-            <AtButton className="use-wx-location" type="primary" onClick={onGetAddress}>
-              <Image className="wechat-icon" src={wechatIcon}/>
-              使用微信地址
-            </AtButton>
+            <AtButton disabled={!isValid} className={styles['save-btn']} type="primary" onClick={handleSave}>保存并使用</AtButton>
+            {
+                process.env.TARO_ENV === 'weapp' &&
+                <AtButton className={styles['use-wx-location']} type="primary" onClick={onGetAddress}>
+                    <Image className={styles['wechat-icon']} src={wechatIcon} />
+               使用微信地址
+             </AtButton>
+            }
         </View>
     )
 }

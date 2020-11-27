@@ -65,6 +65,8 @@ export default {
                 case 3:
                     path = `/pages/deskCalendar/index`
                     break;
+                case 4:
+                    path = `/package-main-order/pages/stageView/index`
             }
 
             if (goConfirmOrder) {
@@ -166,21 +168,6 @@ export default {
                         type: 'savePortfolioId',
                         payload: response.data.data.portfolioId
                     })
-                } else {
-                    // Taro.showModal({
-                    //     title: '提示',
-                    //     content: '作品集已满，请清除过多的作品~',
-                    //     confirmText: '去清除',
-                    //     cancelText: '取消',
-                    //     confirmColor: '#FF6345',
-                    //     success: (res) => {
-                    //         if (res.confirm) {
-                    //             Taro.navigateTo({
-                    //                 url: '/pages/portfolio/index'
-                    //             })
-                    //         }
-                    //     }
-                    // })
                 }
             } catch (error) {
                 console.log(error)

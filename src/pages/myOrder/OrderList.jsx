@@ -7,6 +7,7 @@ import styles from './orderList.module.less'
 import { orderStatus } from '../../utils/map/order'
 import { list, repay, cancel, receipt, detail } from '../../services/order'
 import Empty from '../../components/Empty'
+import Pay from '../../components/Pay'
 import noOrderIcon from '../../../images/bg_no_order@2x.png'
 
 export default (props) => {
@@ -17,6 +18,31 @@ export default (props) => {
         current: 0,
         pageSize: 10,
         total: 0
+    });
+
+    const { payProps, openPay, params } = Pay.usePay({
+        confirmPay: ({ payType }) => {
+            return repay({
+                payMethod: payType,
+                loanId: params.id
+            }).then((res) => {
+                return {
+                    payData: res.data.data
+                }
+            })
+        },
+        onSuccess: () => {
+            Taro.navigateTo({
+                url: `/pages/result/index?type=pay_success&id=${params.id}`
+            })
+        },
+        onFail: () => {
+            Taro.showToast({
+                title:'取消支付',
+                icon:'none',
+                duration:1000
+            })
+        }
     });
 
     useEffect(() => {
@@ -106,30 +132,7 @@ export default (props) => {
 
     const handleRepay = (order, e) => {
         e.stopPropagation();
-        repay({
-            loanId: order.id
-        }).then(({ data }) => {
-            Taro.requestPayment({
-                timeStamp: data.data.timestamp,
-                nonceStr: data.data.nonce_str,
-                package: data.data.pay_package,
-                signType: 'MD5',
-                paySign: data.data.paysign,
-                success: function (res) {
-                    updateOrderStatus(order.id);
-                    Taro.navigateTo({
-                        url: `/pages/result/index?type=pay_success&id=${order.id}`
-                    })
-                },
-                fail: function (res) {
-                    Taro.showToast({
-                        title:'取消支付',
-                        icon:'none',
-                        duration:1000
-                    })
-                }
-            })
-        })
+        openPay(order);
     }
 
     const handleDetail = (order, e) => {
@@ -243,6 +246,7 @@ export default (props) => {
                 </View> :
                 <Empty src={noOrderIcon} text="想了想，确实没有订单"/>
             }
+            <Pay {...payProps}/>
         </ScrollView>
     )
 }

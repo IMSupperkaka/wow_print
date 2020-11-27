@@ -4,7 +4,7 @@ import { View, Canvas } from '@tarojs/components';
 
 import './index.less';
 import Dialog from '../Dialog';
-import { compressImg } from '../../utils/compress';
+import compressImg from '../../utils/compress/index';
 import useFreshState from '../../hooks/useFreshState';
 import { uploadFile } from '../../services/upload';
 
@@ -28,8 +28,8 @@ export default React.forwardRef((props, ref) => {
     const [uploadList, setUploadList] = useState([]);
 
     const [getFileList, setFileList] = useFreshState(
-      fileList || defaultFileList || [],
-      fileList
+        fileList || defaultFileList || [],
+        fileList
     );
 
     useImperativeHandle(ref, () => {
@@ -39,14 +39,14 @@ export default React.forwardRef((props, ref) => {
     })
 
     const onChange = (info) => {
-      setFileList(info.fileList);
-      onChangeProp(info.file, info.fileList);
+        setFileList(info.fileList);
+        onChangeProp(info.file, info.fileList);
     }
 
     const progress = (item, res, imgInfo, status) => {
         const nextFileList = getFileList().concat();
         const index = nextFileList.findIndex((v) => {
-          return v.uid == item.uid;
+            return v.uid == item.uid;
         });
         const currentItem = nextFileList[index];
         currentItem.status = status;
@@ -59,16 +59,16 @@ export default React.forwardRef((props, ref) => {
         }
         currentItem.filePath = item.filePath;
         setUploadList((uploadList) => {
-          const cloneUploadList = [...uploadList];
-          const uploadIndex = cloneUploadList.findIndex((v) => {
-            return v.uid == item.uid;
-          });
-          cloneUploadList[uploadIndex] = currentItem;
-          return cloneUploadList;
+            const cloneUploadList = [...uploadList];
+            const uploadIndex = cloneUploadList.findIndex((v) => {
+                return v.uid == item.uid;
+            });
+            cloneUploadList[uploadIndex] = currentItem;
+            return cloneUploadList;
         });
         onChange({
-          file: currentItem,
-          fileList: nextFileList
+            file: currentItem,
+            fileList: nextFileList
         });
     }
 
@@ -93,50 +93,28 @@ export default React.forwardRef((props, ref) => {
                 })
                 setUploadList(uploadList);
                 setFileList([
-                  ...nextFileList,
-                  ...uploadList
+                    ...nextFileList,
+                    ...uploadList
                 ]);
                 uploadList.map((v) => {
                     progress(v, null, null, 'uploading');
                     getImageInfo(v.filePath).then((imgInfo) => {
-                      uploadFile({
-                          filePath: v.filePath
-                      }).then((res) => {
-                          compressImg({ filePath: v.filePath, width: imgInfo.width, height: imgInfo.height }).then((filePath) => {
-                            progress({
-                              ...v,
-                              filePath
-                            }, res, imgInfo, 'done');
-                          });
-                      })
+                        console.log(v.filePath)
+                        uploadFile({
+                            filePath: v.filePath
+                        }).then((res) => {
+                            // progress(v, res, imgInfo, 'done');
+                            compressImg({ canvasId: 'compress-canvas', filePath: v.filePath, width: imgInfo.width, height: imgInfo.height }).then((filePath) => {
+                                progress({
+                                    ...v,
+                                    filePath
+                                }, res, imgInfo, 'done');
+                            });
+                        })
                     })
                 })
             }
         })
-    }
-
-    const compressImg = ({ filePath, width, height }) => {
-      return new Promise((resolve, reject) => {
-        const context = Taro.createCanvasContext('compress-canvas');
-        const drawWidth = width > height ? 500 : 500 * (width / height);
-        const drawHeight = width > height ? (500 / (width / height)) : 500;
-        context.drawImage(filePath, 0, 0, drawWidth, drawHeight)
-        context.draw(false, () => {
-          Taro.canvasToTempFilePath({
-            canvasId: "compress-canvas",
-            width: drawWidth,
-            height: drawHeight,
-            fileType: "jpg",
-            quality: 1,
-            success: ({ tempFilePath }) => {
-              resolve(tempFilePath);
-            },
-            complete: (result) => {
-              console.log(result);
-            }
-          });
-        })
-      })
     }
 
     const chooseArea = props.children ? React.cloneElement(props.children, {
@@ -146,18 +124,18 @@ export default React.forwardRef((props, ref) => {
     const totalCount = uploadList.length;
     const uploadingCount = uploadList.filter((v) => { return v.status != 'done' }).length;
     const uploadDialogProps = {
-      visible: uploadingCount > 0,
-      totalCount: totalCount,
-      doneCount: totalCount - uploadingCount
+        visible: uploadingCount > 0,
+        totalCount: totalCount,
+        doneCount: totalCount - uploadingCount
     }
 
     return (
         <View className={props.className}>
-            { chooseArea }
+            { chooseArea}
             <Dialog className="upload-dialog" title={`已上传${uploadDialogProps.doneCount}/${uploadDialogProps.totalCount}张`} visible={uploadDialogProps.visible}>
                 <View>正在拼命上传中，请耐心等待哦～</View>
             </Dialog>
-            <Canvas style={{ width: 500, height: 500, position: 'absolute', left: 9999, top: 9999 }} ref={compressRef} canvasId="compress-canvas"/>
+            <Canvas style={`width: 500px; height: 500px; position: fixed; left: 9999px; top: 9999px`} ref={compressRef} canvasId="compress-canvas" />
         </View>
     )
 });
