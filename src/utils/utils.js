@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-09-28 21:46:46
  * @LastEditors: Shawn
- * @LastEditTime: 2020-11-22 14:20:49
+ * @LastEditTime: 2020-11-29 22:52:07
  * @FilePath: \wow_print\src\utils\utils.js
  * @Description: Descrip Content
  */
@@ -9,35 +9,27 @@ import Taro from '@tarojs/taro';
 import math from './math';
 import { EDIT_WIDTH } from './picContent';
 
-const defaultCropInfo = { scale: 1, translate: [0, 0] }
+const defaultCropInfo = { scale: 1, translate: [0, 0], rotate: 0, mirror: false }
 
 export const computeCropUrl = (url, imgInfo, cropInfo) => {
-    const { deg } = cropInfo;
-    const { fWidth, fHeight } = fitImg({
-        ...imgInfo,
+    const { rotate, scale, translate, editwidth = EDIT_WIDTH } = { ...defaultCropInfo, ...cropInfo }
+    const { tWidth } = fitImg({
+        width: imgInfo.width,
+        height: imgInfo.height,
         contentWidth: imgInfo.contentWidth,
         contentHeight: imgInfo.contentHeight,
-        deg
+        deg: rotate
     });
     const { width } = imgInfo;
-    const { scale, translate } = cropInfo || defaultCropInfo;
-    // 当前剪裁宽度的位移 操作时产生的位移需要换算到剪裁宽度
-    const scaleTranslate = imgInfo.contentWidth / EDIT_WIDTH;
-    // 旋转矩阵
-    const rotateMatrix = math.matrix([[Math.cos(deg), Math.sin(deg), 0], [-Math.sin(deg), Math.cos(deg), 0], [0, 0, 1]]);
-    // 缩放矩阵
-    const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
-    // 位移矩阵
-    const translateMatrix = math.matrix([[1, 0, translate[0] * scaleTranslate], [0, 1, translate[1] * scaleTranslate], [0, 0, 1]]);
-    // TODO:消除rotateDeg判断
-    // 原始左上点坐标
-    const leftTopPosition = deg == 0 ? math.matrix([-fWidth / 2, -fHeight / 2, 1]) : math.matrix([-fWidth / 2, fHeight / 2, 1]);
-    // 操作后左上点坐标
-    const leftTop = math.multiply(scaleMatrix, translateMatrix, rotateMatrix, leftTopPosition);
+    const scaleTranslate = imgInfo.contentWidth / editwidth;
     // 原图剪裁区域的比例
-    const as = fWidth / width * scale;
+    const as = tWidth / width * scale;
+    const dx = -Math.round(translate[0] * scaleTranslate / as);
+    const dy = -Math.round(translate[1] * scaleTranslate / as);
+    const cropWidth = Math.round(imgInfo.contentWidth / as);
+    const cropHeight = Math.round(imgInfo.contentHeight / as);
     // TODO: 当原图orientation非up时 通过七牛剪裁参数不正确
-    const cropUrl = `${url}?imageMogr2/rotate/${deg}/auto-orient/crop/!${Math.round(imgInfo.contentWidth / as)}x${Math.round(imgInfo.contentHeight / as)}a${-Math.round((leftTop._data[0] + imgInfo.contentWidth / 2) / as)}a${-Math.round((leftTop._data[1] + imgInfo.contentHeight / 2) / as)}`;
+    const cropUrl = `${url}?imageMogr2/gravity/Center/rotate/${-rotate}/auto-orient/crop/!${cropWidth}x${cropHeight}${dx >= 0 ? `a${dx}` : dx}${dy >= 0 ? `a${dy}` : dy}`;
     return cropUrl;
 }
 

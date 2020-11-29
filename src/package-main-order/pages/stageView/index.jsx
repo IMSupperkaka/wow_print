@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import classnames from 'classnames';
+import { connect } from 'react-redux';
 import { View, Image, Button } from '@tarojs/components';
 
 import math from '../../../utils/math'
@@ -15,7 +16,6 @@ import stageBg from '../../images/bg_fram@2x.png';
 import addIcon from '../../../../images/cion_add_to5@2x.png';
 import tipsOnIcon from '../../../../images/icon_prompt_on@2x.png';
 import tipsOffIcon from '../../../../images/icon_prompt_off@2x.png';
-import iconZoom from '../../../../images/icon_zoom@2x.png';
 import iconFold from '../../images/icon_edit_fold@2x.png';
 import iconUnFold from '../../images/icon_edit_un_fold@2x.png';
 
@@ -39,7 +39,7 @@ const Tips = () => {
     )
 }
 
-export default () => {
+const StageView = (props) => {
 
     const [current, setCurrent] = useState(0);
 
@@ -202,6 +202,41 @@ export default () => {
         })
     }
 
+    const goConfirmOrder = () => {
+      const { dispatch } = props;
+      const model = modelList[activeModelIndex];
+      const resultList = [
+        {
+          synthesisList: [
+            {
+                type: 'Image',
+                imageUrl: model.stageInfo.filePath,
+                width: model.stageInfo.width,
+                height: model.stageInfo.height,
+                offsetX: 0,
+                offsetY: 0
+            },
+            ...model.editArea.map((v) => {
+              return {
+                type: 'Image',
+                imageUrl: v.img.originImage || v.img.filePath,
+                width: v.width,
+                height: v.height,
+                offsetX: v.x,
+                offsetY: v.y
+              }
+            })
+          ]
+        }
+      ]
+      dispatch({
+          type: 'confirmOrder/pushConfirmOrder',
+          payload: {
+              resultList
+          }
+      })
+    }
+
     const activeModel = modelList[activeModelIndex];
 
     const { width, height, x, y } = activeModel.editArea[activeEditAreaIndex || 0];
@@ -217,7 +252,7 @@ export default () => {
     return (
         <View className={styles['index']}>
             <Tips />
-            {/* swiper中fixed定位不会定位在window上 暂时先放在外面调用 */}
+            {/* trasnform中fixed定位不会定位在根元素上 TODO:小程序中portal实现 */}
             <Upload className={styles['hidden-upload']} ref={uploadRef} fileList={fileList} onChange={handleOnchange} limit={9}></Upload>
             <View className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}>
                 {
@@ -225,7 +260,7 @@ export default () => {
                     <View onClick={handleHideEdit} className={styles['edit-stage-absolute']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
                         <View style={activeAreaStyle} className={styles['crop-img-extra-wrap']}>
                             <View {...touchProps} className={styles['crop-img-extra']} style={transformStyle}>
-                                <Image data-behavior={['zoom', 'rotate']} src={iconZoom} className={classnames(styles['crop-extra-zoom'], mirror && styles['mirror'])} />
+                                <View data-behavior={['zoom', 'rotate']} className={classnames(styles['crop-extra-zoom'], mirror && styles['mirror'])} />
                                 <View className={classnames(styles['crop-extra-bottom'], mirror && styles['mirror'])}>
                                     <View onClick={handleMirror}>镜像</View>
                                     <View onClick={handleChangePic}>换图</View>
@@ -294,9 +329,13 @@ export default () => {
                 </Tabs>
                 <View className={classnames(styles['bottom-bar'], 'wy-hairline--top')}>
                     <View>已选 {activeModel.name}</View>
-                    <Button className="radius-btn primary-btn">去定制</Button>
+                    <Button onClick={goConfirmOrder} className="radius-btn primary-btn">去定制</Button>
                 </View>
             </View>
         </View>
     )
 }
+
+export default connect(({ confirmOrder }) => ({
+  confirmOrder
+}))(StageView);

@@ -99,7 +99,6 @@ export default React.forwardRef((props, ref) => {
                 uploadList.map((v) => {
                     progress(v, null, null, 'uploading');
                     getImageInfo(v.filePath).then((imgInfo) => {
-                        console.log(v.filePath)
                         uploadFile({
                             filePath: v.filePath
                         }).then((res) => {

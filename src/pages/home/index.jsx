@@ -131,7 +131,7 @@ const Home = (props) => {
                     }
                 </Swiper>
             </View>
-                
+
             <View className='promote-pic'>
                 <Swiper
                     // H5 更新Swiper key值，让Swiper重新渲染

@@ -1,3 +1,10 @@
+/*
+ * @Date: 2020-11-25 23:14:27
+ * @LastEditors: Shawn
+ * @LastEditTime: 2020-11-29 13:46:59
+ * @FilePath: \wow_print\src\utils\compress\index.weapp.js
+ * @Description: Descrip Content
+ */
 import Taro from '@tarojs/taro';
 
 export default ({ canvasId, filePath, width, height }) => {
@@ -5,7 +12,7 @@ export default ({ canvasId, filePath, width, height }) => {
         const context = Taro.createCanvasContext(canvasId);
         const drawWidth = width > height ? 500 : 500 * (width / height);
         const drawHeight = width > height ? (500 / (width / height)) : 500;
-        context.drawImage(img, 0, 0, drawWidth, drawHeight)
+        context.drawImage(filePath, 0, 0, drawWidth, drawHeight)
         context.draw(false, () => {
             Taro.canvasToTempFilePath({
                 canvasId: "compress-canvas",

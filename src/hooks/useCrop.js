@@ -95,8 +95,6 @@ const buildTransformStyle = ({ isTouch, width, height, editwidth, contentWidth, 
         deg: approachRotate
     });
 
-    console.log(editwidth)
-
     const scalea = contentWidth / editwidth;
     // 位移矩阵
     const translateMatrix = math.matrix([[1, 0, translate[0] * scalea / radio], [0, 1, translate[1] * scalea / radio], [0, 0, 1]]);
@@ -134,7 +132,7 @@ const buildTransformStyle = ({ isTouch, width, height, editwidth, contentWidth, 
 
 const cropReducer = (state, action) => {
     switch (action.type) {
-        case 'saveStore': 
+        case 'saveStore':
             return {
                 ...state,
                 store: {
@@ -206,11 +204,10 @@ export default (props) => {
                 lastTouch: nowlastTouch
             }
         })
-        console.log(e);
         dispatch({
             type: 'saveStore',
             payload: {
-                behavior: e.target.dataset.behavior || ['translate'],
+                behavior: e.target.dataset.behavior || e.target['data-behavior'] || ['translate'],
                 originTranslate: translate,
                 originDeg: rotate,
                 originScale: scale,

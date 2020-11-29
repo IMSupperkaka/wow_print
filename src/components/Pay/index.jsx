@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Taro from '@tarojs/taro';
 import classnames from 'classnames';
 import { View, Image, Text, Button } from '@tarojs/components';
 
@@ -7,6 +8,8 @@ import Modal from '../../components/Modal';
 import Radio from '../../components/Radio';
 import { appendHTML } from '../../utils/dom';
 import closeIcon from '../../../images/fabu-delete3@2x.png';
+import aliPayIcon from '../../../images/icon_alipay@2x.png';
+import wechatPayIcon from '../../../images/icon_wechat pay@2x.png';
 
 const usePay = (props) => {
 
@@ -16,9 +19,10 @@ const usePay = (props) => {
     const [money, setMoney] = useState(0);
     const [params, setParams] = useState({});
 
-    const confirmPay = ({ payType }) => {
+    const confirmPay = ({ payType, params }) => {
         const response = props.confirmPay({
-            payType
+            payType,
+            params
         });
         if (typeof response.then === 'function') {
             response.then((res) => {
@@ -39,16 +43,18 @@ const usePay = (props) => {
 
         const { money } = params;
 
+        setParams(params);
+
         if (process.env.TARO_ENV == 'weapp') {
             return confirmPay({
-                payType: 'JSAPI'
+                payType: 'JSAPI',
+                params: params
             });
         }
 
         if (process.env.TARO_ENV == 'h5') {
             setVisible(true);
             setMoney(money);
-            setParams(params);
         }
     }
 
@@ -63,13 +69,12 @@ const usePay = (props) => {
                 package: payData.pay_package,
                 signType: 'MD5',
                 paySign: payData.paysign,
-                success: onSuccess.bind(this, response),
-                fail: onFail.bind(this, response),
-                complete: onComplete.bind(this, response)
+                success: onSuccess?.bind(this, response),
+                fail: onFail?.bind(this, response),
+                complete: onComplete?.bind(this, response)
             })
         }
         if (process.env.TARO_ENV === 'h5') {
-            console.log(payData);
             if (payType === 'WAP') {
                 try {
                     document.querySelector('body').removeChild(document.querySelector('[name=punchout_form]'));
@@ -133,14 +138,14 @@ const Pay = (props) => {
             }}>
                 <View className={classnames('wy-hairline--bottom', styles['paytype-box'])}>
                     <View className={styles['pay-title']}>
-                        <Image className={styles['pay-icon']}/>
+                        <Image src={wechatPayIcon} className={styles['pay-icon']}/>
                         <Text>微信支付</Text>
                     </View>
                     <Radio value="wechat"/>
                 </View>
                 <View className={classnames('wy-hairline--bottom', styles['paytype-box'])}>
                     <View className={styles['pay-title']}>
-                        <Image className={styles['pay-icon']}/>
+                        <Image src={aliPayIcon} className={styles['pay-icon']}/>
                         <Text>支付宝支付</Text>
                     </View>
                     <Radio value="alipay"/>
