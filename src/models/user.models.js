@@ -64,6 +64,9 @@ export default {
             if (response.data.data.channel) {
                 Taro.setStorageSync('channel', payload.channel);
             }
+            
+            sessionStorage.setItem('showed-falg', false)
+
             yield put({
                 type: 'saveUserInfo',
                 payload: response.data.data || {}

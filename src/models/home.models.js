@@ -45,7 +45,7 @@ export default {
                 let moment = (new Date()).getTime();
                 let popups = popupList.data.data
                 let canPopupList = []
-                let popupStorage = Taro.getStorageSync("popupRule") || [];
+                let popupStorage = Taro.getStorageSync("popup-rule") || [];
                 let newStorageList = JSON.parse(JSON.stringify(popupStorage))
                 popups.forEach((popup) => {
                     let curIndex = popupStorage.findIndex((item) => (popup.id == item.id)), storageItem = {};
@@ -58,8 +58,7 @@ export default {
                                 canPopupList.push(popup)
                                 storageItem.num ++
                             }
-                        } else if(moment > storageItem.resetTimeLimit) {
-                            // 推入待弹出popup数组
+                        } else {
                             canPopupList.push(popup)
                             // 重置时间和次数等变量
                             newStorageList.splice(curIndex, 1, {
@@ -74,9 +73,7 @@ export default {
                         }
                     } else {
                         // 未记录该弹框
-                        // 推入待弹出popup数组
                         canPopupList.push(popup)
-                        // 记录新的弹框的时间和次数等变量
                         newStorageList.push({
                             id: popup.id,
                             resetTimeLimit: moment + popup.intervalDays * 24 * 60 * 60 * 1000,
@@ -85,7 +82,7 @@ export default {
                         })
                     }
                 })
-                Taro.setStorageSync("popupRule", newStorageList)
+                Taro.setStorageSync("popup-rule", newStorageList)
                 
                 yield put({
                     type: 'savePopup',
@@ -110,7 +107,7 @@ export default {
                         }
                     })
                 } else {
-                    // FIXME:重新编译前上一次弹框没手动关闭，则即使重新编译弹框也还是会一直在，需要下面的代码重置，？
+                    // FIXME:重新编译前上一次弹框没关闭
                     yield put({
                         type: 'savePopup',
                         payload: {

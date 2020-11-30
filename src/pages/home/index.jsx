@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import Taro, { usePageScroll, useReady, useTabItemTap, useShareAppMessage } from '@tarojs/taro'
+import Taro, { useDidShow, useShareAppMessage } from '@tarojs/taro'
 import { View, Image, Text, Swiper, SwiperItem, ScrollView } from '@tarojs/components'
 
 import styles from './index.module.less';
@@ -30,26 +30,22 @@ const Home = (props) => {
 
     useShareAppMessage();
 
-    useReady(() => {
+    useDidShow(() => {
+        if(Taro.getEnv() == 'WEB' && !sessionStorage.getItem('showed-falg')) {
+            dispatch({
+                type: 'home/getDialog'
+            })
+            if(sessionStorage.getItem('showed-falg') === false) {
+                sessionStorage.setItem('showed-falg', true)
+            }
+        }
         onLoad(1);
         getConfig();
     });
-
-    useTabItemTap(() => {
-        onLoad(1);
-        getConfig();
-    })
 
     const pageScroll = (e) => {
-        // console.log(e, 'scrollView')
         setScrollTop(e.detail.scrollTop);
     }
-
-    // FIXME:usePageScroll在H5失效
-    usePageScroll((e) => {
-        // console.log(e, 'usePageScroll')
-        setScrollTop(e.scrollTop);
-    });
 
     const getConfig = () => {
         index().then(({ data }) => {
@@ -81,7 +77,10 @@ const Home = (props) => {
 
     const handleGoDetail = (id) => {
         Taro.navigateTo({
-            url: `/pages/productDetail/index?id=${id}`
+            url: `/pages/productDetail/index?id=${id}`,
+            complete: () => {
+                console.log(1)
+            }
         })
     }
 
@@ -133,7 +132,7 @@ const Home = (props) => {
                     }
                 </Swiper>
             </View>
-                
+
             <View className='promote-pic'>
                 <Swiper
                     // H5 更新Swiper key值，让Swiper重新渲染

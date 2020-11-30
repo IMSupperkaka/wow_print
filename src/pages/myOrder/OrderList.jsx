@@ -21,7 +21,8 @@ export default (props) => {
     });
 
     const { payProps, openPay, params } = Pay.usePay({
-        confirmPay: ({ payType }) => {
+        confirmPay: ({ payType, params }) => {
+            console.log(params)
             return repay({
                 payMethod: payType,
                 loanId: params.id
