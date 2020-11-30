@@ -230,7 +230,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                                             coupon?.couponName && <Text>{coupon?.couponName}</Text>
                                         }
                                     </View>
-                                    <View>
+                                    <View className="product-pay-info-item-value">
                                         {
                                            couponDiscount > 0 && <Text>-￥{NaN2Zero(couponDiscount)}</Text>
                                         }

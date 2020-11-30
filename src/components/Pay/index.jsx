@@ -11,6 +11,14 @@ import closeIcon from '../../../images/fabu-delete3@2x.png';
 import aliPayIcon from '../../../images/icon_alipay@2x.png';
 import wechatPayIcon from '../../../images/icon_wechat pay@2x.png';
 
+export const formSubmit = (url) => {
+    let form = document.createElement("form");
+    form.action = url;
+    form.method = 'post';
+    document.body.appendChild(form);
+    form.submit();
+}
+
 const usePay = (props) => {
 
     const { onSuccess, onFail, onComplete } = props;
@@ -83,6 +91,8 @@ const usePay = (props) => {
                 }
                 appendHTML(document.querySelector('body'), payData);
                 document.querySelector('[name=punchout_form]').submit();
+            } else if (payType === 'MWEB') {
+                formSubmit(payData.mweb_url + '&redirect_url=' + encodeURIComponent(window.location.href));
             }
         }
     }

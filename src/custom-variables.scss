@@ -6,6 +6,11 @@ $color-brand: #FF6345;
     color: #FF6345;
 }
 
+.taro__toast {
+    position: fixed;
+    z-index: 1100;
+}
+
 .wy-hairline, .wy-hairline--top, .wy-hairline--left, .wy-hairline--right, .wy-hairline--bottom, .wy-hairline--surround, .wy-hairline--top-bottom {
   position: relative;
 }
