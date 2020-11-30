@@ -7,6 +7,7 @@ import styles from './index.module.less';
 import Modal from '../../components/Modal';
 import Radio from '../../components/Radio';
 import { appendHTML } from '../../utils/dom';
+import { getOrderStatus } from '../../services/order';
 import closeIcon from '../../../images/fabu-delete3@2x.png';
 import aliPayIcon from '../../../images/icon_alipay@2x.png';
 import wechatPayIcon from '../../../images/icon_wechat pay@2x.png';
@@ -27,7 +28,40 @@ const usePay = (props) => {
     const [money, setMoney] = useState(0);
     const [params, setParams] = useState({});
 
-    const confirmPay = ({ payType, params }) => {
+    useEffect(() => {
+
+        if (process.env.TARO_ENV != 'h5') {
+            return;
+        }
+
+        const payInfo = JSON.parse(sessionStorage.getItem('pay-info') || '{}')
+
+        if (payInfo.payData) {
+            Taro.showModal({
+                title: '支付确认',
+                content: '如果您已完成支付，请点击支付完成',
+                confirmText: '重新支付',
+                cancelText: '支付完成',
+                confirmColor: '#FF6345',
+                cancelColor: '#333333',
+                success: (res) => {
+                    sessionStorage.removeItem('pay-info');
+                    if (res.cancel) {
+                        getOrderStatus(payInfo.payData.out_trade_no).then(({ data }) => {
+                            if (data.data.isPay) {
+                                onSuccess(payInfo.response);
+                            } else {
+                                onFail(payInfo.response);
+                            }
+                        })
+                    }
+                }
+            })
+        }
+
+    }, [])
+
+    const confirmPay = ({ payType }) => {
         const response = props.confirmPay({
             payType,
             params
@@ -54,10 +88,11 @@ const usePay = (props) => {
         setParams(params);
 
         if (process.env.TARO_ENV == 'weapp') {
-            return confirmPay({
-                payType: 'JSAPI',
-                params: params
-            });
+            return setTimeout(() => {
+                confirmPay({
+                    payType: 'JSAPI'
+                });
+            }, 0)
         }
 
         if (process.env.TARO_ENV == 'h5') {
@@ -92,6 +127,11 @@ const usePay = (props) => {
                 appendHTML(document.querySelector('body'), payData);
                 document.querySelector('[name=punchout_form]').submit();
             } else if (payType === 'MWEB') {
+                sessionStorage.setItem('pay-info', JSON.stringify({
+                    payData: payData,
+                    payType: 'MWEB',
+                    response: response
+                }))
                 formSubmit(payData.mweb_url);
             }
         }
