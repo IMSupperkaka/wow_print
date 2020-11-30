@@ -41,13 +41,15 @@ const Home = (props) => {
     })
 
     const pageScroll = (e) => {
+        // console.log(e, 'scrollView')
         setScrollTop(e.detail.scrollTop);
     }
 
     // FIXME:usePageScroll在H5失效
-    // usePageScroll((e) => {
-    //     setScrollTop(e.scrollTop);
-    // });
+    usePageScroll((e) => {
+        // console.log(e, 'usePageScroll')
+        setScrollTop(e.scrollTop);
+    });
 
     const getConfig = () => {
         index().then(({ data }) => {
@@ -102,7 +104,7 @@ const Home = (props) => {
 
     return (
         <ScrollView className={styles.index}
-            scrollY
+            scrollY={true}
             onScroll={pageScroll}
         >
             <NavBar style={navBarStyle} left={

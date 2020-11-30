@@ -30,13 +30,6 @@ export default {
                 type: 'saveCouponJudge',
                 payload: couponJudge.data.data
             })
-            yield put({
-                type: 'savePopup',
-                payload: {
-                    list: popupList.data.data
-                }
-            })
-            // TODO:onLaunch时dispatch本函数，在这里通过控制visible来控制弹框弹出，规则修改写在这里。
             if (!couponJudge.data.data.isHaveCoupon) {
                 return yield put({
                     type: 'saveDialog',
@@ -47,48 +40,90 @@ export default {
                     }
                 })
             }
+            
             if (popupList.data.data.length > 0) {
-                // let popupStorage = Taro.setStorageSync("popup0Rule");
-                // if(popupStorage) {
-                //     popupStorage.forEach((item) => {
-                //         let curIndex = popupList.findIndex((oi) => (oi.id == item.id));
-                //         let oldItem = popupList[curIndex]
-                //         if(moment() < item.resetTimeLimit) {
-                //             // 弹出popup
-                //             item.resetTimeLimit + 1
-                //         }
-                //     })
-                // }
-
-                // let curPopupList = popupList.map((item) => {
-                //     let curIndex = popupStorage.findIndex((oi) => (oi.id == item.id));
-                //     let oldItem = curIndex >= 0 ? popupStorage[curIndex] : {};
-                //     return {
-                //         id: item.id,
-                //         // 天数重置时间
-                //         resetTimeLimit: moment().add(item.intervalDays, 'days'),
-                //         // 次数限制
-                //         numLimit: item.daysShowTimes,
-                //         // 已弹次数
-                //         num: oldItem.num ? (oldItem.num + 1) : 0
-                //     }
-                // })
-
+                let moment = (new Date()).getTime();
+                let popups = popupList.data.data
+                let canPopupList = []
+                let popupStorage = Taro.getStorageSync("popupRule") || [];
+                let newStorageList = JSON.parse(JSON.stringify(popupStorage))
+                popups.forEach((popup) => {
+                    let curIndex = popupStorage.findIndex((item) => (popup.id == item.id)), storageItem = {};
+                    if(curIndex >= 0) {
+                        // 已记录过该弹框
+                        storageItem = newStorageList[curIndex];
+                        if(moment <= storageItem.resetTimeLimit) {
+                            if(storageItem.num < popup.daysShowTimes) {
+                                // 推入待弹出popup数组
+                                canPopupList.push(popup)
+                                storageItem.num ++
+                            }
+                        } else if(moment > storageItem.resetTimeLimit) {
+                            // 推入待弹出popup数组
+                            canPopupList.push(popup)
+                            // 重置时间和次数等变量
+                            newStorageList.splice(curIndex, 1, {
+                                id: popup.id,
+                                // 天数重置时间戳
+                                resetTimeLimit: moment + popup.intervalDays * 24 * 60 * 60 * 1000,
+                                // 次数限制
+                                numLimit: popup.daysShowTimes,
+                                // 已弹次数
+                                num: 1
+                            })
+                        }
+                    } else {
+                        // 未记录该弹框
+                        // 推入待弹出popup数组
+                        canPopupList.push(popup)
+                        // 记录新的弹框的时间和次数等变量
+                        newStorageList.push({
+                            id: popup.id,
+                            resetTimeLimit: moment + popup.intervalDays * 24 * 60 * 60 * 1000,
+                            numLimit: popup.daysShowTimes,
+                            num: 1
+                        })
+                    }
+                })
+                Taro.setStorageSync("popupRule", newStorageList)
+                
                 yield put({
                     type: 'savePopup',
                     payload: {
-                        activeIndex: 0
+                        list: canPopupList
                     }
                 })
-                yield put({
-                    type: 'saveDialog',
-                    payload: {
-                        visible: true,
-                        image: popupList.data.data[0].image,
-                        url: popupList.data.data[0].url,
-                        type: 'popup'
-                    }
-                })
+                if(canPopupList.length) {
+                    yield put({
+                        type: 'savePopup',
+                        payload: {
+                            activeIndex: 0
+                        }
+                    })
+                    yield put({
+                        type: 'saveDialog',
+                        payload: {
+                            visible: true,
+                            image: canPopupList[0]?.image,
+                            url: canPopupList[0]?.url,
+                            type: 'popup'
+                        }
+                    })
+                } else {
+                    // FIXME:重新编译前上一次弹框没手动关闭，则即使重新编译弹框也还是会一直在，需要下面的代码重置，？
+                    yield put({
+                        type: 'savePopup',
+                        payload: {
+                            activeIndex: -1
+                        }
+                    })
+                    yield put({
+                        type: 'saveDialog',
+                        payload: {
+                            visible: false
+                        }
+                    })
+                }
             }
         },
         *clickDialog({ payload = {} }, { call, put, select }) {
