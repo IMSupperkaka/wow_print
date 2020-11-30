@@ -79,7 +79,8 @@ const StageView = (props) => {
             stageInfo: {
                 width: 604,
                 height: 440,
-                filePath: 'https://cdn.91jiekuan.com/FjApI7ErjIw6MXZ2SjFEo0ZUtZfj'
+                filePath: 'https://cdn.91jiekuan.com/FjApI7ErjIw6MXZ2SjFEo0ZUtZfj',
+                thumbnail: 'http://cdn.91jiekuan.com/Fj41F2kXUGWe7Yo8Z3fpHdeh6G7e'
             },
             editArea: [
                 {
@@ -87,25 +88,6 @@ const StageView = (props) => {
                     y: 0,
                     width: 604,
                     height: 330,
-                    img: {
-                        filePath: "https://cdn.91jiekuan.com/Ftptl0OYThDemOJt7Zi-DDfhuYHf"
-                    }
-                }
-            ]
-        },
-        {
-            name: "模板002",
-            stageInfo: {
-                width: 604,
-                height: 440,
-                filePath: 'https://cdn.91jiekuan.com/FjApI7ErjIw6MXZ2SjFEo0ZUtZfj'
-            },
-            editArea: [
-                {
-                    x: 0,
-                    y: 0,
-                    width: 604,
-                    height: 440,
                     img: {
                         filePath: "https://cdn.91jiekuan.com/Ftptl0OYThDemOJt7Zi-DDfhuYHf"
                     }
@@ -203,38 +185,53 @@ const StageView = (props) => {
     }
 
     const goConfirmOrder = () => {
-      const { dispatch } = props;
-      const model = modelList[activeModelIndex];
-      const resultList = [
-        {
-          synthesisList: [
+        const { dispatch } = props;
+        const model = modelList[activeModelIndex];
+        const resultList = [
             {
-                type: 'Image',
-                imageUrl: model.stageInfo.filePath,
-                width: model.stageInfo.width,
-                height: model.stageInfo.height,
-                offsetX: 0,
-                offsetY: 0
-            },
-            ...model.editArea.map((v) => {
-              return {
-                type: 'Image',
-                imageUrl: v.img.originImage || v.img.filePath,
-                width: v.width,
-                height: v.height,
-                offsetX: v.x,
-                offsetY: v.y
-              }
-            })
-          ]
-        }
-      ]
-      dispatch({
-          type: 'confirmOrder/pushConfirmOrder',
-          payload: {
-              resultList
-          }
-      })
+                filePath: null,
+                imgInfo: null,
+                originImage: null,
+                cropImage: null,
+                printNums: 1,
+                cropInfo: {},
+                restInfo: {},
+                synthesisList: [
+                    {
+                        type: 'Image',
+                        imageUrl: 'https://cdn.91jiekuan.com/FoXlt8UQT99Eoiuk2NJPWdrwRTIE',
+                        width: model.stageInfo.width,
+                        height: model.stageInfo.height,
+                        offsetX: 0,
+                        offsetY: 0
+                    },
+                    ...model.editArea.map((v) => {
+                        return {
+                            type: 'Image',
+                            imageUrl: v.img.originImage || v.img.filePath,
+                            width: v.width,
+                            height: v.height,
+                            offsetX: v.x,
+                            offsetY: v.y
+                        }
+                    }),
+                    {
+                        type: 'Image',
+                        imageUrl: model.stageInfo.filePath,
+                        width: model.stageInfo.width,
+                        height: model.stageInfo.height,
+                        offsetX: 0,
+                        offsetY: 0
+                    }
+                ]
+            }
+        ]
+        dispatch({
+            type: 'confirmOrder/pushConfirmOrder',
+            payload: {
+                resultList
+            }
+        })
     }
 
     const activeModel = modelList[activeModelIndex];
@@ -270,7 +267,7 @@ const StageView = (props) => {
                     </View>
                 }
                 <View className={styles['edit-stage']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
-                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-bg']} src={stageBg}/>
+                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-bg']} src={stageBg} />
                     <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
                     {
                         activeModel.editArea.map(({ width, height, x, y, img }, index) => {
@@ -289,13 +286,13 @@ const StageView = (props) => {
                                 left: Taro.pxTransform(y, 750)
                             }
 
-                            return <CropImg onClick={handleShowEdit.bind(this, index)} style={style} showIgnoreBtn={false} width={width} height={height} editwidth={width} src={img.filePath} cropOption={cropOption} animate={!isTouch}/>
+                            return <CropImg onClick={handleShowEdit.bind(this, index)} style={style} showIgnoreBtn={false} width={width} height={height} editwidth={width} src={img.filePath} cropOption={cropOption} animate={!isTouch} />
                         })
                     }
                 </View>
             </View>
             <View className={classnames(styles['bottom-selector'], fold && styles['fold'])}>
-                <Image onClick={toggleFold} src={fold ? iconFold : iconUnFold} className={styles['fold']}/>
+                <Image onClick={toggleFold} src={fold ? iconFold : iconUnFold} className={styles['fold']} />
                 <Tabs current={current} onChange={setCurrent}>
                     <TabPanel title="图片" className={styles['tab-content']}>
                         <View onClick={handleUpload} className={`${styles['upload-area']} ${styles['pic-item']}`}>
@@ -320,7 +317,7 @@ const StageView = (props) => {
                                             setActiveModelIndexIndex(index)
                                         }}
                                         className={classnames(styles['pic-item'], index == activeModelIndex && styles['active'])}>
-                                        <Image className={styles['pic']} src={v.stageInfo.filePath} mode="aspectFill" />
+                                        <Image className={styles['pic']} src={v.stageInfo.thumbnail} mode="aspectFill" />
                                     </View>
                                 )
                             })
@@ -337,5 +334,5 @@ const StageView = (props) => {
 }
 
 export default connect(({ confirmOrder }) => ({
-  confirmOrder
+    confirmOrder
 }))(StageView);
