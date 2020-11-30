@@ -68,6 +68,8 @@ $color-brand: #FF6345;
     margin: 0;
     font-size: 24px;
     border-radius: 31px;
+    width: auto;
+    padding: 4px 16px;
     height: 56px;
     &::after {
         border-radius: 62px;
