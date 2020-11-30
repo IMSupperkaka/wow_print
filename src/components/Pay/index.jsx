@@ -92,7 +92,7 @@ const usePay = (props) => {
                 appendHTML(document.querySelector('body'), payData);
                 document.querySelector('[name=punchout_form]').submit();
             } else if (payType === 'MWEB') {
-                formSubmit(payData.mweb_url + '&redirect_url=' + encodeURIComponent(window.location.href));
+                formSubmit(payData.mweb_url);
             }
         }
     }
