@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import Taro, { useDidShow, useShareAppMessage } from '@tarojs/taro'
+import Taro, { useDidShow, usePageScroll, useShareAppMessage } from '@tarojs/taro'
 import { View, Image, Text, Swiper, SwiperItem, ScrollView } from '@tarojs/components'
 
 import styles from './index.module.less';
@@ -43,9 +43,18 @@ const Home = (props) => {
         getConfig();
     });
 
-    const pageScroll = (e) => {
-        setScrollTop(e.detail.scrollTop);
-    }
+    // TODO 封装usePageScroll
+    usePageScroll(res => {
+        setScrollTop(res.scrollTop);
+    })
+
+    useEffect(() => {
+        if (process.env.TARO_ENV === 'h5') {
+            document.querySelector('.taro-tabbar__panel').onscroll = (e) => {
+                setScrollTop(e.target.scrollTop);
+            }
+        }
+    }, [])
 
     const getConfig = () => {
         index().then(({ data }) => {
@@ -99,13 +108,8 @@ const Home = (props) => {
         })
     }
 
-    // const bannerNode
-
     return (
-        <ScrollView className={styles.index}
-            scrollY={true}
-            onScroll={pageScroll}
-        >
+        <View className={styles['index']}>
             <NavBar style={navBarStyle} left={
                 <View className={styles.navLeft}>
                     <Image className={styles.navLogo} src={logo} />
@@ -174,7 +178,7 @@ const Home = (props) => {
             <Dialog visible={dialog.visible} className="home-dialog" onClose={handleClose}>
                 <Image src={dialog.image} mode="widthFix" onClick={handleClickDialog} className="dialog-img"/>
             </Dialog>
-        </ScrollView>
+        </View>
     )
 }
 
