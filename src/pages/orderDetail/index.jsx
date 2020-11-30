@@ -30,6 +30,10 @@ export default () => {
             return repay({
                 payMethod: payType,
                 loanId: query.id
+            }).then((res) => {
+                return {
+                    payData: res.data.data
+                }
             })
         },
         onSuccess: () => {

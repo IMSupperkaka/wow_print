@@ -49,9 +49,16 @@ export const cancel = (data) => {
 }
 
 export const logistics = (data) => {
-  return TaroRequest.request({
-      url: `/loan/logistics`,
-      method: 'GET',
-      data
-  })
+    return TaroRequest.request({
+        url: `/loan/logistics`,
+        method: 'GET',
+        data
+    })
+}
+
+export const getOrderStatus = (params) => {
+    return TaroRequest.request({
+        url: `/loan/payDetail/${params}`,
+        method: 'GET'
+    })
 }
