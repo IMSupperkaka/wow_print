@@ -71,6 +71,7 @@ export default {
     window: {
         navigationBarBackgroundColor: '#fff',
         navigationBarTextStyle: 'black',
-        backgroundColor: '#F6F6F6'
+        backgroundColor: '#F6F6F6',
+        enablePullDownRefresh: false
     },
 }
