@@ -34,6 +34,7 @@ export default {
         // 商品类型 枚举：/utils/map/product/productType
         type: 1
     },
+
     effects: {
         *pushSeletPage({ payload }, { put }) {
             const { goodInfo, portfolioId, userImageList, goConfirmOrder = false } = payload;
@@ -74,9 +75,9 @@ export default {
             }
 
             if (process.env.TARO_ENV == 'h5') {
-              return Taro.navigateTo({
-                url: path
-              })
+                return Taro.navigateTo({
+                    url: path
+                })
             }
 
             Taro.getSetting({
@@ -106,7 +107,7 @@ export default {
                 type: 'saveUserImageList',
                 payload: payload.resultList
             })
-            
+
             list().then(({ data }) => {
                 if (data.data.length <= 0) {
                     Taro.navigateTo({
