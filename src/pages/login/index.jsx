@@ -83,14 +83,16 @@ const Login = ({ dispatch }) => {
 
     const getCodeText = time == 60 ? '获取验证码' : `${time}秒后重试`;
 
+    const inputType = process.env.TARO_ENV == 'weapp' ? 'number' : 'tel';
+
     return (
         <View className={styles['page']}>
             <Image className={styles['login-logo']} src={loginLogo}/>
             <View className={styles['login-title']}>欢迎登陆哇印</View>
             <Form onSubmit={formSubmit}>
                 <View className={styles['login-form']}>
-                    <Input ref={phoneRef} type='number' maxLength='10' name='phone' placeholder="输入手机号" className={classnames(styles['login-input'], 'wy-hairline--bottom')} />
-                    <Input type='number' maxLength='4' name='code' placeholder="输入验证码" className={classnames(styles['login-input'], 'wy-hairline--bottom')} />
+                    <Input ref={phoneRef} type={inputType} maxlength={11} name='phone' placeholder="输入手机号" className={classnames(styles['login-input'], 'wy-hairline--bottom')} />
+                    <Input type='tel' maxlength={inputType} name='code' placeholder="输入验证码" className={classnames(styles['login-input'], 'wy-hairline--bottom')} />
                     <Button className={classnames(styles['getcode-btn'], 'radius-btn', 'primary-outline-btn')} onClick={getCode}>
                         {getCodeText}
                     </Button>
