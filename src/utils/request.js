@@ -55,7 +55,6 @@ class TaroRequest {
                         });
                     }
                 })
-                uploadTask.progress(params.progress);
             })
         })
     }

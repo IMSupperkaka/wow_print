@@ -65,6 +65,7 @@ export const useCountDown = (props) => {
     }, [time])
 
     return {
+        time,
         onStart,
         onEnd,
         onChange

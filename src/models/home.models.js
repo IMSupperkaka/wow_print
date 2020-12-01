@@ -52,13 +52,12 @@ export default {
                     if(curIndex >= 0) {
                         // 已记录过该弹框
                         storageItem = newStorageList[curIndex];
-                        if(moment <= storageItem.resetTimeLimit) {
-                            if(storageItem.num < popup.daysShowTimes) {
-                                // 推入待弹出popup数组
-                                canPopupList.push(popup)
-                                storageItem.num ++
-                            }
-                        } else {
+                        if(moment <= storageItem.resetTimeLimit && storageItem.num < popup.daysShowTimes) {
+                            // 推入待弹出popup数组
+                            canPopupList.push(popup)
+                            storageItem.num ++
+                        }
+                        if(moment > storageItem.resetTimeLimit) {
                             canPopupList.push(popup)
                             // 重置时间和次数等变量
                             newStorageList.splice(curIndex, 1, {
