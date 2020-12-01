@@ -44,7 +44,7 @@ export default () => {
         },
         onFail: () => {
             Taro.showToast({
-                title:'取消支付',
+                title:'您的订单还未支付，请重新支付',
                 icon:'none',
                 duration:1000
             })
