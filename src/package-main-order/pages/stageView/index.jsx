@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { View, Image, Button } from '@tarojs/components';
 
-import math from '../../../utils/math'
+import { computeCropUrl } from '../../../utils/utils';
 import useCrop from '../../../hooks/useCrop';
 import Upload from '../../../components/Upload';
 import Tabs from '../../../components/Tabs';
@@ -191,7 +191,7 @@ const StageView = (props) => {
             {
                 filePath: null,
                 imgInfo: null,
-                originImage: null,
+                originImage: 'https://cdn.91jiekuan.com/FoXlt8UQT99Eoiuk2NJPWdrwRTIE',
                 cropImage: null,
                 printNums: 1,
                 cropInfo: {},
@@ -208,7 +208,12 @@ const StageView = (props) => {
                     ...model.editArea.map((v) => {
                         return {
                             type: 'Image',
-                            imageUrl: v.img.originImage || v.img.filePath,
+                            imageUrl: computeCropUrl(v.img.originImage || v.img.filePath, {
+                                width: v.img.imgInfo.width,
+                                height: v.img.imgInfo.height,
+                                contentWidth: v.width,
+                                contentHeight: v.height
+                            }, v.img.cropInfo),
                             width: v.width,
                             height: v.height,
                             offsetX: v.x,
