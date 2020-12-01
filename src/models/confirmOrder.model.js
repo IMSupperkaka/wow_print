@@ -106,8 +106,7 @@ export default {
                 type: 'saveUserImageList',
                 payload: payload.resultList
             })
-            console.log(payload.resultList)
-            return;
+            
             list().then(({ data }) => {
                 if (data.data.length <= 0) {
                     Taro.navigateTo({
