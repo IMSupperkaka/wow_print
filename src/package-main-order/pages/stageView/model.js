@@ -3,7 +3,7 @@ export default [
         name: "模板001",
         stageInfo: {
             width: 604,
-            height: 440,
+            height: 433,
             filePath: 'https://cdn.91jiekuan.com/FjApI7ErjIw6MXZ2SjFEo0ZUtZfj',
             thumbnail: 'http://cdn.91jiekuan.com/Fj41F2kXUGWe7Yo8Z3fpHdeh6G7e'
         },
@@ -20,7 +20,7 @@ export default [
         name: "模板002",
         stageInfo: {
             width: 604,
-            height: 440,
+            height: 433,
             filePath: 'http://cdn.91jiekuan.com/Fjy7Ma7VAY2ltkRqnDMjqcuTxCWj',
             thumbnail: 'http://cdn.91jiekuan.com/FkK379R0guIw4oaG3quxMOq9rRlC'
         },

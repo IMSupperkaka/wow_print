@@ -189,12 +189,8 @@ const StageView = (props) => {
         const model = modelList[activeModelIndex];
         const resultList = [
             {
-                filePath: null,
-                imgInfo: null,
-                originImage: 'https://cdn.91jiekuan.com/FoXlt8UQT99Eoiuk2NJPWdrwRTIE',
-                cropImage: null,
+                ...model.editArea[0].img,
                 printNums: 1,
-                cropInfo: {},
                 restInfo: {},
                 synthesisList: [
                     {

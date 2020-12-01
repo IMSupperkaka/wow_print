@@ -133,7 +133,10 @@ export default (props) => {
 
     const handleRepay = (order, e) => {
         e.stopPropagation();
-        openPay(order);
+        openPay({
+            ...order,
+            money: (order.money / 100).toFixed(2)
+        });
     }
 
     const handleDetail = (order, e) => {

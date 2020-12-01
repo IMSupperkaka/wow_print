@@ -29,6 +29,7 @@ export default {
         goodId: null, // 商品id
         portfolioId: null, // 作品集id
         userImageList: [], // 照片列表
+        stageFileList: [],
         size: 5, // 照片尺寸 仅在普通照片有效
         proportion: 0.7, // 照片比例 仅在普通照片有效
         // 商品类型 枚举：/utils/map/product/productType
