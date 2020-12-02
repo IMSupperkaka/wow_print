@@ -156,7 +156,7 @@ export const approach = (array, num) => {
     return array[db[1]];
 }
 
-export const jump = (url) => {
+export const jump = (url, option) => {
     const miniProPageReg = new RegExp('wy://');
     if (typeof url !== 'string') {
         throw new Error('url must be string');
@@ -167,6 +167,17 @@ export const jump = (url) => {
             url: url.replace(miniProPageReg, '/')
         })
     } else {
+        openWebview(url, option)
+    }
+}
+
+export const openWebview = (url, option) => {
+    if (process.env.TARO_ENV === 'h5') {
+        window.open(url);
+    } else{
+        Taro.setNavigationBarTitle({
+            title: option?.title || '哇印'
+        })
         Taro.navigateTo({
             url: `/pages/webview/index?url=${encodeURIComponent(url)}`
         })
