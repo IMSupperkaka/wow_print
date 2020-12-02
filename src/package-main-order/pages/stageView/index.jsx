@@ -4,7 +4,8 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { View, Image, Button } from '@tarojs/components';
 
-import math from '../../../utils/math'
+import defaultModelList from './model';
+import { computeCropUrl } from '../../../utils/utils';
 import useCrop from '../../../hooks/useCrop';
 import Upload from '../../../components/Upload';
 import Tabs from '../../../components/Tabs';
@@ -39,6 +40,20 @@ const Tips = () => {
     )
 }
 
+const initModelList = (modelList, imgList) => {
+    return modelList.map((model) => {
+        return {
+            ...model,
+            editArea: model.editArea.map((editArea, index) => {
+                return {
+                    ...editArea,
+                    img: imgList[index] || imgList[imgList.length - 1]
+                }
+            })
+        }
+    })
+}
+
 const StageView = (props) => {
 
     const [current, setCurrent] = useState(0);
@@ -59,7 +74,7 @@ const StageView = (props) => {
             mirror,
             isTouch
         },
-        transformStyle,
+        style,
         touchProps,
         mutate
     } = useCrop({
@@ -73,28 +88,13 @@ const StageView = (props) => {
         }
     });
 
-    const [modelList, setModelList] = useState([
-        {
-            name: "模板001",
-            stageInfo: {
-                width: 604,
-                height: 440,
-                filePath: 'https://cdn.91jiekuan.com/FjApI7ErjIw6MXZ2SjFEo0ZUtZfj',
-                thumbnail: 'http://cdn.91jiekuan.com/Fj41F2kXUGWe7Yo8Z3fpHdeh6G7e'
-            },
-            editArea: [
-                {
-                    x: 0,
-                    y: 0,
-                    width: 604,
-                    height: 330,
-                    img: {
-                        filePath: "https://cdn.91jiekuan.com/Ftptl0OYThDemOJt7Zi-DDfhuYHf"
-                    }
-                }
-            ]
-        }
-    ]);
+    const [modelList, setModelList] = useState(initModelList(defaultModelList, props.confirmOrder.userImageList));
+
+    useEffect(() => {
+        setModelList((modelList) => {
+            return initModelList(modelList, props.confirmOrder.userImageList);
+        })
+    }, [props.confirmOrder.userImageList])
 
     const uploadRef = useRef();
 
@@ -189,12 +189,8 @@ const StageView = (props) => {
         const model = modelList[activeModelIndex];
         const resultList = [
             {
-                filePath: null,
-                imgInfo: null,
-                originImage: null,
-                cropImage: null,
+                ...model.editArea[0].img,
                 printNums: 1,
-                cropInfo: {},
                 restInfo: {},
                 synthesisList: [
                     {
@@ -208,7 +204,12 @@ const StageView = (props) => {
                     ...model.editArea.map((v) => {
                         return {
                             type: 'Image',
-                            imageUrl: v.img.originImage || v.img.filePath,
+                            imageUrl: computeCropUrl(v.img.originImage || v.img.filePath, {
+                                width: v.img.imgInfo.width,
+                                height: v.img.imgInfo.height,
+                                contentWidth: v.width,
+                                contentHeight: v.height
+                            }, v.img.cropInfo),
                             width: v.width,
                             height: v.height,
                             offsetX: v.x,
@@ -242,8 +243,8 @@ const StageView = (props) => {
         position: 'absolute',
         width: Taro.pxTransform(width, 750),
         height: Taro.pxTransform(height, 750),
-        top: Taro.pxTransform(x, 750),
-        left: Taro.pxTransform(y, 750)
+        top: Taro.pxTransform(y, 750),
+        left: Taro.pxTransform(x, 750)
     }
 
     return (
@@ -256,7 +257,7 @@ const StageView = (props) => {
                     (activeEditAreaIndex != null && width) &&
                     <View onClick={handleHideEdit} className={styles['edit-stage-absolute']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
                         <View style={activeAreaStyle} className={styles['crop-img-extra-wrap']}>
-                            <View {...touchProps} className={styles['crop-img-extra']} style={transformStyle}>
+                            <View {...touchProps} className={styles['crop-img-extra']} style={style.contentStyle}>
                                 <View data-behavior={['zoom', 'rotate']} className={classnames(styles['crop-extra-zoom'], mirror && styles['mirror'])} />
                                 <View className={classnames(styles['crop-extra-bottom'], mirror && styles['mirror'])}>
                                     <View onClick={handleMirror}>镜像</View>
@@ -272,18 +273,24 @@ const StageView = (props) => {
                     {
                         activeModel.editArea.map(({ width, height, x, y, img }, index) => {
 
-                            const cropOption = {
-                                rotate,
-                                translate,
-                                scale,
-                                mirror,
+                            let cropOption = {
+                                ...img.cropInfo,
                                 ignoreBlur: true
+                            }
+
+                            if (activeEditAreaIndex === index) {
+                                Object.assign(cropOption, {
+                                    rotate,
+                                    translate,
+                                    scale,
+                                    mirror
+                                })
                             }
 
                             const style = {
                                 position: 'absolute',
-                                top: Taro.pxTransform(x, 750),
-                                left: Taro.pxTransform(y, 750)
+                                top: Taro.pxTransform(y, 750),
+                                left: Taro.pxTransform(x, 750)
                             }
 
                             return <CropImg onClick={handleShowEdit.bind(this, index)} style={style} showIgnoreBtn={false} width={width} height={height} editwidth={width} src={img.filePath} cropOption={cropOption} animate={!isTouch} />

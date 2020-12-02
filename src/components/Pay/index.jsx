@@ -37,6 +37,11 @@ const usePay = (props) => {
         const payInfo = JSON.parse(sessionStorage.getItem('pay-info') || '{}')
 
         if (payInfo.payData) {
+
+            setMoney(payInfo.money);
+
+            setParams(payInfo.params);
+
             Taro.showModal({
                 title: '支付确认',
                 content: '如果您已完成支付，请点击支付完成',
@@ -54,6 +59,8 @@ const usePay = (props) => {
                                 onFail(payInfo.response);
                             }
                         })
+                    } else {
+                        setVisible(true);
                     }
                 }
             })
@@ -61,10 +68,10 @@ const usePay = (props) => {
 
     }, [])
 
-    const confirmPay = ({ payType }) => {
+    const confirmPay = ({ payType, params: defaultParams }) => {
         const response = props.confirmPay({
             payType,
-            params
+            params: defaultParams || params
         });
         if (typeof response.then === 'function') {
             response.then((res) => {
@@ -88,11 +95,10 @@ const usePay = (props) => {
         setParams(params);
 
         if (process.env.TARO_ENV == 'weapp') {
-            return setTimeout(() => {
-                confirmPay({
-                    payType: 'JSAPI'
-                });
-            }, 0)
+            confirmPay({
+                payType: 'JSAPI',
+                params: params
+            });
         }
 
         if (process.env.TARO_ENV == 'h5') {
@@ -130,7 +136,9 @@ const usePay = (props) => {
                 sessionStorage.setItem('pay-info', JSON.stringify({
                     payData: payData,
                     payType: 'MWEB',
-                    response: response
+                    response: response,
+                    params,
+                    money
                 }))
                 formSubmit(payData.mweb_url);
             }

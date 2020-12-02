@@ -127,7 +127,19 @@ const buildTransformStyle = ({ isTouch, width, height, editwidth, contentWidth, 
         transition: !isTouch ? 'transform .2s' : 'none'
     }
 
-    return transformStyle;
+    const contentStyleMatrix =  math.multiply(translateMatrix, rotateMatrix);
+
+    const contentStyle = {
+        width: Taro.pxTransform(tWidth * scale, 750),
+        height: Taro.pxTransform(tHeight * scale, 750),
+        transform: `matrix(${contentStyleMatrix._data[0][0].toFixed(6)}, ${contentStyleMatrix._data[1][0].toFixed(6)}, ${contentStyleMatrix._data[0][1].toFixed(6)}, ${contentStyleMatrix._data[1][1].toFixed(6)}, ${contentStyleMatrix._data[0][2].toFixed(6)}, ${contentStyleMatrix._data[1][2].toFixed(6)})`,
+        transition: !isTouch ? 'all .2s' : 'none',
+    }
+
+    return {
+        contentStyle,
+        transformStyle
+    };
 }
 
 const cropReducer = (state, action) => {
@@ -309,7 +321,7 @@ export default (props) => {
             onTouchEnd: touchEnd,
             onTouchStart: touchStart
         },
-        transformStyle: buildTransformStyle(state),
+        style: buildTransformStyle(state),
         mutate: (state) => {
             let payload = state;
             if (state.editwidth || state.contentWidth) {

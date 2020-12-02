@@ -73,6 +73,7 @@ export default React.forwardRef((props, ref) => {
     }
 
     const handleChoose = () => {
+        console.log(1)
         if (typeof beforeUpload == 'function') {
             const result = beforeUpload();
             if (result === false) {

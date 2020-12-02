@@ -56,6 +56,14 @@ const config = {
         publicPath: '/',
         staticDirectory: 'static',
         esnextModules: ['taro-ui'],
+        output: {
+            filename: "js/[name].[hash:8].js",
+            chunkFilename: 'js/[name].[chunkhash:8].js'
+        },
+        miniCssExtractPluginOption: {
+            filename: 'css/[name].[chunkhash:8].css',
+            chunkFilename: 'css/[id].[chunkhash:8].css'
+        },
         postcss: {
             autoprefixer: {
                 enable: true,

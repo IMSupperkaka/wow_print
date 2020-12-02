@@ -44,7 +44,7 @@ export default () => {
         },
         onFail: () => {
             Taro.showToast({
-                title:'取消支付',
+                title:'您的订单还未支付，请重新支付',
                 icon:'none',
                 duration:1000
             })
@@ -114,7 +114,7 @@ export default () => {
 
     const handleRepay = () => {
         openPay({
-            money: orderDetail.money
+            money: (orderDetail.money / 100).toFixed(2)
         });
     }
 
@@ -237,7 +237,7 @@ export default () => {
                       orderDetail.couponName &&
                       <View className="pay-item">
                         <Text>优惠</Text>
-                        <Text>{ orderDetail.couponName }</Text>
+                        <Text>-{ orderDetail.discountMoney / 100 }</Text>
                       </View>
                     }
                     <View className="pay-item">
@@ -259,12 +259,15 @@ export default () => {
                         <Text onClick={handleCopy.bind(this, orderDetail.loanNo)} className="copy">复制</Text>
                     </View>
                 </View>
-                <View className="order-info-item">
-                    <View>支付方式</View>
-                    <View>
-                        微信支付
+                {
+                    orderDetail.status != 1 &&
+                    <View className="order-info-item">
+                        <View>支付方式</View>
+                        <View>
+                            { orderDetail.payMethod == 1 ? '微信支付' : '支付宝支付' }
+                        </View>
                     </View>
-                </View>
+                }
                 <View className="order-info-item">
                     <View>创建时间</View>
                     <View>

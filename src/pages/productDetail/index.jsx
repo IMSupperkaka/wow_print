@@ -8,6 +8,7 @@ import { fix } from '../../utils/utils'
 import Transition from '../../components/Transition'
 import SafeArea from '../../components/SafeArea'
 import NoticeBar from '../../components/NoticeBar'
+import Upload from '../../components/Upload'
 import SelectCoupon from '../../page-components/SelectCoupon'
 import { detail as getDetail } from '../../services/product'
 
@@ -54,12 +55,28 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
             return Taro.navigateBack();
         }
 
+        if (detail.category == 4) {
+            return false;
+        }
+
         dispatch({
             type: 'confirmOrder/pushSeletPage',
             payload: {
                 goodInfo: detail
             }
         })
+    }
+
+    const handleUploadChange = (file, fileList) => {
+        if (file.status == 'done') {
+            dispatch({
+                type: 'confirmOrder/pushSeletPage',
+                payload: {
+                    goodInfo: detail,
+                    userImageList: fileList
+                }
+            })
+        }
     }
 
     let submitBtnText = detail.category == 0 ? '确认选择' : (coupon.couponName ? '免费打印' : '立即打印');
@@ -120,11 +137,15 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
             <SafeArea>
                 {({ bottom }) => {
                     return (
-                        <Transition in={detail.id} timeout={0} classNames={styles['bottom-top']}>
+                        detail.category == 4 ?
+                        <Upload limit={1} onChange={handleUploadChange}>
                             <View style={{ paddingBottom: Taro.pxTransform(bottom, 750) }} onClick={goSelectPic} className={styles['submit-btn']}>
-                                { submitBtnText }
+                                上传照片
                             </View>
-                        </Transition>
+                        </Upload> :
+                        <View style={{ paddingBottom: Taro.pxTransform(bottom, 750) }} onClick={goSelectPic} className={styles['submit-btn']}>
+                            { submitBtnText }
+                        </View>
                     )
                 }}
             </SafeArea>

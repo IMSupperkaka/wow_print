@@ -68,9 +68,14 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
             })
         },
         onFail: ({ loanId }) => {
-            Taro.redirectTo({
-                url: `/pages/result/index?type=pay_fail&id=${loanId}`
+            Taro.showToast({
+                title: '您的订单还未支付，请重新支付',
+                icon: 'none',
+                duration: 1000
             })
+            // Taro.redirectTo({
+            //     url: `/pages/result/index?type=pay_fail&id=${loanId}`
+            // })
         },
         complete: () => {
             Taro.eventCenter.trigger('finishOrder', goodId);
@@ -223,6 +228,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                         onChange={saveCoupon}
                         render={(coupon, couponList) => {
                             return (
+                                couponList?.length > 0 &&
                                 <View className="product-pay-info-item">
                                     <View>
                                         <Text className="discount-title">优惠</Text>

@@ -22,7 +22,6 @@ export default (props) => {
 
     const { payProps, openPay, params } = Pay.usePay({
         confirmPay: ({ payType, params }) => {
-            console.log(params)
             return repay({
                 payMethod: payType,
                 loanId: params.id
@@ -39,7 +38,7 @@ export default (props) => {
         },
         onFail: () => {
             Taro.showToast({
-                title:'取消支付',
+                title:'您的订单还未支付，请重新支付',
                 icon:'none',
                 duration:1000
             })
@@ -133,7 +132,10 @@ export default (props) => {
 
     const handleRepay = (order, e) => {
         e.stopPropagation();
-        openPay(order);
+        openPay({
+            ...order,
+            money: (order.money / 100).toFixed(2)
+        });
     }
 
     const handleDetail = (order, e) => {

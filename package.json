@@ -68,7 +68,8 @@
     "redux-thunk": "^2.3.0",
     "taro-list": "^1.0.8",
     "taro-listview": "^2.0.2",
-    "taro-ui": "^3.0.0-alpha.3"
+    "taro-ui": "^3.0.0-alpha.3",
+    "vconsole-webpack-plugin": "^1.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.0",

@@ -20,16 +20,23 @@ export const computeCropUrl = (url, imgInfo, cropInfo) => {
         contentHeight: imgInfo.contentHeight,
         deg: rotate
     });
-    const { width } = imgInfo;
+    const { width, height } = imgInfo;
     const scaleTranslate = imgInfo.contentWidth / editwidth;
-    // 原图剪裁区域的比例
     const as = tWidth / width * scale;
-    const dx = -Math.round(translate[0] * scaleTranslate / as);
-    const dy = -Math.round(translate[1] * scaleTranslate / as);
+    const { resizeWidth, resizeHeight } = calcRotatedSize({
+        width: width,
+        height: height
+    }, rotate > 0 ? 360 - rotate : -rotate);
+    const isJust = rotate % 90 == 0;
+    const dx = -Math.round(translate[0] * scaleTranslate / as + (isJust ? 0 : (resizeWidth - width) / 2));
+    const dy = -Math.round(translate[1] * scaleTranslate / as + (isJust ? 0 : (resizeHeight - height) / 2));
+    console.log(translate[0] * scaleTranslate / as);
+    console.log(dy);
     const cropWidth = Math.round(imgInfo.contentWidth / as);
     const cropHeight = Math.round(imgInfo.contentHeight / as);
     // TODO: 当原图orientation非up时 通过七牛剪裁参数不正确
     const cropUrl = `${url}?imageMogr2/gravity/Center/rotate/${-rotate}/auto-orient/crop/!${cropWidth}x${cropHeight}${dx >= 0 ? `a${dx}` : dx}${dy >= 0 ? `a${dy}` : dy}`;
+    console.log(cropUrl);
     return cropUrl;
 }
 
@@ -50,12 +57,47 @@ export const computedBlur = ({ contentWidth, contentHeight, width, height, after
     return blur
 }
 
+export const toRadians = (angel) => {
+    return angel * Math.PI / 180;
+}
+
+export const calcRotatedSize = ({ width, height }, angel) => {
+    let src = { width, height };
+    let temp;
+
+    if (angel >= 90) {
+        if (angel / 90 % 2 >= 1) {
+            temp = src.height;
+            src.height = src.width;
+            src.width = temp;
+        }
+        angel = angel % 90;
+    }
+
+    const r = Math.sqrt(src.height * src.height + src.width * src.width) / 2;
+
+    const len = 2 * Math.sin(toRadians(angel) / 2) * r;
+    const angel_alpha = (Math.PI - toRadians(angel)) / 2;
+    const angel_dalta_width = Math.atan(src.height / src.width);
+    const angel_dalta_height = Math.atan(src.width / src.height);
+
+    const len_dalta_width = len * Math.cos(Math.PI - angel_alpha - angel_dalta_width);
+    const len_dalta_height = len * Math.cos(Math.PI - angel_alpha - angel_dalta_height);
+    const des_width = src.width + len_dalta_width * 2;
+    const des_height = src.height + len_dalta_height * 2;
+
+    return {
+        resizeWidth: des_width,
+        resizeHeight: des_height
+    };
+}
+
 export const fitImg = ({ width, height, contentWidth, contentHeight, deg = 0 }) => {
     const p = width / height;
     const cp = contentWidth / contentHeight;
     let tWidth = width;
     let tHeight = height;
-    let approachDeg = approach([0,-90,-180,-270,-360,90,180,270,360], deg)
+    let approachDeg = approach([0, -90, -180, -270, -360, 90, 180, 270, 360], deg)
     if (approachDeg % 180 == 0) {
         if (p > cp) {
             tHeight = contentHeight;
@@ -90,30 +132,30 @@ export const fix = (num, prefix = 0) => {
 
 export const throttle = (callback, time) => {
 
-  let during = false;
-  let timer = null;
+    let during = false;
+    let timer = null;
 
-  return (...params) => {
-    if (during) {
-      return;
+    return (...params) => {
+        if (during) {
+            return;
+        }
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            during = false;
+        }, time);
+        during = true;
+        callback(...params);
     }
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      during = false;
-    }, time);
-    during = true;
-    callback(...params);
-  }
 }
 
 export const approach = (array, num) => {
-  let db = [Math.abs(num - array[0]), 0];
-  for (let i = 1; i < array.length; i++) {
-      if (Math.abs(num - array[i]) < db[0]) {
-          db = [Math.abs(num - array[i]), i]
-      }
-  }
-  return array[db[1]];
+    let db = [Math.abs(num - array[0]), 0];
+    for (let i = 1; i < array.length; i++) {
+        if (Math.abs(num - array[i]) < db[0]) {
+            db = [Math.abs(num - array[i]), i]
+        }
+    }
+    return array[db[1]];
 }
 
 export const jump = (url) => {
@@ -147,7 +189,7 @@ export const getH5Params = (url, key) => {
         let ivalue = item.split("=")[1] || ""
         paramsObject[ikey] = ivalue
     })
-    if(key) {
+    if (key) {
         return paramsObject[key]
     }
     return paramsObject
@@ -158,19 +200,19 @@ export const getH5Params = (url, key) => {
  * @param {*} key 要取的页面参数
  */
 export const getRouterParams = (key) => {
-    if(Taro.getEnv() == 'WEB') {
+    if (Taro.getEnv() == 'WEB') {
         const search = location.href.split('?')[1];
         const params = search ? search.split('&').reduce((result, v) => {
             const array = v.split('=');
             result[array[0]] = decodeURIComponent(array[1]);
             return result;
         }, {}) : {}
-        if(key) {
+        if (key) {
             return params[key]
         };
         return params
     } else {
-        if(key) {
+        if (key) {
             return Taro.getCurrentInstance().router.params[key]
         }
         return Taro.getCurrentInstance().router.params;
