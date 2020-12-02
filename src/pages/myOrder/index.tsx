@@ -37,7 +37,6 @@ export default (props) => {
                 <TabPanel title="已退款">
                     <OrderList active={current == 5} status={5}/>
                 </TabPanel>
-                {/* TODO:修改已关的status */}
                 <TabPanel title="已关闭">
                     <OrderList active={current == 6} status={5}/>
                 </TabPanel>
