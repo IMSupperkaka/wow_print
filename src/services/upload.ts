@@ -1,6 +1,6 @@
 import TaroRequest from '../utils/request'
 
-export const uploadFile = (data) => {
+export const uploadFile = async (data) => {
     return TaroRequest.uploadFile({
         name: 'file',
         ...data

@@ -29,37 +29,45 @@ class TaroRequest {
         this.baseUrl = getBaseUrl();
         this.queue = [];
         this.isBlock = false;
+        this.uploadToken = {
+            expire: null,
+            token: null
+        }
     }
 
     blocking() {
         this.isBlock = true;
     }
 
-    uploadFile(params) {
-        return new Promise((resolve) => {
-            this.request({
+    async uploadFile(params) {
+        const nowStamp = new Date().getTime();
+        if (!this.uploadToken.token || (nowStamp > this.uploadToken.expire)) {
+            const response = await this.request({
                 url: `/upload/getUploadToken`,
                 method: 'GET'
-            }).then(({ data }) => {
-                const uploadTask = Taro.uploadFile({
-                    url: 'https://up.qiniup.com',
-                    filePath: params.filePath,
-                    name: params.name,
-                    formData: {
-                        token: data.data
-                    },
-                    success: function (res) {
-                        const response = JSON.parse(res.data);
-                        resolve({
-                            data: `https://cdn.91jiekuan.com/${response.key}`
-                        });
-                    }
-                })
+            })
+            this.uploadToken.token = response.data.data;
+            this.uploadToken.expire = nowStamp + 60 * 1000;
+        }
+        return new Promise((resolve) => {
+            Taro.uploadFile({
+                url: 'https://up.qiniup.com',
+                filePath: params.filePath,
+                name: params.name,
+                formData: {
+                    token: this.uploadToken.token
+                },
+                success: function (res) {
+                    const response = JSON.parse(res.data);
+                    resolve({
+                        data: `https://cdn.91jiekuan.com/${response.key}`
+                    });
+                }
             })
         })
     }
 
-    request(params) {
+    async request(params) {
 
         const { dispatch } = app;
 
@@ -104,6 +112,7 @@ class TaroRequest {
                 })
             })
         }
+
         return requestPromise();
     }
 }

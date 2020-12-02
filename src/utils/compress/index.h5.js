@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro';
 
-export default ({ canvasId, filePath, width, height }) => {
+export default async ({ canvasId, filePath, width, height }) => {
     return new Promise((resolve, reject) => {
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');

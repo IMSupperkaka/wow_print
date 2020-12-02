@@ -7,7 +7,7 @@
  */
 import Taro from '@tarojs/taro';
 
-export default ({ canvasId, filePath, width, height }) => {
+export default async ({ canvasId, filePath, width, height }) => {
     return new Promise((resolve, reject) => {
         const context = Taro.createCanvasContext(canvasId);
         const drawWidth = width > height ? 500 : 500 * (width / height);
