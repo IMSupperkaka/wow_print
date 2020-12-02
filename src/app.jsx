@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
-import { View } from '@tarojs/components';
 import Taro from '@tarojs/taro'
 
 import { store, app } from './dva'
@@ -9,7 +8,7 @@ import './custom-variables.scss'
 
 class App extends Component {
 
-    onLaunch(props) {
+    componentDidShow(props) {
         if (Taro.getEnv() == 'WEB') {
             return;
         }
@@ -25,6 +24,9 @@ class App extends Component {
                 }
             }
         })
+    }
+
+    componentDidMount() {
         const updateManager = Taro.getUpdateManager()
         updateManager.onCheckForUpdate(function (res) {
             // 请求完新版本信息的回调

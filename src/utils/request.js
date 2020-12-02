@@ -69,7 +69,6 @@ class TaroRequest {
                     title: '请求数据中',
                     mask: true
                 });
-                console.log(params)
                 Taro.request({
                     complete: (params) => {
                         if (params.data?.code != '10000') {
