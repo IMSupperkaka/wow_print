@@ -149,6 +149,7 @@ const StageView = (props) => {
     }
 
     const handleShowEdit = (index, e) => {
+        console.log('click-item')
         e.stopPropagation();
         e.preventDefault();
         setActiveEditAreaIndex(index);
@@ -252,15 +253,15 @@ const StageView = (props) => {
             <Tips />
             {/* trasnform中fixed定位不会定位在根元素上 TODO:小程序中portal实现 */}
             <Upload className={styles['hidden-upload']} ref={uploadRef} fileList={fileList} onChange={handleOnchange} limit={9}></Upload>
-            <View className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+            <View onClick={handleHideEdit} className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}>
                 {
                     (activeEditAreaIndex != null && width) &&
-                    <View onClick={handleHideEdit} className={styles['edit-stage-absolute']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
+                    <View className={styles['edit-stage-absolute']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
                         <View style={activeAreaStyle} className={styles['crop-img-extra-wrap']}>
                             <View {...touchProps} className={styles['crop-img-extra']} style={style.contentStyle}>
                                 <View data-behavior={['zoom', 'rotate']} className={classnames(styles['crop-extra-zoom'], mirror && styles['mirror'])} />
                                 <View className={classnames(styles['crop-extra-bottom'], mirror && styles['mirror'])}>
-                                    <View onClick={handleMirror}>镜像</View>
+                                    {/* <View onClick={handleMirror}>镜像</View> */}
                                     <View onClick={handleChangePic}>换图</View>
                                 </View>
                             </View>
@@ -298,7 +299,7 @@ const StageView = (props) => {
                     }
                 </View>
             </View>
-            <View className={classnames(styles['bottom-selector'], fold && styles['fold'])}>
+            <View onClick={handleHideEdit} className={classnames(styles['bottom-selector'], fold && styles['fold'])}>
                 <Image onClick={toggleFold} src={fold ? iconFold : iconUnFold} className={styles['fold']} />
                 <Tabs current={current} onChange={setCurrent}>
                     <TabPanel title="图片" className={styles['tab-content']}>
@@ -315,12 +316,13 @@ const StageView = (props) => {
                             })
                         }
                     </TabPanel>
-                    <TabPanel title="模板" className={styles['tab-content']}>
+                    <TabPanel title="模版" className={styles['tab-content']}>
                         {
                             modelList.map((v, index) => {
                                 return (
                                     <View
                                         onClick={() => {
+                                            setActiveEditAreaIndex(null)
                                             setActiveModelIndexIndex(index)
                                         }}
                                         className={classnames(styles['pic-item'], index == activeModelIndex && styles['active'])}>

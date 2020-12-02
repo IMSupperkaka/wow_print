@@ -73,7 +73,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 type: 'confirmOrder/pushSeletPage',
                 payload: {
                     goodInfo: detail,
-                    userImageList: fileList
+                    userImageList: [file]
                 }
             })
         }

@@ -1,6 +1,6 @@
 export default [
     {
-        name: "模板001",
+        name: "模版001",
         stageInfo: {
             width: 604,
             height: 433,
@@ -17,7 +17,7 @@ export default [
         ]
     },
     {
-        name: "模板002",
+        name: "模版002",
         stageInfo: {
             width: 604,
             height: 433,
