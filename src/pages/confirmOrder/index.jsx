@@ -228,6 +228,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                         onChange={saveCoupon}
                         render={(coupon, couponList) => {
                             return (
+                                couponList?.length > 0 &&
                                 <View className="product-pay-info-item">
                                     <View>
                                         <Text className="discount-title">优惠</Text>

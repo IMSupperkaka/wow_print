@@ -68,10 +68,10 @@ const usePay = (props) => {
 
     }, [])
 
-    const confirmPay = ({ payType }) => {
+    const confirmPay = ({ payType, params: defaultParams }) => {
         const response = props.confirmPay({
             payType,
-            params
+            params: defaultParams || params
         });
         if (typeof response.then === 'function') {
             response.then((res) => {
@@ -95,11 +95,10 @@ const usePay = (props) => {
         setParams(params);
 
         if (process.env.TARO_ENV == 'weapp') {
-            return setTimeout(() => {
-                confirmPay({
-                    payType: 'JSAPI'
-                });
-            }, 0)
+            confirmPay({
+                payType: 'JSAPI',
+                params: params
+            });
         }
 
         if (process.env.TARO_ENV == 'h5') {
