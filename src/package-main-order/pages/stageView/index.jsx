@@ -60,7 +60,8 @@ const StageView = (props) => {
 
     const [fold, setFold] = useState(false);
 
-    const [fileList, setFileList] = useState([]);
+    const [fileList, setFileList] = useState([]
+        );
 
     const [activeModelIndex, setActiveModelIndexIndex] = useState(0);
 
@@ -88,13 +89,7 @@ const StageView = (props) => {
         }
     });
 
-    const [modelList, setModelList] = useState(initModelList(defaultModelList, props.confirmOrder.userImageList));
-
-    useEffect(() => {
-        setModelList((modelList) => {
-            return initModelList(modelList, props.confirmOrder.userImageList);
-        })
-    }, [props.confirmOrder.userImageList])
+    const [modelList, setModelList] = useState(props.confirmOrder.stageModelList);
 
     const uploadRef = useRef();
 
@@ -149,7 +144,6 @@ const StageView = (props) => {
     }
 
     const handleShowEdit = (index, e) => {
-        console.log('click-item')
         e.stopPropagation();
         e.preventDefault();
         setActiveEditAreaIndex(index);

@@ -4,6 +4,7 @@ import { detail } from '../services/address'
 import { sizeMap } from '../utils/map/order'
 import { list } from '../services/address'
 import { add as addPortfolio, edit as editPortfolio } from '../services/portfolio'
+import defaultModelList from '../package-main-order/pages/stageView/model';
 
 const defaultAddressInfo = {
     id: null,
@@ -21,6 +22,20 @@ const defaultCoupon = {
     couponFreeNums: 0
 }
 
+const initModelList = (modelList, imgList) => {
+    return modelList.map((model) => {
+        return {
+            ...model,
+            editArea: model.editArea.map((editArea, index) => {
+                return {
+                    ...editArea,
+                    img: imgList[index] || imgList[imgList.length - 1]
+                }
+            })
+        }
+    })
+}
+
 export default {
     namespace: 'confirmOrder',
     state: {
@@ -29,7 +44,7 @@ export default {
         goodId: null, // 商品id
         portfolioId: null, // 作品集id
         userImageList: [], // 照片列表
-        stageFileList: [],
+        stageModelList: defaultModelList,
         size: 5, // 照片尺寸 仅在普通照片有效
         proportion: 0.7, // 照片比例 仅在普通照片有效
         // 商品类型 枚举：/utils/map/product/productType
@@ -38,7 +53,7 @@ export default {
 
     effects: {
         *pushSeletPage({ payload }, { put }) {
-            const { goodInfo, portfolioId, userImageList, goConfirmOrder = false } = payload;
+            const { goodInfo, portfolioId, userImageList, stageFileList, goConfirmOrder = false } = payload;
 
             yield put({
                 type: 'saveGoodInfo',
@@ -54,6 +69,13 @@ export default {
                 type: 'saveUserImageList',
                 payload: userImageList || []
             })
+
+            if (goodInfo.category == 4) {
+                yield put({
+                    type: 'saveStageModelList',
+                    payload: initModelList(defaultModelList, stageFileList)
+                })
+            }
 
             let path = '';
 
@@ -183,8 +205,15 @@ export default {
                 addressInfo: defaultAddressInfo,
                 coupon: defaultCoupon,
                 goodId: null,
+                stageModelList: defaultModelList,
                 userImageList: [],
                 activeIndex: 0
+            }
+        },
+        saveStageModelList(state, { payload }) {
+            return {
+                ...state,
+                stageModelList: payload
             }
         },
         saveAddressInfo(state, { payload }) {
