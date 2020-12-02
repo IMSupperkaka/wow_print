@@ -237,7 +237,7 @@ export default () => {
                       orderDetail.couponName &&
                       <View className="pay-item">
                         <Text>优惠</Text>
-                        <Text>{ orderDetail.couponName }</Text>
+                        <Text>-{ orderDetail.discountMoney / 100 }</Text>
                       </View>
                     }
                     <View className="pay-item">
