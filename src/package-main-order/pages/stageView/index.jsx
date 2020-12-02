@@ -40,32 +40,19 @@ const Tips = () => {
     )
 }
 
-const initModelList = (modelList, imgList) => {
-    return modelList.map((model) => {
-        return {
-            ...model,
-            editArea: model.editArea.map((editArea, index) => {
-                return {
-                    ...editArea,
-                    img: imgList[index] || imgList[imgList.length - 1]
-                }
-            })
-        }
-    })
-}
-
 const StageView = (props) => {
 
     const [current, setCurrent] = useState(0);
 
     const [fold, setFold] = useState(false);
 
-    const [fileList, setFileList] = useState([]
-        );
+    const [fileList, setFileList] = useState(props.confirmOrder.stageFileList);
 
     const [activeModelIndex, setActiveModelIndexIndex] = useState(0);
 
     const [activeEditAreaIndex, setActiveEditAreaIndex] = useState(null);
+
+    const [modelList, setModelList] = useState(props.confirmOrder.stageModelList);
 
     const {
         state: {
@@ -88,8 +75,6 @@ const StageView = (props) => {
             })
         }
     });
-
-    const [modelList, setModelList] = useState(props.confirmOrder.stageModelList);
 
     const uploadRef = useRef();
 

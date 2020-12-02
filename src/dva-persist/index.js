@@ -14,10 +14,10 @@ const defaultConfig = {
     },
     onSet: (state) => {
         state.confirmOrder.userImageList.map((v) => {
-            v.filePath = v.originImage;
+            v && (v.filePath = v.originImage)
         })
         state.editimg.imgList.map((v) => {
-            v.filePath = v.originImage;
+            v && (v.filePath = v.originImage);
         })
         return state;
     }

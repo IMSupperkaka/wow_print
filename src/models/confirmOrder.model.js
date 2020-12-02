@@ -45,6 +45,7 @@ export default {
         portfolioId: null, // 作品集id
         userImageList: [], // 照片列表
         stageModelList: defaultModelList,
+        stageFileList: [],
         size: 5, // 照片尺寸 仅在普通照片有效
         proportion: 0.7, // 照片比例 仅在普通照片有效
         // 商品类型 枚举：/utils/map/product/productType
@@ -71,6 +72,10 @@ export default {
             })
 
             if (goodInfo.category == 4) {
+                yield put({
+                    type: 'saveStageFileList',
+                    payload: stageFileList
+                })
                 yield put({
                     type: 'saveStageModelList',
                     payload: initModelList(defaultModelList, stageFileList)
@@ -208,6 +213,12 @@ export default {
                 stageModelList: defaultModelList,
                 userImageList: [],
                 activeIndex: 0
+            }
+        },
+        saveStageFileList(state, { payload }) {
+            return {
+                ...state,
+                stageFileList: payload
             }
         },
         saveStageModelList(state, { payload }) {

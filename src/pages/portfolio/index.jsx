@@ -22,10 +22,6 @@ const Portfolio = ({ dispatch }) => {
 
     const [list, setList] = useState([]);
 
-    useReachBottom(() => {
-      console.log(1)
-    })
-
     const getData = (refresh = false) => {
         const current = refresh ? 1 : page.current + 1;
         const pageSize = page.pageSize;
