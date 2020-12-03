@@ -89,6 +89,7 @@ export default {
                         list: canPopupList
                     }
                 })
+                
                 if(canPopupList.length) {
                     yield put({
                         type: 'savePopup',

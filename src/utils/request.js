@@ -67,7 +67,7 @@ class TaroRequest {
         })
     }
 
-    async request(params) {
+    async request(requestParams) {
 
         const { dispatch } = app;
 
@@ -98,17 +98,19 @@ class TaroRequest {
                                     }
                                 })
                             }
-                            Taro.showToast({
-                                title: params.data?.msg || '服务器开小差了~',
-                                icon: 'none'
-                            });
+                            if (requestParams.data.disabledError != true) {
+                                Taro.showToast({
+                                    title: params.data?.msg || '服务器开小差了~',
+                                    icon: 'none'
+                                });
+                            }
                             return reject(params.data);
                         }
                         Taro.hideLoading();
                         resolve(params);
                     },
-                    ...params,
-                    url: this.baseUrl + params.url
+                    ...requestParams,
+                    url: this.baseUrl + requestParams.url
                 })
             })
         }

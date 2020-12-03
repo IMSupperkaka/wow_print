@@ -10,10 +10,6 @@ import Taro from '@tarojs/taro'
 import { getRouterParams } from '../utils/utils';
 import { login, smsLogin, saveinfo } from '../services/user';
 
-const delay = (ms) => new Promise((resolve) => {
-    setTimeout(resolve, ms);
-});
-
 export default {
     namespace: 'user',
     state: {
@@ -37,51 +33,55 @@ export default {
             payload.success();
         },
         *login({ payload }, { call, put }) {
-            if (payload.channel) {
-                Taro.setStorageSync('channel', payload.channel);
-            }
-            yield put({
-                type: 'setLoadFinish'
-            })
-            const response = yield call(async () => {
-                return new Promise((resolve) => {
-                    Taro.login({
-                        success: (res) => {
-                            login(res.code).then(resolve)
-                        }
+            try {
+                if (payload.channel) {
+                    Taro.setStorageSync('channel', payload.channel);
+                }
+                yield put({
+                    type: 'setLoadFinish'
+                })
+                const response = yield call(async () => {
+                    return new Promise((resolve) => {
+                        Taro.login({
+                            success: (res) => {
+                                login(res.code).then(resolve)
+                            }
+                        })
                     })
                 })
-            })
-            yield put({
-                type: 'saveUserInfo',
-                payload: response.data.data || {}
-            })
-            payload.success && payload.success();
+                yield put({
+                    type: 'saveUserInfo',
+                    payload: response.data.data || {}
+                })
+                payload.success && payload.success();
+            } catch (error) {
+                console.log(error)   
+            }
         },
         *smsLogin({ payload }, { call, put }) {
-          try {
-            const response = yield call(smsLogin, payload);
-            if (response.data.data.channel) {
-                Taro.setStorageSync('channel', payload.channel);
-            }
-            
-            sessionStorage.setItem('showed-falg', false)
+            try {
+                const response = yield call(smsLogin, payload);
+                if (response.data.data.channel) {
+                    Taro.setStorageSync('channel', payload.channel);
+                }
 
-            yield put({
-                type: 'saveUserInfo',
-                payload: response.data.data || {}
-            })
-            const redirect = getRouterParams('redirect');
-            if (redirect) {
-                Taro.redirectTo({
-                    url: redirect
+                sessionStorage.setItem('showed-falg', false)
+
+                yield put({
+                    type: 'saveUserInfo',
+                    payload: response.data.data || {}
                 })
-            } else {
-                Taro.navigateBack();
+                const redirect = getRouterParams('redirect');
+                if (redirect) {
+                    Taro.redirectTo({
+                        url: redirect
+                    })
+                } else {
+                    Taro.navigateBack();
+                }
+            } catch (error) {
+                console.error(error)
             }
-          } catch (error) {
-            console.error(error)
-          }
         }
     },
     reducers: {

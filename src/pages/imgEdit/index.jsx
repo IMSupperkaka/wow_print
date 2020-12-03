@@ -54,7 +54,9 @@ const ImgEdit = (props) => {
             translate: currentImg.cropInfo.translate,
             scale: currentImg.cropInfo.scale,
             rotate: currentImg.cropInfo.rotate || 0,
-            mirror: currentImg.cropInfo.mirror || false
+            mirror: currentImg.cropInfo.mirror || false,
+            width: IMG.imgInfo.width,
+            height: IMG.imgInfo.height,
         })
     }, [activeIndex])
 

@@ -14,6 +14,14 @@ export const login = (code) => {
     })
 }
 
+export const changeToken = (data) => {
+    return TaroRequest.request({
+        url: `/h5/union/token`,
+        method: 'GET',
+        data
+    })
+}
+
 export const sms = (data) => {
     return TaroRequest.request({
         url: `/app/sms`,

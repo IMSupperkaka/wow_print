@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 import Taro from '@tarojs/taro'
 
+import Base from './layout/Base'
 import { store, app } from './dva'
 import './app.less'
 import './custom-variables.scss'
@@ -16,7 +17,7 @@ class App extends Component {
         dispatch({
             type: 'user/login',
             payload: {
-                channel: props?.query?.channel,
+                channel: props?.channel,
                 success: () => {
                     dispatch({
                         type: 'home/getDialog'
@@ -56,7 +57,9 @@ class App extends Component {
     render() {
         return (
             <Provider store={store}>
-                {this.props.children}
+                <Base>
+                    {this.props.children}
+                </Base>
             </Provider>
         )
     }
