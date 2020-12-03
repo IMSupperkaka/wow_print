@@ -28,7 +28,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     const [matchList, setMatchList] = useState([]);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-    const { payProps, openPay } = Pay.usePay({
+    const { payProps, openPay, params } = Pay.usePay({
         confirmPay: ({ payType }) => {
             return create({
                 addressId: addressInfo.id,
@@ -62,25 +62,27 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 }
             })
         },
-        onSuccess: ({ loanId }) => {
+        onSuccess: ({ params, response: { loanId } }) => {
             Taro.redirectTo({
                 url: `/pages/result/index?type=pay_success&id=${loanId}`
             })
         },
-        onFail: ({ loanId }) => {
-            Taro.showToast({
-                title: '您的订单还未支付，请重新支付',
-                icon: 'none',
-                duration: 1000
-            })
-            // Taro.redirectTo({
-            //     url: `/pages/result/index?type=pay_fail&id=${loanId}`
+        onFail: ({ params, response: { loanId } }) => {
+            // Taro.showToast({
+            //     title: '您的订单还未支付，请重新支付',
+            //     icon: 'none',
+            //     duration: 1000
             // })
+            Taro.redirectTo({
+                url: `/pages/result/index?type=pay_fail&id=${loanId}&money=${params.money}`
+            })
         },
         complete: () => {
             Taro.eventCenter.trigger('finishOrder', goodId);
         }
     });
+
+    console.log(params)
 
     useEffect(() => {
         Taro.eventCenter.on('confirmSelectMatch', (id) => {

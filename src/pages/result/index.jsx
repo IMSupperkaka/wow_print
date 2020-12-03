@@ -8,6 +8,7 @@ import iconCancel from '../../../images/icon_Order@2x.png'
 import iconSuccess from '../../../images/icon_success@2x.png'
 import iconFail from '../../../images/icon_failure@2x.png'
 import iconReceived from '../../../images/icon_Receipt@2x.png'
+import Pay from '../../components/Pay'
 
 const reslutType = new Map([
     ['cancel', { title: '订单已取消', icon: iconCancel }],
@@ -20,6 +21,30 @@ export default () => {
 
     const query = Taro.getCurrentInstance().router.params;
     const item = reslutType.get(query.type);
+
+    const { payProps, openPay, params } = Pay.usePay({
+        confirmPay: ({ payType, params }) => {
+            return repay({
+                payMethod: payType,
+                loanId: params.id
+            }).then((res) => {
+                return {
+                    payData: res.data.data
+                }
+            })
+        },
+        onSuccess: () => {
+            Taro.eventCenter.trigger('updateOrderStatus', query.id);
+            Taro.redirectTo({
+                url: `/pages/result/index?type=pay_success&id=${query.id}`
+            })
+        },
+        onFail: ({ params }) => {
+            Taro.redirectTo({
+                url: `/pages/result/index?type=pay_fail&id=${query.id}&money=${params.money}`
+            })
+        }
+    });
 
     const goHome = () => {
         Taro.switchTab({
@@ -34,27 +59,9 @@ export default () => {
     }
 
     const handleRepay = () => {
-        repay({
-            loanId: query.id
-        }).then(({ data }) => {
-            Taro.requestPayment({
-                timeStamp: data.data.timestamp,
-                nonceStr: data.data.nonce_str,
-                package: data.data.pay_package,
-                signType: 'MD5',
-                paySign: data.data.paysign,
-                success: function (res) {
-                    Taro.eventCenter.trigger('updateOrderStatus', query.id);
-                    Taro.redirectTo({
-                        url: `/pages/result/index?type=pay_success&id=${query.id}`
-                    })
-                },
-                fail: function (res) {
-                    Taro.redirectTo({
-                        url: `/pages/result/index?type=pay_fail&id=${query.id}`
-                    })
-                }
-            })
+        openPay({
+            id: query.id,
+            money: query.money
         })
     }
 
@@ -80,6 +87,7 @@ export default () => {
                     <Button onClick={handleRepay} className="radius-btn primary-outline-btn">重新支付</Button>
                 }
             </View>
+            <Pay {...payProps} />
         </View>
     )
 }

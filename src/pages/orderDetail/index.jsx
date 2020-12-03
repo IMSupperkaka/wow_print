@@ -24,7 +24,7 @@ export default () => {
     const [countDown, setCountDown] = useState(null)
 
     const { payProps, openPay } = Pay.usePay({
-        confirmPay: ({ payType }) => {
+        confirmPay: ({ payType, params }) => {
             return repay({
                 payMethod: payType,
                 loanId: query.id
@@ -40,11 +40,14 @@ export default () => {
                 url: `/pages/result/index?type=pay_success&id=${query.id}`
             })
         },
-        onFail: () => {
-            Taro.showToast({
-                title: '您的订单还未支付，请重新支付',
-                icon: 'none',
-                duration: 1000
+        onFail: ({ params }) => {
+            // Taro.showToast({
+            //     title: '您的订单还未支付，请重新支付',
+            //     icon: 'none',
+            //     duration: 1000
+            // })
+            Taro.redirectTo({
+                url: `/pages/result/index?type=pay_fail&id=${query.id}&money=${params.money}`
             })
         }
     })
