@@ -10,6 +10,7 @@ import { orderStatus } from '../../utils/map/order'
 import address from '../../../images/icon_address@2x.png'
 import { getRouterParams } from '../../utils/utils'
 import Pay from '../../components/Pay'
+import day from 'dayjs';
 
 export default () => {
 
@@ -62,12 +63,12 @@ export default () => {
         })
     })
 
-    const createTimer = (expireTime) => {
-        let closeTime = new Date(expireTime).getTime();
-        let currentTime = new Date().getTime();
+    const createTimer = (expiredTime) => {
+        let closeTime = day(expiredTime).valueOf();
+        let currentTime = day().valueOf();
         setCountDown(turnHMS(closeTime - currentTime));
         timer.current = setInterval(() => {
-            currentTime = new Date().getTime();
+            currentTime = day().valueOf();
             let timeSub = closeTime - currentTime
             if (timeSub > 0) {
                 setCountDown(turnHMS(timeSub));
@@ -76,8 +77,7 @@ export default () => {
     }
 
     useEffect(() => {
-        console.log(countDown)
-        if (countDown === '00:00:00') {
+        if(countDown === '00:00:00') {
             clearInterval(timer.current)
         }
         return () => { clearInterval(timer.current) }
@@ -86,9 +86,9 @@ export default () => {
     // 时间戳差值转换时分秒
     const turnHMS = (time) => {
         let hms = time / 1000;
-        let hour = parseInt(hms / (60 * 60), 10)
-        let minutes = parseInt((hms % (60 * 60)) / 60, 10)
-        let seconds = parseInt((hms % (60 * 60)) % 60, 10)
+        let hour = parseInt(hms / (60 * 60), 10);
+        let minutes = parseInt((hms % (60 * 60)) / 60, 10);
+        let seconds = parseInt((hms % (60 * 60)) % 60, 10);
         hms = `${hour.toString().length == 2 ? hour : '0' + hour}:${minutes.toString().length == 2 ? minutes : '0' + minutes}:${seconds.toString().length == 2 ? seconds : '0' + seconds}`
         return hms
     }
