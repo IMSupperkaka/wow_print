@@ -25,6 +25,7 @@ export default (props) => {
 
     const startCount = () => {
         timer.current = setInterval(() => {
+            console.log('aaa')
             setTime((time) => {
                 return --time;
             })
@@ -61,6 +62,7 @@ export default (props) => {
             instance.current = captcha;
             setLoading(false);
         })
+        return () => {clearInterval(timer.current)}
     }, [])
 
     return {

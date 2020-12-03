@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Taro, { Events, useDidShow } from '@tarojs/taro'
 import { AtIcon } from 'taro-ui'
 import classNames from 'classnames';
@@ -10,7 +10,6 @@ import { orderStatus } from '../../utils/map/order'
 import address from '../../../images/icon_address@2x.png'
 import { getRouterParams } from '../../utils/utils'
 import Pay from '../../components/Pay'
-import { useCountDown } from '../../hooks/useCountDown'
 
 export default () => {
 
@@ -19,11 +18,9 @@ export default () => {
       goodsInfo: []
     });
 
-    const [countDown, setCountDown] = useState(null)
+    const timer = useRef();
 
-    // const { onStart, onChange, onEnd } = useCountDown({
-    //     msec: new Date(orderDetail.expiredTime).getTime() - new Date().getTime()
-    // })
+    const [countDown, setCountDown] = useState(null)
 
     const { payProps, openPay } = Pay.usePay({
         confirmPay: ({ payType }) => {
@@ -58,27 +55,30 @@ export default () => {
             loanId: query.id
         }).then(({ data }) => {
             setOrderDetail(data.data);
+            createTimer(data.data.expiredTime);
         })
     })
 
-    useEffect(() => {
-        let timer = null;
-        if(orderDetail.status == '1') {
-            timer = setTimeout(() => {
-                let closeTime = new Date(orderDetail.expiredTime).getTime();
-                let currentTime = new Date().getTime()
-                let timeSub = closeTime - currentTime
-                if(timeSub > 0) {
-                   let newCountDown = turnHMS(timeSub)
-                    setCountDown(newCountDown)
-                }
-            }, 1000)
-            if(countDown === '00:00:00') {
-                clearTimeout(timer)
+    const createTimer = (expireTime) => {
+        let closeTime = new Date(expireTime).getTime();
+        let currentTime = new Date().getTime();
+        setCountDown(turnHMS(closeTime - currentTime));
+        timer.current = setInterval(() => {
+            currentTime = new Date().getTime();
+            let timeSub = closeTime - currentTime
+            if(timeSub > 0) {
+                setCountDown(turnHMS(timeSub));
             }
+        }, 1000)
+    }
+
+    useEffect(() => {
+        console.log(countDown)
+        if(countDown === '00:00:00') {
+            clearInterval(timer.current)
         }
-        return () => {clearTimeout(timer)}
-    }, [countDown, orderDetail.status])
+        return () => {clearInterval(timer.current)}
+    }, [])
 
     // 时间戳差值转换时分秒
     const turnHMS = (time) => {

@@ -61,11 +61,7 @@ const AddresssList = ({ dispatch }) => {
             addressId: addressItem.id
         }).then(() => {
             setDialogVisible(false)
-            Taro.showToast({
-                title: '地址修改成功',
-                icon: 'none',
-                duration: 2000
-            })
+            Taro.navigateBack();
         })
     }
 
@@ -76,9 +72,9 @@ const AddresssList = ({ dispatch }) => {
                     <Empty text="可新增地址，常回来看看" /> :
                     <View className={styles["address-list-wrap"]}>
                         {
-                            addressList.map((address) => {
+                            addressList.map((address, index) => {
                                 return (
-                                    <View className={styles["address-item"]} onClick={handleClickAddressItem.bind(this, address)}>
+                                    <View key={index} className={styles["address-item"]} onClick={handleClickAddressItem.bind(this, address)}>
                                         <View>
                                             <View className={styles["address-user"]}>
                                                 <Text>{address.recipient}</Text>
