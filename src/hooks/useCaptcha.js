@@ -25,7 +25,6 @@ export default (props) => {
 
     const startCount = () => {
         timer.current = setInterval(() => {
-            console.log('aaa')
             setTime((time) => {
                 return --time;
             })

@@ -16,7 +16,7 @@ export default () => {
 
     const [query, setQuery] = useState({});
     const [orderDetail, setOrderDetail] = useState({
-      goodsInfo: []
+        goodsInfo: []
     });
 
     const timer = useRef();
@@ -42,9 +42,9 @@ export default () => {
         },
         onFail: () => {
             Taro.showToast({
-                title:'您的订单还未支付，请重新支付',
-                icon:'none',
-                duration:1000
+                title: '您的订单还未支付，请重新支付',
+                icon: 'none',
+                duration: 1000
             })
         }
     })
@@ -67,7 +67,7 @@ export default () => {
         timer.current = setInterval(() => {
             currentTime = day().valueOf();
             let timeSub = closeTime - currentTime
-            if(timeSub > 0) {
+            if (timeSub > 0) {
                 setCountDown(turnHMS(timeSub));
             }
         }, 1000)
@@ -77,7 +77,7 @@ export default () => {
         if(countDown === '00:00:00') {
             clearInterval(timer.current)
         }
-        return () => {clearInterval(timer.current)}
+        return () => { clearInterval(timer.current) }
     }, [])
 
     // 时间戳差值转换时分秒
@@ -120,7 +120,14 @@ export default () => {
 
     const handleCopy = (data) => {
         Taro.setClipboardData({
-            data: data
+            data: data,
+            success: function (res) {
+                Taro.showToast({
+                    title: '订单号已复制',
+                    icon: 'none',
+                    duration: 1000
+                })
+            }
         })
     }
 
@@ -133,7 +140,7 @@ export default () => {
     const goPreview = () => {
         if (orderDetail.imageSynthesisStatus != 1) {
             return Taro.showToast({
-                title:'杰作生成中，稍后再看哦',
+                title: '杰作生成中，稍后再看哦',
                 icon: 'none',
                 duration: 1000
             })
@@ -173,9 +180,9 @@ export default () => {
     }
 
     const handleGoLog = () => {
-      Taro.navigateTo({
-          url: `/pages/logisticsDetails/index?id=${query.id}`
-      })
+        Taro.navigateTo({
+            url: `/pages/logisticsDetails/index?id=${query.id}`
+        })
     }
 
     const greyHeader = [4, 5, 6].includes(orderDetail.status);
@@ -183,71 +190,71 @@ export default () => {
     return (
         <View className={styles["order-detail"]}>
             <View className={classNames('header', greyHeader && 'grey')}>
-                <Text>{ orderStatus.get(orderDetail.status) }</Text>
+                <Text>{orderStatus.get(orderDetail.status)}</Text>
                 {
                     orderDetail.status == 1 && orderDetail.expiredTime &&
-                    <Text className="count-down">{ countDown }后订单关闭</Text>
+                    <Text className="count-down">{countDown}后订单关闭</Text>
                 }
             </View>
             <View className="address-info">
-                <Image src={address} className="position-icon"/>
+                <Image src={address} className="position-icon" />
                 <View className="address">
-                    <View className="address-item">{ orderDetail.recipient } { orderDetail.phone }</View>
-                    <View className="address-item">{ orderDetail.province + orderDetail.city + orderDetail.area + orderDetail.address }</View>
+                    <View className="address-item">{orderDetail.recipient} {orderDetail.phone}</View>
+                    <View className="address-item">{orderDetail.province + orderDetail.city + orderDetail.area + orderDetail.address}</View>
                 </View>
             </View>
             <View className="product-info">
                 {
-                  orderDetail.goodsInfo.map((goodsInfo, index) => {
-                    return (
-                      <View key={index} className="product-info-content">
-                        <Image className="product-image" mode="aspectFill" src={goodsInfo.indexImage}/>
-                        <View className="product-content">
-                            <View className="product-list">
-                                <View className="product-name">
-                                    { goodsInfo.goodName }
-                                    {
-                                        goodsInfo.goodIsMaster == 0 &&
-                                        <View className="match-icon">搭配</View>
-                                    }
-                                </View>
-                                {
-                                    goodsInfo.goodIsMaster == 1 &&
-                                    <View onClick={goPreview} className="preview-btn">
-                                        预览
+                    orderDetail.goodsInfo.map((goodsInfo, index) => {
+                        return (
+                            <View key={index} className="product-info-content">
+                                <Image className="product-image" mode="aspectFill" src={goodsInfo.indexImage} />
+                                <View className="product-content">
+                                    <View className="product-list">
+                                        <View className="product-name">
+                                            {goodsInfo.goodName}
+                                            {
+                                                goodsInfo.goodIsMaster == 0 &&
+                                                <View className="match-icon">搭配</View>
+                                            }
+                                        </View>
+                                        {
+                                            goodsInfo.goodIsMaster == 1 &&
+                                            <View onClick={goPreview} className="preview-btn">
+                                                预览
                                         <AtIcon value='chevron-right' size='12' color='#666'></AtIcon>
+                                            </View>
+                                        }
                                     </View>
-                                }
+                                    <View className="num-content">
+                                        <Text>￥{(goodsInfo.sellingPrice / 100).toFixed(2)}</Text>
+                                        <Text>x{goodsInfo.goodsNums}</Text>
+                                    </View>
+                                </View>
                             </View>
-                            <View className="num-content">
-                                <Text>￥{ (goodsInfo.sellingPrice / 100).toFixed(2) }</Text>
-                                <Text>x{ goodsInfo.goodsNums }</Text>
-                            </View>
-                        </View>
-                    </View>
-                    )
-                  })
+                        )
+                    })
                 }
                 <View className="product-pay-info">
                     <View className="pay-item">
                         <Text>商品总价</Text>
-                        <Text>￥{ (orderDetail.money / 100 + orderDetail.discountMoney / 100 - orderDetail.shipMoney / 100).toFixed(2) }</Text>
+                        <Text>￥{(orderDetail.money / 100 + orderDetail.discountMoney / 100 - orderDetail.shipMoney / 100).toFixed(2)}</Text>
                     </View>
                     {
-                      orderDetail.couponName &&
-                      <View className="pay-item">
-                        <Text>优惠</Text>
-                        <Text>-{ orderDetail.discountMoney / 100 }</Text>
-                      </View>
+                        orderDetail.couponName &&
+                        <View className="pay-item">
+                            <Text>优惠</Text>
+                            <Text>-{orderDetail.discountMoney / 100}</Text>
+                        </View>
                     }
                     <View className="pay-item">
                         <Text>运费</Text>
-                        <Text>￥{ (orderDetail.shipMoney / 100).toFixed(2) }</Text>
+                        <Text>￥{(orderDetail.shipMoney / 100).toFixed(2)}</Text>
                     </View>
                     <View className="devide"></View>
                     <View className="pay-item">
                         <Text>合计</Text>
-                        <Text className="total-amount">￥{ (orderDetail.money / 100).toFixed(2) }</Text>
+                        <Text className="total-amount">￥{(orderDetail.money / 100).toFixed(2)}</Text>
                     </View>
                 </View>
             </View>
@@ -255,7 +262,7 @@ export default () => {
                 <View className="order-info-item">
                     <View>订单编号</View>
                     <View>
-                        <Text>{ orderDetail.loanNo }</Text>
+                        <Text>{orderDetail.loanNo}</Text>
                         <Text onClick={handleCopy.bind(this, orderDetail.loanNo)} className="copy">复制</Text>
                     </View>
                 </View>
@@ -264,14 +271,14 @@ export default () => {
                     <View className="order-info-item">
                         <View>支付方式</View>
                         <View>
-                            { orderDetail.payMethod == 1 ? '微信支付' : '支付宝支付' }
+                            {orderDetail.payMethod == 1 ? '微信支付' : '支付宝支付'}
                         </View>
                     </View>
                 }
                 <View className="order-info-item">
                     <View>创建时间</View>
                     <View>
-                        { orderDetail.createTime }
+                        {orderDetail.createTime}
                     </View>
                 </View>
             </View>
@@ -304,7 +311,7 @@ export default () => {
                     }
                 </View>
             </View>
-            <Pay {...payProps}/>
+            <Pay {...payProps} />
         </View>
     )
 }
