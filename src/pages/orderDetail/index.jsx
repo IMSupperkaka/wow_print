@@ -60,8 +60,8 @@ export default () => {
         })
     })
 
-    const createTimer = (expireTime) => {
-        let closeTime = day(expireTime).valueOf();
+    const createTimer = (expiredTime) => {
+        let closeTime = day(expiredTime).valueOf();
         let currentTime = day().valueOf();
         setCountDown(turnHMS(closeTime - currentTime));
         timer.current = setInterval(() => {
