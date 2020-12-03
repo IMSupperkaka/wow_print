@@ -54,9 +54,9 @@ const usePay = (props) => {
                     if (res.cancel) {
                         getOrderStatus(payInfo.payData.out_trade_no).then(({ data }) => {
                             if (data.data.isPay) {
-                                onSuccess(payInfo.response);
+                                onSuccess(payInfo);
                             } else {
-                                onFail(payInfo.response);
+                                onFail(payInfo);
                             }
                         })
                     } else {
@@ -111,6 +111,11 @@ const usePay = (props) => {
 
         const payData = response.payData;
 
+        const payInfo = {
+            response,
+            params
+        }
+
         if (process.env.TARO_ENV === 'weapp') {
             Taro.requestPayment({
                 timeStamp: payData.timestamp,
@@ -118,9 +123,9 @@ const usePay = (props) => {
                 package: payData.pay_package,
                 signType: 'MD5',
                 paySign: payData.paysign,
-                success: onSuccess?.bind(this, response),
-                fail: onFail?.bind(this, response),
-                complete: onComplete?.bind(this, response)
+                success: onSuccess?.bind(this, payInfo),
+                fail: onFail?.bind(this, payInfo),
+                complete: onComplete?.bind(this, payInfo)
             })
         }
         if (process.env.TARO_ENV === 'h5') {

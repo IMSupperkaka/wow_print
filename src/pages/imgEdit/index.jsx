@@ -95,9 +95,10 @@ const ImgEdit = (props) => {
     }
 
     const oprate = (type) => {
+        console.log(type)
         dispatch({
             type: 'editimg/saveActiveIndex',
-            payload: type == 'plus' ? activeIndex + 1 : activeIndex - 1
+            payload: type == 'plus' ? (activeIndex + 1) : (activeIndex - 1)
         })
     }
 
@@ -158,9 +159,9 @@ const ImgEdit = (props) => {
                 <View className={styles['bottom-bar-left']} onClick={handleRotate}>
                     <Image className={styles['icon']} src={rotateIcon} />
                 </View>
-                <View className={styles['bottom-bar-left']} onClick={handleMirror}>
+                {/* <View className={styles['bottom-bar-left']} onClick={handleMirror}>
                     <Image className={styles['icon']} src={mirrorIcon} />
-                </View>
+                </View> */}
                 <View className={styles['bottom-bar-confirm']} onClick={confirm}>完成</View>
             </View>
         </View>
