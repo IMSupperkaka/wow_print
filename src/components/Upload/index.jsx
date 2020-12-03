@@ -8,7 +8,7 @@ import compressImg from '../../utils/compress/index';
 import useFreshState from '../../hooks/useFreshState';
 import { uploadFile } from '../../services/upload';
 
-const getImageInfo = (filePath) => {
+const getImageInfo = async (filePath) => {
     return new Promise((resolve) => {
         Taro.getImageInfo({
             src: filePath,
@@ -17,6 +17,22 @@ const getImageInfo = (filePath) => {
             }
         })
     })
+}
+
+const uploadSync = async (file) =>{
+    const imgInfo = await getImageInfo(file.filePath);
+    const response = await uploadFile({
+        filePath: file.filePath
+    })
+    const filePath = await compressImg({ canvasId: 'compress-canvas', filePath: file.filePath, width: imgInfo.width, height: imgInfo.height });
+    return {
+        file: {
+            ...file,
+            filePath: filePath,
+        },
+        imgInfo: imgInfo,
+        response: response
+    };
 }
 
 export default React.forwardRef((props, ref) => {
@@ -73,7 +89,6 @@ export default React.forwardRef((props, ref) => {
     }
 
     const handleChoose = () => {
-        console.log(1)
         if (typeof beforeUpload == 'function') {
             const result = beforeUpload();
             if (result === false) {
@@ -83,7 +98,7 @@ export default React.forwardRef((props, ref) => {
         Taro.chooseImage({
             sizeType: ['original'],
             count: limit,
-            success: (e) => {
+            success: async (e) => {
                 const nextFileList = getFileList().concat();
                 const uploadList = e.tempFilePaths.map((v, index) => {
                     return {
@@ -97,22 +112,11 @@ export default React.forwardRef((props, ref) => {
                     ...nextFileList,
                     ...uploadList
                 ]);
-                uploadList.map((v) => {
-                    progress(v, null, null, 'uploading');
-                    getImageInfo(v.filePath).then((imgInfo) => {
-                        uploadFile({
-                            filePath: v.filePath
-                        }).then((res) => {
-                            // progress(v, res, imgInfo, 'done');
-                            compressImg({ canvasId: 'compress-canvas', filePath: v.filePath, width: imgInfo.width, height: imgInfo.height }).then((filePath) => {
-                                progress({
-                                    ...v,
-                                    filePath
-                                }, res, imgInfo, 'done');
-                            });
-                        })
-                    })
-                })
+                for (let i = 0; i < uploadList.length; i++) {
+                    progress(uploadList[i], null, null, 'uploading');
+                    const { file, imgInfo, response } = await uploadSync(uploadList[i]);
+                    progress(file, response, imgInfo, 'done');
+                }
             }
         })
     }

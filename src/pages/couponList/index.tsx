@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import Taro, { usePullDownRefresh, useReachBottom } from '@tarojs/taro'
-import { View, Image, Text } from '@tarojs/components'
+import React, { useState, useEffect } from 'react';
+import Taro, { usePullDownRefresh, useReachBottom } from '@tarojs/taro';
+import { View, Image, Text } from '@tarojs/components';
 
-import styles from './index.module.less'
+import styles from './index.module.less';
 import { list } from '../../services/coupon';
-import List from '../../components/List';
 import Empty from '../../components/Empty';
 
 import icon_used from '../../../images/icon_Used@2x.png';

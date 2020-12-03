@@ -30,13 +30,11 @@ export const computeCropUrl = (url, imgInfo, cropInfo) => {
     const isJust = rotate % 90 == 0;
     const dx = -Math.round(translate[0] * scaleTranslate / as + (isJust ? 0 : (resizeWidth - width) / 2));
     const dy = -Math.round(translate[1] * scaleTranslate / as + (isJust ? 0 : (resizeHeight - height) / 2));
-    console.log(translate[0] * scaleTranslate / as);
-    console.log(dy);
     const cropWidth = Math.round(imgInfo.contentWidth / as);
     const cropHeight = Math.round(imgInfo.contentHeight / as);
     // TODO: 当原图orientation非up时 通过七牛剪裁参数不正确
-    const cropUrl = `${url}?imageMogr2/gravity/Center/rotate/${-rotate}/auto-orient/crop/!${cropWidth}x${cropHeight}${dx >= 0 ? `a${dx}` : dx}${dy >= 0 ? `a${dy}` : dy}`;
-    console.log(cropUrl);
+    const cropUrl = `${url}?imageMogr2/gravity/Center/rotate/${rotate > 0 ? 360 - rotate : -rotate}/auto-orient/crop/!${cropWidth}x${cropHeight}${dx >= 0 ? `a${dx}` : dx}${dy >= 0 ? `a${dy}` : dy}`;
+    console.log(cropUrl)
     return cropUrl;
 }
 
@@ -158,7 +156,7 @@ export const approach = (array, num) => {
     return array[db[1]];
 }
 
-export const jump = (url) => {
+export const jump = (url, option) => {
     const miniProPageReg = new RegExp('wy://');
     if (typeof url !== 'string') {
         throw new Error('url must be string');
@@ -169,6 +167,17 @@ export const jump = (url) => {
             url: url.replace(miniProPageReg, '/')
         })
     } else {
+        openWebview(url, option)
+    }
+}
+
+export const openWebview = (url, option) => {
+    if (process.env.TARO_ENV === 'h5') {
+        window.open(url);
+    } else{
+        Taro.setNavigationBarTitle({
+            title: option?.title || '哇印'
+        })
         Taro.navigateTo({
             url: `/pages/webview/index?url=${encodeURIComponent(url)}`
         })

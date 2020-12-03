@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Taro, { usePullDownRefresh, useReachBottom, useReady } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 
@@ -22,9 +22,9 @@ export default (props) => {
         _onLoad(false);
     })
 
-    useReady(() => {
+    useEffect(() => {
         _onLoad(false);
-    })
+    }, [])
 
     const _onLoad = (refresh = false) => {
         if (!refresh && isFinish) {

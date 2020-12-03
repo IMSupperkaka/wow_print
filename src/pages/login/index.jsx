@@ -5,22 +5,21 @@ import { connect } from 'react-redux';
 import { View, Text, Image, Button, Form, Input } from '@tarojs/components';
 
 import useCaptcha from '../../hooks/useCaptcha';
+import { openWebview } from '../../utils/utils';
 import styles from './index.module.less';
 import { sms } from '../../services/user';
 import loginLogo from '../../../images/bg_wayin_avatar@2x.png';
 
 const handleGoService = () => {
-    const url = encodeURIComponent(`${BASE_WEB_URL}/agreement.html\?key=user_service_agreement`);
-    Taro.navigateTo({
-        url: `/pages/webview/index?url=${url}`
-    })
+    openWebview(`${BASE_WEB_URL}/agreement.html\?key=user_service_agreement`, {
+        title: '哇印用户服务协议'
+    });
 }
 
 const handleGoPolicy = () => {
-    const url = encodeURIComponent(`${BASE_WEB_URL}/agreement.html\?key=privacy_service_agreement`);
-    Taro.navigateTo({
-        url: `/pages/webview/index?url=${url}`
-    })
+    openWebview(`${BASE_WEB_URL}/agreement.html\?key=privacy_service_agreement`, {
+        title: '哇印隐私政策'
+    });
 }
 
 const Login = ({ dispatch }) => {
