@@ -188,7 +188,20 @@ export default () => {
         })
     }
 
+    const handleGoDetail = (product) => {
+        if (product.goodIsMaster != 1) {
+            return;
+        }
+        Taro.navigateTo({
+            url: `/pages/productDetail/index?id=${product.goodId}`
+        })
+    }
+
     const greyHeader = [4, 5, 6].includes(orderDetail.status);
+
+    const productMoney = (orderDetail.money / 100 + (orderDetail.status == 6 ? 0 : (orderDetail.discountMoney / 100)) - orderDetail.shipMoney / 100).toFixed(2);
+
+    const totalMoney = (orderDetail.money / 100 + (orderDetail.status != 6 ? 0 : (orderDetail.discountMoney / 100))).toFixed(2)
 
     return (
         <View className={styles["order-detail"]}>
@@ -210,7 +223,7 @@ export default () => {
                 {
                     orderDetail.goodsInfo.map((goodsInfo, index) => {
                         return (
-                            <View key={index} className="product-info-content">
+                            <View key={index} className="product-info-content" onClick={handleGoDetail.bind(this, goodsInfo)}>
                                 <Image className="product-image" mode="aspectFill" src={goodsInfo.indexImage} />
                                 <View className="product-content">
                                     <View className="product-list">
@@ -225,7 +238,7 @@ export default () => {
                                             goodsInfo.goodIsMaster == 1 &&
                                             <View onClick={goPreview} className="preview-btn">
                                                 预览
-                                        <AtIcon value='chevron-right' size='12' color='#666'></AtIcon>
+                                            <AtIcon value='chevron-right' size='12' color='#666'></AtIcon>
                                             </View>
                                         }
                                     </View>
@@ -241,10 +254,10 @@ export default () => {
                 <View className="product-pay-info">
                     <View className="pay-item">
                         <Text>商品总价</Text>
-                        <Text>￥{(orderDetail.money / 100 + orderDetail.discountMoney / 100 - orderDetail.shipMoney / 100).toFixed(2)}</Text>
+                        <Text>￥{productMoney}</Text>
                     </View>
                     {
-                        orderDetail.couponName &&
+                        (orderDetail.couponName && orderDetail.status != 6) &&
                         <View className="pay-item">
                             <Text>优惠</Text>
                             <Text>-{orderDetail.discountMoney / 100}</Text>
@@ -257,7 +270,7 @@ export default () => {
                     <View className="devide"></View>
                     <View className="pay-item">
                         <Text>合计</Text>
-                        <Text className="total-amount">￥{(orderDetail.money / 100).toFixed(2)}</Text>
+                        <Text className="total-amount">￥{totalMoney}</Text>
                     </View>
                 </View>
             </View>
@@ -286,7 +299,7 @@ export default () => {
                 </View>
             </View>
             <View className="submit-bar">
-                <View></View>
+                {/* <View></View> */}
                 <View className="submit-right">
                     {
                         [2, 3, 4, 5, 9].includes(orderDetail.status) &&

@@ -38,7 +38,7 @@ export default (props) => {
                     <OrderList active={current == 5} status={5}/>
                 </TabPanel>
                 <TabPanel title="已关闭">
-                    <OrderList active={current == 6} status={5}/>
+                    <OrderList active={current == 6} status={6}/>
                 </TabPanel>
             </Tabs>
         </View>

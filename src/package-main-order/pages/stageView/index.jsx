@@ -22,7 +22,7 @@ import iconUnFold from '../../images/icon_edit_un_fold@2x.png';
 
 const Tips = () => {
 
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(true);
 
     const handleToggle = () => {
         setShow((show) => {
