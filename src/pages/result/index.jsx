@@ -2,7 +2,7 @@ import React from 'react'
 import Taro from '@tarojs/taro'
 import { View, Image, Button } from '@tarojs/components'
 
-import './index.less'
+import styles from './index.module.less'
 import { repay } from '../../services/order'
 import iconCancel from '../../../images/icon_Order@2x.png'
 import iconSuccess from '../../../images/icon_success@2x.png'
@@ -66,14 +66,14 @@ export default () => {
     }
 
     return (
-        <View className="result-wrap">
-            <Image className="icon" src={item.icon}/>
-            <View className="title">{ item.title }</View>
+        <View className={styles['result-wrap']}>
+            <Image className={styles['icon']} src={item.icon}/>
+            <View className={styles['title']}>{ item.title }</View>
             {
                 item.subTitle &&
-                <View className="sub-title">{ item.subTitle }</View>
+                <View className={styles['sub-title']}>{ item.subTitle }</View>
             }
-            <View className="btn-wrap">
+            <View className={styles['btn-wrap']}>
                 {
                     ['pay_success', 'cancel', 'received'].includes(query.type) &&
                     <Button onClick={goHome} className="radius-btn outline-btn">返回首页</Button>

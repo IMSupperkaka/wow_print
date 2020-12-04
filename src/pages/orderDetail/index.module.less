@@ -152,36 +152,10 @@
             .submit-right {
                 display: flex;
             }
-        }
-    
-        .radius-btn {
-            padding: 12px 30px;
-            margin-left: 24px;
-            font-size: 24px;
-            border-radius: 31px;
-            &::after {
-                border-radius: 62px;
-            }
-        }
-        .primary-btn {
-            color: #fff;
-            background-color: #FF6345;
-            &::after {
-                border-color: #FF6345;
-            }
-        }
-        .outline-btn {
-            color: #999999;
-            background-color: #fff;
-            &::after {
-                border-color: #C1C1C1;
-            }
-        }
-        .primary-outline-btn {
-            color: #FF6345;
-            background-color: #fff;
-            &::after {
-                border-color: #FF6345;
+            :global {
+                .radius-btn {
+                    margin-left: 24px;
+                }
             }
         }
     }
