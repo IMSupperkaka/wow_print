@@ -17,7 +17,7 @@ const Base = (props) => {
                 Taro.setStorageSync('channel', query.channel);
             }
             if (query.changeToken && changeToken != query.changeToken && !token) {
-                getChangeToken({
+                return getChangeToken({
                     changeToken: query.changeToken,
                     disabledError: true
                 }).then((res) => {
@@ -28,6 +28,7 @@ const Base = (props) => {
                     setToken(true)
                 })
             }
+            setToken(true)
         }
     }, [])
 
