@@ -82,8 +82,6 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
         }
     });
 
-    console.log(params)
-
     useEffect(() => {
         Taro.eventCenter.on('confirmSelectMatch', (id) => {
             setSelectedRowKeys((selectedRowKeys) => {

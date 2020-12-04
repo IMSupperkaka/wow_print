@@ -190,18 +190,16 @@ export const openWebview = (url, option) => {
  * @param {*} key 要取的页面参数
  */
 export const getH5Params = (url, key) => {
-    let paramsString = url.split("?")[1]
-    let paramsArray = paramsString.split("&")
-    let paramsObject = {}
-    paramsArray.forEach((item, index) => {
-        let ikey = item.split("=")[0] || index
-        let ivalue = item.split("=")[1] || ""
-        paramsObject[ikey] = ivalue
-    })
+    const search = url.split('?')[1];
+    const params = search ? search.split('&').reduce((result, v) => {
+        const array = v.split('=');
+        result[array[0]] = decodeURIComponent(array[1]);
+        return result;
+    }, {}) : {}
     if (key) {
-        return paramsObject[key]
-    }
-    return paramsObject
+        return params[key]
+    };
+    return params
 }
 
 /**

@@ -77,13 +77,15 @@ const usePay = (props) => {
             response.then((res) => {
                 pay({
                     response: res,
-                    payType
+                    payType,
+                    params: defaultParams || params
                 });
             })
         } else {
             pay({
                 response,
-                payType
+                payType,
+                params: defaultParams || params
             });
         }
     }
@@ -107,7 +109,7 @@ const usePay = (props) => {
         }
     }
 
-    const pay = ({ response, payType }) => {
+    const pay = ({ response, payType, params }) => {
 
         const payData = response.payData;
 
