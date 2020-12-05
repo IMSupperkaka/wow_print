@@ -140,7 +140,11 @@ export default () => {
         })
     }
 
-    const goPreview = () => {
+    const goPreview = (e) => {
+
+        e.preventDefault();
+        e.stopPropagation();
+
         if (orderDetail.imageSynthesisStatus != 1) {
             return Taro.showToast({
                 title: '杰作生成中，稍后再看哦',

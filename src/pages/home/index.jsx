@@ -119,10 +119,7 @@ const Home = (props) => {
             {process.env.TARO_ENV === 'weapp' && <AddToMine/>}
             <View className="banner-wrapper">
                 <Swiper
-                    // H5 更新Swiper key值，让Swiper重新渲染
-                    key={homeData.bannerList.join('_')}
                     className="banner"
-                    circular
                     autoplay
                 >
                     {
@@ -139,10 +136,7 @@ const Home = (props) => {
 
             <View className='promote-pic'>
                 <Swiper
-                    // H5 更新Swiper key值，让Swiper重新渲染
-                    key={homeData.indexBigImageList.join('_')}
                     className='promote-swiper'
-                    circular
                     autoplay>
                     {
                         homeData.indexBigImageList.map((v) => {

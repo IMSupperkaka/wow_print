@@ -275,6 +275,10 @@ export default (props) => {
             scale: scale
         }
 
+        if (state.editwidth || state.contentWidth) {
+            payload.editwidth = state.editwidth || state.contentWidth;
+        }
+
         if (scale < 1) {
             payload.scale = 1;
             Taro.vibrateShort();

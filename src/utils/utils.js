@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-09-28 21:46:46
  * @LastEditors: Shawn
- * @LastEditTime: 2020-11-29 22:52:07
+ * @LastEditTime: 2020-12-05 13:51:20
  * @FilePath: \wow_print\src\utils\utils.js
  * @Description: Descrip Content
  */
@@ -22,11 +22,11 @@ export const computeCropUrl = (url, imgInfo, cropInfo) => {
     });
     const { width, height } = imgInfo;
     const scaleTranslate = imgInfo.contentWidth / editwidth;
-    const as = tWidth / width * scale;
     const { resizeWidth, resizeHeight } = calcRotatedSize({
         width: width,
         height: height
     }, rotate > 0 ? 360 - rotate : -rotate);
+    const as = tWidth / width * scale;
     const isJust = rotate % 90 == 0;
     const dx = -Math.round(translate[0] * scaleTranslate / as + (isJust ? 0 : (resizeWidth - width) / 2));
     const dy = -Math.round(translate[1] * scaleTranslate / as + (isJust ? 0 : (resizeHeight - height) / 2));
