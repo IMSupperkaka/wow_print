@@ -25,12 +25,14 @@ const ImgEdit = (props) => {
     const {
         state,
         mutate,
-        touchProps
+        touchProps,
+        cropProps
     } = useCrop({
         width: IMG.imgInfo.width,
         height: IMG.imgInfo.height,
         contentWidth: contentWidth,
         contentHeight: contentHeight,
+        ...IMG.imgInfo.cropInfo,
         forcefit: ['translate', 'rotate'],
         onFinish: (cropInfo) => {
             const cloneList = [...imgList];
@@ -123,7 +125,7 @@ const ImgEdit = (props) => {
                 <View className={styles['content-wrap']}>
                     <View className={styles['mask']} style={maskStyle}></View>
                     <View style={contentStyle} className={styles['content']}></View>
-                    <CropImg className={styles['img']} showIgnoreBtn={false} width={contentWidth} height={contentHeight} src={IMG.filePath || IMG.originImage} imgInfo={IMG.imgInfo} cropOption={cropOption} />
+                    <CropImg className={styles['img']} showIgnoreBtn={false} src={IMG.filePath || IMG.originImage} {...cropProps} />
                 </View>
                 <View className={styles['bottom-wrap']}>
                     <View className={styles['bottom-tip']}>tips：灰色区域将被裁剪，不在打印范围内</View>

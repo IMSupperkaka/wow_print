@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Image, Button, ScrollView } from '@tarojs/components';
 
-import './index.less';
+import styles from './index.module.less';
 import Modal from '../Modal';
 import Upload from '../Upload';
 
@@ -24,16 +24,16 @@ export default (props) => {
 
     return (
         <Modal {...resetProps}>
-            <View className="select-title">已上传图片
-                <View className="close" onClick={resetProps.onClose}>取消</View>
+            <View className={styles['select-title']}>已上传图片
+                <View className={styles['close']} onClick={resetProps.onClose}>取消</View>
             </View>
             <ScrollView scrollY style={{ height: "60vh", background: "#F6F6F6" }}>
-                <View className="select-content">
+                <View className={styles['select-content']}>
                     {
                         filterList.map((item, index) => {
                             return (
-                                <View className="img-item" onClick={() => { handleChange(item) }}>
-                                    <Image mode="aspectFill" src={`${item.originImage}?imageView2/1/w/200/h/200`} />
+                                <View className={styles['img-item']} onClick={() => { handleChange(item) }}>
+                                    <Image className={styles['img']} mode="aspectFill" src={`${item.originImage}?imageView2/1/w/200/h/200`} />
                                 </View>
                             )
                         })
@@ -41,7 +41,7 @@ export default (props) => {
                 </View>
             </ScrollView>
             <Upload limit={limit} onChange={handleChange}>
-                <View class="upload-btn">从手机相册上传</View>
+                <View className={styles['upload-btn']}>从手机相册上传</View>
             </Upload>
         </Modal>
     )

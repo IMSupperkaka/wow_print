@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useMemo } from 'react';
 import lodash from 'lodash';
 import Taro from '@tarojs/taro';
 
@@ -379,7 +379,7 @@ export default (props = {}) => {
           width: width,
           height: height,
           contentWidth: contentWidth,
-          contentHieght: contentHeight,
+          contentHeight: contentHeight,
           ignoreBlur: true,
           cropOption: {
             rotate,

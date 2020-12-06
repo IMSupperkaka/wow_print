@@ -54,6 +54,8 @@ const StageView = (props) => {
 
     const [modelList, setModelList] = useState(props.confirmOrder.stageModelList);
 
+    const uploadRef = useRef();
+
     const {
         state: {
             rotate,
@@ -70,6 +72,9 @@ const StageView = (props) => {
         forcefit: ['translate'],
         onFinish: (cropInfo) => {
             setModelList((modelList) => {
+                if (activeEditAreaIndex == null) {
+                  return modelList;
+                }
                 const cloneList = [...modelList];
                 cloneList[activeModelIndex].editArea[activeEditAreaIndex].img.cropInfo = cropInfo;
                 return cloneList;
@@ -77,31 +82,15 @@ const StageView = (props) => {
         }
     });
 
-    const uploadRef = useRef();
-
     useEffect(() => {
-        if (activeEditAreaIndex == null) {
-            return;
-        }
-        const activeArea = modelList[activeModelIndex].editArea[activeEditAreaIndex];
-        const img = activeArea.img;
-        if (!img.imgInfo) {
-            Taro.getImageInfo({
-                src: img.filePath,
-                success: (res) => {
-                    mutateActiveImg({
-                        imgInfo: res
-                    });
-                }
-            })
-        } else {
-            mutateActiveImg();
-        }
+      if (activeEditAreaIndex != null) {
+        mutateActiveImg()
+      }
     }, [activeModelIndex, activeEditAreaIndex])
 
     const handleOnchange = (file, fileList) => {
         if (file.status == 'done' && activeEditAreaIndex != null) {
-            mutateActiveImg(file)
+          mutateActiveImg(file);
         }
         setFileList(fileList)
     }
@@ -132,6 +121,14 @@ const StageView = (props) => {
     const handleShowEdit = (index, e) => {
         e.stopPropagation();
         e.preventDefault();
+        const activeArea = modelList[activeModelIndex].editArea[index];
+        mutate({
+            width: activeArea.img.imgInfo.width,
+            height: activeArea.img.imgInfo.height,
+            contentWidth: activeArea.width,
+            contentHeight: activeArea.height,
+            ...activeArea.img.cropInfo
+        })
         setActiveEditAreaIndex(index);
     }
 
@@ -232,7 +229,6 @@ const StageView = (props) => {
         top: Taro.pxTransform(y, 750),
         left: Taro.pxTransform(x, 750)
     }
-
     return (
         <View className={styles['index']}>
             <Tips />
@@ -258,7 +254,6 @@ const StageView = (props) => {
                     <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
                     {
                         activeModel.editArea.map(({ width, height, x, y, img }, index) => {
-
                             let _cropProps = {
                               useProps: false,
                               width: img.imgInfo.width,

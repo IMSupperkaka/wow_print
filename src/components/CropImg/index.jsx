@@ -45,13 +45,15 @@ const CropImg = (props) => {
     useEffect(() => {
       if (!useProps) {
         mutate({
+          width,
+          height,
           contentWidth: contentWidth,
           contentHeight: contentHeight,
           animate,
           ...cropOption
         })
       }
-    }, [cropOption, animate])
+    }, [width, height, contentWidth, contentHeight, cropOption, animate])
 
     useEffect(() => {
 
