@@ -42,6 +42,7 @@ export default React.memo((props) => {
     }
 
     const handleIgnore = () => {
+        console.log(111)
         const cloneList = [...fileList];
         cloneList[showIndex].cropInfo = {
             ...currentImg.cropInfo,
@@ -61,9 +62,10 @@ export default React.memo((props) => {
                         onHandleEdit={onHandleEdit}
                         onHandleChange={() => { upload.current.handleChoose(); }}
                         className="item-img"
-                        width={width}
-                        height={height}
-                        imgInfo={currentImg.imgInfo}
+                        contentWidth={width}
+                        contentHeight={height}
+                        width={currentImg.imgInfo.width}
+                        height={currentImg.imgInfo.height}
                         cropOption={currentImg.cropInfo}
                         src={currentImg.filePath || currentImg.originImage}
                     />

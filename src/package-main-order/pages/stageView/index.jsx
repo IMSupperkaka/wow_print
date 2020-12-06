@@ -54,21 +54,27 @@ const StageView = (props) => {
 
     const [modelList, setModelList] = useState(props.confirmOrder.stageModelList);
 
+    const uploadRef = useRef();
+
     const {
         state: {
             rotate,
             translate,
             scale,
             mirror,
-            isTouch
+            animate
         },
         style,
         touchProps,
+        cropProps,
         mutate
     } = useCrop({
         forcefit: ['translate'],
         onFinish: (cropInfo) => {
             setModelList((modelList) => {
+                if (activeEditAreaIndex == null) {
+                  return modelList;
+                }
                 const cloneList = [...modelList];
                 cloneList[activeModelIndex].editArea[activeEditAreaIndex].img.cropInfo = cropInfo;
                 return cloneList;
@@ -76,31 +82,15 @@ const StageView = (props) => {
         }
     });
 
-    const uploadRef = useRef();
-
     useEffect(() => {
-        if (activeEditAreaIndex == null) {
-            return;
-        }
-        const activeArea = modelList[activeModelIndex].editArea[activeEditAreaIndex];
-        const img = activeArea.img;
-        if (!img.imgInfo) {
-            Taro.getImageInfo({
-                src: img.filePath,
-                success: (res) => {
-                    mutateActiveImg({
-                        imgInfo: res
-                    });
-                }
-            })
-        } else {
-            mutateActiveImg();
-        }
+      if (activeEditAreaIndex != null) {
+        mutateActiveImg()
+      }
     }, [activeModelIndex, activeEditAreaIndex])
 
     const handleOnchange = (file, fileList) => {
         if (file.status == 'done' && activeEditAreaIndex != null) {
-            mutateActiveImg(file)
+          mutateActiveImg(file);
         }
         setFileList(fileList)
     }
@@ -131,10 +121,26 @@ const StageView = (props) => {
     const handleShowEdit = (index, e) => {
         e.stopPropagation();
         e.preventDefault();
-        setActiveEditAreaIndex(index);
+        // Taro 阻止事件冒泡超过两级依然冒泡 https://github.com/NervJS/taro/issues/8041
+        setTimeout(() => {
+          const activeArea = modelList[activeModelIndex].editArea[index];
+          mutate({
+              width: activeArea.img.imgInfo.width,
+              height: activeArea.img.imgInfo.height,
+              contentWidth: activeArea.width,
+              contentHeight: activeArea.height,
+              ...activeArea.img.cropInfo
+          })
+          setActiveEditAreaIndex(index);
+        }, 100)
     }
 
     const handleHideEdit = () => {
+        if (activeEditAreaIndex != null) {
+          mutate({
+            animate: false
+          })
+        }
         setActiveEditAreaIndex(null);
     }
 
@@ -226,15 +232,14 @@ const StageView = (props) => {
         top: Taro.pxTransform(y, 750),
         left: Taro.pxTransform(x, 750)
     }
-
     return (
-        <View className={styles['index']}>
+        <View className={styles['index']} onClick={handleHideEdit}>
             <Tips />
             {/* trasnform中fixed定位不会定位在根元素上 TODO:小程序中portal实现 */}
             <Upload className={styles['hidden-upload']} ref={uploadRef} fileList={fileList} onChange={handleOnchange} limit={9}></Upload>
-            <View onClick={handleHideEdit} className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+            <View className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}>
                 {
-                    (activeEditAreaIndex != null && width) &&
+                    activeEditAreaIndex != null &&
                     <View className={styles['edit-stage-absolute']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
                         <View style={activeAreaStyle} className={styles['crop-img-extra-wrap']}>
                             <View {...touchProps} className={styles['crop-img-extra']} style={style.contentStyle}>
@@ -248,34 +253,41 @@ const StageView = (props) => {
                     </View>
                 }
                 <View className={styles['edit-stage']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
-                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-bg']} src={stageBg} />
-                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
                     {
                         activeModel.editArea.map(({ width, height, x, y, img }, index) => {
-
-                            let cropOption = {
+                            let _cropProps = {
+                              useProps: false,
+                              width: img.imgInfo.width,
+                              height: img.imgInfo.height,
+                              contentWidth: width,
+                              contentHeight: height,
+                              cropOption: {
                                 ...img.cropInfo,
-                                ignoreBlur: true
+                                editwidth: width
+                              },
+                              ignoreBlur: true,
+                              animate: false
                             }
-
                             if (activeEditAreaIndex === index) {
-                                Object.assign(cropOption, {
-                                    rotate,
-                                    translate,
-                                    scale,
-                                    mirror
-                                })
+                              _cropProps = cropProps;
                             }
-
                             const style = {
                                 position: 'absolute',
+                                width: Taro.pxTransform(width, 750),
+                                height: Taro.pxTransform(height, 750),
                                 top: Taro.pxTransform(y, 750),
                                 left: Taro.pxTransform(x, 750)
                             }
 
-                            return <CropImg onClick={handleShowEdit.bind(this, index)} style={style} showIgnoreBtn={false} width={width} height={height} editwidth={width} src={img.filePath} cropOption={cropOption} animate={!isTouch} />
+                            return (
+                              <View style={style} onClick={handleShowEdit.bind(this, index)}>
+                                <CropImg showIgnoreBtn={false} src={img.filePath} {..._cropProps} />
+                              </View>
+                            )
                         })
                     }
+                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-bg']} src={stageBg} />
+                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
                 </View>
             </View>
             <View onClick={handleHideEdit} className={classnames(styles['bottom-selector'], fold && styles['fold'])}>

@@ -49,11 +49,19 @@ const Home = (props) => {
     })
 
     useEffect(() => {
-        if (process.env.TARO_ENV === 'h5') {
-            document.querySelector('.taro-tabbar__panel').onscroll = (e) => {
-                setScrollTop(e.target.scrollTop);
-            }
+
+      const reachBottom = (e) => {
+        if (location.pathname === '/pages/home/index') {
+          setScrollTop(e.target.scrollTop);
         }
+      }
+
+      if (process.env.TARO_ENV === 'h5') {
+          document.querySelector('.taro-tabbar__panel').addEventListener('scroll', reachBottom)
+          return () => {
+            document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
+          }
+      }
     }, [])
 
     const getConfig = () => {
@@ -119,10 +127,7 @@ const Home = (props) => {
             {process.env.TARO_ENV === 'weapp' && <AddToMine/>}
             <View className="banner-wrapper">
                 <Swiper
-                    // H5 更新Swiper key值，让Swiper重新渲染
-                    key={homeData.bannerList.join('_')}
                     className="banner"
-                    circular
                     autoplay
                 >
                     {
@@ -139,10 +144,7 @@ const Home = (props) => {
 
             <View className='promote-pic'>
                 <Swiper
-                    // H5 更新Swiper key值，让Swiper重新渲染
-                    key={homeData.indexBigImageList.join('_')}
                     className='promote-swiper'
-                    circular
                     autoplay>
                     {
                         homeData.indexBigImageList.map((v) => {

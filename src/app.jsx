@@ -9,7 +9,7 @@ import './custom-variables.scss'
 
 class App extends Component {
 
-    componentDidShow(props) {
+    onLaunch() {
         if (Taro.getEnv() == 'WEB') {
             return;
         }
@@ -25,12 +25,6 @@ class App extends Component {
                 }
             }
         })
-    }
-
-    componentDidMount() {
-        if (Taro.getEnv() == 'WEB') {
-            return;
-        }
         const updateManager = Taro.getUpdateManager()
         updateManager.onCheckForUpdate(function (res) {
             // 请求完新版本信息的回调
