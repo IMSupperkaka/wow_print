@@ -299,33 +299,30 @@ export default () => {
                 </View>
             </View>
             <View className="submit-bar">
-                {/* <View></View> */}
-                <View className="submit-right">
-                    {
-                        [2, 3, 4, 5, 9].includes(orderDetail.status) &&
-                        <Button onClick={handleGoService} className="radius-btn outline-btn">联系客服</Button>
-                    }
-                    {
-                        orderDetail.status == 3 &&
-                        <Button onClick={handleGoLog} className="radius-btn primary-outline-btn">查看物流</Button>
-                    }
-                    {
-                        orderDetail.status == 3 &&
-                        <Button onClick={handleReceived} className="radius-btn primary-outline-btn">确认收货</Button>
-                    }
-                    {
-                        orderDetail.status == 1 &&
-                        <Button onClick={handleChooseAddress} className="radius-btn outline-btn">修改地址</Button>
-                    }
-                    {
-                        orderDetail.status == 1 &&
-                        <Button onClick={handleCancel} className="radius-btn outline-btn">取消订单</Button>
-                    }
-                    {
-                        orderDetail.status == 1 &&
-                        <Button onClick={handleRepay} className="radius-btn primary-btn">立即付款</Button>
-                    }
-                </View>
+                {
+                    [2, 3, 4, 5, 9].includes(orderDetail.status) &&
+                    <Button onClick={handleGoService} className="radius-btn outline-btn">联系客服</Button>
+                }
+                {
+                    orderDetail.status == 3 &&
+                    <Button onClick={handleGoLog} className="radius-btn primary-outline-btn">查看物流</Button>
+                }
+                {
+                    orderDetail.status == 3 &&
+                    <Button onClick={handleReceived} className="radius-btn primary-outline-btn">确认收货</Button>
+                }
+                {
+                    orderDetail.status == 1 &&
+                    <Button onClick={handleChooseAddress} className="radius-btn outline-btn">修改地址</Button>
+                }
+                {
+                    orderDetail.status == 1 &&
+                    <Button onClick={handleCancel} className="radius-btn outline-btn">取消订单</Button>
+                }
+                {
+                    orderDetail.status == 1 &&
+                    <Button onClick={handleRepay} className="radius-btn primary-btn">立即付款</Button>
+                }
             </View>
             <Pay {...payProps} />
         </View>
