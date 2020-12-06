@@ -221,6 +221,7 @@ export default (props = {}) => {
           printWidth: 10,
           printHeight: 10 / (width / height)
       });
+      console.log(blur)
       dispatch({
           type: 'save',
           payload: {

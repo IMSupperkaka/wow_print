@@ -72,9 +72,6 @@ const CropImg = (props) => {
 
     const toogleEdit = (e) => {
 
-        e.preventDefault();
-        e.stopPropagation();
-
         if (!showEdit) {
             return props.onHandleEdit();
         }
@@ -104,14 +101,24 @@ const CropImg = (props) => {
         props.onIgnore();
     }
 
+    console.log(blur)
+
     const showBlur = blur && !ignoreBlur;
 
     const editVisible = props.editVisible && !showBlur;
 
     const transformStyle = useProps ? props.transformStyle : cropStyle.transformStyle;
 
+    const onClick = (e) => {
+      if (showIgnoreBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      toogleEdit(e);
+    }
+
     return (
-        <View onClick={toogleEdit} style={{ width: Taro.pxTransform(contentWidth, 750), height: Taro.pxTransform(contentHeight, 750), ...style }} className={classNames('cropimg-wrap', className)} {...restProps}>
+        <View onClick={onClick} style={{ width: Taro.pxTransform(contentWidth, 750), height: Taro.pxTransform(contentHeight, 750), ...style }} className={classNames('cropimg-wrap', className)} {...restProps}>
             <View className="mask-box">
                 <Transition in={showBlur && showIgnoreBtn} timeout={300} classNames="bottom-top">
                     <View className="mask-bottom">

@@ -57,13 +57,13 @@ export default React.memo((props) => {
                 <View className="crop-img-wrap">
                     <CropImg
                         onIgnore={handleIgnore}
+                        ignoreBlur={false}
                         showEdit={showEdit}
                         onHandleEdit={onHandleEdit}
                         onHandleChange={() => { upload.current.handleChoose(); }}
                         className="item-img"
                         contentWidth={width}
                         contentHeight={height}
-
                         width={currentImg.imgInfo.width}
                         height={currentImg.imgInfo.height}
                         cropOption={currentImg.cropInfo}

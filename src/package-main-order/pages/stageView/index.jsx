@@ -132,7 +132,7 @@ const StageView = (props) => {
               ...activeArea.img.cropInfo
           })
           setActiveEditAreaIndex(index);
-        }, 0)
+        }, 100)
     }
 
     const handleHideEdit = () => {
@@ -233,11 +233,11 @@ const StageView = (props) => {
         left: Taro.pxTransform(x, 750)
     }
     return (
-        <View className={styles['index']}>
+        <View className={styles['index']} onClick={handleHideEdit}>
             <Tips />
             {/* trasnform中fixed定位不会定位在根元素上 TODO:小程序中portal实现 */}
             <Upload className={styles['hidden-upload']} ref={uploadRef} fileList={fileList} onChange={handleOnchange} limit={9}></Upload>
-            <View onClick={handleHideEdit} className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+            <View className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}>
                 {
                     activeEditAreaIndex != null &&
                     <View className={styles['edit-stage-absolute']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
@@ -253,8 +253,6 @@ const StageView = (props) => {
                     </View>
                 }
                 <View className={styles['edit-stage']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
-                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-bg']} src={stageBg} />
-                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
                     {
                         activeModel.editArea.map(({ width, height, x, y, img }, index) => {
                             let _cropProps = {
@@ -275,18 +273,21 @@ const StageView = (props) => {
                             }
                             const style = {
                                 position: 'absolute',
+                                width: Taro.pxTransform(width, 750),
+                                height: Taro.pxTransform(height, 750),
                                 top: Taro.pxTransform(y, 750),
                                 left: Taro.pxTransform(x, 750)
                             }
 
-                            return <CropImg
-                              onClick={handleShowEdit.bind(this, index)}
-                              style={style}
-                              showIgnoreBtn={false}
-                              src={img.filePath}
-                              {..._cropProps} />
+                            return (
+                              <View style={style} onClick={handleShowEdit.bind(this, index)}>
+                                <CropImg showIgnoreBtn={false} src={img.filePath} {..._cropProps} />
+                              </View>
+                            )
                         })
                     }
+                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-bg']} src={stageBg} />
+                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
                 </View>
             </View>
             <View onClick={handleHideEdit} className={classnames(styles['bottom-selector'], fold && styles['fold'])}>
