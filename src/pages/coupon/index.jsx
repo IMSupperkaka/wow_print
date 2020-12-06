@@ -50,11 +50,17 @@ export default () => {
     })
 
     useEffect(() => {
+
+      const reachBottom = (e) => {
+        if (e.target.clientHeight + e.target.scrollTop >= e.target.scrollHeight && location.pathname === '/pages/coupon/index') {
+          onLoad(false);
+        }
+      }
+
       if (process.env.TARO_ENV === 'h5') {
-          document.querySelector('.taro-tabbar__panel').onscroll = (e) => {
-              if (e.target.clientHeight + e.target.scrollTop >= e.target.scrollHeight) {
-                onLoad(false);
-              }
+          document.querySelector('.taro-tabbar__panel').addEventListener('scroll', reachBottom)
+          return () => {
+            document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
           }
       }
     }, [])

@@ -49,11 +49,19 @@ const Home = (props) => {
     })
 
     useEffect(() => {
-        if (process.env.TARO_ENV === 'h5') {
-            document.querySelector('.taro-tabbar__panel').onscroll = (e) => {
-                setScrollTop(e.target.scrollTop);
-            }
+
+      const reachBottom = (e) => {
+        if (location.pathname === '/pages/home/index') {
+          setScrollTop(e.target.scrollTop);
         }
+      }
+
+      if (process.env.TARO_ENV === 'h5') {
+          document.querySelector('.taro-tabbar__panel').addEventListener('scroll', reachBottom)
+          return () => {
+            document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
+          }
+      }
     }, [])
 
     const getConfig = () => {
