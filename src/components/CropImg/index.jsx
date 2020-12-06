@@ -25,7 +25,7 @@ export {
 
 const CropImg = (props) => {
 
-    const { width, height, contentWidth, contentHeight, src, style = {}, className, useProps, animate, cropOption, showEdit = true, showIgnoreBtn = true, ignoreBlur = true, ...restProps } = props;
+    const { width, height, contentWidth, contentHeight, src, style = {}, className, useProps, animate, cropOption, showEdit = true, showIgnoreBtn = true, ...restProps } = props;
 
     const {
         state: {
@@ -101,9 +101,7 @@ const CropImg = (props) => {
         props.onIgnore();
     }
 
-    console.log(blur)
-
-    const showBlur = blur && !ignoreBlur;
+    const showBlur = blur && !cropOption.ignoreBlur;
 
     const editVisible = props.editVisible && !showBlur;
 

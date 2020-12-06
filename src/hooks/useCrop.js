@@ -199,7 +199,8 @@ export default (props = {}) => {
         isTouch,
         isMoving,
         animate,
-        lastTouch
+        lastTouch,
+        ignoreBlur
     } = state;
 
     useEffect(() => {
@@ -221,7 +222,6 @@ export default (props = {}) => {
           printWidth: 10,
           printHeight: 10 / (width / height)
       });
-      console.log(blur)
       dispatch({
           type: 'save',
           payload: {
@@ -381,13 +381,13 @@ export default (props = {}) => {
           height: height,
           contentWidth: contentWidth,
           contentHeight: contentHeight,
-          ignoreBlur: true,
           cropOption: {
             rotate,
             translate,
             scale,
             mirror,
-            editwidth: editwidth
+            editwidth: editwidth,
+            ignoreBlur: ignoreBlur
           },
           animate: animate
         },

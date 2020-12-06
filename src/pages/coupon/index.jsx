@@ -49,6 +49,16 @@ export default () => {
         onLoad(false);
     })
 
+    useEffect(() => {
+      if (process.env.TARO_ENV === 'h5') {
+          document.querySelector('.taro-tabbar__panel').onscroll = (e) => {
+              if (e.target.clientHeight + e.target.scrollTop >= e.target.scrollHeight) {
+                onLoad(false);
+              }
+          }
+      }
+    }, [])
+
     const onLoad = (refresh = false) => {
         if (!refresh && isFinish) {
             return false;

@@ -104,11 +104,6 @@ const ImgEdit = (props) => {
     const activeRightIcon = <Image onClick={oprate.bind(this, 'plus')} className={styles['oprate-icon']} src={rightActiveIcon} />;
     const disabledRightIcon = <Image className={styles['oprate-icon']} src={rightDisabledIcon} />;
 
-    const cropOption = {
-        ...IMG.cropInfo,
-        ...state
-    }
-
     const maskStyle = {
         borderWidth: `${Taro.pxTransform(104, 750)} ${Taro.pxTransform(84, 750)} calc(100vh - ${Taro.pxTransform(104, 750)} - ${Taro.pxTransform(contentHeight, 750)}) ${Taro.pxTransform(84, 750)}`
     }
