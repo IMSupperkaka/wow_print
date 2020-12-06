@@ -121,15 +121,18 @@ const StageView = (props) => {
     const handleShowEdit = (index, e) => {
         e.stopPropagation();
         e.preventDefault();
-        const activeArea = modelList[activeModelIndex].editArea[index];
-        mutate({
-            width: activeArea.img.imgInfo.width,
-            height: activeArea.img.imgInfo.height,
-            contentWidth: activeArea.width,
-            contentHeight: activeArea.height,
-            ...activeArea.img.cropInfo
-        })
-        setActiveEditAreaIndex(index);
+        // Taro 阻止事件冒泡超过两级依然冒泡 https://github.com/NervJS/taro/issues/8041
+        setTimeout(() => {
+          const activeArea = modelList[activeModelIndex].editArea[index];
+          mutate({
+              width: activeArea.img.imgInfo.width,
+              height: activeArea.img.imgInfo.height,
+              contentWidth: activeArea.width,
+              contentHeight: activeArea.height,
+              ...activeArea.img.cropInfo
+          })
+          setActiveEditAreaIndex(index);
+        }, 0)
     }
 
     const handleHideEdit = () => {
