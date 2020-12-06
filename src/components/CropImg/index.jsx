@@ -8,16 +8,10 @@ import './index.less'
 import { CropImgProvider, CropImgConsumer } from './context'
 import Transition from '../Transition'
 import { EDIT_WIDTH } from '../../utils/picContent'
+import useCrop from '../../hooks/useCrop'
 import { fitImg, approach, computedBlur } from '../../utils/utils'
 
 let globalKey = 0;
-
-const radio = 750 / Taro.getSystemInfoSync().screenWidth;
-
-const defaultCropOption = {
-    translate: [0, 0],
-    scale: 1
-}
 
 const Img = React.memo((props) => {
     return <Image style={props.style} src={props.src} mode="widthFix" className="crop-image" {...props} />
@@ -31,22 +25,33 @@ export {
 
 const CropImg = (props) => {
 
-    const { width, height, editwidth = EDIT_WIDTH, src, className, style = {}, cropOption, showEdit = true, showIgnoreBtn = true, animate = false, ...resetProps } = props;
+    const { width, height, contentWidth, contentHeight, src, style = {}, className, useProps, animate, cropOption, showEdit = true, showIgnoreBtn = true, ignoreBlur = true, ...restProps } = props;
 
-    const [imgInfo, setImgInfo] = useState(null);
+    const {
+        state: {
+          blur
+        },
+        style: cropStyle,
+        mutate
+    } = useCrop({
+      width: width,
+      height: height,
+      contentWidth: contentWidth,
+      contentHeight: contentHeight,
+      animate,
+      ...cropOption
+    });
 
     useEffect(() => {
-        if (props.imgInfo) {
-            setImgInfo(props.imgInfo);
-        } else {
-            Taro.getImageInfo({
-                src: src,
-                success: (imgres) => {
-                    setImgInfo(imgres);
-                }
-            })
-        }
-    }, [src])
+      if (!useProps) {
+        mutate({
+          contentWidth: contentWidth,
+          contentHeight: contentHeight,
+          animate,
+          ...cropOption
+        })
+      }
+    }, [cropOption, animate])
 
     useEffect(() => {
 
@@ -97,70 +102,14 @@ const CropImg = (props) => {
         props.onIgnore();
     }
 
-    if (!imgInfo) {
-        return false;
-    }
-
-    const approachRotate = approach([0, -90, -180, -270, -360, 90, 180, 270, 360], cropOption.rotate);
-
-    const { fWidth, fHeight, tWidth, tHeight } = fitImg({
-        ...imgInfo,
-        contentWidth: width,
-        contentHeight: height,
-        deg: approachRotate
-    });
-
-    const { translate, scale, rotate = 0, mirror = false } = cropOption || defaultCropOption;
-
-    const scalea = width / editwidth;
-    // 位移矩阵
-    const translateMatrix = math.matrix([[1, 0, translate[0] * scalea / radio], [0, 1, translate[1] * scalea / radio], [0, 0, 1]]);
-    // 缩放矩阵
-    const scaleMatrix = math.matrix([[scale, 0, 0], [0, scale, 0], [0, 0, 1]]);
-    // 旋转矩阵
-    // a = Math.cos(deg); b = -Math.sin(deg); c = Math.sin(deg); d = Math.cos(deg); deg为旋转弧度 rotate / 180 * Math.PI
-    const deg = rotate / 180 * Math.PI;
-    const rotateMatrix = math.matrix([[Math.cos(deg), Math.sin(deg), 0], [-Math.sin(deg), Math.cos(deg), 0], [0, 0, 1]]);
-    // 镜像矩阵
-    // a = (1-k*k)/(k*k+1); b = 2k/(k*k+1); c = 2k/(k*k+1); d = (k*k-1)/(k*k+1); k为斜率
-    // matrix(a,b,c,d,e,f);
-    // math.matrix([[a, c, e], [b, d, f], [0, 0, 1])
-    const mirrorMatrix = math.matrix([[-1, 0, 0], [0, 1, 0], [0, 0, 1]]);
-
-    // 依次执行旋转 缩放 镜像 位移 顺序不能错
-    let matrix = math.multiply(rotateMatrix, scaleMatrix);
-
-    if (mirror) {
-        matrix = math.multiply(mirrorMatrix, matrix);
-    }
-
-    matrix = math.multiply(translateMatrix, matrix)
-
-    const transformStyle = {
-        transformOrigin: '50% 50%',
-        transform: `matrix(${matrix._data[0][0].toFixed(6)}, ${matrix._data[1][0].toFixed(6)}, ${matrix._data[0][1].toFixed(6)}, ${matrix._data[1][1].toFixed(6)}, ${matrix._data[0][2].toFixed(6)}, ${matrix._data[1][2].toFixed(6)})`,
-        width: Taro.pxTransform(tWidth, 750),
-        height: Taro.pxTransform(tHeight, 750),
-        transition: animate ? 'transform .2s' : 'none'
-    }
-
-    const blur = computedBlur({
-        contentWidth: width,
-        contentHeight: height,
-        width: imgInfo.width,
-        height: imgInfo.height,
-        afterWidth: fWidth * scale,
-        afterHieght: fHeight * scale,
-        printWidth: 10,
-        printHeight: 10 / (width / height)
-    });
-
-    const showBlur = blur && !cropOption.ignoreBlur;
+    const showBlur = blur && !ignoreBlur;
 
     const editVisible = props.editVisible && !showBlur;
 
+    const transformStyle = useProps ? props.transformStyle : cropStyle.transformStyle;
+
     return (
-        <View onClick={toogleEdit} style={{ width: Taro.pxTransform(width, 750), height: Taro.pxTransform(height, 750), ...style }} {...resetProps} className={classNames('cropimg-wrap', className)}>
+        <View onClick={toogleEdit} style={{ width: Taro.pxTransform(contentWidth, 750), height: Taro.pxTransform(contentHeight, 750), ...style }} className={classNames('cropimg-wrap', className)} {...restProps}>
             <View className="mask-box">
                 <Transition in={showBlur && showIgnoreBtn} timeout={300} classNames="bottom-top">
                     <View className="mask-bottom">
@@ -183,15 +132,6 @@ const CropImg = (props) => {
                     </View>
                 </Transition>
             </View>
-            <View className="crop-img-extra-box">
-                {props.extra && props.extra({
-                    transformStyle,
-                    mirrorMatrix,
-                    translateMatrix,
-                    scaleMatrix,
-                    rotateMatrix
-                })}
-            </View>
             <View className="crop-img-box">
                 <Img style={transformStyle} src={src} />
             </View>
@@ -211,7 +151,7 @@ export default (props) => {
         <CropImgConsumer>
             {({ list = [], onShow, onHide }) => {
                 const editVisible = list.includes(cropKey);
-                return <CropImg {...props} list={list} onShow={() => { onShow(cropKey) }} onHide={() => { onHide(cropKey) }} editVisible={editVisible} />
+                return <CropImg {...props} list={list} onShow={() => { onShow && onShow(cropKey) }} onHide={() => { onHide && onHide(cropKey) }} editVisible={editVisible} />
             }}
         </CropImgConsumer>
     )

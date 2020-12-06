@@ -23,13 +23,7 @@ const ImgEdit = (props) => {
     const contentHeight = EDIT_WIDTH / IMG.proportion;
 
     const {
-        state: {
-            isTouch,
-            translate,
-            scale,
-            rotate,
-            mirror
-        },
+        state,
         mutate,
         touchProps
     } = useCrop({
@@ -44,7 +38,7 @@ const ImgEdit = (props) => {
                 ...cloneList[activeIndex].cropInfo,
                 ...cropInfo
             };
-            Taro.eventCenter.trigger('editFinish', cloneList); 
+            Taro.eventCenter.trigger('editFinish', cloneList);
         }
     });
 
@@ -86,18 +80,17 @@ const ImgEdit = (props) => {
 
     const handleRotate = () => {
         mutate({
-            rotate: mirror ? ((rotate || 0) + 90) % 360 : ((rotate || 0) - 90) % 360
+            rotate: state.mirror ? ((state.rotate || 0) + 90) % 360 : ((state.rotate || 0) - 90) % 360
         })
     }
 
     const handleMirror = () => {
         mutate({
-            mirror: !mirror
+            mirror: !state.mirror
         })
     }
 
     const oprate = (type) => {
-        console.log(type)
         dispatch({
             type: 'editimg/saveActiveIndex',
             payload: type == 'plus' ? (activeIndex + 1) : (activeIndex - 1)
@@ -111,10 +104,7 @@ const ImgEdit = (props) => {
 
     const cropOption = {
         ...IMG.cropInfo,
-        translate,
-        scale,
-        rotate,
-        mirror
+        ...state
     }
 
     const maskStyle = {
@@ -133,7 +123,7 @@ const ImgEdit = (props) => {
                 <View className={styles['content-wrap']}>
                     <View className={styles['mask']} style={maskStyle}></View>
                     <View style={contentStyle} className={styles['content']}></View>
-                    <CropImg className={styles['img']} showIgnoreBtn={false} width={contentWidth} height={contentHeight} src={IMG.filePath || IMG.originImage} imgInfo={IMG.imgInfo} cropOption={cropOption} animate={!isTouch} />
+                    <CropImg className={styles['img']} showIgnoreBtn={false} width={contentWidth} height={contentHeight} src={IMG.filePath || IMG.originImage} imgInfo={IMG.imgInfo} cropOption={cropOption} />
                 </View>
                 <View className={styles['bottom-wrap']}>
                     <View className={styles['bottom-tip']}>tips：灰色区域将被裁剪，不在打印范围内</View>

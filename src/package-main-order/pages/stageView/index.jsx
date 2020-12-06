@@ -60,10 +60,11 @@ const StageView = (props) => {
             translate,
             scale,
             mirror,
-            isTouch
+            animate
         },
         style,
         touchProps,
+        cropProps,
         mutate
     } = useCrop({
         forcefit: ['translate'],
@@ -135,6 +136,11 @@ const StageView = (props) => {
     }
 
     const handleHideEdit = () => {
+        if (activeEditAreaIndex != null) {
+          mutate({
+            animate: false
+          })
+        }
         setActiveEditAreaIndex(null);
     }
 
@@ -234,7 +240,7 @@ const StageView = (props) => {
             <Upload className={styles['hidden-upload']} ref={uploadRef} fileList={fileList} onChange={handleOnchange} limit={9}></Upload>
             <View onClick={handleHideEdit} className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}>
                 {
-                    (activeEditAreaIndex != null && width) &&
+                    activeEditAreaIndex != null &&
                     <View className={styles['edit-stage-absolute']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
                         <View style={activeAreaStyle} className={styles['crop-img-extra-wrap']}>
                             <View {...touchProps} className={styles['crop-img-extra']} style={style.contentStyle}>
@@ -253,27 +259,34 @@ const StageView = (props) => {
                     {
                         activeModel.editArea.map(({ width, height, x, y, img }, index) => {
 
-                            let cropOption = {
+                            let _cropProps = {
+                              useProps: false,
+                              width: img.imgInfo.width,
+                              height: img.imgInfo.height,
+                              contentWidth: width,
+                              contentHeight: height,
+                              cropOption: {
                                 ...img.cropInfo,
-                                ignoreBlur: true
+                                editwidth: width
+                              },
+                              ignoreBlur: true,
+                              animate: false
                             }
-
                             if (activeEditAreaIndex === index) {
-                                Object.assign(cropOption, {
-                                    rotate,
-                                    translate,
-                                    scale,
-                                    mirror
-                                })
+                              _cropProps = cropProps;
                             }
-
                             const style = {
                                 position: 'absolute',
                                 top: Taro.pxTransform(y, 750),
                                 left: Taro.pxTransform(x, 750)
                             }
 
-                            return <CropImg onClick={handleShowEdit.bind(this, index)} style={style} showIgnoreBtn={false} width={width} height={height} editwidth={width} src={img.filePath} cropOption={cropOption} animate={!isTouch} />
+                            return <CropImg
+                              onClick={handleShowEdit.bind(this, index)}
+                              style={style}
+                              showIgnoreBtn={false}
+                              src={img.filePath}
+                              {..._cropProps} />
                         })
                     }
                 </View>

@@ -1,7 +1,7 @@
 /*
  * @Date: 2020-09-28 21:46:46
  * @LastEditors: Shawn
- * @LastEditTime: 2020-12-05 13:51:20
+ * @LastEditTime: 2020-12-06 13:11:41
  * @FilePath: \wow_print\src\utils\utils.js
  * @Description: Descrip Content
  */
@@ -34,7 +34,6 @@ export const computeCropUrl = (url, imgInfo, cropInfo) => {
     const cropHeight = Math.round(imgInfo.contentHeight / as);
     // TODO: 当原图orientation非up时 通过七牛剪裁参数不正确
     const cropUrl = `${url}?imageMogr2/gravity/Center/rotate/${rotate > 0 ? 360 - rotate : -rotate}/auto-orient/crop/!${cropWidth}x${cropHeight}${dx >= 0 ? `a${dx}` : dx}${dy >= 0 ? `a${dy}` : dy}`;
-    console.log(cropUrl)
     return cropUrl;
 }
 

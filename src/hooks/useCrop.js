@@ -1,8 +1,9 @@
 import React, { useEffect, useReducer } from 'react';
+import lodash from 'lodash';
 import Taro from '@tarojs/taro';
 
 import math from '../utils/math';
-import { fitImg, approach } from '../utils/utils';
+import { fitImg, approach, computedBlur } from '../utils/utils';
 
 const radio = 750 / Taro.getSystemInfoSync().screenWidth;
 
@@ -83,7 +84,7 @@ const resetPosition = ({ width, height, contentWidth, contentHeight, scale, tran
     }
 }
 
-const buildTransformStyle = ({ isTouch, width, height, editwidth, contentWidth, contentHeight, mirror, rotate, translate, scale}) => {
+const buildTransformStyle = ({ animate, width, height, editwidth, contentWidth, contentHeight, mirror, rotate, translate, scale}) => {
 
     const approachRotate = approach([0, -90, -180, -270, -360, 90, 180, 270, 360], rotate);
 
@@ -124,7 +125,7 @@ const buildTransformStyle = ({ isTouch, width, height, editwidth, contentWidth, 
         transform: `matrix(${matrix._data[0][0].toFixed(6)}, ${matrix._data[1][0].toFixed(6)}, ${matrix._data[0][1].toFixed(6)}, ${matrix._data[1][1].toFixed(6)}, ${matrix._data[0][2].toFixed(6)}, ${matrix._data[1][2].toFixed(6)})`,
         width: Taro.pxTransform(tWidth, 750),
         height: Taro.pxTransform(tHeight, 750),
-        transition: !isTouch ? 'transform .2s' : 'none'
+        transition: animate ? 'transform .2s' : 'none'
     }
 
     const contentStyleMatrix =  math.multiply(translateMatrix, rotateMatrix);
@@ -133,7 +134,7 @@ const buildTransformStyle = ({ isTouch, width, height, editwidth, contentWidth, 
         width: Taro.pxTransform(tWidth * scale, 750),
         height: Taro.pxTransform(tHeight * scale, 750),
         transform: `matrix(${contentStyleMatrix._data[0][0].toFixed(6)}, ${contentStyleMatrix._data[1][0].toFixed(6)}, ${contentStyleMatrix._data[0][1].toFixed(6)}, ${contentStyleMatrix._data[1][1].toFixed(6)}, ${contentStyleMatrix._data[0][2].toFixed(6)}, ${contentStyleMatrix._data[1][2].toFixed(6)})`,
-        transition: !isTouch ? 'all .2s' : 'none',
+        transition: animate ? 'all .2s' : 'none',
     }
 
     return {
@@ -160,7 +161,7 @@ const cropReducer = (state, action) => {
     }
 }
 
-export default (props) => {
+export default (props = {}) => {
 
     const { forcefit = false } = props;
 
@@ -173,12 +174,15 @@ export default (props) => {
         scale: 1,
         translate: [0, 0],
         isTouch: false,
+        isMoving: false,
+        animate: false,
         lastTouch: [],
         editwidth: props.editwidth || props.contentWidth,
         width: props.width || 0,
         height: props.height || 0,
         contentWidth: props.contentWidth || 0,
-        contentHeight: props.contentHeight || 0
+        contentHeight: props.contentHeight || 0,
+        ...props
     })
 
     const {
@@ -186,14 +190,44 @@ export default (props) => {
         height,
         contentWidth,
         contentHeight,
+        editwidth,
         translate,
         scale,
         rotate,
         mirror,
         store,
         isTouch,
+        isMoving,
+        animate,
         lastTouch
     } = state;
+
+    useEffect(() => {
+      const approachRotate = approach([0, -90, -180, -270, -360, 90, 180, 270, 360], rotate);
+      const { fWidth, fHeight } = fitImg({
+          width,
+          height,
+          contentWidth: contentWidth,
+          contentHeight: contentHeight,
+          deg: approachRotate
+      });
+      const blur = computedBlur({
+          contentWidth: contentWidth,
+          contentHeight: contentHeight,
+          width: width,
+          height: height,
+          afterWidth: fWidth * scale,
+          afterHieght: fHeight * scale,
+          printWidth: 10,
+          printHeight: 10 / (width / height)
+      });
+      dispatch({
+          type: 'save',
+          payload: {
+            blur
+          }
+      })
+    }, [width, height, contentWidth, contentHeight, scale, rotate])
 
     const touchStart = (e) => {
         const nowlastTouch = getTouchsPosition(e.touches);
@@ -212,6 +246,7 @@ export default (props) => {
         dispatch({
             type: 'save',
             payload: {
+                animate: false,
                 isTouch: true,
                 lastTouch: nowlastTouch
             }
@@ -242,11 +277,14 @@ export default (props) => {
                 type: 'save',
                 payload: {
                     scale: newScale,
-                    rotate: mirror ? store.originDeg + deg : store.originDeg - deg
+                    rotate: mirror ? store.originDeg + deg : store.originDeg - deg,
+                    isMoving: true
                 }
             })
         } else {
-            let payload = {};
+            let payload = {
+              isMoving: true
+            };
             if (store.behavior.includes('translate')) {
                 const dx = (touchPositionList[0].x - lastTouch[0].x) * radio;
                 const dy = (touchPositionList[0].y - lastTouch[0].y) * radio;
@@ -270,9 +308,15 @@ export default (props) => {
 
     const touchEnd = (e) => {
 
+        if (!isMoving) {
+          return;
+        }
+
         let payload = {
             isTouch: false,
-            scale: scale
+            isMoving: false,
+            scale: scale,
+            animate: true
         }
 
         if (state.editwidth || state.contentWidth) {
@@ -309,6 +353,7 @@ export default (props) => {
 
         props.onFinish && props.onFinish({
             translate, scale, rotate, mirror, isTouch,
+            editwidth,
             ...payload
         });
 
@@ -316,7 +361,10 @@ export default (props) => {
             type: 'save',
             payload: payload
         })
+
     }
+
+    const style = buildTransformStyle(state);
 
     return {
         state: state,
@@ -325,7 +373,24 @@ export default (props) => {
             onTouchEnd: touchEnd,
             onTouchStart: touchStart
         },
-        style: buildTransformStyle(state),
+        cropProps: {
+          useProps: true,
+          transformStyle: style.transformStyle,
+          width: width,
+          height: height,
+          contentWidth: contentWidth,
+          contentHieght: contentHeight,
+          ignoreBlur: true,
+          cropOption: {
+            rotate,
+            translate,
+            scale,
+            mirror,
+            editwidth: editwidth
+          },
+          animate: animate
+        },
+        style: style,
         mutate: (state) => {
             let payload = state;
             if (state.editwidth || state.contentWidth) {
@@ -351,6 +416,7 @@ export default (props) => {
             }
             props.onFinish && props.onFinish({
                 translate, scale, rotate, mirror, isTouch,
+                editwidth,
                 ...payload
             });
             dispatch({
