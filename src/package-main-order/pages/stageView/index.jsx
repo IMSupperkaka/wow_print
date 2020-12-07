@@ -77,6 +77,7 @@ const StageView = (props) => {
                 }
                 const cloneList = [...modelList];
                 cloneList[activeModelIndex].editArea[activeEditAreaIndex].img.cropInfo = cropInfo;
+                console.log(cloneList)
                 return cloneList;
             })
         }
@@ -232,6 +233,7 @@ const StageView = (props) => {
         top: Taro.pxTransform(y, 750),
         left: Taro.pxTransform(x, 750)
     }
+
     return (
         <View className={styles['index']} onClick={handleHideEdit}>
             <Tips />
@@ -269,7 +271,8 @@ const StageView = (props) => {
                               animate: false
                             }
                             if (activeEditAreaIndex === index) {
-                              _cropProps = cropProps;
+                                console.log(activeEditAreaIndex)
+                                _cropProps = cropProps;
                             }
                             const style = {
                                 position: 'absolute',
@@ -278,7 +281,8 @@ const StageView = (props) => {
                                 top: Taro.pxTransform(y, 750),
                                 left: Taro.pxTransform(x, 750)
                             }
-
+                            console.log(index)
+                            console.log(_cropProps)
                             return (
                               <View style={style} onClick={handleShowEdit.bind(this, index)}>
                                 <CropImg showIgnoreBtn={false} src={img.filePath} {..._cropProps} />
