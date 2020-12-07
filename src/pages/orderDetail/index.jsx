@@ -25,7 +25,13 @@ export default () => {
     const [countDown, setCountDown] = useState(null);
 
     const { loading, run: getDetail, refresh: refreshDetail } = useRequest(detail, {
-        manual: true
+        manual: true,
+        onSuccess: ({ data }) => {
+            setOrderDetail(data.data);
+            if(data.data.status == 1) {
+                createTimer(data.data.expiredTime);
+            }
+        }
     });
 
     const { payProps, openPay } = Pay.usePay({
@@ -62,15 +68,15 @@ export default () => {
         setQuery(query);
         getDetail({
             loanId: query.id
-        }).then(({ data }) => {
-            setOrderDetail(data.data);
-            createTimer(data.data.expiredTime);
         })
     })
 
     const createTimer = (expiredTime) => {
         let closeTime = day(expiredTime).valueOf();
         let currentTime = day().valueOf();
+        if(closeTime - currentTime <= 0) {
+            return
+        }
         setCountDown(turnHMS(closeTime - currentTime));
         timer.current = setInterval(() => {
             currentTime = day().valueOf();
@@ -90,7 +96,8 @@ export default () => {
 
     useEffect(() => {
         if(countDown === '00:00:00') {
-            refreshDetail()
+            clearInterval(timer.current);
+            refreshDetail();
         }
     }, [countDown])
 
