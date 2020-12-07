@@ -207,19 +207,10 @@ export const getH5Params = (url, key) => {
  */
 export const getRouterParams = (key) => {
     if (process.env.TARO_ENV === 'h5') {
-        const search = location.href.split('?')[1];
-        const params = search ? search.split('&').reduce((result, v) => {
-            const array = v.split('=');
-            result[array[0]] = decodeURIComponent(array[1]);
-            return result;
-        }, {}) : {}
-        if (key) {
-            return params[key]
-        };
-        return params
+        return getH5Params(location.href, key);
     } else {
         if (key) {
-            return Taro.getCurrentInstance().router.params[key]
+            return Taro.getCurrentInstance().router.params[key];
         }
         return Taro.getCurrentInstance().router.params;
     }

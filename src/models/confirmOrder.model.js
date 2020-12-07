@@ -3,8 +3,9 @@ import Taro from '@tarojs/taro'
 import { detail } from '../services/address'
 import { sizeMap } from '../utils/map/order'
 import { list } from '../services/address'
+import { detail as orderDetail } from '../services/order'
 import { add as addPortfolio, edit as editPortfolio } from '../services/portfolio'
-import defaultModelList from '../package-main-order/pages/stageView/model';
+import defaultModelList from '../package-main-order/pages/stageView/model'
 
 const defaultAddressInfo = {
     id: null,
@@ -200,6 +201,17 @@ export default {
                 }
             } catch (error) {
                 console.log(error)
+            }
+        },
+        *getDetail({ payload }, { call, put, select }) {
+            const response = yield call(orderDetail, {
+                loanId: payload
+            });
+            if (response) {
+                yield put({
+                    type: 'saveUserImageList',
+                    payload: response.data.data.goodsInfo[0].userImageList
+                })
             }
         }
     },

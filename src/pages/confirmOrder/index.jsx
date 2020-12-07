@@ -4,7 +4,7 @@ import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
 
 import styles from './index.module.less'
-import { fix } from '../../utils/utils'
+import { fix, getRouterParams } from '../../utils/utils'
 import Base, { useDidShow } from '../../layout/Base'
 import Card from '../../components/Card'
 import Pay from '../../components/Pay'
@@ -23,7 +23,7 @@ const NaN2Zero = (num) => {
 
 const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
-    const { addressInfo, coupon, goodId, userImageList } = confirmOrder;
+    const { addressInfo, coupon, goodId, userImageList, loanId } = confirmOrder;
 
     const [productDetail, setProductDetail] = useState({});
     const [matchList, setMatchList] = useState([]);
@@ -95,6 +95,21 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     }, [])
 
     useDidShow(() => {
+
+        const id = getRouterParams('id');
+
+        if (id) {
+            dispatch({
+                type: 'confirmOrder/getDetail',
+                payload: id
+            });
+        } else {
+            init();
+        }
+
+    })
+
+    const init = () => {
         list().then(({ data }) => {
             if (addressInfo.id) {
                 const address = data.data.find((address) => {
@@ -129,7 +144,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
         }).then(({ data }) => {
             setProductDetail(data.data);
         })
-    }, [])
+    }
 
     const submitOrder = () => {
         if (!addressInfo.id) {
