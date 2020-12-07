@@ -147,7 +147,7 @@ const Home = (props) => {
 
             <View className='promote-pic'>
                 <Swiper
-                    key={homeData.bannerList.length}
+                    key={homeData.indexBigImageList.length}
                     className='promote-swiper'
                     autoplay>
                     {
