@@ -29,7 +29,7 @@ const initModelList = (modelList, imgList) => {
             editArea: model.editArea.map((editArea, index) => {
                 return {
                     ...editArea,
-                    img: imgList[index] || imgList[imgList.length - 1]
+                    img: imgList[index]
                 }
             })
         }

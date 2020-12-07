@@ -71,7 +71,9 @@ export default React.forwardRef((props, ref) => {
         currentItem.cropInfo = {
             translate: [0, 0],
             scale: 1,
-            ignoreBlur: false
+            ignoreBlur: false,
+            rotate: 0,
+            mirror: false
         }
         currentItem.filePath = item.filePath;
         setUploadList((uploadList) => {

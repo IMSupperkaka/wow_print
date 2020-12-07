@@ -2,14 +2,12 @@ import React, { useState, useEffect, useMemo, useImperativeHandle, forwardRef } 
 import Taro from '@tarojs/taro'
 import math from '../../utils/math'
 import classNames from 'classnames'
-import { Canvas, View, Image, Text } from '@tarojs/components'
+import { View, Image, Text } from '@tarojs/components'
 
 import './index.less'
 import { CropImgProvider, CropImgConsumer } from './context'
 import Transition from '../Transition'
-import { EDIT_WIDTH } from '../../utils/picContent'
 import useCrop from '../../hooks/useCrop'
-import { fitImg, approach, computedBlur } from '../../utils/utils'
 
 let globalKey = 0;
 
@@ -29,30 +27,30 @@ const CropImg = (props) => {
 
     const {
         state: {
-          blur
+            blur
         },
         style: cropStyle,
         mutate
     } = useCrop({
-      width: width,
-      height: height,
-      contentWidth: contentWidth,
-      contentHeight: contentHeight,
-      animate,
-      ...cropOption
+        width: width,
+        height: height,
+        contentWidth: contentWidth,
+        contentHeight: contentHeight,
+        animate,
+        ...cropOption
     });
 
     useEffect(() => {
-      if (!useProps) {
-        mutate({
-          width,
-          height,
-          contentWidth: contentWidth,
-          contentHeight: contentHeight,
-          animate,
-          ...cropOption
-        })
-      }
+        if (!useProps) {
+            mutate({
+                width,
+                height,
+                contentWidth: contentWidth,
+                contentHeight: contentHeight,
+                animate,
+                ...cropOption
+            })
+        }
     }, [width, height, contentWidth, contentHeight, cropOption, animate])
 
     useEffect(() => {
@@ -108,11 +106,11 @@ const CropImg = (props) => {
     const transformStyle = useProps ? props.transformStyle : cropStyle.transformStyle;
 
     const onClick = (e) => {
-      if (showIgnoreBtn) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-      toogleEdit(e);
+        if (showIgnoreBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        toogleEdit(e);
     }
 
     return (
@@ -125,7 +123,7 @@ const CropImg = (props) => {
                         <View className="btn" onClick={handleChange}>换图</View>
                     </View>
                 </Transition>
-                <Transition in={showBlur} timeout={300} classNames="fade-in">
+                <Transition in={showBlur && showIgnoreBtn} timeout={300} classNames="fade-in">
                     <View className={classNames("mask-tips", showIgnoreBtn ? null : 'full-mask')}>
                         <Text>提示</Text>
                         <Text>图片模糊或过长哦~</Text>

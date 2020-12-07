@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { View, Image, Button } from '@tarojs/components';
 
-import defaultModelList from './model';
 import { computeCropUrl } from '../../../utils/utils';
 import useCrop from '../../../hooks/useCrop';
 import Upload from '../../../components/Upload';
@@ -52,17 +51,15 @@ const StageView = (props) => {
 
     const [activeEditAreaIndex, setActiveEditAreaIndex] = useState(null);
 
+    const [uploadIndex, setUploadIndex] = useState(null);
+
     const [modelList, setModelList] = useState(props.confirmOrder.stageModelList);
 
     const uploadRef = useRef();
 
     const {
         state: {
-            rotate,
-            translate,
-            scale,
-            mirror,
-            animate
+            mirror
         },
         style,
         touchProps,
@@ -73,37 +70,37 @@ const StageView = (props) => {
         onFinish: (cropInfo) => {
             setModelList((modelList) => {
                 if (activeEditAreaIndex == null) {
-                  return modelList;
+                    return modelList;
                 }
                 const cloneList = [...modelList];
                 cloneList[activeModelIndex].editArea[activeEditAreaIndex].img.cropInfo = cropInfo;
-                console.log(cloneList)
                 return cloneList;
             })
         }
     });
 
     useEffect(() => {
-      if (activeEditAreaIndex != null) {
-        mutateActiveImg()
-      }
+        if (activeEditAreaIndex != null) {
+            mutateActiveImg()
+        }
     }, [activeModelIndex, activeEditAreaIndex])
 
     const handleOnchange = (file, fileList) => {
-        if (file.status == 'done' && activeEditAreaIndex != null) {
-          mutateActiveImg(file);
+        if (file.status == 'done' && (activeEditAreaIndex != null || uploadIndex != null)) {
+            mutateActiveImg(file, uploadIndex);
         }
         setFileList(fileList)
     }
 
-    const handleUpload = () => {
-        uploadRef.current.handleChoose()
+    const handleUpload = (uploadIndex) => {
+        setUploadIndex(uploadIndex);
+        uploadRef.current.handleChoose();
     }
 
-    const mutateActiveImg = (img = {}) => {
+    const mutateActiveImg = (img = {}, index = activeEditAreaIndex) => {
         setModelList(() => {
             const cloneList = [...modelList];
-            const activeArea = cloneList[activeModelIndex].editArea[activeEditAreaIndex];
+            const activeArea = cloneList[activeModelIndex].editArea[index];
             activeArea.img = {
                 ...activeArea.img,
                 ...img
@@ -124,39 +121,31 @@ const StageView = (props) => {
         e.preventDefault();
         // Taro 阻止事件冒泡超过两级依然冒泡 https://github.com/NervJS/taro/issues/8041
         setTimeout(() => {
-          const activeArea = modelList[activeModelIndex].editArea[index];
-          mutate({
-              width: activeArea.img.imgInfo.width,
-              height: activeArea.img.imgInfo.height,
-              contentWidth: activeArea.width,
-              contentHeight: activeArea.height,
-              ...activeArea.img.cropInfo
-          })
-          setActiveEditAreaIndex(index);
+            const activeArea = modelList[activeModelIndex].editArea[index];
+            mutate({
+                width: activeArea.img.imgInfo.width,
+                height: activeArea.img.imgInfo.height,
+                contentWidth: activeArea.width,
+                contentHeight: activeArea.height,
+                ...activeArea.img.cropInfo
+            })
+            setActiveEditAreaIndex(index);
         }, 100)
     }
 
     const handleHideEdit = () => {
         if (activeEditAreaIndex != null) {
-          mutate({
-            animate: false
-          })
+            mutate({
+                animate: false
+            })
         }
         setActiveEditAreaIndex(null);
-    }
-
-    const handleMirror = (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        mutate({
-            mirror: !mirror
-        })
     }
 
     const handleChangePic = (e) => {
         e.stopPropagation();
         e.preventDefault();
-        uploadRef.current.handleChoose()
+        uploadRef.current.handleChoose();
     }
 
     const handleChoosePic = (img) => {
@@ -257,23 +246,7 @@ const StageView = (props) => {
                 <View className={styles['edit-stage']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
                     {
                         activeModel.editArea.map(({ width, height, x, y, img }, index) => {
-                            let _cropProps = {
-                              useProps: false,
-                              width: img.imgInfo.width,
-                              height: img.imgInfo.height,
-                              contentWidth: width,
-                              contentHeight: height,
-                              cropOption: {
-                                ...img.cropInfo,
-                                editwidth: width
-                              },
-                              ignoreBlur: true,
-                              animate: false
-                            }
-                            if (activeEditAreaIndex === index) {
-                                console.log(activeEditAreaIndex)
-                                _cropProps = cropProps;
-                            }
+
                             const style = {
                                 position: 'absolute',
                                 width: Taro.pxTransform(width, 750),
@@ -281,12 +254,37 @@ const StageView = (props) => {
                                 top: Taro.pxTransform(y, 750),
                                 left: Taro.pxTransform(x, 750)
                             }
-                            console.log(index)
-                            console.log(_cropProps)
+
+                            if (!img) {
+                                return (
+                                    <View style={style} className={styles['edit-upload']} onClick={handleUpload.bind(this, index)}>
+                                        <Image className={styles['upload-icon']} src={addIcon} />
+                                    </View>
+                                )
+                            }
+
+                            let _cropProps = {
+                                useProps: false,
+                                width: img.imgInfo.width,
+                                height: img.imgInfo.height,
+                                contentWidth: width,
+                                contentHeight: height,
+                                cropOption: {
+                                    ...img.cropInfo,
+                                    editwidth: width
+                                },
+                                ignoreBlur: true,
+                                animate: false
+                            }
+
+                            if (activeEditAreaIndex === index) {
+                                _cropProps = cropProps;
+                            }
+
                             return (
-                              <View style={style} onClick={handleShowEdit.bind(this, index)}>
-                                <CropImg showIgnoreBtn={false} src={img.filePath} {..._cropProps} />
-                              </View>
+                                <View style={style} onClick={handleShowEdit.bind(this, index)}>
+                                    <CropImg showIgnoreBtn={false} src={img.filePath} {..._cropProps} />
+                                </View>
                             )
                         })
                     }
@@ -298,7 +296,7 @@ const StageView = (props) => {
                 <Image onClick={toggleFold} src={fold ? iconFold : iconUnFold} className={styles['fold']} />
                 <Tabs current={current} onChange={setCurrent}>
                     <TabPanel title="图片" className={styles['tab-content']}>
-                        <View onClick={handleUpload} className={`${styles['upload-area']} ${styles['pic-item']}`}>
+                        <View onClick={handleUpload.bind(this, null)} className={`${styles['upload-area']} ${styles['pic-item']}`}>
                             <Image className={styles['upload-icon']} src={addIcon} />
                         </View>
                         {
