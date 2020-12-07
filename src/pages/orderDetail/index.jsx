@@ -221,7 +221,7 @@ export default () => {
 
     const greyHeader = [4, 5, 6].includes(orderDetail.status);
 
-    const productMoney = (orderDetail.money / 100 + (orderDetail.status == 6 ? 0 : (orderDetail.discountMoney / 100)) - orderDetail.shipMoney / 100).toFixed(2);
+    const productMoney = (orderDetail.money / 100 + (orderDetail.status == 6 ? (orderDetail.discountMoney / 100) : 0) - orderDetail.shipMoney / 100).toFixed(2);
 
     const totalMoney = (orderDetail.money / 100 + (orderDetail.status != 6 ? 0 : (orderDetail.discountMoney / 100))).toFixed(2)
 

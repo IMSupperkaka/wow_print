@@ -223,6 +223,8 @@ const StageView = (props) => {
         left: Taro.pxTransform(x, 750)
     }
 
+    const uploadList = [...fileList].reverse();
+
     return (
         <View className={styles['index']} onClick={handleHideEdit}>
             <Tips />
@@ -300,7 +302,7 @@ const StageView = (props) => {
                             <Image className={styles['upload-icon']} src={addIcon} />
                         </View>
                         {
-                            fileList.map((v) => {
+                            uploadList.map((v) => {
                                 return (
                                     <View className={styles['pic-item']} onClick={handleChoosePic.bind(this, v)}>
                                         <Image className={styles['pic']} src={v.filePath} mode="aspectFill" />
