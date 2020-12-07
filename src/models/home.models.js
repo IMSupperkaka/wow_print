@@ -26,25 +26,21 @@ export default {
         *getDialog({ payload }, { call, put }) {
             const couponJudge = yield call(judge);
             const popupList = yield call(popup);
+            let canPopupList = [];
             yield put({
                 type: 'saveCouponJudge',
                 payload: couponJudge.data.data
             })
             if (!couponJudge.data.data.isHaveCoupon) {
-                return yield put({
-                    type: 'saveDialog',
-                    payload: {
-                        visible: true,
-                        image: couponJudge.data.data.image,
-                        type: 'coupon'
-                    }
+                canPopupList.push({
+                    image: couponJudge.data.data.image,
+                    type: 'coupon'
                 })
             }
             
             if (popupList.data.data.length > 0) {
                 let moment = (new Date()).getTime();
-                let popups = popupList.data.data
-                let canPopupList = []
+                let popups = popupList.data.data;
                 let popupStorage = Taro.getStorageSync("popup-rule") || [];
                 let newStorageList = JSON.parse(JSON.stringify(popupStorage))
                 popups.forEach((popup) => {
@@ -107,7 +103,6 @@ export default {
                         }
                     })
                 } else {
-                    // FIXME:重新编译前上一次弹框没关闭
                     yield put({
                         type: 'savePopup',
                         payload: {
@@ -128,13 +123,13 @@ export default {
             const { dialog, popup } = yield select((state) => {
                 return state.home;
             })
-            if (dialog.type === 'coupon') {
-                yield call(receive);
-            }
             if (dialog.type === 'popup' && !close) {
-                jump(dialog.url);
+                dialog.url && jump(dialog.url);
             }
             if (popup.activeIndex < (popup.list.length - 1)) {
+                if(popup.list?.[0]?.type == 'coupon') {
+                    yield call(receive);
+                }
                 yield put({
                     type: 'savePopup',
                     payload: {
