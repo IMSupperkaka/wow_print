@@ -183,79 +183,79 @@ export default (props) => {
     }
 
     return (
-      <ScrollView className={styles['order-list-scroll']} onScrollToLower={onLoad.bind(this, false)} scrollY={true} style={{ height: '100%' }}>
+        <ScrollView className={styles['order-list-scroll']} onScrollToLower={onLoad.bind(this, false)} scrollY={true} style={{ height: '100%' }}>
             {
                 records.length > 0 ?
-                <View className={styles['order-list']}>
-                    {
-                        records.map((item, index) => {
+                    <View className={styles['order-list']}>
+                        {
+                            records.map((item, index) => {
 
-                            const totalMoney = (item.money / 100 + (item.status != 6 ? 0 : (item.discountMoney / 100))).toFixed(2)
+                                const totalMoney = (item.money / 100 + (item.status != 6 ? 0 : (item.discountMoney / 100))).toFixed(2)
 
-                            return (
-                                <View className={styles['order-item']} key={index} onClick={handleDetail.bind(this, item)}>
-                                    <View className={styles['order-item-header']}>
-                                        <Text className={styles['order-item-header__count']}>共{ item.loanGoodsNums }件商品</Text>
-                                        <Text className={(item.status != 4 && item.status != 5) ? 'primary' : ''}>{ orderStatus.get(item.status) }</Text>
-                                    </View>
-                                    {
-                                      item.goodsInfo.map((goodsInfo, index) => {
-                                        return (
-                                          <View className={styles['order-item-content']} key={index}>
-                                            <Image className={styles['product-image']} mode="aspectFill" src={goodsInfo.indexImage}/>
-                                            <View className={styles['product-content']}>
-                                                <View className={styles['product-goodsname']}>
-                                                    { goodsInfo.goodName }
-                                                </View>
-                                                <View className={styles['product-price']}>
-                                                    <Text>￥{ (goodsInfo.sellingPrice / 100).toFixed(2) }</Text>
-                                                    <Text>x{ goodsInfo.goodsNums }</Text>
-                                                </View>
+                                return (
+                                    <View className={styles['order-item']} key={index} onClick={handleDetail.bind(this, item)}>
+                                        <View className={styles['order-item-header']}>
+                                            <Text className={styles['order-item-header__count']}>共{item.loanGoodsNums}件商品</Text>
+                                            <Text className={(item.status != 4 && item.status != 5) ? 'primary' : ''}>{orderStatus.get(item.status)}</Text>
+                                        </View>
+                                        {
+                                            item.goodsInfo.map((goodsInfo, index) => {
+                                                return (
+                                                    <View className={styles['order-item-content']} key={index}>
+                                                        <Image className={styles['product-image']} mode="aspectFill" src={goodsInfo.indexImage} />
+                                                        <View className={styles['product-content']}>
+                                                            <View className={styles['product-goodsname']}>
+                                                                {goodsInfo.goodName}
+                                                            </View>
+                                                            <View className={styles['product-price']}>
+                                                                <Text>￥{(goodsInfo.sellingPrice / 100).toFixed(2)}</Text>
+                                                                <Text>x{goodsInfo.goodsNums}</Text>
+                                                            </View>
+                                                        </View>
+                                                    </View>
+                                                )
+                                            })
+                                        }
+                                        <View className={styles['orde-item-footer']}>
+                                            <View className={styles['orde-item-footer__left']}>
+                                                <Text>合计</Text>
+                                                <Text className={styles['orde-item-footer__price']}>￥{totalMoney}</Text>
+                                            </View>
+                                            <View className={styles['orde-item-footer__right']}>
+                                                {
+                                                    item.status == 2 &&
+                                                    <Button onClick={handleGoService} className={classnames('outline-btn', styles['order-btn'])}>联系客服</Button>
+                                                }
+                                                {
+                                                    [3, 9].includes(item.status) &&
+                                                    <Button onClick={handleGoLog.bind(this, item)} className={classnames('outline-btn', styles['order-btn'])}>查看物流</Button>
+                                                }
+                                                {
+                                                    [2, 4, 5, 9].includes(item.status) &&
+                                                    <Button onClick={handleDetail.bind(this, item)} className={classnames('outline-btn', styles['order-btn'])}>查看订单</Button>
+                                                }
+                                                {
+                                                    item.status == 3 &&
+                                                    <Button onClick={handleReceived.bind(this, item)} className={classnames('primary-outline-btn', styles['order-btn'])}>确认收货</Button>
+                                                }
+                                                {
+                                                    item.status == 1 &&
+                                                    <Button onClick={handleCancel.bind(this, item)} className={classnames('outline-btn', styles['order-btn'])}>取消订单</Button>
+                                                }
+                                                {
+                                                    item.status == 1 &&
+                                                    <Button onClick={handleRepay.bind(this, item)} className={classnames('primary-btn', styles['order-btn'])}>立即付款</Button>
+                                                }
                                             </View>
                                         </View>
-                                        )
-                                      })
-                                    }
-                                    <View className={styles['orde-item-footer']}>
-                                        <View className={styles['orde-item-footer__left']}>
-                                          <Text>合计</Text>
-                                          <Text className={styles['orde-item-footer__price']}>￥{ totalMoney }</Text>
-                                        </View>
-                                        <View className={styles['orde-item-footer__right']}>
-                                          {
-                                              item.status == 2 &&
-                                              <Button onClick={handleGoService} className={classnames('outline-btn', styles['order-btn'])}>联系客服</Button>
-                                          }
-                                          {
-                                              [3, 9].includes(item.status) &&
-                                              <Button onClick={handleGoLog.bind(this, item)} className={classnames('outline-btn', styles['order-btn'])}>查看物流</Button>
-                                          }
-                                          {
-                                              [2, 4, 5, 9].includes(item.status) &&
-                                              <Button onClick={handleDetail.bind(this, item)} className={classnames('outline-btn', styles['order-btn'])}>查看订单</Button>
-                                          }
-                                          {
-                                              item.status == 3 &&
-                                              <Button onClick={handleReceived.bind(this, item)} className={classnames('primary-outline-btn', styles['order-btn'])}>确认收货</Button>
-                                          }
-                                          {
-                                              item.status == 1 &&
-                                              <Button onClick={handleCancel.bind(this, item)} className={classnames('outline-btn', styles['order-btn'])}>取消订单</Button>
-                                          }
-                                          {
-                                              item.status == 1 &&
-                                              <Button onClick={handleRepay.bind(this, item)} className={classnames('primary-btn', styles['order-btn'])}>立即付款</Button>
-                                          }
-                                        </View>
                                     </View>
-                                </View>
-                            )
-                        })
-                    }
-                </View> :
-                <Empty src={noOrderIcon} text="想了想，确实没有订单"/>
+                                )
+                            })
+                        }
+                    </View> :
+                    <Empty src={noOrderIcon} text="想了想，确实没有订单" />
             }
-            <Pay {...payProps}/>
+            <Pay {...payProps} />
         </ScrollView>
     )
 }

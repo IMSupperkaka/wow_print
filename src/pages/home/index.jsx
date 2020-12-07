@@ -3,15 +3,17 @@ import { connect } from 'react-redux'
 import Taro, { useDidShow, usePageScroll, useShareAppMessage } from '@tarojs/taro'
 import { View, Image, Text, Swiper, SwiperItem, ScrollView } from '@tarojs/components'
 
-import styles from './index.module.less';
+import styles from './index.module.less'
 import { jump } from '../../utils/utils'
 import { list, index } from '../../services/home'
+import Base from '../../layout/Base'
 import NavBar from '../../components/NavBar'
 import Dialog from '../../components/Dialog'
 import AddToMine from '../../components/AddToMine'
 import logo from '../../../images/bg_kachaxionglogo@2x.png'
 
 const Home = (props) => {
+
     const { dispatch, home: { dialog } } = props;
 
     const [scrollTop, setScrollTop] = useState(0);
@@ -28,10 +30,8 @@ const Home = (props) => {
         total: 0
     });
 
-    useShareAppMessage();
-
-    useDidShow(() => {
-        if(process.env.TARO_ENV === 'h5' && JSON.parse(sessionStorage.getItem('show_flag'))) {
+    const init = () => {
+        if (process.env.TARO_ENV === 'h5' && JSON.parse(sessionStorage.getItem('show_flag'))) {
             dispatch({
                 type: 'home/getDialog'
             })
@@ -39,6 +39,12 @@ const Home = (props) => {
         }
         onLoad(1);
         getConfig();
+    }
+
+    useShareAppMessage();
+
+    useDidShow(() => {
+        init();
     });
 
     // TODO 封装usePageScroll
@@ -48,18 +54,20 @@ const Home = (props) => {
 
     useEffect(() => {
 
-      const reachBottom = (e) => {
-        if (location.pathname === '/pages/home/index') {
-          setScrollTop(e.target.scrollTop);
-        }
-      }
+        init();
 
-      if (process.env.TARO_ENV === 'h5') {
-          document.querySelector('.taro-tabbar__panel').addEventListener('scroll', reachBottom)
-          return () => {
-            document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
-          }
-      }
+        const reachBottom = (e) => {
+            if (location.pathname === '/pages/home/index') {
+                setScrollTop(e.target.scrollTop);
+            }
+        }
+
+        if (process.env.TARO_ENV === 'h5') {
+            document.querySelector('.taro-tabbar__panel').addEventListener('scroll', reachBottom)
+            return () => {
+                document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
+            }
+        }
     }, [])
 
     const getConfig = () => {
@@ -122,7 +130,7 @@ const Home = (props) => {
                     <Text>哇印</Text>
                 </View>
             } />
-            {process.env.TARO_ENV === 'weapp' && <AddToMine/>}
+            {process.env.TARO_ENV === 'weapp' && <AddToMine />}
             <View className="banner-wrapper">
                 <Swiper
                     className="banner"
@@ -176,12 +184,12 @@ const Home = (props) => {
                 <View className="bottom-text">更多商品  持续更新</View>
             </View>
             <Dialog visible={dialog.visible} className="home-dialog" onClose={handleClose}>
-                <Image src={dialog.image} mode="widthFix" onClick={handleClickDialog} className="dialog-img"/>
+                <Image src={dialog.image} mode="widthFix" onClick={handleClickDialog} className="dialog-img" />
             </Dialog>
         </View>
     )
 }
 
-export default connect(({ home }) => ({
+export default Base(connect(({ home }) => ({
     home
-}))(Home);
+}))(Home));

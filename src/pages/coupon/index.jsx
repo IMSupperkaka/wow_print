@@ -51,19 +51,19 @@ export default () => {
 
     useEffect(() => {
 
-      const reachBottom = (e) => {
-        if (e.target.clientHeight + e.target.scrollTop >= e.target.scrollHeight && location.pathname === '/pages/coupon/index') {
-          onLoad(false);
+        const reachBottom = (e) => {
+            if (e.target.clientHeight + e.target.scrollTop >= e.target.scrollHeight && location.pathname === '/pages/coupon/index') {
+                onLoad(false);
+            }
         }
-      }
 
-      if (process.env.TARO_ENV === 'h5') {
-          document.querySelector('.taro-tabbar__panel').addEventListener('scroll', reachBottom)
-          return () => {
-            document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
-          }
-      }
-    }, [])
+        if (process.env.TARO_ENV === 'h5') {
+            document.querySelector('.taro-tabbar__panel').addEventListener('scroll', reachBottom)
+            return () => {
+                document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
+            }
+        }
+    }, [page])
 
     const onLoad = (refresh = false) => {
         if (!refresh && isFinish) {
@@ -118,50 +118,50 @@ export default () => {
         <View className={styles['index']}>
             {
                 records.length > 0 ?
-                <>
-                    <View className={styles['tips']}>
-                        <Text>温馨提示，每个订单只能使用一张优惠券哦～</Text>
-                    </View>
-                    <View className={styles['list']}>
-                        {
-                            records.map((item, index) => {
-                                return (
-                                    <View className={styles['list-item']} key={index}>
-                                        {
-                                            item.new &&
-                                            <View className={styles['top']}>
-                                                <View className={styles['triangle']}></View>
-                                                <Text className={styles['new']}>新</Text>
-                                            </View>
-                                        }
-                                        <View className={styles['list-item-header']}>
-                                            <View className={styles['list-item-header-left']}>
-                                                <Image className={styles['coupon-img']} src={item.couponGoodImage}/>
-                                                <View className={styles['list-item-header-text']}>
-                                                    <View className={styles['name']}>{item.couponName}</View>
-                                                    <View>
-                                                        <View className={styles['sill']}>无门槛使用</View>
-                                                        <View className={styles['time']}>有效期至 {item.endTime}</View>
+                    <>
+                        <View className={styles['tips']}>
+                            <Text>温馨提示，每个订单只能使用一张优惠券哦～</Text>
+                        </View>
+                        <View className={styles['list']}>
+                            {
+                                records.map((item, index) => {
+                                    return (
+                                        <View className={styles['list-item']} key={index}>
+                                            {
+                                                item.new &&
+                                                <View className={styles['top']}>
+                                                    <View className={styles['triangle']}></View>
+                                                    <Text className={styles['new']}>新</Text>
+                                                </View>
+                                            }
+                                            <View className={styles['list-item-header']}>
+                                                <View className={styles['list-item-header-left']}>
+                                                    <Image className={styles['coupon-img']} src={item.couponGoodImage} />
+                                                    <View className={styles['list-item-header-text']}>
+                                                        <View className={styles['name']}>{item.couponName}</View>
+                                                        <View>
+                                                            <View className={styles['sill']}>无门槛使用</View>
+                                                            <View className={styles['time']}>有效期至 {item.endTime}</View>
+                                                        </View>
                                                     </View>
                                                 </View>
+                                                <View className={styles['list-item-header-btn']} onClick={handleUse.bind(this, item)}>使用</View>
+                                                <ExpiresText className={styles['expires-time']} endTime={item.endTime} />
                                             </View>
-                                            <View className={styles['list-item-header-btn']} onClick={handleUse.bind(this, item)}>使用</View>
-                                            <ExpiresText className={styles['expires-time']} endTime={item.endTime}/>
+                                            <View className={styles['list-item-desc']}>
+                                                <Text>{item.couponDescription}</Text>
+                                            </View>
                                         </View>
-                                        <View className={styles['list-item-desc']}>
-                                            <Text>{ item.couponDescription }</Text>
-                                        </View>
-                                    </View>
-                                )
-                            })
-                        }
-                    </View>
-                    <View className={styles['fotter']} onClick={goCouponList}>
-                        <Text>更多历史优惠券</Text>
-                        <Image className={styles['fotter-image']} src={rightArrow}/>
-                    </View>
-                </> :
-                <Empty src={couponEmptyIcon} text="有些难为情，券不在"/>
+                                    )
+                                })
+                            }
+                        </View>
+                        <View className={styles['fotter']} onClick={goCouponList}>
+                            <Text>更多历史优惠券</Text>
+                            <Image className={styles['fotter-image']} src={rightArrow} />
+                        </View>
+                    </> :
+                    <Empty src={couponEmptyIcon} text="有些难为情，券不在" />
             }
         </View>
     )

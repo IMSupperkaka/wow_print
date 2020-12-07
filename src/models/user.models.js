@@ -7,8 +7,8 @@
  */
 import Taro from '@tarojs/taro'
 
-import { getRouterParams } from '../utils/utils';
-import { login, smsLogin, saveinfo } from '../services/user';
+import { getRouterParams, getH5Params } from '../utils/utils';
+import { login, smsLogin, saveinfo, changeToken as getChangeToken } from '../services/user';
 
 export default {
     namespace: 'user',
@@ -31,6 +31,35 @@ export default {
                 payload: payload.info
             })
             payload.success();
+        },
+        *joinLogin({ payload }, { call, put }) {
+            if (process.env.TARO_ENV === 'h5') {
+                const { resolve } = payload;
+                try {
+                    const query = getH5Params(location.href);
+                    const changeToken = sessionStorage.getItem('changeToken');
+                    if (query.channel) {
+                        Taro.setStorageSync('channel', query.channel);
+                    }
+                    if (query.changeToken && changeToken != query.changeToken) {
+                        const response = yield call(getChangeToken, {
+                            changeToken: query.changeToken,
+                            disabledError: true
+                        });
+                        if (response) {
+                            sessionStorage.setItem('changeToken', query.changeToken);
+                            sessionStorage.setItem('show_flag', true);
+                            yield put({
+                                type: 'saveUserInfo',
+                                payload: response.data.data
+                            })
+                        }
+                    }
+                    resolve();
+                } catch (error) {
+                    resolve();
+                }
+            }
         },
         *login({ payload }, { call, put }) {
             try {

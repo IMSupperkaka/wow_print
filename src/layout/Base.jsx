@@ -5,43 +5,31 @@ import { connect } from 'react-redux';
 import { getH5Params } from '../utils/utils';
 import { changeToken as getChangeToken } from '../services/user';
 
-const Base = (props) => {
+const Base = (Camp) => {
 
-    const [token, setToken] = useState(false);
+    return connect(({ user }) => ({
+        user
+    }))((props) => {
 
-    useEffect(() => {
-        if (process.env.TARO_ENV === 'h5') {
-            const query = getH5Params(location.href);
-            const changeToken = sessionStorage.getItem('changeToken');
-            if(Taro.getStorageSync('token')) {
-                sessionStorage.setItem('show_flag', true);
-            }
-            if (query.channel) {
-                Taro.setStorageSync('channel', query.channel);
-            }
-            if (query.changeToken && changeToken != query.changeToken && !token) {
-                return getChangeToken({
-                    changeToken: query.changeToken,
-                    disabledError: true
-                }).then((res) => {
-                    sessionStorage.setItem('changeToken', query.changeToken);
-                    setToken(true)
-                }).catch(() => {
-                    sessionStorage.setItem('changeToken', query.changeToken);
-                    setToken(true)
-                })
-            }
-            setToken(true)
+        const [getChangeTokenDone, setGetChangeTokenDone] = useState(false);
+    
+        useEffect(() => {
+            props.dispatch({
+                type: 'user/joinLogin',
+                payload: {
+                    resolve: () => {
+                        setGetChangeTokenDone(true);
+                    }
+                }
+            })
+        }, [])
+    
+        if (process.env.TARO_ENV === 'weapp') {
+            return <Camp {...props} />;
         }
-    }, [])
-
-    if (process.env.TARO_ENV === 'weapp') {
-        return props.children;
-    }
-
-    return token ? props.children : null;
+    
+        return getChangeTokenDone ? <Camp {...props} /> : null;
+    })
 }
 
-export default connect(({ user }) => ({
-    user
-}))(Base);
+export default Base;
