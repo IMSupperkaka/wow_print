@@ -41,7 +41,7 @@ const usePay = (props) => {
             setMoney(payInfo.money);
 
             setParams(payInfo.params);
-            console.log(1111)
+
             Taro.showModal({
                 title: '支付确认',
                 content: '如果您已完成支付，请点击支付完成',

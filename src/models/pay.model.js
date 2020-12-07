@@ -1,4 +1,5 @@
 import Taro from '@tarojs/taro';
+import { sessionStorage } from '../utils/storage';
 
 const defaultPayInfo = JSON.parse(sessionStorage.getItem('pay-info') || '{}');
 
