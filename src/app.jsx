@@ -9,7 +9,7 @@ import './custom-variables.scss'
 
 class App extends Component {
 
-    onLaunch() {
+    onLaunch(props) {
         if (Taro.getEnv() == 'WEB') {
             return;
         }

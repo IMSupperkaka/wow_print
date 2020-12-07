@@ -11,6 +11,7 @@ import address from '../../../images/icon_address@2x.png'
 import { getRouterParams } from '../../utils/utils'
 import Pay from '../../components/Pay'
 import day from 'dayjs';
+import { useRequest } from '@umijs/hooks';
 
 export default () => {
 
@@ -21,7 +22,11 @@ export default () => {
 
     const timer = useRef();
 
-    const [countDown, setCountDown] = useState(null)
+    const [countDown, setCountDown] = useState(null);
+
+    const { loading, run: getDetail, refresh: refreshDetail } = useRequest(detail, {
+        manual: true
+    });
 
     const { payProps, openPay } = Pay.usePay({
         confirmPay: ({ payType, params }) => {
@@ -55,7 +60,7 @@ export default () => {
     useDidShow(() => {
         let query = getRouterParams()
         setQuery(query);
-        detail({
+        getDetail({
             loanId: query.id
         }).then(({ data }) => {
             setOrderDetail(data.data);
@@ -82,6 +87,12 @@ export default () => {
         }
         return () => { clearInterval(timer.current) }
     }, [])
+
+    useEffect(() => {
+        if(countDown === '00:00:00') {
+            refreshDetail()
+        }
+    }, [countDown])
 
     // 时间戳差值转换时分秒
     const turnHMS = (time) => {

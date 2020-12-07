@@ -13,6 +13,9 @@ const Base = (props) => {
         if (process.env.TARO_ENV === 'h5') {
             const query = getH5Params(location.href);
             const changeToken = sessionStorage.getItem('changeToken');
+            if(Taro.getStorageSync('token')) {
+                sessionStorage.setItem('show_flag', true);
+            }
             if (query.channel) {
                 Taro.setStorageSync('channel', query.channel);
             }

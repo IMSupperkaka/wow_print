@@ -31,13 +31,11 @@ const Home = (props) => {
     useShareAppMessage();
 
     useDidShow(() => {
-        if(Taro.getEnv() == 'WEB' && !sessionStorage.getItem('showed-falg')) {
+        if(process.env.TARO_ENV === 'h5' && JSON.parse(sessionStorage.getItem('show_flag'))) {
             dispatch({
                 type: 'home/getDialog'
             })
-            if(sessionStorage.getItem('showed-falg') === false) {
-                sessionStorage.setItem('showed-falg', true)
-            }
+            sessionStorage.setItem('show_flag', false)
         }
         onLoad(1);
         getConfig();
