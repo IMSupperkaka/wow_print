@@ -30,21 +30,15 @@ const Home = (props) => {
         total: 0
     });
 
-    const init = () => {
+    useShareAppMessage();
+
+    useDidShow(() => {
         if (process.env.TARO_ENV === 'h5' && JSON.parse(sessionStorage.getItem('show_flag'))) {
             dispatch({
                 type: 'home/getDialog'
             })
             sessionStorage.setItem('show_flag', false)
         }
-        onLoad(1);
-        getConfig();
-    }
-
-    useShareAppMessage();
-
-    useDidShow(() => {
-        init();
     });
 
     // TODO 封装usePageScroll
@@ -60,12 +54,16 @@ const Home = (props) => {
             }
         }
 
+        onLoad(1);
+        getConfig();
+
         if (process.env.TARO_ENV === 'h5') {
             document.querySelector('.taro-tabbar__panel').addEventListener('scroll', reachBottom)
             return () => {
                 document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
             }
         }
+
     }, [])
 
     const getConfig = () => {
