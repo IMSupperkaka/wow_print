@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import Taro, { useDidShow, usePageScroll, useShareAppMessage } from '@tarojs/taro'
+import Taro, { usePageScroll, useShareAppMessage } from '@tarojs/taro'
 import { View, Image, Text, Swiper, SwiperItem, ScrollView } from '@tarojs/components'
 
 import styles from './index.module.less'
 import { jump } from '../../utils/utils'
 import { list, index } from '../../services/home'
-import Base from '../../layout/Base'
+import Base, { useDidShow } from '../../layout/Base'
 import NavBar from '../../components/NavBar'
 import Dialog from '../../components/Dialog'
 import AddToMine from '../../components/AddToMine'
@@ -31,9 +31,7 @@ const Home = (props) => {
     });
 
     const init = () => {
-        console.log('aaaaaaaaaaaaaaaaaaaa')
         if (process.env.TARO_ENV === 'h5' && JSON.parse(sessionStorage.getItem('show_flag'))) {
-
             dispatch({
                 type: 'home/getDialog'
             })
@@ -55,8 +53,6 @@ const Home = (props) => {
     })
 
     useEffect(() => {
-
-        init();
 
         const reachBottom = (e) => {
             if (location.pathname === '/pages/home/index') {
