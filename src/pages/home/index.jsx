@@ -129,6 +129,7 @@ const Home = (props) => {
             {process.env.TARO_ENV === 'weapp' && <AddToMine />}
             <View className="banner-wrapper">
                 <Swiper
+                    key={new Date().getTime()}
                     className="banner"
                     autoplay
                 >
@@ -146,6 +147,7 @@ const Home = (props) => {
 
             <View className='promote-pic'>
                 <Swiper
+                    key={new Date().getTime()}
                     className='promote-swiper'
                     autoplay>
                     {
