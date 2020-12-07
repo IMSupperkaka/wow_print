@@ -189,6 +189,9 @@ export default (props) => {
                 <View className={styles['order-list']}>
                     {
                         records.map((item, index) => {
+
+                            const totalMoney = (item.money / 100 + (item.status != 6 ? 0 : (item.discountMoney / 100))).toFixed(2)
+
                             return (
                                 <View className={styles['order-item']} key={index} onClick={handleDetail.bind(this, item)}>
                                     <View className={styles['order-item-header']}>
@@ -216,7 +219,7 @@ export default (props) => {
                                     <View className={styles['orde-item-footer']}>
                                         <View className={styles['orde-item-footer__left']}>
                                           <Text>合计</Text>
-                                          <Text className={styles['orde-item-footer__price']}>￥{ (item.money / 100).toFixed(2) }</Text>
+                                          <Text className={styles['orde-item-footer__price']}>￥{ totalMoney }</Text>
                                         </View>
                                         <View className={styles['orde-item-footer__right']}>
                                           {
