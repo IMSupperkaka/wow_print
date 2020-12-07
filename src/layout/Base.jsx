@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow as _useDidShow } from '@tarojs/taro';
 import { connect } from 'react-redux';
 
 import { getH5Params } from '../utils/utils';
@@ -12,6 +12,10 @@ const Base = (Camp) => {
 
         const [getChangeTokenDone, setGetChangeTokenDone] = useState(false);
     
+        _useDidShow(() => {
+            Base.didShow && Base.didShow();
+        })
+
         useEffect(() => {
 
             if (process.env.TARO_ENV === 'h5') {
@@ -51,13 +55,22 @@ const Base = (Camp) => {
             }
 
         }, [])
-    
+        
         if (process.env.TARO_ENV === 'weapp') {
             return <Camp {...props} />;
         }
     
         return getChangeTokenDone ? <Camp {...props} /> : null;
     })
+}
+
+export const useDidShow = (callback) => {
+
+    useEffect(() => {
+        callback();
+    }, [])
+    
+    Base.didShow = callback;
 }
 
 export default Base;
