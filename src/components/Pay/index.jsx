@@ -41,7 +41,7 @@ const usePay = (props) => {
             setMoney(payInfo.money);
 
             setParams(payInfo.params);
-
+            console.log(1111)
             Taro.showModal({
                 title: '支付确认',
                 content: '如果您已完成支付，请点击支付完成',
@@ -140,14 +140,27 @@ const usePay = (props) => {
                 appendHTML(document.querySelector('body'), payData);
                 document.querySelector('[name=punchout_form]').submit();
             } else if (payType === 'MWEB') {
-                sessionStorage.setItem('pay-info', JSON.stringify({
+                const payInfo = JSON.stringify({
                     payData: payData,
                     payType: 'MWEB',
                     response: response,
                     params,
                     money
-                }))
-                formSubmit(payData.mweb_url);
+                })
+                sessionStorage.setItem('pay-info', payInfo)
+                const saveDva = [
+                    {
+                        type: 'pay/savePayInfo',
+                        payload: payInfo
+                    },
+                    {
+                        type: 'user/saveToken',
+                        payload: Taro.getStorageSync('token')
+                    }
+                ]
+                const redirect_url = `${location.protocol}//${location.host}${location.pathname}?save_dva=${encodeURIComponent(JSON.stringify(saveDva))}`
+                const submitUrl = payData.mweb_url + `&redirect_url=${encodeURIComponent(redirect_url)}`;
+                formSubmit(submitUrl);
             }
         }
     }

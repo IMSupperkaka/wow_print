@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 
 import styles from './index.module.less'
 import { fix } from '../../utils/utils'
+import Base from '../../layout/Base'
 import Card from '../../components/Card'
 import Pay from '../../components/Pay'
 import SafeArea from '../../components/SafeArea'
@@ -93,7 +94,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
         }
     }, [])
 
-    useDidShow(() => {
+    useEffect(() => {
         list().then(({ data }) => {
             if (addressInfo.id) {
                 const address = data.data.find((address) => {
@@ -291,6 +292,6 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     )
 }
 
-export default connect(({ confirmOrder }) => ({
+export default Base(connect(({ confirmOrder }) => ({
     confirmOrder
-}))(ConfirmOrder);
+}))(ConfirmOrder));
