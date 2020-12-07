@@ -31,7 +31,9 @@ const Home = (props) => {
     });
 
     const init = () => {
+        console.log('aaaaaaaaaaaaaaaaaaaa')
         if (process.env.TARO_ENV === 'h5' && JSON.parse(sessionStorage.getItem('show_flag'))) {
+
             dispatch({
                 type: 'home/getDialog'
             })

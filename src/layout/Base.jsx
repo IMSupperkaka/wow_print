@@ -3,7 +3,6 @@ import Taro from '@tarojs/taro';
 import { connect } from 'react-redux';
 
 import { getH5Params } from '../utils/utils';
-import { changeToken as getChangeToken } from '../services/user';
 
 const Base = (Camp) => {
 
@@ -14,14 +13,43 @@ const Base = (Camp) => {
         const [getChangeTokenDone, setGetChangeTokenDone] = useState(false);
     
         useEffect(() => {
-            props.dispatch({
-                type: 'user/joinLogin',
-                payload: {
-                    resolve: () => {
-                        setGetChangeTokenDone(true);
+
+            if (process.env.TARO_ENV === 'h5') {
+
+                const query = getH5Params(location.href);
+                const changeToken = sessionStorage.getItem('changeToken');
+                
+                if (query.channel) {
+                    Taro.setStorageSync('channel', query.channel);
+                }
+
+                if (query.save_dva) {
+                    const dvaData = JSON.parse(query.save_dva);
+                    if (Array.isArray(dvaData)) {
+                        dvaData.map((v) => {
+                            props.dispatch({
+                                type: v.type,
+                                payload: v.payload
+                            })
+                        })
                     }
                 }
-            })
+
+                if (query.changeToken && changeToken != query.changeToken) {
+                    return props.dispatch({
+                        type: 'user/joinLogin',
+                        payload: {
+                            changeToken,
+                            resolve: () => {
+                                setGetChangeTokenDone(true);
+                            }
+                        }
+                    })
+                }
+
+                setGetChangeTokenDone(true);
+            }
+
         }, [])
     
         if (process.env.TARO_ENV === 'weapp') {

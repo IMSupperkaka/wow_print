@@ -33,32 +33,24 @@ export default {
             payload.success();
         },
         *joinLogin({ payload }, { call, put }) {
-            if (process.env.TARO_ENV === 'h5') {
-                const { resolve } = payload;
-                try {
-                    const query = getH5Params(location.href);
-                    const changeToken = sessionStorage.getItem('changeToken');
-                    if (query.channel) {
-                        Taro.setStorageSync('channel', query.channel);
-                    }
-                    if (query.changeToken && changeToken != query.changeToken) {
-                        const response = yield call(getChangeToken, {
-                            changeToken: query.changeToken,
-                            disabledError: true
-                        });
-                        if (response) {
-                            sessionStorage.setItem('changeToken', query.changeToken);
-                            sessionStorage.setItem('show_flag', true);
-                            yield put({
-                                type: 'saveUserInfo',
-                                payload: response.data.data
-                            })
-                        }
-                    }
-                    resolve();
-                } catch (error) {
-                    resolve();
+            const { resolve, changeToken } = payload;
+            try {
+                const response = yield call(getChangeToken, {
+                    changeToken,
+                    disabledError: true
+                });
+                if (response) {
+                    sessionStorage.setItem('changeToken', changeToken);
+                    sessionStorage.setItem('show_flag', true);
+                    yield put({
+                        type: 'saveUserInfo',
+                        payload: response.data.data
+                    })
                 }
+                resolve();
+            } catch (error) {
+                console.log(error)
+                resolve();
             }
         },
         *login({ payload }, { call, put }) {
@@ -89,7 +81,9 @@ export default {
         },
         *smsLogin({ payload }, { call, put }) {
             try {
+                
                 const response = yield call(smsLogin, payload);
+
                 if (response.data.data.channel) {
                     Taro.setStorageSync('channel', payload.channel);
                 }
@@ -100,7 +94,9 @@ export default {
                     type: 'saveUserInfo',
                     payload: response.data.data || {}
                 })
+
                 const redirect = getRouterParams('redirect');
+
                 if (redirect) {
                     Taro.redirectTo({
                         url: redirect
@@ -108,6 +104,7 @@ export default {
                 } else {
                     Taro.navigateBack();
                 }
+
             } catch (error) {
                 console.error(error)
             }
@@ -118,6 +115,16 @@ export default {
             return {
                 ...state,
                 loadFinish: true
+            }
+        },
+        saveToken(state, { payload }) {
+            Taro.setStorageSync('token', payload);
+            return {
+                ...state,
+                info: {
+                    ...state.info,
+                    token: payload
+                }
             }
         },
         saveUserInfo(state, { payload }) {
