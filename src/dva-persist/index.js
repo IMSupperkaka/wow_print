@@ -49,7 +49,7 @@ export default (config) => {
             const res = store.dispatch(action);
             let thatState = store.getState();
             if (!_.isEqual(lastState, thatState)) {
-                lastState = onSet(_.merge(lastState, thatState));
+                lastState = onSet(thatState);
                 storage.set(`${keyPrefix}:${key}`, lastState);
             }
             return res;
