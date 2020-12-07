@@ -206,7 +206,7 @@ export const getH5Params = (url, key) => {
  * @param {*} key 要取的页面参数
  */
 export const getRouterParams = (key) => {
-    if (Taro.getEnv() == 'WEB') {
+    if (process.env.TARO_ENV === 'h5') {
         const search = location.href.split('?')[1];
         const params = search ? search.split('&').reduce((result, v) => {
             const array = v.split('=');

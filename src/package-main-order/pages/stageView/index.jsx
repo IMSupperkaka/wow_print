@@ -41,7 +41,7 @@ const Tips = () => {
 
 const StageView = (props) => {
 
-    const [current, setCurrent] = useState(0);
+    const [current, setCurrent] = useState(1);
 
     const [fold, setFold] = useState(false);
 

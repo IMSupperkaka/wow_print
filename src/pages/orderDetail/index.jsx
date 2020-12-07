@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import Taro, { Events, useDidShow } from '@tarojs/taro'
+import Taro, { Events, useDidShow, useReady } from '@tarojs/taro'
 import { AtIcon } from 'taro-ui'
 import classNames from 'classnames';
 import { View, Image, Button, Text } from '@tarojs/components'
@@ -11,7 +11,6 @@ import address from '../../../images/icon_address@2x.png'
 import { getRouterParams } from '../../utils/utils'
 import Pay from '../../components/Pay'
 import day from 'dayjs';
-import { useRequest } from '@umijs/hooks';
 
 export default () => {
 
@@ -24,15 +23,14 @@ export default () => {
 
     const [countDown, setCountDown] = useState(null);
 
-    const { loading, run: getDetail, refresh: refreshDetail } = useRequest(detail, {
-        manual: true,
-        onSuccess: ({ data }) => {
+    const getDetail = (params) => {
+        detail(params).then(({ data }) => {
             setOrderDetail(data.data);
             if(data.data.status == 1) {
                 createTimer(data.data.expiredTime);
             }
-        }
-    });
+        })
+    }
 
     const { payProps, openPay } = Pay.usePay({
         confirmPay: ({ payType, params }) => {
@@ -97,7 +95,9 @@ export default () => {
     useEffect(() => {
         if(countDown === '00:00:00') {
             clearInterval(timer.current);
-            refreshDetail();
+            getDetail({
+                loanId: query.id
+            });
         }
     }, [countDown])
 
