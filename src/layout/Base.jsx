@@ -44,7 +44,7 @@ const Base = (Camp) => {
                     return props.dispatch({
                         type: 'user/joinLogin',
                         payload: {
-                            changeToken,
+                            changeToken: query.changeToken,
                             resolve: () => {
                                 setGetChangeTokenDone(true);
                             }
