@@ -29,7 +29,8 @@ export default () => {
                 loanId: params.id
             }).then((res) => {
                 return {
-                    payData: res.data.data
+                    payData: res.data.data,
+                    loanId: params.id
                 }
             })
         },
