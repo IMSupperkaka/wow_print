@@ -33,11 +33,16 @@ const Home = (props) => {
     useShareAppMessage();
 
     useDidShow(() => {
-        if (process.env.TARO_ENV === 'h5' && JSON.parse(sessionStorage.getItem('show_flag'))) {
-            dispatch({
-                type: 'home/getDialog'
-            })
-            sessionStorage.setItem('show_flag', false)
+        if (process.env.TARO_ENV === 'h5') {
+            const showFlag = sessionStorage.getItem('show_flag');
+            const token = Taro.getStorageSync('token');
+            // 首次登录成功 或 登录后再次打开h5
+            if (JSON.parse(showFlag) || (token && (showFlag == null || showFlag == undefined))) {
+                dispatch({
+                    type: 'home/getDialog'
+                })
+                sessionStorage.setItem('show_flag', false)
+            }
         }
     });
 
