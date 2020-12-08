@@ -64,13 +64,13 @@ $color-brand: #FF6345;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0;
-    margin: 0;
     font-size: 24px;
     border-radius: 31px;
     width: auto;
+    overflow: visible;
     height: 56px;
     padding: 12px 30px;
+    box-sizing: border-box;
     &::after {
         border-radius: 62px;
     }
@@ -79,7 +79,7 @@ $color-brand: #FF6345;
     color: #fff;
     background-color: #FF6345;
     &::after {
-        border-color: #FF6345;
+        border-color: transparent;
     }
     &:hover {
         background-color: #FF6345!important;

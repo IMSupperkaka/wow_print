@@ -33,7 +33,7 @@ export default () => {
     const [records, setRecords] = useState([]);
     const [page, setPage] = useState({
         current: 0,
-        pageSize: 10,
+        pageSize: 5,
         total: 0
     });
 
@@ -52,7 +52,7 @@ export default () => {
     useEffect(() => {
 
         const reachBottom = (e) => {
-            if (e.target.clientHeight + e.target.scrollTop >= e.target.scrollHeight && location.pathname === '/pages/coupon/index') {
+            if (((e.target.clientHeight + e.target.scrollTop) >= e.target.scrollHeight) && location.pathname === '/pages/coupon/index') {
                 onLoad(false);
             }
         }
