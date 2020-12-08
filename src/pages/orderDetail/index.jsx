@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react'
-import Taro, { Events, useDidShow, useReady } from '@tarojs/taro'
+import Taro, { Events, useReady } from '@tarojs/taro'
 import { AtIcon } from 'taro-ui'
 import classNames from 'classnames';
 import { View, Image, Button, Text } from '@tarojs/components'
 
 import styles from './index.module.less'
 import { detail, repay, cancel, receipt } from '../../services/order'
+import Base, { useDidShow } from '../../layout/Base'
 import { orderStatus } from '../../utils/map/order'
 import address from '../../../images/icon_address@2x.png'
-import { getRouterParams } from '../../utils/utils'
 import Pay from '../../components/Pay'
 import day from 'dayjs';
 
-export default () => {
+export default Base((props) => {
 
-    const [query, setQuery] = useState({});
+    const { router } = props;
+
     const [orderDetail, setOrderDetail] = useState({
         goodsInfo: []
     });
@@ -36,37 +37,30 @@ export default () => {
         confirmPay: ({ payType, params }) => {
             return repay({
                 payMethod: payType,
-                loanId: query.id
+                loanId: router.query.id
             }).then((res) => {
                 return {
                     payData: res.data.data,
-                    loanId: query.id
+                    loanId: router.query.id
                 }
             })
         },
         onSuccess: () => {
-            Taro.eventCenter.trigger('updateOrderStatus', query.id);
+            Taro.eventCenter.trigger('updateOrderStatus', router.query.id);
             Taro.navigateTo({
-                url: `/pages/result/index?type=pay_success&id=${query.id}`
+                url: `/pages/result/index?type=pay_success&id=${router.query.id}`
             })
         },
         onFail: ({ params }) => {
-            // Taro.showToast({
-            //     title: '您的订单还未支付，请重新支付',
-            //     icon: 'none',
-            //     duration: 1000
-            // })
             Taro.redirectTo({
-                url: `/pages/result/index?type=pay_fail&id=${query.id}&money=${params.money}`
+                url: `/pages/result/index?type=pay_fail&id=${router.query.id}&money=${params.money}`
             })
         }
     })
 
     useDidShow(() => {
-        let query = getRouterParams()
-        setQuery(query);
         getDetail({
-            loanId: query.id
+            loanId: router.query.id
         })
     })
 
@@ -97,7 +91,7 @@ export default () => {
         if(countDown === '00:00:00') {
             clearInterval(timer.current);
             getDetail({
-                loanId: query.id
+                loanId: router.query.id
             });
         }
     }, [countDown])
@@ -122,11 +116,11 @@ export default () => {
             success: (res) => {
                 if (res.confirm) {
                     cancel({
-                        loanId: query.id
+                        loanId: router.query.id
                     }).then(() => {
-                        Taro.eventCenter.trigger('updateOrderStatus', query.id);
+                        Taro.eventCenter.trigger('updateOrderStatus', router.query.id);
                         Taro.navigateTo({
-                            url: `/pages/result/index?type=cancel&id=${query.id}`
+                            url: `/pages/result/index?type=cancel&id=${router.query.id}`
                         })
                     })
                 }
@@ -173,7 +167,7 @@ export default () => {
         }
 
         Taro.navigateTo({
-            url: `/pages/preview/index?id=${query.id}`
+            url: `/pages/preview/index?id=${router.query.id}`
         })
     }
 
@@ -187,11 +181,11 @@ export default () => {
             success: (res) => {
                 if (res.confirm) {
                     receipt({
-                        loanId: query.id
+                        loanId: router.query.id
                     }).then(() => {
-                        Taro.eventCenter.trigger('updateOrderStatus', query.id);
+                        Taro.eventCenter.trigger('updateOrderStatus', router.query.id);
                         Taro.navigateTo({
-                            url: `/pages/result/index?type=received&id=${query.id}`
+                            url: `/pages/result/index?type=received&id=${router.query.id}`
                         })
                     })
                 }
@@ -201,13 +195,13 @@ export default () => {
 
     const handleChooseAddress = () => {
         Taro.navigateTo({
-            url: `/pages/addressList/index?type=change&id=${query.id}`
+            url: `/pages/addressList/index?type=change&id=${router.query.id}`
         })
     }
 
     const handleGoLog = () => {
         Taro.navigateTo({
-            url: `/pages/logisticsDetails/index?id=${query.id}`
+            url: `/pages/logisticsDetails/index?id=${router.query.id}`
         })
     }
 
@@ -350,4 +344,4 @@ export default () => {
             <Pay {...payProps} />
         </View>
     )
-}
+})

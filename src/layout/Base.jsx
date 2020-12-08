@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Taro, { useDidShow as _useDidShow } from '@tarojs/taro';
 import { connect } from 'react-redux';
 
-import { getH5Params } from '../utils/utils';
+import { getRouterParams } from '../utils/utils';
 
 const Base = (Camp) => {
 
@@ -12,6 +12,8 @@ const Base = (Camp) => {
 
         const [getChangeTokenDone, setGetChangeTokenDone] = useState(false);
     
+        const query = getRouterParams();
+
         _useDidShow(() => {
             Base.didShow && Base.didShow();
         })
@@ -20,7 +22,6 @@ const Base = (Camp) => {
 
             if (process.env.TARO_ENV === 'h5') {
 
-                const query = getH5Params(location.href);
                 const changeToken = sessionStorage.getItem('changeToken');
                 
                 if (query.channel) {
@@ -57,10 +58,10 @@ const Base = (Camp) => {
         }, [])
         
         if (process.env.TARO_ENV === 'weapp') {
-            return <Camp {...props} />;
+            return <Camp router={{ query: query }} {...props} />;
         }
-    
-        return getChangeTokenDone ? <Camp {...props} /> : null;
+
+        return getChangeTokenDone ? <Camp router={{ query: query }} {...props} /> : null;
     })
 }
 

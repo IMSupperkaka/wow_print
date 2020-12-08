@@ -160,7 +160,8 @@ const usePay = (props) => {
                 ]
                 const redirect_url = `${location.protocol}//${location.host}/pages/orderDetail/index?id=${response.loanId}&save_dva=${encodeURIComponent(JSON.stringify(saveDva))}`
                 const submitUrl = payData.mweb_url + `&redirect_url=${encodeURIComponent(redirect_url)}`;
-                formSubmit(submitUrl);
+                console.log(redirect_url)
+                // formSubmit(submitUrl);
             }
         }
     }
