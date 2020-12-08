@@ -133,7 +133,7 @@ const Home = (props) => {
             <View className={styles['promote-pic']}>
                 <Swiper
                     key={homeData.indexBigImageList.length}
-                    className='promote-swiper'
+                    className={styles['promote-swiper']}
                     autoplay circular>
                     {
                         homeData.indexBigImageList.map((v) => {
