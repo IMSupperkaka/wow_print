@@ -126,10 +126,10 @@ export default {
             if (dialog.type === 'popup' && !close) {
                 dialog.url && jump(dialog.url);
             }
+            if(popup.list?.[0]?.type == 'coupon') {
+                yield call(receive);
+            }
             if (popup.activeIndex < (popup.list.length - 1)) {
-                if(popup.list?.[0]?.type == 'coupon') {
-                    yield call(receive);
-                }
                 yield put({
                     type: 'savePopup',
                     payload: {
