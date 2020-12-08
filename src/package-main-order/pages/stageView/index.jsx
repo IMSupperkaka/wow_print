@@ -88,7 +88,7 @@ const StageView = (props) => {
 
     const handleOnchange = (file, fileList) => {
         if (file.status == 'done' && (activeEditAreaIndex != null || uploadIndex != null)) {
-            mutateActiveImg(file, uploadIndex || activeEditAreaIndex);
+            mutateActiveImg(file, activeEditAreaIndex == null ? uploadIndex : activeEditAreaIndex);
         }
         setFileList(fileList)
     }
