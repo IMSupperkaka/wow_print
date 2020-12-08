@@ -49,7 +49,7 @@ class TaroRequest {
             this.uploadToken.token = response.data.data;
             this.uploadToken.expire = nowStamp + 60 * 1000;
         }
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             Taro.uploadFile({
                 url: 'https://up.qiniup.com',
                 filePath: params.filePath,
@@ -62,6 +62,13 @@ class TaroRequest {
                     resolve({
                         data: `https://cdn.91jiekuan.com/${response.key}`
                     });
+                },
+                fail: function (err) {
+                    Taro.showToast({
+                        title: '图片上传失败，请稍后重试',
+                        icon: 'none'
+                    });
+                    reject(err)
                 }
             })
         })
@@ -98,7 +105,7 @@ class TaroRequest {
                                     }
                                 })
                             }
-                            if (requestParams.data.disabledError != true) {
+                            if (requestParams?.data?.disabledError != true) {
                                 Taro.showToast({
                                     title: params.data?.msg || '服务器开小差了~',
                                     icon: 'none'

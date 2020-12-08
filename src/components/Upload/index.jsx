@@ -60,6 +60,7 @@ export default React.forwardRef((props, ref) => {
     }
 
     const progress = (item, res, imgInfo, status) => {
+        console.log(status)
         const nextFileList = getFileList().concat();
         const index = nextFileList.findIndex((v) => {
             return v.uid == item.uid;
@@ -116,8 +117,14 @@ export default React.forwardRef((props, ref) => {
                 ]);
                 for (let i = 0; i < uploadList.length; i++) {
                     progress(uploadList[i], null, null, 'uploading');
-                    const { file, imgInfo, response } = await uploadSync(uploadList[i]);
-                    progress(file, response, imgInfo, 'done');
+                    try {
+                        const { file, imgInfo, response } = await uploadSync(uploadList[i]);
+                        progress(file, response, imgInfo, 'done');
+                    } catch (error) {
+                        progress(uploadList[i], null, null, 'fail');
+                        console.log('error')
+                        console.log(error)
+                    }
                 }
             }
         })
@@ -128,7 +135,7 @@ export default React.forwardRef((props, ref) => {
     }) : null;
 
     const totalCount = uploadList.length;
-    const uploadingCount = uploadList.filter((v) => { return v.status != 'done' }).length;
+    const uploadingCount = uploadList.filter((v) => { return (v.status != 'done' && v.status != 'fail') }).length;
     const uploadDialogProps = {
         visible: uploadingCount > 0,
         totalCount: totalCount,
