@@ -52,7 +52,7 @@ export default () => {
     useEffect(() => {
 
         const reachBottom = (e) => {
-            if (((e.target.clientHeight + e.target.scrollTop) >= e.target.scrollHeight) && location.pathname === '/pages/coupon/index') {
+            if (((e.target.clientHeight + e.target.scrollTop + 10) >= e.target.scrollHeight) && location.pathname === '/pages/coupon/index') {
                 onLoad(false);
             }
         }
@@ -63,6 +63,7 @@ export default () => {
                 document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
             }
         }
+
     }, [page])
 
     const onLoad = (refresh = false) => {

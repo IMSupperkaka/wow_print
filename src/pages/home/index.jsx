@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import Taro, { usePageScroll, useShareAppMessage } from '@tarojs/taro'
-import { View, Image, Text, Swiper, SwiperItem, ScrollView } from '@tarojs/components'
+import { View, Image, Text, Swiper, SwiperItem } from '@tarojs/components'
 
 import styles from './index.module.less'
 import { jump } from '../../utils/utils'
 import { list, index } from '../../services/home'
 import Base, { useDidShow } from '../../layout/Base'
+import useList from '../../hooks/useList'
 import NavBar from '../../components/NavBar'
 import Dialog from '../../components/Dialog'
 import AddToMine from '../../components/AddToMine'
@@ -17,18 +18,27 @@ const Home = (props) => {
     const { dispatch, home: { dialog } } = props;
 
     const [scrollTop, setScrollTop] = useState(0);
+    
     const [homeData, setHomeData] = useState({
         bannerList: [],
         indexBigImageList: [],
         popupsList: []
     });
-    const [isFinish, setIsFinish] = useState(false);
-    const [records, setRecords] = useState([]);
-    const [page, setPage] = useState({
-        current: 0,
-        pageSize: 10,
-        total: 0
-    });
+
+    const { records } = useList({
+        onLoad: ({ current, pageSize }) => {
+            return list({
+                pageNum: current,
+                pageSize: pageSize
+            }).then(({ data }) => {
+                return {
+                    list: data.data.records,
+                    total: data.data.total,
+                    current: data.data.current
+                }
+            })
+        }
+    })
 
     useShareAppMessage();
 
@@ -47,43 +57,12 @@ const Home = (props) => {
     })
 
     useEffect(() => {
-
-        const reachBottom = (e) => {
-            if (location.pathname === '/pages/home/index') {
-                setScrollTop(e.target.scrollTop);
-            }
-        }
-
-        onLoad(1);
         getConfig();
-
-        if (process.env.TARO_ENV === 'h5') {
-            document.querySelector('.taro-tabbar__panel').addEventListener('scroll', reachBottom)
-            return () => {
-                document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
-            }
-        }
-
     }, [])
 
     const getConfig = () => {
         index().then(({ data }) => {
             setHomeData(data.data);
-        })
-    }
-
-    const onLoad = (refresh) => {
-        return list({
-            page: refresh ? 1 : page.current + 1,
-            pageSize: page.pageSize
-        }).then(({ data }) => {
-            setIsFinish(data.data.current >= data.data.pages);
-            setRecords(refresh ? data.data.records : records.concat(data.data.records));
-            setPage({
-                current: data.data.current,
-                pageSize: data.data.size,
-                total: data.data.total
-            })
         })
     }
 

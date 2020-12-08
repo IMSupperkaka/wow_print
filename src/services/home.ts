@@ -22,9 +22,10 @@ export const popup = () => {
 }
 
 
-export const list = (code) => {
+export const list = (data) => {
     return TaroRequest.request({
         url: `/goods/index/list`,
-        method: 'GET'
+        method: 'GET',
+        data
     })
 }
