@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
+import classnams from 'classnames'
 import { View, Image, Text, Input } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import day from 'dayjs'
 import { connect } from 'react-redux'
-import './index.less'
+import styles from './index.module.less'
 import lodash from 'lodash';
 
 import synthesis from '../../utils/synthesis';
@@ -193,15 +194,15 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
 
     return (
         <CropImgProvider>
-            <View className="index">
-                <View className="header">显示区域即为打印区域，如需调整请点击图片</View>
-                <View className="content">
-                    <View className="item-box">
-                        <View className="cover">
-                            <View className="cover-top">
-                                <View className="edit-box">
+            <View className={styles['index']}>
+                <View className={styles['header']}>显示区域即为打印区域，如需调整请点击图片</View>
+                <View className={styles['content']}>
+                    <View className={styles['item-box']}>
+                        <View className={styles['cover']}>
+                            <View className={styles['cover-top']}>
+                                <View className={styles['edit-box']}>
                                     <View
-                                        className="title-box"
+                                        className={styles['title-box']}
                                         onClick={() => {
                                             setEditVisible(true);
                                             setCoverInfo((coverInfo) => {
@@ -212,38 +213,38 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                                 }
                                             });
                                         }}>
-                                        <Text className="title">{coverInfo.bookName}</Text>
-                                        <Image src={editIcon} className="edit-icon" />
+                                        <Text className={styles['title']}>{coverInfo.bookName}</Text>
+                                        <Image src={editIcon} className={styles['edit-icon']} />
                                     </View>
-                                    <View className="description">
+                                    <View className={styles['description']}>
                                         {coverInfo.description}
                                     </View>
                                 </View>
-                                <Image src={wayin} mode="aspectFit" className="wayin" />
+                                <Image src={wayin} mode="aspectFit" className={styles['wayin']} />
                             </View>
-                            <UploadCrop beforeUpload={beforeUpload.bind(this, 0)} editFinish={editFinish.bind(this, 0)} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className="cover-con" />
-                            <View className="date-wrap">{ date }</View>
+                            <UploadCrop beforeUpload={beforeUpload.bind(this, 0)} editFinish={editFinish.bind(this, 0)} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className={styles['cover-con']} />
+                            <View className={styles['date-wrap']}>{ date }</View>
                         </View>
-                        <View className="page-num">封面</View>
+                        <View className={styles['page-num']}>封面</View>
                     </View>
                     {
                         twinsList.map((item, index) => {
                             return (
-                                <View className="twins-item item-box" key={index}>
-                                    <View className="item-body">
+                                <View className={classnams(styles['twins-item'], styles['item-box'])} key={index}>
+                                    <View className={styles['item-body']}>
                                         {
                                             item.map((child, i) => {
                                                 const imgIndex = index * 2 + i + 1;
                                                 const file = userImageList[imgIndex] ? [userImageList[imgIndex]] : []
                                                 return (
-                                                    <View className="choose-item" key={i}>
+                                                    <View className={styles['choose-item']} key={i}>
                                                         <UploadCrop editFinish={editFinish.bind(this, imgIndex)} beforeUpload={beforeUpload.bind(this, imgIndex)} fileList={file} onChange={onChange} width={320} height={328.5} />
                                                     </View>
                                                 )
                                             })
                                         }
                                     </View>
-                                    <View className="page-num">{`${++index * 2 - 1} - ${index * 2}`}</View>
+                                    <View className={styles['page-num']}>{`${++index * 2 - 1} - ${index * 2}`}</View>
                                 </View>
                             )
                         })
@@ -252,10 +253,10 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                 <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} onSave={handleSaveWorks} goPrint={submit} limit={17} />
                 <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
                 <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
-                    <View className="modal-content">
-                        <View className="input-content">
-                            <View className="input-item">
-                                <Text className="title">名称</Text>
+                    <View className={styles['modal-content']}>
+                        <View className={styles['input-content']}>
+                            <View className={styles['input-item']}>
+                                <Text className={styles['title']}>名称</Text>
                                 <Input
                                     name='name'
                                     type='text'
@@ -274,8 +275,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                     }}
                                 />
                             </View>
-                            <View className="input-item">
-                                <Text className="title">昵称</Text>
+                            <View className={styles['input-item']}>
+                                <Text className={styles['title']}>昵称</Text>
                                 <Input
                                     name='name'
                                     type='text'
@@ -295,9 +296,9 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 />
                             </View>
                         </View>
-                        <View className="operate-content">
-                            <View className="left-btn" onClick={() => { setEditVisible(false) }}>取消</View>
-                            <View className={`right-btn ${coverInfo.temporaryName || coverInfo.temporaryDesc ? 'clickable' : ''}`} onClick={handleEditCover}>确认</View>
+                        <View className={styles['operate-content']}>
+                            <View className={styles['left-btn']} onClick={() => { setEditVisible(false) }}>取消</View>
+                            <View className={classnams(styles['right-btn'], coverInfo.temporaryName || coverInfo.temporaryDesc ? styles['clickable'] : '')} onClick={handleEditCover}>确认</View>
                         </View>
                     </View>
                 </Modal>
