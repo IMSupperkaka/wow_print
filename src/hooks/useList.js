@@ -1,51 +1,86 @@
-import { useReachBottom } from '@tarojs/taro';
-import React, { useState, useEffect } from 'react';
+import Taro, { usePullDownRefresh, useReachBottom } from '@tarojs/taro';
+import React, { useEffect, useReducer, useRef } from 'react';
 
 export default (props) => {
 
-    const { onLoad } = props;
+    const { onLoad, pullDownRefresh, pageSize = 10 } = props;
 
-    const [finish, setFinish] = useState(false);
+    const stateRef = useRef();
 
-    const [loading, setLoading] = useState(false);
+    const listReducer = (state, action) => {
+        switch (action.type) {
+            case 'save':
+                const newState = {
+                    ...state,
+                    ...action.payload
+                };
+                stateRef.current = newState;
+                return newState;
+        }
+    }
 
-    const [records, setRecords] = useState([]);
+    const [state, dispatch] = useReducer(listReducer, {
+        finish: false,
+        loading: false,
+        records: [],
+        page: {
+            current: 0,
+            pageSize: pageSize,
+            total: 0
+        }
+    })
 
-    const [page, setPage] = useState({
-        current: 0,
-        pageSize: 10,
-        total: 0
-    });
+    stateRef.current = state;
 
     const getData = (refresh) => {
-        if (finish || loading) {
+
+        const { finish, loading, records, page } = stateRef.current;
+
+        if ((finish && !refresh) || loading) {
             return false;
         }
-        setLoading(true);
+        dispatch({
+            type: 'save',
+            payload: {
+                loading: true
+            }
+        })
+        console.log(stateRef.current)
+        // setLoading(true);
         onLoad({
             ...page,
             current: refresh ? 1 : (page.current + 1)
         }).then(({ total, current, list }) => {
-            setPage((page) => {
-                return {
-                    ...page,
-                    total,
-                    current
+            let newRecords = records.concat(list);
+            if (refresh) {
+                newRecords = list;
+            }
+            dispatch({
+                type: 'save',
+                payload: {
+                    page: {
+                        ...page,
+                        total,
+                        current
+                    },
+                    finish: newRecords.length >= total ? true : false,
+                    loading: false,
+                    records: newRecords
                 }
             })
-            setRecords((records) => {
-                let newRecords = records.concat(list);
-                if (refresh) {
-                    newRecords = list;
-                }
-                if (newRecords.length >= total) {
-                    setFinish(true);
-                }
-                return newRecords;
-            });
-            setLoading(false);
+            if (pullDownRefresh) {
+                Taro.stopPullDownRefresh();
+            }
         }).catch(() => {
-            setLoading(false);
+            if (pullDownRefresh) {
+                Taro.stopPullDownRefresh();
+            }
+            dispatch({
+                type: 'svae',
+                payload: {
+                    loading: false
+                }
+            })
         })
     }
 
@@ -64,20 +99,24 @@ export default (props) => {
                 document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
             }
         }
-    }, [page, loading, finish])
+    }, [])
 
     useEffect(() => {
         getData(true);
     }, [])
+
+    usePullDownRefresh(() => {
+        if (pullDownRefresh) {
+            getData(true);
+        }
+    })
 
     useReachBottom(() => {
         getData(false);
     })
 
     return {
-        finish,
-        loading,
-        records,
+        ...state,
         refresh: () => {
             getData(true);
         }

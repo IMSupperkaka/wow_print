@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import day from 'dayjs'
 import { usePullDownRefresh, useReachBottom, useDidShow } from '@tarojs/taro'
-import { View, ScrollView, Image, Button, Text } from '@tarojs/components'
+import { View, Image, Text } from '@tarojs/components'
 
 import styles from './index.module.less'
 import { list, pre } from '../../services/coupon';
 import Empty from '../../components/Empty';
+import useList from '../../hooks/useList';
 import rightArrow from '../../../images/right_arrow@2x.png';
 import couponEmptyIcon from '../../../images/bg_no_coupons@2x.png';
 
@@ -29,75 +30,99 @@ const ExpiresText = ({ endTime, ...resetProps }) => {
 
 export default () => {
 
-    const [isFinish, setIsFinish] = useState(false);
-    const [records, setRecords] = useState([]);
-    const [page, setPage] = useState({
-        current: 0,
+    // const [isFinish, setIsFinish] = useState(false);
+    // const [records, setRecords] = useState([]);
+    // const [page, setPage] = useState({
+    //     current: 0,
+    //     pageSize: 5,
+    //     total: 0
+    // });
+
+    const { records } = useList({
+        pullDownRefresh: true,
         pageSize: 5,
-        total: 0
-    });
-
-    useDidShow(() => {
-        onLoad(true);
-    })
-
-    usePullDownRefresh(() => {
-        onLoad(true);
-    })
-
-    useReachBottom(() => {
-        onLoad(false);
-    })
-
-    useEffect(() => {
-
-        const reachBottom = (e) => {
-            if (((e.target.clientHeight + e.target.scrollTop + 10) >= e.target.scrollHeight) && location.pathname === '/pages/coupon/index') {
-                onLoad(false);
-            }
-        }
-
-        if (process.env.TARO_ENV === 'h5') {
-            document.querySelector('.taro-tabbar__panel').addEventListener('scroll', reachBottom)
-            return () => {
-                document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
-            }
-        }
-
-    }, [page])
-
-    const onLoad = (refresh = false) => {
-        if (!refresh && isFinish) {
-            return false;
-        }
-        return list({
-            type: 1,
-            pageNum: refresh ? 1 : page.current + 1,
-            pageSize: page.pageSize
-        }).then(({ data }) => {
-            const currentTime = day();
-            data.data.records = data.data.records.map((v) => {
+        onLoad: ({ current, pageSize }) => {
+            return list({
+                type: 1,
+                pageNum: current,
+                pageSize: pageSize
+            }).then(({ data }) => {
+                const currentTime = day();
                 return {
-                    ...v,
-                    new: currentTime.diff(day(v.createTime)) <= 86400000
+                    list: data.data.records.map((v) => {
+                        return {
+                            ...v,
+                            new: currentTime.diff(day(v.createTime)) <= 86400000
+                        }
+                    }),
+                    total: data.data.total,
+                    current: data.data.current
                 }
             })
-            setIsFinish(data.data.current >= data.data.pages);
-            if (refresh) {
-                setRecords(data.data.records);
-            } else {
-                setRecords(records.concat(data.data.records));
-            }
-            setPage({
-                current: data.data.current,
-                pageSize: data.data.size,
-                total: data.data.total
-            })
-            Taro.stopPullDownRefresh();
-        }).catch(() => {
-            Taro.stopPullDownRefresh();
-        })
-    }
+        }
+    })
+
+    // useDidShow(() => {
+    //     onLoad(true);
+    // })
+
+    // usePullDownRefresh(() => {
+    //     onLoad(true);
+    // })
+
+    // useReachBottom(() => {
+    //     onLoad(false);
+    // })
+
+    // useEffect(() => {
+
+    //     const reachBottom = (e) => {
+    //         if (((e.target.clientHeight + e.target.scrollTop + 10) >= e.target.scrollHeight) && location.pathname === '/pages/coupon/index') {
+    //             onLoad(false);
+    //         }
+    //     }
+
+    //     if (process.env.TARO_ENV === 'h5') {
+    //         document.querySelector('.taro-tabbar__panel').addEventListener('scroll', reachBottom)
+    //         return () => {
+    //             document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
+    //         }
+    //     }
+
+    // }, [page])
+
+    // const onLoad = (refresh = false) => {
+    //     if (!refresh && isFinish) {
+    //         return false;
+    //     }
+    //     return list({
+    //         type: 1,
+    //         pageNum: refresh ? 1 : page.current + 1,
+    //         pageSize: page.pageSize
+    //     }).then(({ data }) => {
+    //         const currentTime = day();
+    //         data.data.records = data.data.records.map((v) => {
+    //             return {
+    //                 ...v,
+    //                 new: currentTime.diff(day(v.createTime)) <= 86400000
+    //             }
+    //         })
+    //         setIsFinish(data.data.current >= data.data.pages);
+    //         if (refresh) {
+    //             setRecords(data.data.records);
+    //         } else {
+    //             setRecords(records.concat(data.data.records));
+    //         }
+    //         setPage({
+    //             current: data.data.current,
+    //             pageSize: data.data.size,
+    //             total: data.data.total
+    //         })
+    //         Taro.stopPullDownRefresh();
+    //     }).catch(() => {
+    //         Taro.stopPullDownRefresh();
+    //     })
+    // }
 
     const goCouponList = () => {
         Taro.navigateTo({
