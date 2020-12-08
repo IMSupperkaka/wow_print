@@ -116,6 +116,7 @@ const Home = (props) => {
                     key={homeData.bannerList.length}
                     className={styles['banner']}
                     autoplay
+                    circular
                 >
                     {
                         homeData.bannerList.map((v) => {
@@ -133,7 +134,7 @@ const Home = (props) => {
                 <Swiper
                     key={homeData.indexBigImageList.length}
                     className={styles['promote-swiper']}
-                    autoplay>
+                    autoplay circular>
                     {
                         homeData.indexBigImageList.map((v) => {
                             return (
