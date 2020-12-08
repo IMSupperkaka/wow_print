@@ -55,5 +55,39 @@ export default [
                 height: 313
             }
         ]
+    },
+    {
+        name: "模版004",
+        stageInfo: {
+            width: 604,
+            height: 433,
+            filePath: 'http://cdn.91jiekuan.com/Ft8B1QF9kcgl0HryFweHY36Ak7ws',
+            thumbnail: 'http://cdn.91jiekuan.com/FhAp77-KTrVci4C56kG6zWqywCCz'
+        },
+        editArea: [
+            {
+                x: 19,
+                y: 17,
+                width: 566,
+                height: 380
+            }
+        ]
+    },
+    {
+        name: "模版005",
+        stageInfo: {
+            width: 604,
+            height: 433,
+            filePath: 'http://cdn.91jiekuan.com/FgZAFfjYapKsmf543PEOxB-qr1gc',
+            thumbnail: 'http://cdn.91jiekuan.com/FiF4yrYQW3qBOfhOtZyV8hYOa-Hv'
+        },
+        editArea: [
+            {
+                x: 45,
+                y: 43,
+                width: 415,
+                height: 346
+            }
+        ]
     }
 ]
