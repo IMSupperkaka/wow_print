@@ -111,10 +111,10 @@ const Home = (props) => {
                 </View>
             } />
             {process.env.TARO_ENV === 'weapp' && <AddToMine />}
-            <View className="banner-wrapper">
+            <View className={styles['banner-wrapper']}>
                 <Swiper
                     key={homeData.bannerList.length}
-                    className="banner"
+                    className={styles['banner']}
                     autoplay
                     circular
                 >
@@ -122,7 +122,7 @@ const Home = (props) => {
                         homeData.bannerList.map((v) => {
                             return (
                                 <SwiperItem key={v.id} onClick={() => { jump(v.url) }}>
-                                    <Image className="banner-image" mode="aspectFill" src={v.image} />
+                                    <Image className={styles['banner-image']} mode="aspectFill" src={v.image} />
                                 </SwiperItem>
                             )
                         })
@@ -130,7 +130,7 @@ const Home = (props) => {
                 </Swiper>
             </View>
 
-            <View className='promote-pic'>
+            <View className={styles['promote-pic']}>
                 <Swiper
                     key={homeData.indexBigImageList.length}
                     className='promote-swiper'
@@ -139,35 +139,35 @@ const Home = (props) => {
                         homeData.indexBigImageList.map((v) => {
                             return (
                                 <SwiperItem key={v.id} onClick={() => { jump(v.url) }}>
-                                    <Image className="promote-image" mode="aspectFill" src={v.image} />
+                                    <Image className={styles['promote-image']} mode="aspectFill" src={v.image} />
                                 </SwiperItem>
                             )
                         })
                     }
                 </Swiper>
             </View>
-            <View className="content">
-                <View className="title">精挑细选</View>
-                <View className="product-list">
+            <View className={styles['content']}>
+                <View className={styles['title']}>精挑细选</View>
+                <View className={styles['product-list']}>
                     {
                         records.map((product, index) => {
                             return (
-                                <View key={index} className="product-wrap" onClick={handleGoDetail.bind(this, product.id)}>
-                                    <Image className="product-image" src={product.indexImage} mode="aspectFill" />
-                                    <View className="product-info">
-                                        <View className="product-name">{product.name}</View>
-                                        <View className="product-description">{product.description}</View>
-                                        <View className="product-price">￥<Text className="price">{(product.sellingPrice / 100).toFixed(2)}</Text></View>
+                                <View key={index} className={styles['product-wrap']} onClick={handleGoDetail.bind(this, product.id)}>
+                                    <Image className={styles['product-image']} src={product.indexImage} mode="aspectFill" />
+                                    <View className={styles['product-info']}>
+                                        <View className={styles['product-name']}>{product.name}</View>
+                                        <View className={styles['product-description']}>{product.description}</View>
+                                        <View className={styles['product-price']}>￥<Text className="price">{(product.sellingPrice / 100).toFixed(2)}</Text></View>
                                     </View>
                                 </View>
                             )
                         })
                     }
                 </View>
-                <View className="bottom-text">更多商品  持续更新</View>
+                <View className={styles['bottom-text']}>更多商品  持续更新</View>
             </View>
-            <Dialog visible={dialog.visible} className="home-dialog" onClose={handleClose}>
-                <Image src={dialog.image} mode="widthFix" onClick={handleClickDialog} className="dialog-img" />
+            <Dialog visible={dialog.visible} className={styles['home-dialog']} onClose={handleClose}>
+                <Image src={dialog.image} mode="widthFix" onClick={handleClickDialog} className={styles['dialog-img']} />
             </Dialog>
         </View>
     )
