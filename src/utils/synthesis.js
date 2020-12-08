@@ -91,7 +91,7 @@ const renderMap = {
                 imageUrl: 'http://cdn.91jiekuan.com/FuWAks8AFr9u_OujPhO_Q8zhYydw',
                 width: 712,
                 height: 352,
-                offsetX: 1664,
+                offsetX: 1600,
                 offsetY: 168
             },
             {

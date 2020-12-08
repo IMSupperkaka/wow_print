@@ -39,4 +39,21 @@ export default [
             }
         ]
     },
+    {
+        name: "模版003",
+        stageInfo: {
+            width: 604,
+            height: 433,
+            filePath: 'http://cdn.91jiekuan.com/FoZQyGwVzfCqKaaMMZgdqzprw-nW',
+            thumbnail: 'http://cdn.91jiekuan.com/Fo0ZzIWEj9MnymuvMEYRq4NclTIF'
+        },
+        editArea: [
+            {
+                x: 131,
+                y: 60,
+                width: 443,
+                height: 313
+            }
+        ]
+    }
 ]

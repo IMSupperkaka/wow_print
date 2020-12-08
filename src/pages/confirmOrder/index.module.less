@@ -50,7 +50,6 @@
     .product-info-content {
       display: flex;
       padding-bottom: 23px;
-      border-bottom: 1px dashed #F2F2F2;
 
       .product-image {
         width: 128px;
@@ -83,31 +82,6 @@
           line-height: 24px;
         }
       }
-    }
-
-    .product-pay-info {
-      .product-pay-info-item {
-        display: flex;
-        justify-content: space-between;
-        font-size: 24px;
-        color: #666;
-        margin-top: 30px;
-        line-height: 24px;
-        .product-pay-info-item-value {
-            justify-content: flex-end;
-            color: #333;
-            font-weight: bold;
-        }
-        .discount-title {
-          margin-right: 16px;
-        }
-      }
-
-    //   .product-pay-info-item:last-child {
-    //     justify-content: flex-end;
-    //     color: #333;
-    //     font-weight: bold;
-    //   }
     }
 
     .submit-wrap {
@@ -166,6 +140,32 @@
         font-size: 28px;
         font-weight: bold;
       }
+    }
+  }
+  .product-pay-info {
+    .product-pay-info-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 24px;
+      color: #666;
+      margin-top: 30px;
+      line-height: 24px;
+      .product-pay-info-item-value {
+          justify-content: flex-end;
+          color: #333;
+          font-weight: bold;
+      }
+      .discount-title {
+        margin-right: 16px;
+      }
+    }
+    .product-pay-info-item-last {
+        justify-content: flex-end;
+        font-weight: bold;
+        color: #333;
+        .money {
+            color: #FF6345;
+        }
     }
   }
 }

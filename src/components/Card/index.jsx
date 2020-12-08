@@ -9,7 +9,7 @@ export default (props) => {
     <View className={classNames('wy-card-wrap', props.className)} {...props}>
       {
         props.title &&
-        <View className="wy-card-title">{ props.title }</View>
+        <View className="wy-card-title wy-hairline--bottom">{ props.title }</View>
       }
       <View className={classNames('wy-card-body', props.bodyClassName)}>
         { props.children }

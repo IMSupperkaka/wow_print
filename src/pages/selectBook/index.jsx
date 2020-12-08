@@ -220,7 +220,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                         {coverInfo.description}
                                     </View>
                                 </View>
-                                <Image src={wayin} mode="aspectFit" className={styles['wayin']} />
+                                <Image src={wayin} className={styles['wayin']} />
                             </View>
                             <UploadCrop beforeUpload={beforeUpload.bind(this, 0)} editFinish={editFinish.bind(this, 0)} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className={styles['cover-con']} />
                             <View className={styles['date-wrap']}>{ date }</View>

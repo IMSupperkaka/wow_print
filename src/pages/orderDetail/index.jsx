@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { View, Image, Button, Text } from '@tarojs/components'
 
 import styles from './index.module.less'
+import Devide from '../../components/Devide'
 import { detail, repay, cancel, receipt } from '../../services/order'
 import Base, { useDidShow } from '../../layout/Base'
 import { orderStatus } from '../../utils/map/order'
@@ -284,7 +285,7 @@ export default Base((props) => {
                         <Text>运费</Text>
                         <Text>￥{(orderDetail.shipMoney / 100).toFixed(2)}</Text>
                     </View>
-                    <View className="devide"></View>
+                    <Devide/>
                     <View className="pay-item">
                         <Text>合计</Text>
                         <Text className="total-amount">￥{totalMoney}</Text>

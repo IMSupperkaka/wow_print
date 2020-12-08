@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import classnames from 'classnames'
 import { View, Image, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
@@ -8,6 +9,7 @@ import { fix, getRouterParams } from '../../utils/utils'
 import Base, { useDidShow } from '../../layout/Base'
 import Card from '../../components/Card'
 import Pay from '../../components/Pay'
+import Devide from '../../components/Devide'
 import SafeArea from '../../components/SafeArea'
 import SelectCoupon from '../../page-components/SelectCoupon'
 import ProductList from './productList'
@@ -233,8 +235,8 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                         </View>
                     </View>
                 </View>
-                <View className="product-pay-info">
-                    <View className="product-pay-info-item">
+                <View className={styles['product-pay-info']}>
+                    <View className={styles['product-pay-info-item']}>
                         <Text>商品总价</Text>
                         <Text>￥{NaN2Zero(productMoney)}</Text>
                     </View>
@@ -245,14 +247,14 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                         render={(coupon, couponList) => {
                             return (
                                 couponList?.length > 0 &&
-                                <View className="product-pay-info-item">
+                                <View className={styles['product-pay-info-item']}>
                                     <View>
                                         <Text className="discount-title">优惠</Text>
                                         {
                                             coupon?.couponName && <Text>{coupon?.couponName}</Text>
                                         }
                                     </View>
-                                    <View className="product-pay-info-item-value">
+                                    <View className={styles['product-pay-info-item-value']}>
                                         {
                                            couponDiscount > 0 && <Text>-￥{NaN2Zero(couponDiscount)}</Text>
                                         }
@@ -265,7 +267,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                             )
                         }}
                     />
-                    <View className="product-pay-info-item">
+                    <View className={styles['product-pay-info-item']}>
                         <View>
                             <Text>运费</Text>
                             {
@@ -275,9 +277,10 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                         </View>
                         <Text>￥{shipMoney}</Text>
                     </View>
-                    <View className="product-pay-info-item">
+                    <Devide/>
+                    <View className={classnames(styles['product-pay-info-item'], styles['product-pay-info-item-last'])}>
                         <Text>小计</Text>
-                        <Text>￥{NaN2Zero(totalMoney)}</Text>
+                        <Text className={styles['money']}>￥{NaN2Zero(totalMoney)}</Text>
                     </View>
                 </View>
             </Card>

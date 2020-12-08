@@ -18,6 +18,7 @@ import tipsOnIcon from '../../../../images/icon_prompt_on@2x.png';
 import tipsOffIcon from '../../../../images/icon_prompt_off@2x.png';
 import iconFold from '../../images/icon_edit_fold@2x.png';
 import iconUnFold from '../../images/icon_edit_un_fold@2x.png';
+import bgProjection from '../../../../images/bg_projection@2x.png';
 
 const Tips = () => {
 
@@ -87,7 +88,7 @@ const StageView = (props) => {
 
     const handleOnchange = (file, fileList) => {
         if (file.status == 'done' && (activeEditAreaIndex != null || uploadIndex != null)) {
-            mutateActiveImg(file, uploadIndex);
+            mutateActiveImg(file, uploadIndex || activeEditAreaIndex);
         }
         setFileList(fileList)
     }
@@ -163,6 +164,16 @@ const StageView = (props) => {
     const goConfirmOrder = () => {
         const { dispatch } = props;
         const model = modelList[activeModelIndex];
+        const emptyList = model.editArea.filter((v) => {
+            return !v.img;
+        })
+        if (emptyList.length > 0) {
+            return Taro.showToast({
+                title: `还可添加${emptyList.length}张照片`,
+                icon: 'none',
+                duration: 1500
+            })
+        }
         const resultList = [
             {
                 ...model.editArea[0].img,
@@ -293,6 +304,7 @@ const StageView = (props) => {
                     <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-bg']} src={stageBg} />
                     <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
                 </View>
+                <Image src={bgProjection} className={styles['bg-projection']}/>
             </View>
             <View onClick={handleHideEdit} className={classnames(styles['bottom-selector'], fold && styles['fold'])}>
                 <Image onClick={toggleFold} src={fold ? iconFold : iconUnFold} className={styles['fold']} />
@@ -328,7 +340,7 @@ const StageView = (props) => {
                         }
                     </TabPanel>
                 </Tabs>
-                <View className={classnames(styles['bottom-bar'], 'wy-hairline--top')}>
+                <View className={classnames(styles['bottom-bar'])}>
                     <View>已选 {activeModel.name}</View>
                     <Button onClick={goConfirmOrder} className="radius-btn primary-btn">去定制</Button>
                 </View>
