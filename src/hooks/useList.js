@@ -45,8 +45,6 @@ export default (props) => {
                 loading: true
             }
         })
-        console.log(stateRef.current)
-        // setLoading(true);
         onLoad({
             ...page,
             current: refresh ? 1 : (page.current + 1)
