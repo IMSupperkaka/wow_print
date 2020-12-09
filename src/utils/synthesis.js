@@ -7,7 +7,7 @@
  */
 
 const renderMap = {
-    deskCalendarCover: ({ backgroundImage, cropImage, title }) => {
+    deskCalendarCover: ({ backgroundImage, originImage, title }) => {
         return [
             {
                 type: 'Image',
@@ -19,7 +19,7 @@ const renderMap = {
             },
             {
                 type: 'Image',
-                imageUrl: cropImage,
+                imageUrl: originImage,
                 width: 2216,
                 height: 1180,
                 offsetX: 172,

@@ -163,7 +163,7 @@ const DeskCalendar = (props) => {
                     imgInfo: img.imgInfo, // 图片原始信息 { width, height, ...resetInfo }
                     cropInfo: img.cropInfo, // 裁剪信息
                     originImage: img.originImage, // 图片七牛地址
-                    cropImage: cropImage,
+                    // cropImage: cropImage,
                     printNums: 1,
                     restInfo: {}, // 额外信息
                 }
@@ -174,7 +174,11 @@ const DeskCalendar = (props) => {
 
                 return {
                     ...resultItem,
-                    synthesisList: synthesis(synthesisMap.get(item.type), { ...resultItem, backgroundImage: item.backgroundImage, title: coverInfo.title })
+                    synthesisList: synthesis(synthesisMap.get(item.type), {
+                        ...resultItem,
+                        backgroundImage: item.backgroundImage,
+                        title: coverInfo.title
+                    })
                 }
             }
         })
