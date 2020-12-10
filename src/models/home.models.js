@@ -143,7 +143,8 @@ export default {
             yield put({
                 type: 'saveDialog',
                 payload: {
-                    visible: false
+                    visible: false,
+                    activeIndex: 0
                 }
             })
         }
