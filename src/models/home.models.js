@@ -27,17 +27,12 @@ export default {
             const couponJudge = yield call(judge);
             const popupList = yield call(popup);
             let canPopupList = [];
+
             yield put({
                 type: 'saveCouponJudge',
                 payload: couponJudge.data.data
             })
-            if (!couponJudge.data.data.isHaveCoupon) {
-                canPopupList.push({
-                    image: couponJudge.data.data.image,
-                    type: 'coupon'
-                })
-            }
-            
+
             if (popupList.data.data.length > 0) {
                 let moment = (new Date()).getTime();
                 let popups = popupList.data.data;
@@ -85,37 +80,35 @@ export default {
                         list: canPopupList
                     }
                 })
+            }
+
+            if (!couponJudge.data.data.isHaveCoupon) {
+                return yield put({
+                    type: 'saveDialog',
+                    payload: {
+                        visible: true,
+                        image: couponJudge.data.data.image,
+                        type: 'coupon'
+                    }
+                })
+            }
                 
-                if(canPopupList.length) {
-                    yield put({
-                        type: 'savePopup',
-                        payload: {
-                            activeIndex: 0
-                        }
-                    })
-                    yield put({
-                        type: 'saveDialog',
-                        payload: {
-                            visible: true,
-                            image: canPopupList[0]?.image,
-                            url: canPopupList[0]?.url,
-                            type: 'popup'
-                        }
-                    })
-                } else {
-                    yield put({
-                        type: 'savePopup',
-                        payload: {
-                            activeIndex: -1
-                        }
-                    })
-                    yield put({
-                        type: 'saveDialog',
-                        payload: {
-                            visible: false
-                        }
-                    })
-                }
+            if(canPopupList.length) {
+                yield put({
+                    type: 'savePopup',
+                    payload: {
+                        activeIndex: 0
+                    }
+                })
+                yield put({
+                    type: 'saveDialog',
+                    payload: {
+                        visible: true,
+                        image: canPopupList[0]?.image,
+                        url: canPopupList[0]?.url,
+                        type: 'popup'
+                    }
+                })
             }
         },
         *clickDialog({ payload = {} }, { call, put, select }) {
@@ -123,11 +116,11 @@ export default {
             const { dialog, popup } = yield select((state) => {
                 return state.home;
             })
+            if (dialog.type === 'coupon') {
+                yield call(receive);
+            }
             if (dialog.type === 'popup' && !close) {
                 dialog.url && jump(dialog.url);
-            }
-            if(popup.list?.[0]?.type == 'coupon') {
-                yield call(receive);
             }
             if (popup.activeIndex < (popup.list.length - 1)) {
                 yield put({
