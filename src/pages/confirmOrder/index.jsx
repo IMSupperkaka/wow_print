@@ -71,16 +71,11 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
             })
         },
         onFail: ({ params, response: { loanId } }) => {
-            // Taro.showToast({
-            //     title: '您的订单还未支付，请重新支付',
-            //     icon: 'none',
-            //     duration: 1000
-            // })
             Taro.redirectTo({
                 url: `/pages/result/index?type=pay_fail&id=${loanId}&money=${params.money}`
             })
         },
-        complete: () => {
+        onComplete: () => {
             Taro.eventCenter.trigger('finishOrder', goodId);
         }
     });
@@ -242,7 +237,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                     </View>
                     <SelectCoupon
                         productId={productDetail.id}
-                        defaultActiveCoupon={coupon}
+                        activeCoupon={coupon}
                         onChange={saveCoupon}
                         render={(coupon, couponList) => {
                             return (

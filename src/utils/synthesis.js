@@ -80,7 +80,7 @@ const renderMap = {
         return [
             {
                 type: 'Image',
-                imageUrl: 'http://cdn.91jiekuan.com/FoXlt8UQT99Eoiuk2NJPWdrwRTIE',
+                imageUrl: 'https://cdn.91jiekuan.com/FoXlt8UQT99Eoiuk2NJPWdrwRTIE',
                 width: 2560,
                 height: 2560,
                 offsetX: 0,
@@ -88,7 +88,7 @@ const renderMap = {
             },
             {
                 type: 'Image',
-                imageUrl: 'http://cdn.91jiekuan.com/FuWAks8AFr9u_OujPhO_Q8zhYydw',
+                imageUrl: 'https://cdn.91jiekuan.com/FuWAks8AFr9u_OujPhO_Q8zhYydw',
                 width: 712,
                 height: 352,
                 offsetX: 1600,
