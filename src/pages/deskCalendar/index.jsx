@@ -6,6 +6,7 @@ import { View, Button, Text, Image, Input } from '@tarojs/components';
 import styles from './index.module.less';
 import synthesis from '../../utils/synthesis';
 import { computeCropUrl } from '../../utils/utils';
+import imgView from '../../utils/crop';
 import Modal from '../../components/Modal';
 import UploadCrop from '../../components/UploadCrop';
 import { CropImgProvider } from '../../components/CropImg';
@@ -152,33 +153,118 @@ const DeskCalendar = (props) => {
             const size = sizeMap.get(item.type);
             if (img) {
 
-                const cropImage = computeCropUrl(img.originImage, { // 裁剪后地址
-                    contentWidth: size.width,
-                    contentHeight: size.height,
-                    ...img.imgInfo
-                }, img.cropInfo)
+                const ImgView = new imgView({
+                    src: img.originImage,
+                    width: img.imgInfo.width,
+                    height: img.imgInfo.height
+                })
 
                 const resultItem = {
                     filePath: img.filePath,
-                    imgInfo: img.imgInfo, // 图片原始信息 { width, height, ...resetInfo }
-                    cropInfo: img.cropInfo, // 裁剪信息
-                    originImage: img.originImage, // 图片七牛地址
-                    // cropImage: cropImage,
+                    imgInfo: img.imgInfo,
+                    cropInfo: img.cropInfo,
+                    originImage: img.originImage, 
                     printNums: 1,
-                    restInfo: {}, // 额外信息
+                    restInfo: {
+                        title: coverInfo.title
+                    }
                 }
 
                 if (index == 0) {
-                    resultItem.restInfo.title = coverInfo.title;
+                    return {
+                        ...resultItem,
+                        synthesisList: [
+                            {
+                                type: 'Image',
+                                imageUrl: item.backgroundImage,
+                                width: 2560,
+                                height: 1828,
+                                offsetX: 0,
+                                offsetY: 0,
+                                isBase: true
+                            },
+                            {
+                                type: 'Image',
+                                imageUrl: img.originImage,
+                                width: 2216,
+                                height: 1180,
+                                offsetX: 172,
+                                offsetY: 172,
+                                ...ImgView.crop(img.cropInfo, {
+                                    contentWidth: size.width,
+                                    contentHeight: size.height
+                                })
+                            },
+                            {
+                                type: 'Text',
+                                text: item.title,
+                                textFontFamily: "微软雅黑",
+                                offsetY: 1432,
+                                offsetX: 2560 / 2 - (72 * item.title.length / 2),
+                                textFontSize: 72,
+                                textAlignCenter: true,
+                                textColor: [102, 102, 102]
+                            }
+                        ]
+                    }
                 }
 
-                return {
-                    ...resultItem,
-                    synthesisList: synthesis(synthesisMap.get(item.type), {
+                if (item.type == 1) {
+                    return {
                         ...resultItem,
-                        backgroundImage: item.backgroundImage,
-                        title: coverInfo.title
-                    })
+                        synthesisList: [
+                            {
+                                type: 'Image',
+                                imageUrl: item.backgroundImage,
+                                width: 2560,
+                                height: 1828,
+                                offsetX: 0,
+                                offsetY: 0,
+                                isBase: true
+                            },
+                            {
+                                type: 'Image',
+                                imageUrl: img.originImage,
+                                width: 1004,
+                                height: 1320,
+                                offsetX: 172,
+                                offsetY: 316,
+                                ...ImgView.crop(img.cropInfo, {
+                                    contentWidth: size.width,
+                                    contentHeight: size.height
+                                })
+                            },
+                        ]
+                    }
+                }
+
+                if (item.type == 2) {
+                    return {
+                        ...resultItem,
+                        synthesisList: [
+                            {
+                                type: 'Image',
+                                imageUrl: item.backgroundImage,
+                                width: 2560,
+                                height: 1828,
+                                offsetX: 0,
+                                offsetY: 0,
+                                isBase: true
+                            },
+                            {
+                                type: 'Image',
+                                imageUrl: img.originImage,
+                                width: 1520,
+                                height: 864,
+                                offsetX: 172,
+                                offsetY: 316,
+                                ...ImgView.crop(img.cropInfo, {
+                                    contentWidth: size.width,
+                                    contentHeight: size.height
+                                })
+                            },
+                        ]
+                    }
                 }
             }
         })

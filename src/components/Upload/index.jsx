@@ -148,7 +148,7 @@ export default React.forwardRef((props, ref) => {
             <Dialog className="upload-dialog" title={`已上传${uploadDialogProps.doneCount}/${uploadDialogProps.totalCount}张`} visible={uploadDialogProps.visible}>
                 <View>正在拼命上传中，请耐心等待哦～</View>
             </Dialog>
-            <Canvas style={`width: 500px; height: 500px; position: fixed; left: 9999px; top: 9999px`} ref={compressRef} canvasId="compress-canvas" />
+            <Canvas style={`width: 2000px; height: 2000px; position: fixed; left: 9999px; top: 9999px`} ref={compressRef} canvasId="compress-canvas" />
         </View>
     )
 });

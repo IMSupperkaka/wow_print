@@ -20,9 +20,6 @@ export const computeCropUrl = (url, imgInfo, cropInfo) => {
         contentHeight: imgInfo.contentHeight,
         deg: rotate
     });
-
-
-
     
     const { width, height } = imgInfo;
     const scaleTranslate = imgInfo.contentWidth / editwidth;

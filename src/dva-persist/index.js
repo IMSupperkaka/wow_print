@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import Taro from '@tarojs/taro';
 
+let lastState = {};
+
 const deepState = (state) => {
     if (Object.prototype.toString.call(state).toLocaleLowerCase() === '[object object]') {
         for (let i in state) {
@@ -31,11 +33,9 @@ const defaultConfig = {
         }
     },
     onSet: (state) => {
-        return deepState(state);
+        return deepState(JSON.parse(JSON.stringify(state)));
     }
 }
-
-let lastState = {};
 
 export default (config) => {
 

@@ -15,6 +15,7 @@ import deleteIcon from '../../../images/icon_delete@2x.png'
 import lessSelectIcon from '../../../images/icon_Less_selected@2x.png'
 import lessDisabledIcon from '../../../images/icon_Less_disabled@2x.png'
 import plusSelectIcon from '../../../images/cion_plus_selected@2x.png'
+import imgView from '../../utils/crop'
 
 const SelectPic = ({ dispatch, confirmOrder }) => {
 
@@ -131,7 +132,6 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
             type: 'confirmOrder/pushConfirmOrder',
             payload: {
                 resultList: userImageList.map((v) => {
-
                     const cropImage = computeCropUrl(v.originImage, { // 裁剪后地址
                         contentWidth: v.imgInfo.width,
                         contentHeight: v.imgInfo.width / proportion,
