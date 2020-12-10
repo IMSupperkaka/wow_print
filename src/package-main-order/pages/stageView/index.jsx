@@ -183,8 +183,8 @@ const StageView = (props) => {
                     {
                         type: 'Image',
                         imageUrl: 'https://cdn.91jiekuan.com/FoXlt8UQT99Eoiuk2NJPWdrwRTIE',
-                        width: model.stageInfo.width,
-                        height: model.stageInfo.height,
+                        width: model.stageInfo.width * 3,
+                        height: model.stageInfo.height * 3,
                         offsetX: 0,
                         offsetY: 0
                     },
@@ -197,17 +197,17 @@ const StageView = (props) => {
                                 contentWidth: v.width,
                                 contentHeight: v.height
                             }, v.img.cropInfo),
-                            width: v.width,
-                            height: v.height,
-                            offsetX: v.x,
-                            offsetY: v.y
+                            width: v.width * 3,
+                            height: v.height * 3,
+                            offsetX: v.x * 3,
+                            offsetY: v.y * 3
                         }
                     }),
                     {
                         type: 'Image',
                         imageUrl: model.stageInfo.filePath,
-                        width: model.stageInfo.width,
-                        height: model.stageInfo.height,
+                        width: model.stageInfo.width * 3,
+                        height: model.stageInfo.height * 3,
                         offsetX: 0,
                         offsetY: 0
                     }

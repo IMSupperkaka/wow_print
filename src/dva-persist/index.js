@@ -31,7 +31,7 @@ const defaultConfig = {
         }
     },
     onSet: (state) => {
-        return deepState(state);
+        return deepState(JSON.parse(JSON.stringify(state)));
     }
 }
 
