@@ -43,13 +43,15 @@ class imgView {
         const cropUrl = `${this.imgInfo.src}?imageMogr2/rotate/${angel}/auto-orient/crop/!${cropContentWidth}x${cropContentHeight}a${x}a${y}`;
 
         return {
+            width: cropContentWidth,
+            height: cropContentHeight,
             cropUrl,
             rotate: angel,
             scale,
-            mirror,
+            flipType: mirror ? 1 : null,
             crop: {
-                width: contentWidth,
-                height: contentHeight,
+                width: cropContentWidth,
+                height: cropContentHeight,
                 x: x,
                 y: y
             }

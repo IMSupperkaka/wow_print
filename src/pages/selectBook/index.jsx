@@ -100,17 +100,22 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
             const content = index == 0 ? { contentWidth: 555, contentHeight: 472 } : { contentWidth: 320, contentHeight: 328.5 };
             if (img) {
 
-                const cropImage = computeCropUrl(img.originImage, { // 裁剪后地址
-                    ...content,
-                    ...img.imgInfo
-                }, img.cropInfo)
+                const ImgView = new imgView({
+                    src: img.originImage,
+                    width: img.imgInfo.width,
+                    height: img.imgInfo.height
+                })
+
+                const cropImage = ImgView.crop(img.cropInfo, {
+                    contentWidth: content.contentWidth,
+                    contentHeight: content.contentHeight
+                })
 
                 const resultItem = {
-                    // filePath: img.filePath,
                     imgInfo: img.imgInfo, // 图片原始信息 { width, height, ...resetInfo }
                     cropInfo: img.cropInfo, // 裁剪信息
                     originImage: img.originImage, // 图片七牛地址
-                    cropImage: cropImage,
+                    cropImage: cropImage.cropUrl,
                     printNums: 1,
                     restInfo: {
                         bookName: coverInfo.bookName,
@@ -118,14 +123,86 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     }
                 }
 
-                return {
-                    ...resultItem,
-                    synthesisList: synthesis(index == 0 ? 'bookCover' : 'bookPage', {
+                if (index == 0) {
+                    return {
                         ...resultItem,
-                        bookName: coverInfo.bookName,
-                        description: coverInfo.description,
-                        date: day().format('MM/DD YYYY')
-                    })
+                        synthesisList: [
+                            {
+                                type: 'Image',
+                                imageUrl: 'https://cdn.91jiekuan.com/FoXlt8UQT99Eoiuk2NJPWdrwRTIE',
+                                width: 2560,
+                                height: 2560,
+                                offsetX: 0,
+                                offsetY: 0
+                            },
+                            {
+                                type: 'Image',
+                                imageUrl: 'https://cdn.91jiekuan.com/FuWAks8AFr9u_OujPhO_Q8zhYydw',
+                                width: 712,
+                                height: 352,
+                                offsetX: 1600,
+                                offsetY: 168
+                            },
+                            {
+                                type: 'Image',
+                                imageUrl: img.originImage,
+                                offsetX: 0,
+                                offsetY: 672,
+                                ...cropImage,
+                                width: 2220,
+                                height: 1888
+                            },
+                            {
+                                type: 'Text',
+                                text: resultItem.restInfo.bookName,
+                                textFontFamily: "微软雅黑",
+                                offsetX: 176,
+                                offsetY: 264,
+                                textFontSize: 112,
+                                textColor: [51, 51, 51]
+                            },
+                            {
+                                type: 'Text',
+                                text: resultItem.restInfo.description,
+                                textFontFamily: "微软雅黑",
+                                offsetX: 176,
+                                offsetY: 448,
+                                textFontSize: 56,
+                                textColor: [51, 51, 51]
+                            },
+                            {
+                                type: 'Image',
+                                imageUrl: 'https://cdn.91daiwo.com/back.png',
+                                width: 312,
+                                height: 76,
+                                offsetX: 2064,
+                                offsetY: 2244
+                            },
+                            {
+                                type: 'Text',
+                                text: day().format('MM/DD YYYY'),
+                                textFontFamily: "微软雅黑",
+                                offsetX: 2090,
+                                offsetY: 2250,
+                                textFontSize: 48,
+                                textColor: [255, 255, 255]
+                            }
+                        ]
+                    }
+                } else {
+                    return {
+                        ...resultItem,
+                        synthesisList: [
+                            {
+                                type: 'Image',
+                                offsetX: 0,
+                                offsetY: 0,
+                                ...cropImage,
+                                width: 2560,
+                                height: 2628
+                            }
+                        ]
+                    }
                 }
             } else {
                 return null

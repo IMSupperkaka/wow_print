@@ -6,7 +6,6 @@
  * @Description: Descrip Content
  */
 import Taro from '@tarojs/taro';
-import math from './math';
 import { EDIT_WIDTH } from './picContent';
 
 const defaultCropInfo = { scale: 1, translate: [0, 0], rotate: 0, mirror: false }

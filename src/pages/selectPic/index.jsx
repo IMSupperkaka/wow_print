@@ -132,15 +132,31 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
             type: 'confirmOrder/pushConfirmOrder',
             payload: {
                 resultList: userImageList.map((v) => {
-                    const cropImage = computeCropUrl(v.originImage, { // 裁剪后地址
+
+                    const ImgView = new imgView({
+                        src: v.originImage,
+                        width: v.imgInfo.width,
+                        height: v.imgInfo.height
+                    })
+
+                    const cropImage = ImgView.crop(v.cropInfo, {
                         contentWidth: v.imgInfo.width,
                         contentHeight: v.imgInfo.width / proportion,
-                        ...v.imgInfo
-                    }, v.cropInfo)
+                    })
 
                     return {
                         ...v,
-                        cropImage
+                        cropImage: cropImage.cropUrl,
+                        synthesisList: [
+                            {
+                                type: 'Image',
+                                imageUrl: v.originImage,
+                                offsetX: 0,
+                                offsetY: 0,
+                                isBase: true,
+                                ...cropImage
+                            }
+                        ]
                     }
                 })
             }

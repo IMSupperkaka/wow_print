@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Taro from '@tarojs/taro';
 import classnames from 'classnames';
+import UAParser from 'ua-parser-js';
 import { View, Image, Text, Button } from '@tarojs/components';
 
 import styles from './index.module.less';
@@ -33,6 +34,8 @@ const usePay = (props) => {
         if (process.env.TARO_ENV != 'h5') {
             return;
         }
+
+        // import wx from 'weixin-js-sdk';
 
         const payInfo = JSON.parse(sessionStorage.getItem('pay-info') || '{}')
 
@@ -130,8 +133,9 @@ const usePay = (props) => {
                 complete: onComplete?.bind(this, payInfo)
             })
         }
+
         if (process.env.TARO_ENV === 'h5') {
-            if (payType === 'WAP') {
+            if (payType === 'WAP') { // 支付宝H5支付
                 try {
                     document.querySelector('body').removeChild(document.querySelector('[name=punchout_form]'));
                 } catch (error) {
@@ -139,7 +143,7 @@ const usePay = (props) => {
                 }
                 appendHTML(document.querySelector('body'), payData);
                 document.querySelector('[name=punchout_form]').submit();
-            } else if (payType === 'MWEB') {
+            } else if (payType === 'MWEB') { // 微信H5支付
                 const payInfo = JSON.stringify({
                     payData: payData,
                     payType: 'MWEB',
@@ -161,6 +165,13 @@ const usePay = (props) => {
                 const redirect_url = `${location.protocol}//${location.host}/pages/orderDetail/index?id=${response.loanId}&save_dva=${encodeURIComponent(JSON.stringify(saveDva))}`
                 const submitUrl = payData.mweb_url + `&redirect_url=${encodeURIComponent(redirect_url)}`;
                 formSubmit(submitUrl);
+            } else if (payType === 'HJSAPI') { // 微信内jsapi支付
+                wx.chooseWXPay({
+                    ...payData,
+                    success: function (res) {
+                        
+                    }
+                });
             }
         }
     }
@@ -189,7 +200,12 @@ const Pay = (props) => {
         let payMethod;
         if (payType == 'wechat') {
             if (process.env.TARO_ENV == 'h5') {
-                payMethod = 'MWEB';
+                const phoneInfo = new UAParser().getResult();
+                if (phoneInfo.browser.name == 'WeChat') {
+                    payMethod = 'HJSAPI';
+                } else {
+                    payMethod = 'MWEB';
+                }
             } else {
                 payMethod = 'JSAPI';
             }

@@ -14,6 +14,22 @@ export const login = (code) => {
     })
 }
 
+// 微信内登陆
+export const wechatLogin = (code) => {
+    return TaroRequest.request({
+        url: `/h5/wx/login`,
+        method: 'POST'
+    })
+}
+
+// 获取微信签名
+export const getSign = () => {
+    return TaroRequest.request({
+        url: `/app/api/wechat/OAJsapiTicket`,
+        method: 'GET'
+    })
+}
+
 export const changeToken = (data) => {
     return TaroRequest.request({
         url: `/h5/union/token`,

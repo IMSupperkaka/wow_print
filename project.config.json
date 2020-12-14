@@ -67,6 +67,14 @@
 					"id": -1,
 					"name": "pages/stageView/index",
 					"pathName": "pages/stageView/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 2,
+					"name": "pages/home/index",
+					"pathName": "pages/home/index",
+					"query": "channel=123",
 					"scene": null
 				}
 			]

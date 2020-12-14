@@ -148,9 +148,9 @@ const ImgEdit = (props) => {
                 <View className={styles['bottom-bar-left']} onClick={handleRotate}>
                     <Image className={styles['icon']} src={rotateIcon} />
                 </View>
-                {/* <View className={styles['bottom-bar-left']} onClick={handleMirror}>
+                <View className={styles['bottom-bar-left']} onClick={handleMirror}>
                     <Image className={styles['icon']} src={mirrorIcon} />
-                </View> */}
+                </View>
                 <View className={styles['bottom-bar-confirm']} onClick={confirm}>完成</View>
             </View>
         </View>

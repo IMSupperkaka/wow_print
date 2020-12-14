@@ -8,7 +8,7 @@
 import Taro from '@tarojs/taro'
 
 import { getRouterParams, getH5Params } from '../utils/utils';
-import { login, smsLogin, saveinfo, changeToken as getChangeToken } from '../services/user';
+import { login, wechatLogin, smsLogin, saveinfo, changeToken as getChangeToken } from '../services/user';
 
 export default {
     namespace: 'user',
@@ -77,6 +77,21 @@ export default {
                 payload.success && payload.success();
             } catch (error) {
                 console.log(error)   
+            }
+        },
+        *wechatLogin({ payload }, { call, put }) {
+            try {
+                const response = yield call(wechatLogin, {
+                    getInfoFlag: true,
+                    code: payload.code
+                });
+                yield put({
+                    type: 'saveUserInfo',
+                    payload: response.data.data || {}
+                })
+                payload.resolve && payload.resolve()
+            } catch (error) {
+                console.error(error)
             }
         },
         *smsLogin({ payload }, { call, put }) {

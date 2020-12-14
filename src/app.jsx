@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 import Taro from '@tarojs/taro'
 
-import Base from './layout/Base'
 import { store, app } from './dva'
 import './app.less'
 import './custom-variables.scss'

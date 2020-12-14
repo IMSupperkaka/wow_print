@@ -186,14 +186,14 @@ const DeskCalendar = (props) => {
                             {
                                 type: 'Image',
                                 imageUrl: img.originImage,
-                                width: 2216,
-                                height: 1180,
                                 offsetX: 172,
                                 offsetY: 172,
                                 ...ImgView.crop(img.cropInfo, {
                                     contentWidth: size.width,
                                     contentHeight: size.height
-                                })
+                                }),
+                                width: 2216,
+                                height: 1180
                             },
                             {
                                 type: 'Text',

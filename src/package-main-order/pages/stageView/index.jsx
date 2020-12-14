@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { View, Image, Button } from '@tarojs/components';
 
-import { computeCropUrl } from '../../../utils/utils';
 import useCrop from '../../../hooks/useCrop';
 import Upload from '../../../components/Upload';
 import Tabs from '../../../components/Tabs';
@@ -38,6 +37,57 @@ const Tips = () => {
             <Image onClick={handleToggle} className={styles['tips-icon']} src={show ? tipsOffIcon : tipsOnIcon} />
         </View>
     )
+}
+
+const buildResultList = (model) => {
+    return [
+        {
+            ...model.editArea[0].img,
+            printNums: 1,
+            synthesisList: [
+                {
+                    type: 'Image',
+                    imageUrl: 'https://cdn.91jiekuan.com/FoXlt8UQT99Eoiuk2NJPWdrwRTIE',
+                    width: model.stageInfo.width,
+                    height: model.stageInfo.height,
+                    offsetX: 0,
+                    offsetY: 0,
+                    isBase: true
+                },
+                ...model.editArea.map((v) => {
+
+                    const ImgView = new imgView({
+                        src: v.img.originImage,
+                        width: v.img.imgInfo.width,
+                        height: v.img.imgInfo.height
+                    })
+
+                    const cropImage = ImgView.crop(v.img.cropInfo, {
+                        contentWidth: v.width,
+                        contentHeight: v.height
+                    })
+
+                    return {
+                        type: 'Image',
+                        imageUrl: cropImage.cropUrl,
+                        offsetX: v.x,
+                        offsetY: v.y,
+                        ...cropImage,
+                        width: v.width,
+                        height: v.height
+                    }
+                }),
+                {
+                    type: 'Image',
+                    imageUrl: model.stageInfo.filePath,
+                    width: model.stageInfo.width,
+                    height: model.stageInfo.height,
+                    offsetX: 0,
+                    offsetY: 0
+                }
+            ]
+        }
+    ]
 }
 
 const StageView = (props) => {
@@ -143,6 +193,12 @@ const StageView = (props) => {
         setActiveEditAreaIndex(null);
     }
 
+    const handleMirror = () => {
+        mutate({
+            mirror: !mirror
+        })
+    }
+
     const handleChangePic = (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -174,50 +230,10 @@ const StageView = (props) => {
                 duration: 1500
             })
         }
-        const resultList = [
-            {
-                ...model.editArea[0].img,
-                printNums: 1,
-                restInfo: {},
-                synthesisList: [
-                    {
-                        type: 'Image',
-                        imageUrl: 'https://cdn.91jiekuan.com/FoXlt8UQT99Eoiuk2NJPWdrwRTIE',
-                        width: model.stageInfo.width,
-                        height: model.stageInfo.height,
-                        offsetX: 0,
-                        offsetY: 0
-                    },
-                    ...model.editArea.map((v) => {
-                        return {
-                            type: 'Image',
-                            imageUrl: computeCropUrl(v.img.originImage || v.img.filePath, {
-                                width: v.img.imgInfo.width,
-                                height: v.img.imgInfo.height,
-                                contentWidth: v.width,
-                                contentHeight: v.height
-                            }, v.img.cropInfo),
-                            width: v.width,
-                            height: v.height,
-                            offsetX: v.x,
-                            offsetY: v.y
-                        }
-                    }),
-                    {
-                        type: 'Image',
-                        imageUrl: model.stageInfo.filePath,
-                        width: model.stageInfo.width,
-                        height: model.stageInfo.height,
-                        offsetX: 0,
-                        offsetY: 0
-                    }
-                ]
-            }
-        ]
         dispatch({
             type: 'confirmOrder/pushConfirmOrder',
             payload: {
-                resultList
+                resultList: buildResultList(model)
             }
         })
     }
@@ -249,7 +265,6 @@ const StageView = (props) => {
                             <View {...touchProps} className={styles['crop-img-extra']} style={style.contentStyle}>
                                 <View data-behavior={['zoom', 'rotate']} className={classnames(styles['crop-extra-zoom'], mirror && styles['mirror'])} />
                                 <View className={classnames(styles['crop-extra-bottom'], mirror && styles['mirror'])}>
-                                    {/* <View onClick={handleMirror}>镜像</View> */}
                                     <View onClick={handleChangePic}>换图</View>
                                 </View>
                             </View>
