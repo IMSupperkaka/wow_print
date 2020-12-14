@@ -111,8 +111,16 @@ const usePay = (props) => {
         }
 
         if (process.env.TARO_ENV == 'h5') {
-            setVisible(true);
-            setMoney(money);
+            const phoneInfo = new UAParser().getResult();
+            if (phoneInfo.browser.name == 'WeChat') {
+                confirmPay({
+                    payType: 'HJSAPI',
+                    params: params
+                });
+            } else {
+                setVisible(true);
+                setMoney(money);
+            }
         }
     }
 
@@ -213,12 +221,7 @@ const Pay = (props) => {
         let payMethod;
         if (payType == 'wechat') {
             if (process.env.TARO_ENV == 'h5') {
-                const phoneInfo = new UAParser().getResult();
-                if (phoneInfo.browser.name == 'WeChat') {
-                    payMethod = 'HJSAPI';
-                } else {
-                    payMethod = 'MWEB';
-                }
+                payMethod = 'MWEB';
             } else {
                 payMethod = 'JSAPI';
             }
