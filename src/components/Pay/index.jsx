@@ -4,6 +4,12 @@ import classnames from 'classnames';
 import UAParser from 'ua-parser-js';
 import { View, Image, Text, Button } from '@tarojs/components';
 
+let wx;
+
+if (process.env.TARO_ENV === 'h5') {
+    wx = require('weixin-js-sdk');
+}
+
 import styles from './index.module.less';
 import Modal from '../../components/Modal';
 import Radio from '../../components/Radio';
@@ -34,8 +40,6 @@ const usePay = (props) => {
         if (process.env.TARO_ENV != 'h5') {
             return;
         }
-
-        // import wx from 'weixin-js-sdk';
 
         const payInfo = JSON.parse(sessionStorage.getItem('pay-info') || '{}')
 
@@ -168,8 +172,13 @@ const usePay = (props) => {
             } else if (payType === 'HJSAPI') { // 微信内jsapi支付
                 wx.chooseWXPay({
                     ...payData,
-                    success: function (res) {
-                        
+                    success: (res) => {
+                        if (res === 'get_brand_wcpay_request:ok') {
+                            onSuccess(payInfo)
+                        } else if (res === 'get_brand_wcpay_request:cancel' || res === 'get_brand_wcpay_request:fail') {
+                            onFail(payInfo)
+                        }
+                        onComplete(payInfo);
                     }
                 });
             }

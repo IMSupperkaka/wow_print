@@ -6,6 +6,12 @@ import UAParser from 'ua-parser-js';
 import { getSign } from '../services/user';
 import { getRouterParams } from '../utils/utils';
 
+let wx;
+
+if (process.env.TARO_ENV === 'h5') {
+    wx = require('weixin-js-sdk');
+}
+
 const buildAuthUrl = ({ appid, redirect_uri, response_type, scope, state }) => {
     return authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=${response_type}&scope=${scope}&state=${state}`;
 }
@@ -27,8 +33,6 @@ const Base = (Camp) => {
         useEffect(() => {
 
             if (process.env.TARO_ENV === 'h5') {
-
-                // import wx from 'weixin-js-sdk';
 
                 if (query.channel) {
                     Taro.setStorageSync('channel', query.channel);
