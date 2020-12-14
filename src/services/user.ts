@@ -15,10 +15,11 @@ export const login = (code) => {
 }
 
 // 微信内登陆
-export const wechatLogin = (code) => {
+export const wechatLogin = (data) => {
     return TaroRequest.request({
         url: `/h5/wx/login`,
-        method: 'POST'
+        method: 'POST',
+        data
     })
 }
 
