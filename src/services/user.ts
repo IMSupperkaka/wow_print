@@ -23,10 +23,11 @@ export const wechatLogin = (code) => {
 }
 
 // 获取微信签名
-export const getSign = () => {
+export const getSign = (params) => {
     return TaroRequest.request({
         url: `/app/api/wechat/OAJsapiTicket`,
-        method: 'GET'
+        method: 'GET',
+        params
     })
 }
 
