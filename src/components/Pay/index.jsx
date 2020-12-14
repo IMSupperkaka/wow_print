@@ -171,7 +171,11 @@ const usePay = (props) => {
                 formSubmit(submitUrl);
             } else if (payType === 'HJSAPI') { // 微信内jsapi支付
                 wx.chooseWXPay({
-                    ...payData,
+                    timestamp: payData.timestamp,
+                    nonceStr: payData.nonce_str,
+                    package: payData.pay_package,
+                    signType: 'MD5',
+                    paySign: payData.paysign,
                     success: (res) => {
                         if (res === 'get_brand_wcpay_request:ok') {
                             onSuccess(payInfo)
