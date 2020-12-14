@@ -1,11 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import lodash from 'lodash';
 import { connect } from 'react-redux';
-import { View, Button, Text, Image, Input } from '@tarojs/components';
+import { View, Text, Image, Input } from '@tarojs/components';
 
 import styles from './index.module.less';
-import synthesis from '../../utils/synthesis';
-import { computeCropUrl } from '../../utils/utils';
 import imgView from '../../utils/crop';
 import Modal from '../../components/Modal';
 import UploadCrop from '../../components/UploadCrop';

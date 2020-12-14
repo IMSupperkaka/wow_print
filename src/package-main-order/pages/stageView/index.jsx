@@ -10,6 +10,7 @@ import Tabs from '../../../components/Tabs';
 import TabPanel from '../../../components/TabPanel';
 import Transition from '../../../components/Transition';
 import CropImg from '../../../components/CropImg';
+import imgView from '../../../utils/crop';
 import styles from './index.module.less';
 import stageBg from '../../images/bg_fram@2x.png';
 import addIcon from '../../../../images/cion_add_to5@2x.png';

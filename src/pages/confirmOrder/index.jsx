@@ -9,6 +9,7 @@ import { fix, getRouterParams } from '../../utils/utils'
 import Base, { useDidShow } from '../../layout/Base'
 import Card from '../../components/Card'
 import Pay from '../../components/Pay'
+import Step from '../../components/Step'
 import Devide from '../../components/Devide'
 import SafeArea from '../../components/SafeArea'
 import SelectCoupon from '../../page-components/SelectCoupon'
@@ -25,13 +26,17 @@ const NaN2Zero = (num) => {
 
 const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
-    const { addressInfo, coupon, goodId, userImageList, loanId } = confirmOrder;
-
+    const { addressInfo, coupon, goodId, userImageList } = confirmOrder;
+    
     const [productDetail, setProductDetail] = useState({});
+    
     const [matchList, setMatchList] = useState([]);
+
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-    const { payProps, openPay, params } = Pay.usePay({
+    const [goodsNums, setGoodsNums] = useState(1);
+
+    const { payProps, openPay } = Pay.usePay({
         confirmPay: ({ payType }) => {
             return create({
                 addressId: addressInfo.id,
@@ -40,7 +45,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 goodsInfo: [
                     {
                         goodIsMaster: 1,
-                        goodsNums: 1,
+                        goodsNums: goodsNums,
                         goodId: goodId,
                         userImageList: userImageList.map((v) => {
                             return {
@@ -236,6 +241,13 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                     </View>
                 </View>
                 <View className={styles['product-pay-info']}>
+                    {
+                        [0, 2, 3, 4].includes(productDetail.category) &&
+                        <View className={styles['product-pay-info-item']}>
+                            <Text>购买数量</Text>
+                            <Step value={goodsNums} onChange={setGoodsNums}/>
+                        </View>
+                    }
                     <View className={styles['product-pay-info-item']}>
                         <Text>商品总价</Text>
                         <Text>￥{NaN2Zero(productMoney)}</Text>

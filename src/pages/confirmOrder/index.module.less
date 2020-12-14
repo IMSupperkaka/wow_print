@@ -1,6 +1,7 @@
 .index {
   padding-bottom: 100px;
   :global {
+
     .location-icon {
       width: 34px;
       height: 34px;
@@ -47,10 +48,13 @@
       }
     }
 
+    .product-info {
+        padding-bottom: 15px;
+    }
+
     .product-info-content {
       display: flex;
-      padding-bottom: 23px;
-
+      margin-bottom: 15px;
       .product-image {
         width: 128px;
         height: 128px;
@@ -146,9 +150,10 @@
     .product-pay-info-item {
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
       font-size: 24px;
       color: #666;
-      margin-top: 30px;
       line-height: 24px;
       .product-pay-info-item-value {
           justify-content: flex-end;
@@ -158,6 +163,11 @@
       .discount-title {
         margin-right: 16px;
       }
+    }
+    :global {
+        .wy-devide {
+            margin: 15px 0;
+        }
     }
     .product-pay-info-item-last {
         justify-content: flex-end;

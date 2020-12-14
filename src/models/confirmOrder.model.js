@@ -86,6 +86,9 @@ export default {
             let path = '';
 
             switch (goodInfo.category) {
+                case 0:
+                    path = `/pages/confirmOrder/index`
+                    break;
                 case 1:
                     path = `/pages/selectPic/index`
                     break;
@@ -132,10 +135,12 @@ export default {
         },
         *pushConfirmOrder({ payload }, { call, put, select }) {
 
-            yield put({
-                type: 'saveUserImageList',
-                payload: payload.resultList
-            })
+            if (payload.resultList) {
+                yield put({
+                    type: 'saveUserImageList',
+                    payload: payload.resultList
+                })
+            }
 
             list().then(({ data }) => {
                 if (data.data.length <= 0) {

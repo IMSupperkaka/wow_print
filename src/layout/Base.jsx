@@ -1,3 +1,15 @@
+/*
+ * @Author: shawn.huashiyun 
+ * @Date: 2020-12-14 19:47:38 
+ * @Last Modified by: shawn.huashiyun
+ * @Last Modified time: 2020-12-14 19:56:57
+ * @Description 为包裹了该函数的页面级组件处理登录态，渠道，props注入router，以下为该装饰器依次处理的逻辑
+ * @Description 无论登录与否 url上携带了channel参数 将会写入storage
+ * @Description 未登录时 运行环境为微信内H5时 走微信授权后重定向至首页
+ * @Description 无论登录与否 运行环境为普通H5 若url上带有changeToken字段 走联合登录并重定向至首页
+ * @Todo 所有页面级组件都需要套接该装饰器 以确保H5环境内的登录态控制
+ */
+
 import React, { useState, useEffect } from 'react';
 import Taro, { useDidShow as _useDidShow } from '@tarojs/taro';
 import { connect } from 'react-redux';
@@ -32,13 +44,11 @@ const Base = (Camp) => {
 
         useEffect(() => {
 
+            if (query.channel) {
+                Taro.setStorageSync('channel', query.channel);
+            }
+
             if (process.env.TARO_ENV === 'h5') {
-
-                if (query.channel) {
-                    Taro.setStorageSync('channel', query.channel);
-                }
-
-                const changeToken = sessionStorage.getItem('changeToken');
                 
                 const isWechatLogin = sessionStorage.getItem('wechatLogin');
 
@@ -57,7 +67,7 @@ const Base = (Camp) => {
                         return location.replace(authUrl);
                     }
 
-                    if (query.code) {
+                    if (query.code) { // 微信授权重定向后 请求微信内H5登录
                         return props.dispatch({
                             type: 'user/wechatLogin',
                             payload: {
@@ -71,11 +81,11 @@ const Base = (Camp) => {
                         })
                     }
 
-                    return getSign({
+                    return getSign({ // 获取wx jssdk config参数
                         url: location.href.split('#')[0]
                     }).then(({ data }) => {
                         wx.config({
-                            debug: true,
+                            debug: false,
                             appId: data.data.appId,
                             timestamp: data.data.timestamp,
                             nonceStr: data.data.noncestr,
@@ -87,7 +97,7 @@ const Base = (Camp) => {
 
                 }
 
-                if (query.save_dva) {
+                if (query.save_dva) { // 微信H5支付后 新开safiri后url携带的参数 将会存入dva
                     const dvaData = JSON.parse(query.save_dva);
                     if (Array.isArray(dvaData)) {
                         dvaData.map((v) => {
@@ -99,13 +109,15 @@ const Base = (Camp) => {
                     }
                 }
 
-                if (query.changeToken && changeToken != query.changeToken) {
+                if (query.changeToken) { // 若url携带交换token 请求联合登录
                     return props.dispatch({
                         type: 'user/joinLogin',
                         payload: {
                             changeToken: query.changeToken,
                             resolve: () => {
-                                setFinish(true);
+                                Taro.redirectTo({
+                                    url: '/pages/home/index'
+                                })
                             }
                         }
                     })

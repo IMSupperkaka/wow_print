@@ -50,7 +50,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
 
     const goSelectPic = () => {
 
-        if (detail.category == 0) {
+        if (query.type == 'display') {
             Taro.eventCenter.trigger('confirmSelectMatch', query.id);
             return Taro.navigateBack();
         }
@@ -79,7 +79,11 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
         }
     }
 
-    let submitBtnText = detail.category == 0 ? '确认选择' : (coupon.couponName ? '免费打印' : '立即打印');
+    let submitBtnText = coupon.couponName ? '免费打印' : '立即打印';
+
+    if (detail.category == 0) {
+        submitBtnText = '立即购买';
+    }
 
     if (detail.category == 2 || detail.category == 3) {
         submitBtnText = '立即定制';
