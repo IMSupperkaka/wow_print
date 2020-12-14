@@ -7,8 +7,7 @@ import { connect } from 'react-redux'
 import styles from './index.module.less'
 import lodash from 'lodash';
 
-import synthesis from '../../utils/synthesis';
-import { computeCropUrl } from '../../utils/utils';
+import imgView from '../../utils/crop';
 import UploadCrop from '../../components/UploadCrop';
 import { CropImgProvider } from '../../components/CropImg';
 import SelectPicModal from '../../components/SelectPicModal';
