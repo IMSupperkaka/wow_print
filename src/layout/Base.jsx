@@ -13,7 +13,7 @@ if (process.env.TARO_ENV === 'h5') {
 }
 
 const buildAuthUrl = ({ appid, redirect_uri, response_type, scope, state }) => {
-    return authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=${response_type}&scope=${scope}&state=${state}`;
+    return `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=${response_type}&scope=${scope}&state=${state}`;
 }
 
 const Base = (Camp) => {
