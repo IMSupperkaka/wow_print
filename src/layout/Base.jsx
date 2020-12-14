@@ -72,13 +72,13 @@ const Base = (Camp) => {
                     }
 
                     return getSign({
-                        url: location.href
+                        url: encodeURIComponent(location.href.split('#')[0])
                     }).then(({ data }) => {
                         wx.config({
                             debug: true,
                             appId: data.data.appId,
                             timestamp: data.data.timestamp,
-                            nonceStr: data.data.nonceStr,
+                            nonceStr: data.data.noncestr,
                             signature: data.data.signature,
                             jsApiList: ['chooseWXPay']
                         });
