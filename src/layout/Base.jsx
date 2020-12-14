@@ -72,7 +72,7 @@ const Base = (Camp) => {
                     }
 
                     return getSign({
-                        url: encodeURIComponent(location.href.split('#')[0])
+                        url: location.href.split('#')[0]
                     }).then(({ data }) => {
                         wx.config({
                             debug: true,
