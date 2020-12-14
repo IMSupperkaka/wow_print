@@ -64,7 +64,7 @@ const Base = (Camp) => {
                                 code: query.code,
                                 resolve: () => {
                                     Taro.redirectTo({
-                                        url: 'pages/home/index'
+                                        url: '/pages/home/index'
                                     })
                                 }
                             }
