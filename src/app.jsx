@@ -17,7 +17,7 @@ class App extends Component {
         dispatch({
             type: 'user/login',
             payload: {
-                channel: props?.channel,
+                channel: props?.query?.channel,
                 success: () => {
                     dispatch({
                         type: 'home/getDialog'
