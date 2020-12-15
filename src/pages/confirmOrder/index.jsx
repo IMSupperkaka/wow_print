@@ -175,7 +175,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
     const freeShipMoney = fix(addressInfo.freeShippingMoney, 2);
     let shipMoney = fix(addressInfo.shipMoney, 2);
-    const picNum = productDetail.category == 1 ? userImageList.reduce((count, v) => { return count + v.printNums }, 0) : 1;
+    const picNum = productDetail.category == 1 ? userImageList.reduce((count, v) => { return count + v.printNums }, 0) : goodsNums;
     const discountNum = productDetail.category == 1 ? (coupon.couponFreeNums || 0) : 0;
 
     // 商品总价

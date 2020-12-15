@@ -37,6 +37,12 @@ const initModelList = (modelList, imgList) => {
     })
 }
 
+const isEmptyAddress = () => {
+    return list().then(({ data }) => {
+        return data.data.length <= 0;
+    })
+}
+
 export default {
     namespace: 'confirmOrder',
     state: {
@@ -54,7 +60,7 @@ export default {
     },
 
     effects: {
-        *pushSeletPage({ payload }, { put }) {
+        *pushSeletPage({ payload }, { put, call }) {
             const { goodInfo, portfolioId, userImageList, stageFileList, goConfirmOrder = false } = payload;
 
             yield put({
@@ -72,22 +78,16 @@ export default {
                 payload: userImageList || []
             })
 
-            if (goodInfo.category == 4) {
-                yield put({
-                    type: 'saveStageFileList',
-                    payload: stageFileList
-                })
-                yield put({
-                    type: 'saveStageModelList',
-                    payload: initModelList(defaultModelList, stageFileList)
-                })
-            }
-
             let path = '';
 
             switch (goodInfo.category) {
                 case 0:
-                    path = `/pages/confirmOrder/index`
+                    const isEmpty = yield call(isEmptyAddress);
+                    if (isEmpty) {
+                        path = `/pages/addressEdit/index?type=add&redirect=${encodeURIComponent('/pages/confirmOrder/index')}`
+                    } else {
+                        path = `/pages/confirmOrder/index`
+                    }
                     break;
                 case 1:
                     path = `/pages/selectPic/index`
@@ -99,6 +99,14 @@ export default {
                     path = `/pages/deskCalendar/index`
                     break;
                 case 4:
+                    yield put({
+                        type: 'saveStageFileList',
+                        payload: stageFileList
+                    })
+                    yield put({
+                        type: 'saveStageModelList',
+                        payload: initModelList(defaultModelList, stageFileList)
+                    })
                     path = `/package-main-order/pages/stageView/index`
             }
 
@@ -142,8 +150,8 @@ export default {
                 })
             }
 
-            list().then(({ data }) => {
-                if (data.data.length <= 0) {
+            isEmptyAddress().then((isEmpty) => {
+                if (isEmpty) {
                     Taro.navigateTo({
                         url: `/pages/addressEdit/index?type=add&redirect=${encodeURIComponent('/pages/confirmOrder/index')}`
                     })
