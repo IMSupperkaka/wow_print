@@ -11,7 +11,7 @@ import couponArrow from '../../../images/coin_jump@3x.png';
 
 export default (props) => {
 
-    const { productId, defaultActiveCoupon, render, onChange: propsOnChange } = props;
+    const { productId, activeCoupon, render, onChange: propsOnChange } = props;
 
     const [isOpened, setIsOpened] = useState(false);
 
@@ -19,10 +19,7 @@ export default (props) => {
 
     const [couponList, setCouponList] = useState([]);
 
-    const [activeCoupon, setActiveCoupon] = useState({});
-
     const onChange = (coupon) => {
-        setActiveCoupon(coupon);
         propsOnChange(coupon);
     }
 
@@ -30,16 +27,7 @@ export default (props) => {
         Taro.eventCenter.on('finishOrder', (id) => {
             getOrderDetail(id);
         })
-        // return () => {
-        //     Taro.eventCenter.off('finishOrder');
-        // }
     }, [])
-
-    useEffect(() => {
-        if (defaultActiveCoupon) {
-            setActiveCoupon(defaultActiveCoupon);
-        }
-    }, [defaultActiveCoupon])
 
     useEffect(() => {
         if (productId) {

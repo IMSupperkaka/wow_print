@@ -5,7 +5,7 @@ export default [
             width: 604,
             height: 433,
             filePath: 'https://cdn.91jiekuan.com/FjApI7ErjIw6MXZ2SjFEo0ZUtZfj',
-            thumbnail: 'http://cdn.91jiekuan.com/Fj41F2kXUGWe7Yo8Z3fpHdeh6G7e'
+            thumbnail: 'https://cdn.91jiekuan.com/Fj41F2kXUGWe7Yo8Z3fpHdeh6G7e'
         },
         editArea: [
             {
@@ -21,8 +21,8 @@ export default [
         stageInfo: {
             width: 604,
             height: 433,
-            filePath: 'http://cdn.91jiekuan.com/Fjy7Ma7VAY2ltkRqnDMjqcuTxCWj',
-            thumbnail: 'http://cdn.91jiekuan.com/FkK379R0guIw4oaG3quxMOq9rRlC'
+            filePath: 'https://cdn.91jiekuan.com/Fjy7Ma7VAY2ltkRqnDMjqcuTxCWj',
+            thumbnail: 'https://cdn.91jiekuan.com/FkK379R0guIw4oaG3quxMOq9rRlC'
         },
         editArea: [
             {
@@ -44,8 +44,8 @@ export default [
         stageInfo: {
             width: 604,
             height: 433,
-            filePath: 'http://cdn.91jiekuan.com/FoZQyGwVzfCqKaaMMZgdqzprw-nW',
-            thumbnail: 'http://cdn.91jiekuan.com/Fo0ZzIWEj9MnymuvMEYRq4NclTIF'
+            filePath: 'https://cdn.91jiekuan.com/FoZQyGwVzfCqKaaMMZgdqzprw-nW',
+            thumbnail: 'https://cdn.91jiekuan.com/Fo0ZzIWEj9MnymuvMEYRq4NclTIF'
         },
         editArea: [
             {
@@ -61,8 +61,8 @@ export default [
         stageInfo: {
             width: 604,
             height: 433,
-            filePath: 'http://cdn.91jiekuan.com/Ft8B1QF9kcgl0HryFweHY36Ak7ws',
-            thumbnail: 'http://cdn.91jiekuan.com/FhAp77-KTrVci4C56kG6zWqywCCz'
+            filePath: 'https://cdn.91jiekuan.com/Ft8B1QF9kcgl0HryFweHY36Ak7ws',
+            thumbnail: 'https://cdn.91jiekuan.com/FhAp77-KTrVci4C56kG6zWqywCCz'
         },
         editArea: [
             {
@@ -78,8 +78,8 @@ export default [
         stageInfo: {
             width: 604,
             height: 433,
-            filePath: 'http://cdn.91jiekuan.com/FgZAFfjYapKsmf543PEOxB-qr1gc',
-            thumbnail: 'http://cdn.91jiekuan.com/FiF4yrYQW3qBOfhOtZyV8hYOa-Hv'
+            filePath: 'https://cdn.91jiekuan.com/FgZAFfjYapKsmf543PEOxB-qr1gc',
+            thumbnail: 'https://cdn.91jiekuan.com/FiF4yrYQW3qBOfhOtZyV8hYOa-Hv'
         },
         editArea: [
             {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Taro, { useShareAppMessage, useReady } from '@tarojs/taro'
 import { connect } from 'react-redux'
 import { View, Image, Swiper, SwiperItem } from '@tarojs/components'
@@ -20,7 +20,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     const [detail, setDetail] = useState({});
     const [current, setCurrent] = useState(0);
 
-    useReady(() => {
+    useEffect(() => {
         const query = Taro.getCurrentInstance().router.params;
         setQuery(query);
         getOrderDetail(query.id);
@@ -29,7 +29,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 type: 'confirmOrder/initConfirmOrder'
             })
         }
-    })
+    }, [])
 
     useShareAppMessage();
 
@@ -125,7 +125,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 </View>
                 <View className={styles['product-sale']}>销量 {detail.sales}</View>
             </View>
-            <SelectCoupon productId={query.id} defaultActiveCoupon={coupon} onChange={saveCoupon}></SelectCoupon>
+            <SelectCoupon productId={query.id} activeCoupon={coupon} onChange={saveCoupon}></SelectCoupon>
             <View className={styles['product-detail']}>
                 <View className={styles['detail-title']}>商品详情</View>
                 {
