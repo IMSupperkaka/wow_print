@@ -25,7 +25,6 @@ export const useCountDown = (props) => {
     const { msec, payLoad: { type, isUnReset } = {} } = props;
 
     const initTime = getSeconds(msec, type);
-    console.log(initTime)
     
     const [time, setTime] = useState(initTime);
 
@@ -33,7 +32,6 @@ export const useCountDown = (props) => {
 
     const onStart = (callback) => {
         timer.current = setInterval(() => {
-            console.log(time, initTime)
             setTime((time) => {
                 return --time;
             })
@@ -54,7 +52,6 @@ export const useCountDown = (props) => {
     }
 
     useEffect(() => {
-        console.log(time)
         if(timer.current && time <= 0) {
             onEnd()
         }

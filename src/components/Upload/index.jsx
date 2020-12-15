@@ -1,9 +1,11 @@
-import React, { useState, useRef, useEffect, useImperativeHandle } from 'react';
+import React, { useState, useRef, useImperativeHandle } from 'react';
 import Taro from '@tarojs/taro';
+import lodash from 'lodash';
 import { View, Canvas } from '@tarojs/components';
 
 import './index.less';
 import Dialog from '../Dialog';
+import useNewId from '../../hooks/useNewId';
 import compressImg from '../../utils/compress/index';
 import useFreshState from '../../hooks/useFreshState';
 import { uploadFile } from '../../services/upload';
@@ -19,12 +21,12 @@ const getImageInfo = async (filePath) => {
     })
 }
 
-const uploadSync = async (file) =>{
+const uploadSync = async (file, canvasId) =>{
     const imgInfo = await getImageInfo(file.filePath);
     const response = await uploadFile({
         filePath: file.filePath
     })
-    const filePath = await compressImg({ canvasId: 'compress-canvas', filePath: file.filePath, width: imgInfo.width, height: imgInfo.height });
+    const filePath = await compressImg({ canvasId: canvasId, filePath: file.filePath, width: imgInfo.width, height: imgInfo.height });
     return {
         file: {
             ...file,
@@ -39,14 +41,14 @@ export default React.forwardRef((props, ref) => {
 
     const { defaultFileList = [], fileList, beforeUpload, limit = 1, onChange: onChangeProp } = props;
 
-    const compressRef = useRef();
-
     const [uploadList, setUploadList] = useState([]);
 
     const [getFileList, setFileList] = useFreshState(
         fileList || defaultFileList || [],
         fileList
     );
+
+    const { id: canvasId } = useNewId('compress-canvas-');
 
     useImperativeHandle(ref, () => {
         return {
@@ -60,7 +62,6 @@ export default React.forwardRef((props, ref) => {
     }
 
     const progress = (item, res, imgInfo, status) => {
-        console.log(status)
         const nextFileList = getFileList().concat();
         const index = nextFileList.findIndex((v) => {
             return v.uid == item.uid;
@@ -118,11 +119,10 @@ export default React.forwardRef((props, ref) => {
                 for (let i = 0; i < uploadList.length; i++) {
                     progress(uploadList[i], null, null, 'uploading');
                     try {
-                        const { file, imgInfo, response } = await uploadSync(uploadList[i]);
+                        const { file, imgInfo, response } = await uploadSync(uploadList[i], canvasId);
                         progress(file, response, imgInfo, 'done');
                     } catch (error) {
                         progress(uploadList[i], null, null, 'fail');
-                        console.log('error')
                         console.log(error)
                     }
                 }
@@ -148,7 +148,7 @@ export default React.forwardRef((props, ref) => {
             <Dialog className="upload-dialog" title={`已上传${uploadDialogProps.doneCount}/${uploadDialogProps.totalCount}张`} visible={uploadDialogProps.visible}>
                 <View>正在拼命上传中，请耐心等待哦～</View>
             </Dialog>
-            <Canvas style={`width: 2000px; height: 2000px; position: fixed; left: 9999px; top: 9999px`} ref={compressRef} canvasId="compress-canvas" />
+            <Canvas style={`width: 2000px; height: 2000px; position: fixed; left: 9999px; top: 9999px`} canvasId={canvasId} />
         </View>
     )
-});
+});;

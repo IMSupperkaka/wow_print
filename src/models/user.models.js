@@ -133,7 +133,6 @@ export default {
             }
         },
         saveToken(state, { payload }) {
-            console.log(payload)
             Taro.setStorageSync('token', payload);
             return {
                 ...state,

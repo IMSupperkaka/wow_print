@@ -35,17 +35,13 @@ const modelList = [
 
 const SelectBook = ({ dispatch, confirmOrder }) => {
 
-    console.log('render-view');
-
-    const { userImageList, goodId, portfolioId } = confirmOrder;
+    const { userImageList } = confirmOrder;
 
     const [activeIndex, setActiveIndex] = useState(0);
     const activeRef = useRef(0);
     useEffect(() => {
         activeRef.current = activeIndex;
     }, [activeIndex])
-
-    const [insertHeight, setInsertHeight] = useState();
 
     const [visible, setVisible] = useState(false);
 
@@ -132,7 +128,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 width: 2560,
                                 height: 2560,
                                 offsetX: 0,
-                                offsetY: 0
+                                offsetY: 0,
+                                isBase: true
                             },
                             {
                                 type: 'Image',
@@ -197,6 +194,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 offsetX: 0,
                                 offsetY: 0,
                                 imageUrl: img.originImage,
+                                isBase: true,
                                 ...cropImage,
                                 width: 2560,
                                 height: 2628
@@ -215,7 +213,17 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
             originImage: 'https://cdn.91daiwo.com/back_cover.jpg',
             cropImage: 'https://cdn.91daiwo.com/back_cover.jpg',
             printNums: 1,
-            synthesisList: [],
+            synthesisList: [
+                {
+                    type: 'Image',
+                    offsetX: 0,
+                    offsetY: 0,
+                    imageUrl: 'https://cdn.91daiwo.com/back_cover.jpg',
+                    isBase: true,
+                    width: 2560,
+                    height: 2628
+                }
+            ],
             restInfo: {
                 isBack: true
             }

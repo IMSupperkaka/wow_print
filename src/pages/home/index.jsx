@@ -80,10 +80,7 @@ const Home = (props) => {
 
     const handleGoDetail = (id) => {
         Taro.navigateTo({
-            url: `/pages/productDetail/index?id=${id}`,
-            complete: () => {
-                console.log(1)
-            }
+            url: `/pages/productDetail/index?id=${id}`
         })
     }
 
@@ -137,7 +134,7 @@ const Home = (props) => {
                     {
                         homeData.indexBigImageList.map((v) => {
                             return (
-                                <SwiperItem key={v.id} onClick={() => { console.log(111);jump(v.url) }}>
+                                <SwiperItem key={v.id} onClick={() => { jump(v.url) }}>
                                     <Image className={styles['promote-image']} mode="aspectFill" src={v.image} />
                                 </SwiperItem>
                             )

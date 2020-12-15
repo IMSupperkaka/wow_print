@@ -42,7 +42,6 @@ export default React.memo((props) => {
     }
 
     const handleIgnore = () => {
-        console.log(111)
         const cloneList = [...fileList];
         cloneList[showIndex].cropInfo = {
             ...currentImg.cropInfo,
