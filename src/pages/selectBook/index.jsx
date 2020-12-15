@@ -196,6 +196,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 type: 'Image',
                                 offsetX: 0,
                                 offsetY: 0,
+                                imageUrl: img.originImage,
                                 ...cropImage,
                                 width: 2560,
                                 height: 2628
