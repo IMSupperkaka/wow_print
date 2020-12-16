@@ -47,7 +47,7 @@ const buildResultList = (model) => {
             printNums: 1,
             synthesisList: [
                 {
-                    type: 'Image',
+                    type: 'IMAGE',
                     imageUrl: 'https://cdn.91jiekuan.com/FoXlt8UQT99Eoiuk2NJPWdrwRTIE',
                     width: model.stageInfo.width,
                     height: model.stageInfo.height,
@@ -69,7 +69,7 @@ const buildResultList = (model) => {
                     })
 
                     return {
-                        type: 'Image',
+                        type: 'IMAGE',
                         imageUrl: cropImage.cropUrl,
                         offsetX: v.x,
                         offsetY: v.y,
@@ -79,7 +79,7 @@ const buildResultList = (model) => {
                     }
                 }),
                 {
-                    type: 'Image',
+                    type: 'IMAGE',
                     imageUrl: model.stageInfo.filePath,
                     width: model.stageInfo.width,
                     height: model.stageInfo.height,

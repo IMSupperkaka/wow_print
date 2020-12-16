@@ -123,7 +123,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                         ...resultItem,
                         synthesisList: [
                             {
-                                type: 'Image',
+                                type: 'IMAGE',
                                 imageUrl: 'https://cdn.91jiekuan.com/FoXlt8UQT99Eoiuk2NJPWdrwRTIE',
                                 width: 2560,
                                 height: 2560,
@@ -132,7 +132,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 isBase: true
                             },
                             {
-                                type: 'Image',
+                                type: 'IMAGE',
                                 imageUrl: 'https://cdn.91jiekuan.com/FuWAks8AFr9u_OujPhO_Q8zhYydw',
                                 width: 712,
                                 height: 352,
@@ -140,7 +140,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 offsetY: 168
                             },
                             {
-                                type: 'Image',
+                                type: 'IMAGE',
                                 imageUrl: img.originImage,
                                 offsetX: 0,
                                 offsetY: 672,
@@ -149,7 +149,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 height: 1888
                             },
                             {
-                                type: 'Text',
+                                type: 'TEXT',
                                 text: resultItem.restInfo.bookName,
                                 textFontFamily: "微软雅黑",
                                 offsetX: 176,
@@ -158,7 +158,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 textColor: [51, 51, 51]
                             },
                             {
-                                type: 'Text',
+                                type: 'TEXT',
                                 text: resultItem.restInfo.description,
                                 textFontFamily: "微软雅黑",
                                 offsetX: 176,
@@ -167,7 +167,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 textColor: [51, 51, 51]
                             },
                             {
-                                type: 'Image',
+                                type: 'IMAGE',
                                 imageUrl: 'https://cdn.91daiwo.com/back.png',
                                 width: 312,
                                 height: 76,
@@ -175,7 +175,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                                 offsetY: 2244
                             },
                             {
-                                type: 'Text',
+                                type: 'TEXT',
                                 text: day().format('MM/DD YYYY'),
                                 textFontFamily: "微软雅黑",
                                 offsetX: 2090,
@@ -190,7 +190,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                         ...resultItem,
                         synthesisList: [
                             {
-                                type: 'Image',
+                                type: 'IMAGE',
                                 offsetX: 0,
                                 offsetY: 0,
                                 imageUrl: img.originImage,
@@ -215,7 +215,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
             printNums: 1,
             synthesisList: [
                 {
-                    type: 'Image',
+                    type: 'IMAGE',
                     offsetX: 0,
                     offsetY: 0,
                     imageUrl: 'https://cdn.91daiwo.com/back_cover.jpg',

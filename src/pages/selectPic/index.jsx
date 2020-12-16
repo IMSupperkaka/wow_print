@@ -149,7 +149,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                         cropImage: cropImage.cropUrl,
                         synthesisList: [
                             {
-                                type: 'Image',
+                                type: 'IMAGE',
                                 imageUrl: v.originImage,
                                 offsetX: 0,
                                 offsetY: 0,

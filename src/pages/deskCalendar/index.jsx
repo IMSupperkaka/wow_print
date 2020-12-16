@@ -173,7 +173,7 @@ const DeskCalendar = (props) => {
                         ...resultItem,
                         synthesisList: [
                             {
-                                type: 'Image',
+                                type: 'IMAGE',
                                 imageUrl: item.backgroundImage,
                                 width: 2560,
                                 height: 1828,
@@ -182,7 +182,7 @@ const DeskCalendar = (props) => {
                                 isBase: true
                             },
                             {
-                                type: 'Image',
+                                type: 'IMAGE',
                                 imageUrl: img.originImage,
                                 offsetX: 172,
                                 offsetY: 172,
@@ -194,7 +194,7 @@ const DeskCalendar = (props) => {
                                 height: 1180
                             },
                             {
-                                type: 'Text',
+                                type: 'TEXT',
                                 text: item.title,
                                 textFontFamily: "微软雅黑",
                                 offsetY: 1432,
@@ -212,7 +212,7 @@ const DeskCalendar = (props) => {
                         ...resultItem,
                         synthesisList: [
                             {
-                                type: 'Image',
+                                type: 'IMAGE',
                                 imageUrl: item.backgroundImage,
                                 width: 2560,
                                 height: 1828,
@@ -221,7 +221,7 @@ const DeskCalendar = (props) => {
                                 isBase: true
                             },
                             {
-                                type: 'Image',
+                                type: 'IMAGE',
                                 imageUrl: img.originImage,
                                 width: 1004,
                                 height: 1320,
@@ -241,7 +241,7 @@ const DeskCalendar = (props) => {
                         ...resultItem,
                         synthesisList: [
                             {
-                                type: 'Image',
+                                type: 'IMAGE',
                                 imageUrl: item.backgroundImage,
                                 width: 2560,
                                 height: 1828,
@@ -250,7 +250,7 @@ const DeskCalendar = (props) => {
                                 isBase: true
                             },
                             {
-                                type: 'Image',
+                                type: 'IMAGE',
                                 imageUrl: img.originImage,
                                 width: 1520,
                                 height: 864,
