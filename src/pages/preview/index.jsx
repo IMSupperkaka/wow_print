@@ -31,9 +31,7 @@ const Preview = () => {
         setCurrent(e.detail.current);
     }
 
-    const previewList = (orderDetail?.goodsInfo?.[0]?.printImageList || []).filter((v) => {
-        return !v?.restInfo?.isBack;
-    })
+    const previewList = orderDetail?.goodsInfo?.[0]?.printImageList;
 
     return (
         <View className="page-container">
@@ -49,7 +47,7 @@ const Preview = () => {
                                 <SwiperItem className="preview-item" key={v.id}>
                                     <View className="preview-image-wrap">
                                         <Text className="print-nums">打印{ v.printNums }张</Text>
-                                        <Image className="preview-image" mode="widthFix" src={v.synthesisImage || v.cropImage} />
+                                        <Image className="preview-image" mode="widthFix" src={v} />
                                         <View className="pagenation">
                                             {index + 1}/{previewList.length}
                                         </View>

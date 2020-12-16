@@ -240,7 +240,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                         [0, 2, 3, 4].includes(productDetail.category) &&
                         <View className={styles['product-pay-info-item']}>
                             <Text>购买数量</Text>
-                            <Step value={goodsNums} onChange={setGoodsNums}/>
+                            <Step value={goodsNums} max={productDetail.stock == null ? Infinity : productDetail.stock} onChange={setGoodsNums}/>
                         </View>
                     }
                     <View className={styles['product-pay-info-item']}>

@@ -86,7 +86,7 @@ export default ({ list = [], onChange: propOnChange, rowSelection = defaultRowSe
                         </View>
                         <View className="product-price">
                             <View>￥{fix(product.sellingPrice, 2)}</View>
-                            <Step value={product.saleNum} onChange={(value) => { handleChangeNum(index, value) }} />
+                            <Step value={product.saleNum} max={product.stock == null ? Infinity : product.stock} onChange={(value) => { handleChangeNum(index, value) }} />
                         </View>
                     </View>
                 </View>
