@@ -5,12 +5,11 @@ import { View, Image, Text } from '@tarojs/components'
 import Tabs from '../../components/Tabs'
 import TabPanel from '../../components/TabPanel'
 import OrderList from './OrderList'
+import Base from '../../layout/Base'
 
-export default (props) => {
+export default Base((props) => {
 
-    const query = Taro.getCurrentInstance().router.params;
-
-    const [current, setCurrent] = useState(query?.current || 0);
+    const [current, setCurrent] = useState(props.router.query?.current || 0);
 
     const onChange = (current) => {
         setCurrent(current);
@@ -43,4 +42,4 @@ export default (props) => {
             </Tabs>
         </View>
     )
-}
+})

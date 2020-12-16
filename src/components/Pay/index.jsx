@@ -185,13 +185,13 @@ const usePay = (props) => {
                     signType: 'MD5',
                     paySign: payData.paysign,
                     success: (res) => {
-                        alert(res);
-                        if (res === 'get_brand_wcpay_request:ok') {
-                            onSuccess(payInfo)
-                        } else if (res === 'get_brand_wcpay_request:cancel' || res === 'get_brand_wcpay_request:fail') {
-                            onFail(payInfo)
-                        }
-                        onComplete(payInfo);
+                        onSuccess(payInfo)
+                    },
+                    fail: () => {
+                        onFail(payInfo)
+                    },
+                    cancel: () => {
+                        onFail(payInfo)
                     }
                 });
             }
