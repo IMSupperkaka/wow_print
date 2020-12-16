@@ -70,7 +70,7 @@ const buildResultList = (model) => {
 
                     return {
                         type: 'IMAGE',
-                        imageUrl: cropImage.cropUrl,
+                        imageUrl: v.img.originImage,
                         offsetX: v.x,
                         offsetY: v.y,
                         ...cropImage,
