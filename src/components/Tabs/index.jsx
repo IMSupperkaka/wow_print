@@ -10,6 +10,7 @@ export default (props) => {
     const { current, onChange } = props;
     const [enableScroll, setEnableScroll] = useState(true);
     const [screenWidth, setScreenWidth] = useState(0);
+    const [loadList, setLoadList] = useState([]);
     const [dx, setDx] = useState(0);
     const [left, setLeft] = useState(0);
 
@@ -53,7 +54,9 @@ export default (props) => {
         if (child.type) {
             return (
                 <SwiperItem>
-                  {React.cloneElement(child)}
+                    {
+                        React.cloneElement(child)
+                    }
                 </SwiperItem>
             )
         }
@@ -62,11 +65,11 @@ export default (props) => {
     return (
         <View>
             <View className="wy-tabs__wrap">
-                { TabList }
+                {TabList}
                 <View className="wy-tabs__line" style={{ transitionDuration: transitionDuration, transform: `translateX(${translateX}px) translateX(-50%)` }}></View>
             </View>
             <Swiper current={current} className="wy-tabs__content" onChange={handleOnChange} onAnimationFinish={onAnimationFinish} onTransition={onTransition}>
-                { TabPanel }
+                {TabPanel}
             </Swiper>
         </View>
     )

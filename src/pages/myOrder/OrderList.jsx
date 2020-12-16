@@ -45,6 +45,7 @@ export default (props) => {
     });
 
     useEffect(() => {
+        onLoad();
         Taro.eventCenter.on('updateOrderStatus', (id) => {
             updateOrderStatus(id);
         })
@@ -53,11 +54,12 @@ export default (props) => {
         }
     }, [])
 
-    useEffect(() => {
-        if (props.active) {
-            onLoad();
-        }
-    }, [props.active])
+    // useEffect(() => {
+    //     if (props.active) {
+    //         console.log(1)
+    //         onLoad();
+    //     }
+    // }, [props.active])
 
     const onLoad = (refresh = false) => {
         if (!refresh && isFinish) {
