@@ -167,6 +167,12 @@ export default Base((props) => {
             })
         }
 
+        if (orderDetail.goodsInfo[0].goodType == 2) {
+            return Taro.navigateTo({
+                url: `/pages/productDetail/index?id=${orderDetail.goodsInfo[0].goodId}`
+            })
+        }
+
         Taro.navigateTo({
             url: `/pages/preview/index?id=${router.query.id}`
         })

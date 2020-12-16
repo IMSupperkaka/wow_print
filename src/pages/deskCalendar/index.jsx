@@ -195,10 +195,10 @@ const DeskCalendar = (props) => {
                             },
                             {
                                 type: 'TEXT',
-                                text: item.title,
+                                text: coverInfo.title,
                                 textFontFamily: "微软雅黑",
                                 offsetY: 1432,
-                                offsetX: 2560 / 2 - (72 * item.title.length / 2),
+                                offsetX: 2560 / 2 - (72 * coverInfo.title.length / 2),
                                 textFontSize: 72,
                                 textAlignCenter: true,
                                 textColor: [102, 102, 102]
@@ -223,14 +223,14 @@ const DeskCalendar = (props) => {
                             {
                                 type: 'IMAGE',
                                 imageUrl: img.originImage,
-                                width: 1004,
-                                height: 1320,
                                 offsetX: 172,
                                 offsetY: 316,
                                 ...ImgView.crop(img.cropInfo, {
                                     contentWidth: size.width,
                                     contentHeight: size.height
-                                })
+                                }),
+                                width: 1004,
+                                height: 1320
                             },
                         ]
                     }
@@ -252,14 +252,14 @@ const DeskCalendar = (props) => {
                             {
                                 type: 'IMAGE',
                                 imageUrl: img.originImage,
-                                width: 1520,
-                                height: 864,
                                 offsetX: 172,
                                 offsetY: 316,
                                 ...ImgView.crop(img.cropInfo, {
                                     contentWidth: size.width,
                                     contentHeight: size.height
-                                })
+                                }),
+                                width: 1520,
+                                height: 864
                             },
                         ]
                     }

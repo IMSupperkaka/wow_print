@@ -31,7 +31,7 @@ const Preview = () => {
         setCurrent(e.detail.current);
     }
 
-    const previewList = (orderDetail?.goodsInfo?.[0]?.userImageList || []).filter((v) => {
+    const previewList = (orderDetail?.goodsInfo?.[0]?.printImageList || []).filter((v) => {
         return !v?.restInfo?.isBack;
     })
 
