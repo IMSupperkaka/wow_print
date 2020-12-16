@@ -38,11 +38,6 @@ export default (props) => {
             })
         },
         onFail: ({ params }) => {
-            // Taro.showToast({
-            //     title:'您的订单还未支付，请重新支付',
-            //     icon:'none',
-            //     duration:1000
-            // })
             Taro.redirectTo({
                 url: `/pages/result/index?type=pay_fail&id=${params.id}&money=${params.money}`
             })

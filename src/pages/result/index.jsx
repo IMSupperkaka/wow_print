@@ -48,7 +48,7 @@ export default () => {
     });
 
     const goHome = () => {
-        Taro.switchTab({
+        Taro.reLaunch({
             url: '/pages/home/index'
         })
     }
