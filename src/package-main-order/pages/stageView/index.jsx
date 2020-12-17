@@ -323,7 +323,11 @@ const StageView = (props) => {
                             )
                         })
                     }
-                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-bg']} src={activeModel.stageInfo.bgPath} />
+                    <Image style={{
+                        width: Taro.pxTransform(activeModel.stageInfo.width, 750),
+                        height: Taro.pxTransform(activeModel.stageInfo.height, 750),
+                        zIndex: activeModel.stageInfo.bgCover ? 4 : 1 
+                    }} className={styles['edit-stage-bg']} src={activeModel.stageInfo.bgPath} />
                     <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
                 </View>
                 <Image src={bgProjection} className={styles['bg-projection']}/>
