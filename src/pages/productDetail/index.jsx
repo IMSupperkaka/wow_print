@@ -141,7 +141,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
             <SafeArea>
                 {({ bottom }) => {
                     return (
-                        detail.category == 4 ?
+                        [4, 5].includes(detail.category) ?
                         <Upload limit={1} onChange={handleUploadChange}>
                             <View style={{ paddingBottom: Taro.pxTransform(bottom, 750) }} onClick={goSelectPic} className={styles['submit-btn']}>
                                 上传照片

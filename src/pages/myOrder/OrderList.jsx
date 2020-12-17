@@ -54,13 +54,6 @@ export default (props) => {
         }
     }, [])
 
-    // useEffect(() => {
-    //     if (props.active) {
-    //         console.log(1)
-    //         onLoad();
-    //     }
-    // }, [props.active])
-
     const onLoad = (refresh = false) => {
         if (!refresh && isFinish) {
             return false;

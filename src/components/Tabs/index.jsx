@@ -3,6 +3,7 @@ import Taro from '@tarojs/taro'
 import { View, Swiper, ScrollView, SwiperItem } from '@tarojs/components'
 
 import Tab from './Tab';
+import TabPanel from './TabPanel';
 import './index.less'
 
 export default (props) => {
@@ -10,7 +11,6 @@ export default (props) => {
     const { current, onChange } = props;
     const [enableScroll, setEnableScroll] = useState(true);
     const [screenWidth, setScreenWidth] = useState(0);
-    const [loadList, setLoadList] = useState([]);
     const [dx, setDx] = useState(0);
     const [left, setLeft] = useState(0);
 
@@ -50,13 +50,11 @@ export default (props) => {
         }
     })
 
-    const TabPanel = React.Children.map(props.children, (child, index) => {
+    const TabPanelList = React.Children.map(props.children, (child, index) => {
         if (child.type) {
             return (
                 <SwiperItem>
-                    {
-                        React.cloneElement(child)
-                    }
+                    <TabPanel activeKey={current} active={index == current} node={React.cloneElement(child)}/>
                 </SwiperItem>
             )
         }
@@ -69,7 +67,7 @@ export default (props) => {
                 <View className="wy-tabs__line" style={{ transitionDuration: transitionDuration, transform: `translateX(${translateX}px) translateX(-50%)` }}></View>
             </View>
             <Swiper current={current} className="wy-tabs__content" onChange={handleOnChange} onAnimationFinish={onAnimationFinish} onTransition={onTransition}>
-                {TabPanel}
+                {TabPanelList}
             </Swiper>
         </View>
     )

@@ -272,7 +272,12 @@ const StageView = (props) => {
                         </View>
                     </View>
                 }
-                <View className={styles['edit-stage']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
+                <View className={styles['edit-stage']} style={{
+                    width: Taro.pxTransform(activeModel.stageInfo.width, 750),
+                    height: Taro.pxTransform(activeModel.stageInfo.height, 750),
+                    '-webkit-mask-image': `url(${activeModel.stageInfo.maskPath})`,
+                    '-webkit-mask-size': '100% 100%'
+                }}>
                     {
                         activeModel.editArea.map(({ width, height, x, y, img }, index) => {
 
@@ -281,7 +286,8 @@ const StageView = (props) => {
                                 width: Taro.pxTransform(width, 750),
                                 height: Taro.pxTransform(height, 750),
                                 top: Taro.pxTransform(y, 750),
-                                left: Taro.pxTransform(x, 750)
+                                left: Taro.pxTransform(x, 750),
+                                zIndex: 2
                             }
 
                             if (!img) {
@@ -317,7 +323,7 @@ const StageView = (props) => {
                             )
                         })
                     }
-                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-bg']} src={stageBg} />
+                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-bg']} src={activeModel.stageInfo.bgPath} />
                     <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
                 </View>
                 <Image src={bgProjection} className={styles['bg-projection']}/>

@@ -6,6 +6,7 @@ import { list } from '../services/address'
 import { detail as orderDetail } from '../services/order'
 import { add as addPortfolio, edit as editPortfolio } from '../services/portfolio'
 import defaultModelList from '../package-main-order/pages/stageView/model'
+import defaultPillowModelList from '../package-main-order/pages/stageView/pillowmodel'
 
 const defaultAddressInfo = {
     id: null,
@@ -106,6 +107,17 @@ export default {
                     yield put({
                         type: 'saveStageModelList',
                         payload: initModelList(defaultModelList, stageFileList)
+                    })
+                    path = `/package-main-order/pages/stageView/index`
+                    break;
+                case 5:
+                    yield put({
+                        type: 'saveStageFileList',
+                        payload: stageFileList
+                    })
+                    yield put({
+                        type: 'saveStageModelList',
+                        payload: initModelList(defaultPillowModelList, stageFileList)
                     })
                     path = `/package-main-order/pages/stageView/index`
             }

@@ -20,7 +20,7 @@ export default async ({ canvasId, filePath, width, height }) => {
         let img = new Image();
         img.onload = () => {
             context.drawImage(img, 0, 0, canvas.width, canvas.height)
-            const dataURL = canvas.toDataURL(`image/jpeg`, 0.5);
+            const dataURL = canvas.toDataURL(`image/jpeg`, 1);
             const res = {
                 tempFilePath: dataURL,
                 res: 'canvasToTempFilePath:ok'

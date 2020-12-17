@@ -23,14 +23,17 @@ const getImageInfo = async (filePath) => {
 
 const uploadSync = async (file, canvasId) =>{
     const imgInfo = await getImageInfo(file.filePath);
+    if (file.size > 20971520) {
+        return;
+    }
     const response = await uploadFile({
         filePath: file.filePath
     })
-    const filePath = await compressImg({ canvasId: canvasId, filePath: file.filePath, width: imgInfo.width, height: imgInfo.height });
+    const thumbnail = `${response.data}?imageMogr2/auto-orient/format/jpg/thumbnail/!540x540r/quality/80!/interlace/1/ignore-error/1`
     return {
         file: {
             ...file,
-            filePath: filePath,
+            filePath: thumbnail,
         },
         imgInfo: imgInfo,
         response: response
@@ -104,10 +107,11 @@ export default React.forwardRef((props, ref) => {
             count: limit,
             success: async (e) => {
                 const nextFileList = getFileList().concat();
-                const uploadList = e.tempFilePaths.map((v, index) => {
+                const uploadList = e.tempFiles.map((v, index) => {
                     return {
                         uid: nextFileList.length + index,
-                        filePath: v,
+                        filePath: v.path,
+                        size: v.size,
                         status: 'before-upload'
                     }
                 })
@@ -148,7 +152,6 @@ export default React.forwardRef((props, ref) => {
             <Dialog className="upload-dialog" title={`已上传${uploadDialogProps.doneCount}/${uploadDialogProps.totalCount}张`} visible={uploadDialogProps.visible}>
                 <View>正在拼命上传中，请耐心等待哦～</View>
             </Dialog>
-            <Canvas style={`width: 2000px; height: 2000px; position: fixed; left: 9999px; top: 9999px`} canvasId={canvasId} />
         </View>
     )
 });;
