@@ -1,4 +1,4 @@
 export default {
-    navigationBarTitleText: '摆台创作中',
+    navigationBarTitleText: '创作中',
     disableScroll: true
 }
