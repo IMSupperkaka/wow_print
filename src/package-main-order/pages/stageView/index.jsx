@@ -41,7 +41,8 @@ const Tips = () => {
 }
 
 const buildResultList = (model) => {
-    return [
+
+    const resultList = [
         {
             ...model.editArea[0].img,
             printNums: 1,
@@ -77,18 +78,23 @@ const buildResultList = (model) => {
                         width: v.width,
                         height: v.height
                     }
-                }),
-                {
-                    type: 'IMAGE',
-                    imageUrl: model.stageInfo.filePath,
-                    width: model.stageInfo.width,
-                    height: model.stageInfo.height,
-                    offsetX: 0,
-                    offsetY: 0
-                }
+                })
             ]
         }
     ]
+
+    if (model.stageInfo.filePath) {
+        resultList.synthesisList.push({
+            type: 'IMAGE',
+            imageUrl: model.stageInfo.filePath,
+            width: model.stageInfo.width,
+            height: model.stageInfo.height,
+            offsetX: 0,
+            offsetY: 0
+        })
+    }
+
+    return resultList;
 }
 
 const StageView = (props) => {
@@ -328,7 +334,11 @@ const StageView = (props) => {
                         height: Taro.pxTransform(activeModel.stageInfo.height, 750),
                         zIndex: activeModel.stageInfo.bgCover ? 4 : 1 
                     }} className={styles['edit-stage-bg']} src={activeModel.stageInfo.bgPath} />
-                    <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
+                    
+                    {
+                        activeModel.stageInfo.filePath &&
+                        <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
+                    }
                 </View>
                 <Image src={bgProjection} className={styles['bg-projection']}/>
             </View>
