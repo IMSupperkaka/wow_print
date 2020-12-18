@@ -259,10 +259,10 @@ export default Base((props) => {
                                             }
                                         </View>
                                         {
-                                            goodsInfo.goodIsMaster == 1 &&
+                                            (goodsInfo.goodIsMaster == 1 && [2, 3].includes(orderDetail.status)) &&
                                             <View onClick={goPreview} className="preview-btn">
                                                 预览
-                                            <AtIcon value='chevron-right' size='12' color='#666'></AtIcon>
+                                                <AtIcon value='chevron-right' size='12' color='#666'></AtIcon>
                                             </View>
                                         }
                                     </View>

@@ -3,24 +3,6 @@ import Taro from '@tarojs/taro';
 
 let lastState = {};
 
-const deepState = (state) => {
-    if (Object.prototype.toString.call(state).toLocaleLowerCase() === '[object object]') {
-        for (let i in state) {
-            if (i === 'filePath' && state['originImage']) {
-                state[i] = state['originImage'];
-            } else {
-                state[i] = deepState(state[i]);
-            }
-        }
-    }
-    if (Object.prototype.toString.call(state).toLocaleLowerCase() === '[object array]') {
-        for (let i = 0; i < state.length; i++) {
-            state[i] = deepState(state[i])
-        }
-    }
-    return state;
-}
-
 const defaultConfig = {
     keyPrefix: 'persist',
     key: 'model',
@@ -33,7 +15,7 @@ const defaultConfig = {
         }
     },
     onSet: (state) => {
-        return deepState(JSON.parse(JSON.stringify(state)));
+        return state;
     }
 }
 

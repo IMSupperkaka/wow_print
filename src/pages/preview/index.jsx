@@ -31,7 +31,7 @@ const Preview = () => {
         setCurrent(e.detail.current);
     }
 
-    const previewList = orderDetail?.goodsInfo?.[0]?.printPreviewList;
+    const previewList = orderDetail?.goodsInfo?.[0]?.printPreviewList || [];
 
     return (
         <View className="page-container">
