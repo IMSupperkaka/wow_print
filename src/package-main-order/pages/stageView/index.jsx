@@ -84,7 +84,7 @@ const buildResultList = (model) => {
     ]
 
     if (model.stageInfo.filePath) {
-        resultList.synthesisList.push({
+        resultList[0].synthesisList.push({
             type: 'IMAGE',
             imageUrl: model.stageInfo.filePath,
             width: model.stageInfo.width,
