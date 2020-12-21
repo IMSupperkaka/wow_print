@@ -187,6 +187,7 @@ $color-brand: #FF6345;
 
 .weui-tabbar {
     background-color: #fff;
+    padding-bottom: constant(safe-area-inset-bottom);
 }
 
 taro-button-core {
