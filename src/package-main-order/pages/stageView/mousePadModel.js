@@ -8,7 +8,7 @@ export default [
             bgPath: 'https://cdn.91jiekuan.com/FhyBo1iNhXvbNyVPE0BGtr6M7DCZ',
             bgCover: false,
             maskPath: 'https://cdn.91jiekuan.com/FhyBo1iNhXvbNyVPE0BGtr6M7DCZ',
-            thumbnail: 'https://cdn.91jiekuan.com/Fj6S1YhCl8giht4EAVD02Dn4Hglt'
+            thumbnail: 'http://cdn.91jiekuan.com/Fru-pa8Jk2dyXIYhbM5pvxLHZPSY'
         },
         editArea: [
             {
