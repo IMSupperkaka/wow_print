@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import Taro from '@tarojs/taro';
-import { View, Text } from '@tarojs/components';
+import { View, Button, Text } from '@tarojs/components';
 import SafeArea from '../../components/SafeArea';
 import Upload from '../../components/Upload';
 
@@ -27,7 +27,8 @@ const BottomButton = (props) => {
                                 coupon.couponName &&
                                 <View className="freenums-tag">还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
                             }
-                            <View className="submit-left" onClick={onSave}>存入作品集</View>
+                            {/* <View className="submit-left" onClick={onSave}>存入作品集</View> */}
+                            <Button onClick={onSave} className="radius-btn outline-btn submit-left">存入作品集</Button>
                             {
                                 notEmptyImageCount >= limit ?
                                 <View className="submit-right" onClick={goPrint}>
