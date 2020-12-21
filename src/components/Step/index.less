@@ -1,16 +1,31 @@
 .wy-step-wrap {
-  display: flex;
-  align-items: center;
-  height: 32px;
-  .opration-btn {
-    width: 32px;
-    height: 32px;
-  }
-  .wy-step-value {
     display: flex;
-    justify-content: center;
-    width: 60px;
-    font-size: 24px;
-    color: #333;
-  }
+    align-items: center;
+    height: 32px;
+    .opration-btn {
+        position: relative;
+        &::after {
+            display: inline-block;
+            box-sizing: border-box;
+            content: ' ';
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            bottom: -50%;
+            left: -50%;
+        }
+        .opration-btn-image {
+            width: 32px;
+            height: 32px;
+        }
+    }
+    .wy-step-value {
+        display: flex;
+        justify-content: center;
+        width: 60px;
+        font-size: 24px;
+        color: #333;
+    }
 }
