@@ -60,7 +60,8 @@ const AddresssList = ({ dispatch }) => {
             loanId: querInfo.id,
             addressId: addressItem.id
         }).then(() => {
-            setDialogVisible(false)
+            setDialogVisible(false);
+            Taro.eventCenter.trigger('updateOrderStatus', router.query.id);
             Taro.navigateBack();
         })
     }

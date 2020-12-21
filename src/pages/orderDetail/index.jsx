@@ -119,7 +119,7 @@ export default Base((props) => {
                     cancel({
                         loanId: router.query.id
                     }).then(() => {
-                        Taro.eventCenter.trigger('updateOrderStatus', router.query.id);
+                        Taro.eventCenter.trigger('updateOrderStatus', router.query.id)
                         Taro.navigateTo({
                             url: `/pages/result/index?type=cancel&id=${router.query.id}`
                         })

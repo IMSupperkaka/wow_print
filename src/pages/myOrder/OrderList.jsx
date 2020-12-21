@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
 import classnames from 'classnames'
 import { ScrollView, View, Image, Button, Text } from '@tarojs/components'
 
@@ -45,9 +45,9 @@ export default (props) => {
     });
 
     useEffect(() => {
-        onLoad();
+        onLoad(true);
         Taro.eventCenter.on('updateOrderStatus', (id) => {
-            updateOrderStatus(id);
+            onLoad(true);
         })
         return () => {
             Taro.eventCenter.off('updateOrderStatus');
@@ -154,23 +154,24 @@ export default (props) => {
     }
 
     const updateOrderStatus = (id) => {
-        detail({
-            loanId: id
-        }).then(({ data }) => {
-            setRecords((records) => {
-                const cloneList = [...records];
-                const index = cloneList.findIndex((v) => {
-                    return v.id == id;
-                });
-                if (index != -1) {
-                    const item = cloneList[index];
-                    item.status = data.data.status;
-                    cloneList.splice(index, 1, item);
-                    return cloneList;
-                }
-                return records;
-            });
-        })
+        onLoad(true);
+        // detail({
+        //     loanId: id
+        // }).then(({ data }) => {
+        //     setRecords((records) => {
+        //         const cloneList = [...records];
+        //         const index = cloneList.findIndex((v) => {
+        //             return v.id == id;
+        //         });
+        //         if (index != -1) {
+        //             const item = cloneList[index];
+        //             item.status = data.data.status;
+        //             cloneList.splice(index, 1, item);
+        //             return cloneList;
+        //         }
+        //         return records;
+        //     });
+        // })
     }
 
     return (
