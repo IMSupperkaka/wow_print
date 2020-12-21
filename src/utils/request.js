@@ -9,7 +9,8 @@ const tokeninterceptor = function (chain) {
         header: {
             ...header,
             token: Taro.getStorageSync('token'),
-            channel: Taro.getStorageSync('channel')
+            channel: Taro.getStorageSync('channel'),
+            version: '2.1.0'
         }
     });
 }
