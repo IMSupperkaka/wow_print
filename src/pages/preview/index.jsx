@@ -39,9 +39,7 @@ const Preview = () => {
             <View>
                 <Swiper
                     className='preview-swiper'
-                    autoplay
                     key={previewList.length}
-                    circular
                     onChange={handleOnChange}>
                     {
                         previewList.map((v, index) => {
