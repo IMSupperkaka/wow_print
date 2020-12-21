@@ -29,22 +29,22 @@ const deskCalenderList = [
     {
         type: 0,
         title: '封面',
-        backgroundImage: 'https://cdn.91jiekuan.com/FvgZZF5mrbtK76PahAaMV66zOap1'
+        backgroundImage: 'http://cdn.91jiekuan.com/FqN_smIn-RwjaSz5iaw8uCpYyCzv'
     },
     {
         type: 1,
         title: '2021年1月',
-        backgroundImage: 'https://cdn.91jiekuan.com/FrLNdDCuDrIHJLsq2B-J6g8Of1nc'
+        backgroundImage: 'http://cdn.91jiekuan.com/Fp38mEmlX73WVzbZf21MNP4eQ989'
     },
     {
         type: 1,
         title: '2021年2月',
-        backgroundImage: 'https://cdn.91jiekuan.com/FiJkN1WOP7O6AE_6C3IKRZo1ngkI'
+        backgroundImage: 'http://cdn.91jiekuan.com/FhhHQfZBrKuByg4l7hqW4S_g7Q4f'
     },
     {
         type: 2,
         title: '2021年3月',
-        backgroundImage: 'https://cdn.91jiekuan.com/FkXRd89P30TxyeXHVHyYKnW9w7BZ'
+        backgroundImage: 'http://cdn.91jiekuan.com/FpY5xOXeHiGapio6RADUEoES6A0V'
     },
     {
         type: 1,
