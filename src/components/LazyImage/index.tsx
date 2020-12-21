@@ -35,7 +35,8 @@ export default (props) => {
     const imgStyle = {
         width: Taro.pxTransform(imgInfo.width, 750),
         height: Taro.pxTransform(imgInfo.height, 750),
-        transition: 'height .2s ease-in-out'
+        transition: 'height .2s ease-in-out',
+        opacity: loading ? 0 : 1
     }
 
     return (
