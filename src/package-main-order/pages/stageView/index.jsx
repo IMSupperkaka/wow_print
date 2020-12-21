@@ -42,6 +42,8 @@ const Tips = () => {
 
 const buildResultList = (model) => {
 
+    const scale = 2;
+
     const resultList = [
         {
             ...model.editArea[0].img,
@@ -50,8 +52,8 @@ const buildResultList = (model) => {
                 {
                     type: 'IMAGE',
                     imageUrl: 'https://cdn.91jiekuan.com/FoXlt8UQT99Eoiuk2NJPWdrwRTIE',
-                    width: model.stageInfo.width,
-                    height: model.stageInfo.height,
+                    width: model.stageInfo.width * scale,
+                    height: model.stageInfo.height * scale,
                     offsetX: 0,
                     offsetY: 0,
                     isBase: true
@@ -65,18 +67,18 @@ const buildResultList = (model) => {
                     })
 
                     const cropImage = ImgView.crop(v.img.cropInfo, {
-                        contentWidth: v.width,
-                        contentHeight: v.height
+                        contentWidth: v.width * scale,
+                        contentHeight: v.height * scale
                     })
 
                     return {
                         type: 'IMAGE',
                         imageUrl: v.img.originImage,
-                        offsetX: v.x,
-                        offsetY: v.y,
+                        offsetX: v.x * scale,
+                        offsetY: v.y * scale,
                         ...cropImage,
-                        width: v.width,
-                        height: v.height
+                        width: v.width * scale,
+                        height: v.height * scale
                     }
                 })
             ]
@@ -87,8 +89,8 @@ const buildResultList = (model) => {
         resultList[0].synthesisList.push({
             type: 'IMAGE',
             imageUrl: model.stageInfo.filePath,
-            width: model.stageInfo.width,
-            height: model.stageInfo.height,
+            width: model.stageInfo.width * scale,
+            height: model.stageInfo.height * scale,
             offsetX: 0,
             offsetY: 0
         })
