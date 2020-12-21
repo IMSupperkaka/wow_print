@@ -216,27 +216,27 @@ export default (props) => {
                                             <View className={styles['orde-item-footer__right']}>
                                                 {
                                                     item.status == 2 &&
-                                                    <Button onClick={handleGoService} className={classnames('outline-btn', styles['order-btn'])}>联系客服</Button>
+                                                    <Button onClick={handleGoService} className={classnames('radius-btn', 'outline-btn', styles['order-btn'])}>联系客服</Button>
                                                 }
                                                 {
                                                     [3, 9].includes(item.status) &&
-                                                    <Button onClick={handleGoLog.bind(this, item)} className={classnames('outline-btn', styles['order-btn'])}>查看物流</Button>
+                                                    <Button onClick={handleGoLog.bind(this, item)} className={classnames('radius-btn', 'outline-btn', styles['order-btn'])}>查看物流</Button>
                                                 }
                                                 {
                                                     [2, 4, 5, 9].includes(item.status) &&
-                                                    <Button onClick={handleDetail.bind(this, item)} className={classnames('outline-btn', styles['order-btn'])}>查看订单</Button>
+                                                    <Button onClick={handleDetail.bind(this, item)} className={classnames('radius-btn', 'outline-btn', styles['order-btn'])}>查看订单</Button>
                                                 }
                                                 {
                                                     item.status == 3 &&
-                                                    <Button onClick={handleReceived.bind(this, item)} className={classnames('primary-outline-btn', styles['order-btn'])}>确认收货</Button>
+                                                    <Button onClick={handleReceived.bind(this, item)} className={classnames('radius-btn', 'primary-outline-btn', styles['order-btn'])}>确认收货</Button>
                                                 }
                                                 {
                                                     item.status == 1 &&
-                                                    <Button onClick={handleCancel.bind(this, item)} className={classnames('outline-btn', styles['order-btn'])}>取消订单</Button>
+                                                    <Button onClick={handleCancel.bind(this, item)} className={classnames('radius-btn', 'outline-btn', styles['order-btn'])}>取消订单</Button>
                                                 }
                                                 {
                                                     item.status == 1 &&
-                                                    <Button onClick={handleRepay.bind(this, item)} className={classnames('primary-btn', styles['order-btn'])}>立即付款</Button>
+                                                    <Button onClick={handleRepay.bind(this, item)} className={classnames('radius-btn', 'primary-btn', styles['order-btn'])}>立即付款</Button>
                                                 }
                                             </View>
                                         </View>
