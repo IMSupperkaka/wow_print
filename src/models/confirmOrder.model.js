@@ -7,6 +7,7 @@ import { detail as orderDetail } from '../services/order'
 import { add as addPortfolio, edit as editPortfolio } from '../services/portfolio'
 import defaultModelList from '../package-main-order/pages/stageView/model'
 import defaultPillowModelList from '../package-main-order/pages/stageView/pillowmodel'
+import defaultMousePadModelList from '../package-main-order/pages/stageView/mousePadModel'
 
 const defaultAddressInfo = {
     id: null,
@@ -118,6 +119,17 @@ export default {
                     yield put({
                         type: 'saveStageModelList',
                         payload: initModelList(defaultPillowModelList, stageFileList)
+                    })
+                    path = `/package-main-order/pages/stageView/index`
+                    break;
+                case 6:
+                    yield put({
+                        type: 'saveStageFileList',
+                        payload: stageFileList
+                    })
+                    yield put({
+                        type: 'saveStageModelList',
+                        payload: initModelList(defaultMousePadModelList, stageFileList)
                     })
                     path = `/package-main-order/pages/stageView/index`
             }
