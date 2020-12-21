@@ -1,0 +1,17 @@
+.wy-lazy-wrap {
+    position: relative;
+}
+
+.wy-lazy-loading {
+    position: absolute;
+    background-color: #cfcfcf;
+    width: 100%;
+    transition: height .2s ease-in-out;
+    animation: skeleton-blink 1.2s ease-in-out infinite;
+}
+
+@keyframes skeleton-blink {
+    50% {
+        opacity: 0.6;
+    }
+}

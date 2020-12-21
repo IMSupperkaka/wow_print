@@ -4,6 +4,7 @@ import Taro, { useDidShow, useReady } from '@tarojs/taro'
 import { View, Swiper, SwiperItem, Image, Text } from '@tarojs/components'
 
 import './index.less'
+import LazyImage from '@/components/LazyImage'
 import { detail } from '../../services/order'
 
 const Preview = () => {
@@ -48,7 +49,7 @@ const Preview = () => {
                                 <SwiperItem className="preview-item" key={v.id}>
                                     <View className="preview-image-wrap">
                                         <Text className="print-nums">打印{ v.printNums }张</Text>
-                                        <Image lazyLoad className="preview-image" mode="widthFix" src={v.url} />
+                                        <LazyImage className="preview-image" mode="widthFix" src={v.url} width={640}/>
                                         <View className="pagenation">
                                             {index + 1}/{previewList.length}
                                         </View>
