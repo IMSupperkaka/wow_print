@@ -12,7 +12,7 @@ import Transition from '../../../components/Transition';
 import CropImg from '../../../components/CropImg';
 import imgView from '../../../utils/crop';
 import styles from './index.module.less';
-import stageBg from '../../images/bg_fram@2x.png';
+import WidthCompressCanvas from '@/layout/WidthCompressCanvas';
 import addIcon from '../../../../images/cion_add_to5@2x.png';
 import tipsOnIcon from '../../../../images/icon_prompt_on@2x.png';
 import tipsOffIcon from '../../../../images/icon_prompt_off@2x.png';
@@ -385,6 +385,6 @@ const StageView = (props) => {
     )
 }
 
-export default connect(({ confirmOrder }) => ({
+export default WidthCompressCanvas(connect(({ confirmOrder }) => ({
     confirmOrder
-}))(StageView);
+}))(StageView));

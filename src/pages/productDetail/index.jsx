@@ -5,10 +5,10 @@ import { View, Image, Swiper, SwiperItem } from '@tarojs/components'
 
 import styles from './index.module.less'
 import { fix } from '../../utils/utils'
-import Transition from '../../components/Transition'
 import SafeArea from '../../components/SafeArea'
 import NoticeBar from '../../components/NoticeBar'
 import Upload from '../../components/Upload'
+import WidthCompressCanvas from '@/layout/WidthCompressCanvas'
 import SelectCoupon from '../../page-components/SelectCoupon'
 import { detail as getDetail } from '../../services/product'
 
@@ -157,7 +157,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     )
 };
 
-export default connect(({ confirmOrder, user }) => ({
+export default WidthCompressCanvas(connect(({ confirmOrder, user }) => ({
     confirmOrder,
     user
-}))(ProductDetail);
+}))(ProductDetail));

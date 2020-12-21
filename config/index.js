@@ -5,6 +5,9 @@
  * @FilePath: \wow_print\config\index.js
  * @Description: Descrip Content
  */
+
+const path = require('path')
+
 const config = {
     projectName: 'photo-taro',
     date: '2020-8-10',
@@ -13,6 +16,9 @@ const config = {
         640: 2.34 / 2,
         750: 1,
         828: 1.81 / 2
+    },
+    alias: {
+        '@': path.resolve('src'),
     },
     sourceRoot: 'src',
     outputRoot: 'dist',

@@ -76,6 +76,13 @@
 					"pathName": "pages/home/index",
 					"query": "channel=123",
 					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/result/index",
+					"pathName": "pages/result/index",
+					"query": "type=pay_success",
+					"scene": null
 				}
 			]
 		}

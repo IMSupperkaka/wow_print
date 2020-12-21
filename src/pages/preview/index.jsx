@@ -40,6 +40,7 @@ const Preview = () => {
                     className='preview-swiper'
                     autoplay
                     key={previewList.length}
+                    circular
                     onChange={handleOnChange}>
                     {
                         previewList.map((v, index) => {
@@ -47,7 +48,7 @@ const Preview = () => {
                                 <SwiperItem className="preview-item" key={v.id}>
                                     <View className="preview-image-wrap">
                                         <Text className="print-nums">打印{ v.printNums }张</Text>
-                                        <Image className="preview-image" mode="widthFix" src={v.url} />
+                                        <Image lazyLoad className="preview-image" mode="widthFix" src={v.url} />
                                         <View className="pagenation">
                                             {index + 1}/{previewList.length}
                                         </View>
@@ -57,10 +58,6 @@ const Preview = () => {
                         })
                     }
                 </Swiper>
-                {/* TODO: swiper不支持自动撑高 */}
-                {/* <View className="pagenation">
-                    {current + 1}/{orderDetail?.goodsInfo?.[0]?.userImageList.length}
-                </View> */}
             </View>
 
             <View className="goback-btn" onClick={goBack}>

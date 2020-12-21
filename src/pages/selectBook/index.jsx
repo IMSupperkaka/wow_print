@@ -13,6 +13,7 @@ import { CropImgProvider } from '../../components/CropImg';
 import SelectPicModal from '../../components/SelectPicModal';
 import BottomButton from '../../components/BottomButton';
 import Modal from '../../components/Modal';
+import WidthCompressCanvas from '@/layout/WidthCompressCanvas';
 
 import editIcon from '../../../images/icon_edit.png'
 import wayin from '../../../images/cover_wayin.png'
@@ -392,6 +393,6 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
     )
 }
 
-export default connect(({ confirmOrder }) => ({
+export default WidthCompressCanvas(connect(({ confirmOrder }) => ({
     confirmOrder
-}))(SelectBook);
+}))(SelectBook));

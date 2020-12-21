@@ -10,6 +10,7 @@ import UploadCrop from '../../components/UploadCrop';
 import { CropImgProvider } from '../../components/CropImg';
 import SelectPicModal from '../../components/SelectPicModal';
 import BottomButton from '../../components/BottomButton';
+import WidthCompressCanvas from '@/layout/WidthCompressCanvas';
 import editIcon from '../../../images/icon_edit.png';
 
 const sizeMap = new Map([
@@ -404,6 +405,6 @@ const DeskCalendar = (props) => {
     )
 }
 
-export default connect(({ confirmOrder }) => ({
+export default WidthCompressCanvas(connect(({ confirmOrder }) => ({
     confirmOrder
-}))(DeskCalendar);
+}))(DeskCalendar));

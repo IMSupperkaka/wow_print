@@ -23,11 +23,14 @@ const getImageInfo = async (filePath) => {
 
 const uploadSync = async (file, canvasId) =>{
     const imgInfo = await getImageInfo(file.filePath);
-    if (file.size > 20971520) {
-        return;
-    }
+    const filePath = await compressImg({
+        canvasId: 'compress-canvas',
+        filePath: file.filePath,
+        width: imgInfo.width,
+        height: imgInfo.height
+    });
     const response = await uploadFile({
-        filePath: file.filePath
+        filePath: filePath
     })
     const thumbnail = `${response.data}?imageMogr2/auto-orient/format/jpg/thumbnail/!540x540r/quality/80!/interlace/1/ignore-error/1`
     return {

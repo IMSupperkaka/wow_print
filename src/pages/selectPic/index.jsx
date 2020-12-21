@@ -5,11 +5,12 @@ import { connect } from 'react-redux'
 
 import styles from './index.module.less'
 import { SELECT_WIDTH } from '../../utils/picContent'
-import { computeCropUrl, computedBlur } from '../../utils/utils'
+import { computedBlur } from '../../utils/utils'
 import UploadCrop from '../../components/UploadCrop'
 import SafeArea from '../../components/SafeArea'
 import Upload from '../../components/Upload'
 import { CropImgProvider } from '../../components/CropImg'
+import WidthCompressCanvas from '@/layout/WidthCompressCanvas'
 import addPic from '../../../images/cion_add_to@2x.png'
 import deleteIcon from '../../../images/icon_delete@2x.png'
 import lessSelectIcon from '../../../images/icon_Less_selected@2x.png'
@@ -251,7 +252,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
     )
 }
 
-export default connect(({ confirmOrder, editimg }) => ({
+export default WidthCompressCanvas(connect(({ confirmOrder, editimg }) => ({
     confirmOrder,
     editimg
-}))(SelectPic);
+}))(SelectPic));
