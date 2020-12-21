@@ -24,7 +24,14 @@ export default () => {
 
     const handleCopy = () => {
       Taro.setClipboardData({
-        data: detail.trackingNumber
+        data: detail.trackingNumber,
+        success: function (res) {
+            Taro.showToast({
+                title: '快递单号已复制',
+                icon: 'none',
+                duration: 1000
+            })
+        }
       })
     }
 
