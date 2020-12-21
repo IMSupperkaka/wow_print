@@ -29,6 +29,7 @@ const uploadSync = async (file, canvasId) =>{
         width: imgInfo.width,
         height: imgInfo.height
     });
+    const newImgInfo = await getImageInfo(filePath);
     const response = await uploadFile({
         filePath: filePath
     })
@@ -38,7 +39,7 @@ const uploadSync = async (file, canvasId) =>{
             ...file,
             filePath: thumbnail,
         },
-        imgInfo: imgInfo,
+        imgInfo: newImgInfo,
         response: response
     };
 }
