@@ -61,7 +61,7 @@ const AddresssList = ({ dispatch }) => {
             addressId: addressItem.id
         }).then(() => {
             setDialogVisible(false);
-            Taro.eventCenter.trigger('updateOrderStatus', router.query.id);
+            Taro.eventCenter.trigger('updateOrderStatus');
             Taro.navigateBack();
         })
     }
