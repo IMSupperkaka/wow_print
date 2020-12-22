@@ -41,7 +41,7 @@ const Tips = () => {
 }
 
 const buildResultList = (model) => {
-    console.log(model);
+    
     const scale = 2;
 
     const resultList = [
@@ -239,8 +239,6 @@ const StageView = (props) => {
                 duration: 1500
             })
         }
-        buildResultList(model)
-        return;
         dispatch({
             type: 'confirmOrder/pushConfirmOrder',
             payload: {
