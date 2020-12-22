@@ -11,7 +11,7 @@ class imgView {
         };
     }
 
-    crop({ translate, rotate, mirror, scale, editWidth = EDIT_WIDTH }, { contentWidth, contentHeight }) {
+    crop({ translate, rotate, mirror, scale, editwidth = EDIT_WIDTH }, { contentWidth, contentHeight }) {
 
         const angel = rotate > 0 ? 360 - rotate : -rotate; // 转换为顺时针角度
 
@@ -28,7 +28,7 @@ class imgView {
             height: this.imgInfo.height
         }, angel);
 
-        const translateScale = contentWidth / editWidth;
+        const translateScale = contentWidth / editwidth;
 
         const as = tWidth / this.imgInfo.width * scale;
 
