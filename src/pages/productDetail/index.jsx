@@ -89,17 +89,6 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
         submitBtnText = '立即定制';
     }
 
-    const fakeNum = {
-        1: { // 照片
-            4: 5762,
-            5: 4385,
-            6: 3743
-        },
-        2: 1548, // 台历
-        3: 3587, // 照片书
-        4: 1585 // 摆台
-    }
-
     return (
         <View className={styles.index}>
             <View className={styles['banner-wrap']}>
