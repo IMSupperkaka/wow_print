@@ -45,6 +45,13 @@ const isEmptyAddress = () => {
     })
 }
 
+const isExpire = (expireTime) => {
+    if(expireTime && (new Date()).getTime() > expireTime) {
+        return true
+    }
+    return false;
+}
+
 export default {
     namespace: 'confirmOrder',
     state: {
@@ -58,7 +65,13 @@ export default {
         size: 5, // 照片尺寸 仅在普通照片有效
         proportion: 0.7, // 照片比例 仅在普通照片有效
         // 商品类型 枚举：/utils/map/product/productType
-        type: 1
+        type: 1,
+        imgCache: {
+            // [`id`]: {
+            //     expireTime: null,
+            //     list: []
+            // }
+        }
     },
 
     effects: {
@@ -263,6 +276,22 @@ export default {
                 activeIndex: 0
             }
         },
+        initUserImgList(state) {
+            const isExpired = isExpire(state.imgCache?.[state.goodId]?.expireTime);
+            const imgList = !isExpired ? (state.imgCache?.[state.goodId]?.list || []) : [];
+            console.log(imgList)
+            return {
+                ...state,
+                userImageList: imgList,
+                imgCache: {
+                    ...state.imgCache,
+                    [state.goodId]: {
+                        ...state.imgCache[state.goodId],
+                        list: imgList
+                    }
+                }
+            }
+        },
         saveStageFileList(state, { payload }) {
             return {
                 ...state,
@@ -296,7 +325,7 @@ export default {
                 proportion: sizeMap.get(Number(payload.size))
             }
         },
-        saveUserImageList(state, { payload }) {
+        saveUserImageList(state, { payload, expireTime }) {
             if (Array.isArray(payload)) {
                 return {
                     ...state,
@@ -308,11 +337,21 @@ export default {
                     userImageList: [
                         ...state.userImageList,
                         payload
-                    ]
+                    ],
+                    imgCache: {
+                        ...state.imgCache,
+                        [state.goodId]: {
+                            list: [
+                                ...state.userImageList,
+                                payload
+                            ],
+                            expireTime: expireTime
+                        }
+                    }
                 }
             }
         },
-        mutateUserImageList(state, { payload }) {
+        mutateUserImageList(state, { payload, expireTime }) {
 
             const { index, userImage } = payload;
 
@@ -330,10 +369,17 @@ export default {
                     cloneUserImageList[emptyIndex] = userImage;
                 }
             }
-
+            
             return {
                 ...state,
-                userImageList: cloneUserImageList
+                userImageList: cloneUserImageList,
+                imgCache: {
+                    ...state.imgCache,
+                    [state.goodId]: {
+                        list: cloneUserImageList,
+                        expireTime: expireTime
+                    }
+                }
             }
         },
         savePortfolioId(state, { payload }) {

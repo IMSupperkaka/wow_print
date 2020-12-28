@@ -64,6 +64,7 @@ export default React.forwardRef((props, ref) => {
     })
 
     const onChange = (info) => {
+        console.log(info)
         setFileList(info.fileList);
         onChangeProp(info.file, info.fileList);
     }
