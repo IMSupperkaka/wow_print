@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Image, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
@@ -17,6 +17,7 @@ import lessSelectIcon from '../../../images/icon_Less_selected@2x.png'
 import lessDisabledIcon from '../../../images/icon_Less_disabled@2x.png'
 import plusSelectIcon from '../../../images/cion_plus_selected@2x.png'
 import imgView from '../../utils/crop'
+import day from 'dayjs';
 
 const SelectPic = ({ dispatch, confirmOrder }) => {
 
@@ -27,17 +28,24 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
         const completeNum = fileList.filter((v) => { return v.status == 'done' }).length;
 
         if (totalNum == completeNum) {
+            const imgList = fileList.map((img) => {
+                return {
+                    ...img,
+                    printNums: img.printNums || 1
+                }
+            })
             dispatch({
                 type: 'confirmOrder/saveUserImageList',
-                payload: fileList.map((img) => {
-                    return {
-                        ...img,
-                        printNums: img.printNums || 1
-                    }
-                })
+                payload: imgList
             })
         }
     }
+
+    useEffect(() => {
+        dispatch({
+            type: 'confirmOrder/initUserImgList'
+        })
+    }, [])
 
     const handleDelete = (index) => {
         Taro.showModal({

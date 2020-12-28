@@ -44,6 +44,12 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         activeRef.current = activeIndex;
     }, [activeIndex])
 
+    useEffect(() => {
+        dispatch({
+            type: 'confirmOrder/initUserImgList'
+        })
+    }, [])
+
     const [visible, setVisible] = useState(false);
 
     const [coverInfo, setCoverInfo] = useState({
@@ -64,13 +70,15 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
     };
 
     const onChange = (file, fileList, index) => {
+        console.log(userImageList)
         if (file.status == 'done') {
             dispatch({
                 type: 'confirmOrder/mutateUserImageList',
                 payload: {
                     userImage: file,
                     index: index || activeRef.current
-                }
+                },
+                expireTime: day().add(3, 'day').valueOf()
             })
         }
     };
