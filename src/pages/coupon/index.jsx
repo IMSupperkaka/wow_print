@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useRef } from 'react'
 import Taro from '@tarojs/taro'
 import day from 'dayjs'
-import { usePullDownRefresh, useReachBottom, useDidShow } from '@tarojs/taro'
-import { View, Image, Text } from '@tarojs/components'
+import classnames from 'classnames'
+import { View, Image, Text, Input, Button } from '@tarojs/components'
 
 import styles from './index.module.less'
-import { list, pre } from '../../services/coupon';
+import { list, pre, exchange } from '../../services/coupon';
 import Empty from '../../components/Empty';
 import useList from '../../hooks/useList';
 import rightArrow from '../../../images/right_arrow@2x.png';
 import couponEmptyIcon from '../../../images/bg_no_coupons@2x.png';
-
 
 const ExpiresText = ({ endTime, ...resetProps }) => {
     const expreisTime = day(endTime).diff(day()) / 60 / 60 / 1000;
@@ -30,15 +29,9 @@ const ExpiresText = ({ endTime, ...resetProps }) => {
 
 export default () => {
 
-    // const [isFinish, setIsFinish] = useState(false);
-    // const [records, setRecords] = useState([]);
-    // const [page, setPage] = useState({
-    //     current: 0,
-    //     pageSize: 5,
-    //     total: 0
-    // });
+    const cdkeyRef = useRef();
 
-    const { records } = useList({
+    const { records, refresh } = useList({
         pullDownRefresh: true,
         pageSize: 5,
         onLoad: ({ current, pageSize }) => {
@@ -62,68 +55,6 @@ export default () => {
         }
     })
 
-    // useDidShow(() => {
-    //     onLoad(true);
-    // })
-
-    // usePullDownRefresh(() => {
-    //     onLoad(true);
-    // })
-
-    // useReachBottom(() => {
-    //     onLoad(false);
-    // })
-
-    // useEffect(() => {
-
-    //     const reachBottom = (e) => {
-    //         if (((e.target.clientHeight + e.target.scrollTop + 10) >= e.target.scrollHeight) && location.pathname === '/pages/coupon/index') {
-    //             onLoad(false);
-    //         }
-    //     }
-
-    //     if (process.env.TARO_ENV === 'h5') {
-    //         document.querySelector('.taro-tabbar__panel').addEventListener('scroll', reachBottom)
-    //         return () => {
-    //             document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
-    //         }
-    //     }
-
-    // }, [page])
-
-    // const onLoad = (refresh = false) => {
-    //     if (!refresh && isFinish) {
-    //         return false;
-    //     }
-    //     return list({
-    //         type: 1,
-    //         pageNum: refresh ? 1 : page.current + 1,
-    //         pageSize: page.pageSize
-    //     }).then(({ data }) => {
-    //         const currentTime = day();
-    //         data.data.records = data.data.records.map((v) => {
-    //             return {
-    //                 ...v,
-    //                 new: currentTime.diff(day(v.createTime)) <= 86400000
-    //             }
-    //         })
-    //         setIsFinish(data.data.current >= data.data.pages);
-    //         if (refresh) {
-    //             setRecords(data.data.records);
-    //         } else {
-    //             setRecords(records.concat(data.data.records));
-    //         }
-    //         setPage({
-    //             current: data.data.current,
-    //             pageSize: data.data.size,
-    //             total: data.data.total
-    //         })
-    //         Taro.stopPullDownRefresh();
-    //     }).catch(() => {
-    //         Taro.stopPullDownRefresh();
-    //     })
-    // }
-
     const goCouponList = () => {
         Taro.navigateTo({
             url: '/pages/couponList/index'
@@ -140,8 +71,33 @@ export default () => {
         })
     }
 
+    const handleExchange = () => {
+        const cdKey = cdkeyRef.current.value;
+        if (!/^\w{6}$/.test(cdKey)) {
+            return Taro.showToast({
+                title: '请填写正确的兑换码',
+                icon: 'none',
+                duration: 1500
+            })
+        }
+        exchange({
+            cdKey: cdKey
+        }).then(() => {
+            Taro.showToast({
+                title: '兑换成功',
+                icon: 'none',
+                duration: 1500
+            })
+            refresh();
+        })
+    }
+
     return (
         <View className={styles['index']}>
+            <View className={styles['cdkey-wrap']}>
+                <Input ref={cdkeyRef} maxlength={6} placeholderStyle={{ color: '#c1c1c1' }} className={styles['exchange-input']} type='text' placeholder='请输入兑换码（长按粘贴）'/>
+                <Button onClick={handleExchange} className={classnames('primary-btn', styles['exchange-btn'])}>兑换</Button>
+            </View>
             {
                 records.length > 0 ?
                     <>

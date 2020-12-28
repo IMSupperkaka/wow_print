@@ -31,3 +31,12 @@ export const channelCouponList = () => {
         method: 'GET'
     })
 }
+
+// 兑换码兑换优惠券
+export const exchange = (data) => {
+    return TaroRequest.request({
+        url: `/coupon/cdKey/exchange`,
+        method: 'GET',
+        data
+    })
+}
