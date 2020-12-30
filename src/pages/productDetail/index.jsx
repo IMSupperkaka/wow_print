@@ -92,7 +92,6 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     return (
         <View className={styles.index}>
             <View className={styles['banner-wrap']}>
-                {/* FIXME: */}
                 {
                     detail?.buyList?.length > 0 &&
                     <NoticeBubble className={styles['order-notice']} list={detail.buyList} renderItem={(v) => {
