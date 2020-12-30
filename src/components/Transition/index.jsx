@@ -74,9 +74,9 @@ export default (props) => {
 
     useEffect(() => {
         if (state == 'enter') {
-            setTimeout(() => {
+            Taro.nextTick(() => {
                 onEntering();
-            }, 0)
+            })
         }
         if (state == 'enter-active') {
             onTransitionEnd(timeout, () => {
@@ -84,7 +84,7 @@ export default (props) => {
             });
         }
         if (state == 'exit') {
-            setTimeout(() => {
+            Taro.nextTick(() => {
                 onExiting();
             })
         }
