@@ -122,7 +122,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 <View>
                     <View className={styles['product-price']}>
                         <Text>￥{fix(detail.sellingPrice, 2)}</Text>
-                        <Text className={styles['original']}>￥{fix(detail.originalPrice, 2)}</Text>
+                        <Text className={styles['original']}>￥{fix(detail.originalPrice, 2, true)}</Text>
                     </View>
                     <View className={styles['product-name']}>{detail.name}</View>
                 </View>
