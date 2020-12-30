@@ -12,7 +12,6 @@ import SelectPicModal from '../../components/SelectPicModal';
 import BottomButton from '../../components/BottomButton';
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas';
 import editIcon from '../../../images/icon_edit.png';
-import { useImgCache } from '../../hooks/useImgCache'
 import day from 'dayjs';
 
 const sizeMap = new Map([
@@ -99,8 +98,6 @@ const DeskCalendar = (props) => {
 
     const { dispatch, confirmOrder: { userImageList, goodId } } = props;
 
-    const { get: getCache, set: setCache } = useImgCache({ goodId });
-
     const title = userImageList[0]?.restInfo?.title || '定格真我 触手可及';
 
     const [visible, setVisible] = useState(false);
@@ -117,30 +114,20 @@ const DeskCalendar = (props) => {
     }, [activeIndex])
 
     useEffect(() => {
-        if(!userImageList.length) {
-            dispatch({
-                type: 'confirmOrder/mutateUserImageList',
-                payload: {
-                    userImage: getCache()?.list || [],
-                    index: activeRef.current
-                }
-            })
-        }
+        dispatch({
+            type: 'confirmOrder/initUserImgList'
+        })
     }, [])
 
     const onChange = (file, fileList, index) => {
-        console.log(file, fileList, 'aaaaaa')
         if (file.status == 'done') {
             dispatch({
                 type: 'confirmOrder/mutateUserImageList',
                 payload: {
                     userImage: file,
                     index: index || activeRef.current
-                }
-            })
-            setCache({
-                list: file,
-                expireTime: day().add(3, 'day').valueOf()
+                },
+                expireTime: day().add(7, 'day').valueOf()
             })
         }
     }

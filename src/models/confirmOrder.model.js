@@ -87,11 +87,14 @@ export default {
                 type: 'savePortfolioId',
                 payload: portfolioId || null
             })
-
-            yield put({
-                type: 'saveUserImageList',
-                payload: userImageList || []
-            })
+            
+            if(userImageList) {
+                yield put({
+                    type: 'saveUserImageList',
+                    payload: userImageList || []
+                })
+            }
+            
 
             let path = '';
 
@@ -279,14 +282,13 @@ export default {
         initUserImgList(state) {
             const isExpired = isExpire(state.imgCache?.[state.goodId]?.expireTime);
             const imgList = !isExpired ? (state.imgCache?.[state.goodId]?.list || []) : [];
-            console.log(imgList)
             return {
                 ...state,
                 userImageList: imgList,
                 imgCache: {
                     ...state.imgCache,
                     [state.goodId]: {
-                        ...state.imgCache[state.goodId],
+                        ...state.imgCache?.[state.goodId],
                         list: imgList
                     }
                 }
@@ -329,7 +331,14 @@ export default {
             if (Array.isArray(payload)) {
                 return {
                     ...state,
-                    userImageList: payload
+                    userImageList: payload,
+                    imgCache: {
+                        ...state.imgCache,
+                        [state.goodId]: {
+                            list: payload,
+                            expireTime: expireTime
+                        }
+                    }
                 }
             } else {
                 return {

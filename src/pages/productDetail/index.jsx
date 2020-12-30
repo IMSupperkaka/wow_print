@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Taro, { useShareAppMessage, useReady } from '@tarojs/taro'
 import { connect } from 'react-redux'
-import { View, Image, Swiper, SwiperItem } from '@tarojs/components'
+import { View, Text, Image, Swiper, SwiperItem } from '@tarojs/components'
 
 import styles from './index.module.less'
 import { fix } from '../../utils/utils'
@@ -120,7 +120,10 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
             </View>
             <View className={styles['product-info']}>
                 <View>
-                    <View className={styles['product-price']}>￥{fix(detail.sellingPrice, 2)}</View>
+                    <View className={styles['product-price']}>
+                        <Text>￥{fix(detail.sellingPrice, 2)}</Text>
+                        <Text className={styles['original']}>￥{fix(detail.originalPrice, 2)}</Text>
+                    </View>
                     <View className={styles['product-name']}>{detail.name}</View>
                 </View>
                 <View className={styles['product-sale']}>销量 {detail.sales}</View>

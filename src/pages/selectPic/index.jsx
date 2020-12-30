@@ -21,7 +21,7 @@ import day from 'dayjs';
 
 const SelectPic = ({ dispatch, confirmOrder }) => {
 
-    const { coupon, userImageList, proportion } = confirmOrder;
+    const { coupon, userImageList, proportion, imgCache } = confirmOrder;
 
     const onChange = (file, fileList) => {
         const totalNum = fileList.length;
@@ -36,7 +36,8 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
             })
             dispatch({
                 type: 'confirmOrder/saveUserImageList',
-                payload: imgList
+                payload: imgList,
+                expireTime: day().add(7, 'day').valueOf()
             })
         }
     }
