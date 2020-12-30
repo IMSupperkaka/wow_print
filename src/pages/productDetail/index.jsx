@@ -6,7 +6,7 @@ import { View, Text, Image, Swiper, SwiperItem } from '@tarojs/components'
 import styles from './index.module.less'
 import { fix } from '../../utils/utils'
 import SafeArea from '../../components/SafeArea'
-import NoticeBar from '../../components/NoticeBar'
+import NoticeBubble from '../../components/NoticeBubble'
 import Upload from '../../components/Upload'
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas'
 import SelectCoupon from '../../page-components/SelectCoupon'
@@ -92,9 +92,10 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     return (
         <View className={styles.index}>
             <View className={styles['banner-wrap']}>
+                {/* FIXME: */}
                 {
                     detail?.buyList?.length > 0 &&
-                    <NoticeBar className={styles['order-notice']} list={detail.buyList} renderItem={(v) => {
+                    <NoticeBubble className={styles['order-notice']} list={detail.buyList} renderItem={(v) => {
                         return <View className={styles['order-notice-item']}>{ v.cname }打印了{ v.printNums }张</View>
                     }}/>
                 }
