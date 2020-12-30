@@ -10,7 +10,7 @@ export default (props) => {
 
     return (
         <View className={classNames('wy-noticebar-wrap', props.className)}>
-            <Swiper duration vertical className="wy-noticebar-content" autoplay duration={100} interval={3000}>
+            <Swiper duration vertical className="wy-noticebar-content" autoplay duration={300} interval={3000} circular>
                 {
                     list.map((v, index) => {
                         return (
