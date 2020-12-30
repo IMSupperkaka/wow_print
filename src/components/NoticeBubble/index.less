@@ -1,0 +1,39 @@
+.wy-noticebar-content {
+    swiper-item {
+        height: 100%;
+    }
+    .bubble-item {
+        
+    }
+}
+@keyframes bubble {
+    0% {
+        opacity: 0;
+        transform: translate(0, 80%);
+    }
+
+    40% {
+        opacity: 1;
+        transform: translate(0, 40%);
+    }
+
+    70% {
+        opacity: 1;
+        transform: translate(0, 40%);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(0, 0%);
+        display: none;
+    }
+}
+.wy-noticebar-wrap {
+    .bubble-item {
+        width: 300px;
+        position: absolute;
+        top: 0;
+        opacity: 0;
+        animation: bubble 1.8s ease-in 1;
+    }
+}
