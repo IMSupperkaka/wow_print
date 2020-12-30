@@ -25,16 +25,16 @@ export default (props) => {
 
     return (
         <View className={classNames("wy-noticebar-wrap", props.className)}>
-            <div className="wy-noticebar-content">
+            <View className="wy-noticebar-content">
                 {
                     list.map((v, index) => {
                         return (
                             index == curIndex && 
-                            <div className={classNames("bubble-item", index == curIndex ? "actived" : "")} key={index}>{ props.renderItem(v) }</div>
+                            <View className={classNames("bubble-item", index == curIndex ? "actived" : "")} key={index}>{ props.renderItem(v) }</View>
                         )
                     })
                 }
-            </div>
+            </View>
         </View>
     )
 }
