@@ -58,7 +58,6 @@ const Home = (props) => {
 
     // TODO 封装usePageScroll
     usePageScroll(res => {
-        console.log(res)
         setScrollTop(res.scrollTop);
     })
 
