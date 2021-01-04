@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
 import day from 'dayjs'
 import classnames from 'classnames'
 import { View, Image, Text, Input, Button } from '@tarojs/components'
@@ -68,6 +68,12 @@ export default () => {
             Taro.navigateTo({
                 url: `/pages/productDetail/index?id=${coupon.couponGoodId}`
             })
+        }).catch(({ code }) => {
+            if (code == 10045) {
+                setTimeout(() => {
+                    refresh();
+                }, 1500)
+            }
         })
     }
 
@@ -83,14 +89,18 @@ export default () => {
         exchange({
             cdKey: cdKey
         }).then(() => {
+            refresh();
             Taro.showToast({
                 title: '兑换成功',
                 icon: 'none',
                 duration: 1500
             })
-            refresh();
         })
     }
+
+    useDidShow(() => {
+        cdkeyRef.current.value = null;
+    })
 
     return (
         <View className={styles['index']}>
