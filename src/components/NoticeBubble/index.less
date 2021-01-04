@@ -7,22 +7,22 @@
 @keyframes bubble {
     0% {
         opacity: 0;
-        transform: translate(0, 80%);
+        transform: translate(0, 0%);
     }
 
-    40% {
+    25% {
         opacity: 1;
-        transform: translate(0, 40%);
+        transform: translate(0, -40%);
     }
 
-    70% {
+    55% {
         opacity: 1;
-        transform: translate(0, 40%);
+        transform: translate(0, -40%);
     }
 
     100% {
         opacity: 0;
-        transform: translate(0, 0%);
+        transform: translate(0, -80%);
         display: none;
     }
 }
@@ -33,6 +33,6 @@
         position: absolute;
         top: 0;
         opacity: 0;
-        animation: bubble 1.8s ease-in 1;
+        animation: bubble 2s ease-in 1;
     }
 }
