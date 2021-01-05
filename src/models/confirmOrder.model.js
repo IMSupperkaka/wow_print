@@ -46,7 +46,7 @@ const isEmptyAddress = () => {
 }
 
 const isExpire = (expireTime) => {
-    if(expireTime && (new Date()).getTime() > expireTime) {
+    if(!expireTime || (new Date()).getTime() > expireTime) {
         return true
     }
     return false;
@@ -280,6 +280,7 @@ export default {
             }
         },
         initUserImgList(state) {
+            // console.log(state.imgCache?.[state.goodId])
             const isExpired = isExpire(state.imgCache?.[state.goodId]?.expireTime);
             const imgList = !isExpired ? (state.imgCache?.[state.goodId]?.list || []) : [];
             return {
@@ -336,7 +337,7 @@ export default {
                         ...state.imgCache,
                         [state.goodId]: {
                             list: payload,
-                            expireTime: expireTime
+                            expireTime: expireTime || state.imgCache?.[state.goodId]?.expireTime
                         }
                     }
                 }
@@ -354,7 +355,7 @@ export default {
                                 ...state.userImageList,
                                 payload
                             ],
-                            expireTime: expireTime
+                            expireTime: expireTime || state.imgCache?.[state.goodId]?.expireTime
                         }
                     }
                 }
@@ -386,7 +387,7 @@ export default {
                     ...state.imgCache,
                     [state.goodId]: {
                         list: cloneUserImageList,
-                        expireTime: expireTime
+                        expireTime: expireTime || state.imgCache?.[state.goodId]?.expireTime
                     }
                 }
             }
