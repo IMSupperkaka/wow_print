@@ -12,6 +12,7 @@ import NavBar from '../../components/NavBar'
 import Dialog from '../../components/Dialog'
 import AddToMine from '../../components/AddToMine'
 import logo from '../../../images/bg_kachaxionglogo@2x.png'
+import { fix } from '../../utils/utils'
 
 const Home = (props) => {
 
@@ -153,7 +154,7 @@ const Home = (props) => {
                                     <View className={styles['product-info']}>
                                         <View className={styles['product-name']}>{product.name}</View>
                                         <View className={styles['product-description']}>{product.description}</View>
-                                        <View className={styles['product-price']}>￥<Text className="price">{(product.sellingPrice / 100).toFixed(2)}</Text></View>
+                                        <View className={styles['product-price']}>￥<Text className="price">{fix(product.sellingPrice, 2, true)}</Text></View>
                                     </View>
                                 </View>
                             )
