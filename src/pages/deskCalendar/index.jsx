@@ -127,7 +127,7 @@ const DeskCalendar = (props) => {
                     userImage: file,
                     index: index || activeRef.current
                 },
-                expireTime: day().add(7, 'day').valueOf()
+                expireTime: day().add(3, 'day').valueOf()
             })
         }
     }

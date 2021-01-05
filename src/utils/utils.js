@@ -120,11 +120,13 @@ export const fitImg = ({ width, height, contentWidth, contentHeight, deg = 0 }) 
     }
 }
 
-export const fix = (num, prefix = 0) => {
+export const fix = (num, prefix = 0, auto = false) => {
     if ([null, undefined, NaN].includes(num)) {
         return 0;
     }
-    return (num / 100).toFixed(prefix);
+    if(auto) {
+        return Number.isInteger(num / 100) ? (num / 100) : (num / 100).toFixed(prefix)
+    } else return (num / 100).toFixed(prefix);
 }
 
 export const throttle = (callback, time) => {
