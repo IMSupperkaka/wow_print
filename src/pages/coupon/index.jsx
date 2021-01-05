@@ -120,8 +120,14 @@ export default () => {
                                             {
                                                 item.new &&
                                                 <View className={styles['top']}>
-                                                    <View className={styles['triangle']}></View>
-                                                    <Text className={styles['new']}>新</Text>
+                                                    <View className={classnames(styles['triangle'], item.giveType == 2 && styles['exchange'])}></View>
+                                                    <Text className={styles['new']}>
+                                                        {
+                                                            item.giveType == 1 ?
+                                                            '新' :
+                                                            '兑'
+                                                        }
+                                                    </Text>
                                                 </View>
                                             }
                                             <View className={styles['list-item-header']}>

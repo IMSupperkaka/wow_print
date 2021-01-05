@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { View, Image, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
@@ -22,6 +22,8 @@ import day from 'dayjs';
 const SelectPic = ({ dispatch, confirmOrder }) => {
 
     const { coupon, userImageList, proportion, imgCache } = confirmOrder;
+
+    const uploadRef = useRef();
 
     const onChange = (file, fileList) => {
         const totalNum = fileList.length;
@@ -190,6 +192,10 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
         })
     }
 
+    const handleAddPic = () => {
+        uploadRef.current.handleChoose();
+    }
+
     const restFreeNums = (coupon.couponFreeNums || 0) - userImageList.reduce((count, v) => { return count + v.printNums }, 0);
 
     const contentStyle = {
@@ -229,7 +235,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                             )
                         })
                     }
-                    <Upload onChange={onChange} limit={9} fileList={userImageList}>
+                    <Upload ref={uploadRef} onChange={onChange} limit={9} fileList={userImageList}>
                         <View className={`${styles['item']} ${styles['choose-item']}`}>
                             <View className={styles['item-body']} style={contentStyle}>
                                 <Image className={styles['select-icon']} src={addPic} />
@@ -247,7 +253,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                                     coupon.couponName &&
                                     <View className={styles['freenums-tag']}>还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
                                 }
-                                <View className={styles['submit-left']}>
+                                <View className={styles['submit-left']} onClick={handleAddPic}>
                                     <Text className={styles['submit-left-text']}>添加照片</Text>
                                     <Text className={styles['submit-left-text']}>已选{userImageList.length}张</Text>
                                 </View>
