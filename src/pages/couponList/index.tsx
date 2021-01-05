@@ -8,6 +8,7 @@ import Empty from '../../components/Empty';
 
 import icon_used from '../../../images/icon_Used@2x.png';
 import icon_expired from '../../../images/icon_expired@2x.png';
+import icon_disabled from '../../../images/lALPD4Bhr9v28EJycg_114_114.png';
 
 export default () => {
 
@@ -64,6 +65,20 @@ export default () => {
                 <View className={styles['list']}>
                     {
                         records.map((item, index) => {
+
+                            let icon;
+                            switch (item.status) {
+                                case 0:
+                                    icon = icon_expired;
+                                    break;
+                                case 2:
+                                    icon = icon_used;
+                                    break;
+                                case 3:
+                                    icon = icon_disabled;
+                                    break;
+                            }
+
                             return (
                                 <View className='list-item' key={index}>
                                     <View className='list-item-header'>
@@ -77,7 +92,7 @@ export default () => {
                                                 </View>
                                             </View>
                                         </View>
-                                        <Image className="list-item-header-right" src={item.status == 0 ? icon_expired : icon_used}/>
+                                        <Image className="list-item-header-right" src={icon}/>
                                     </View>
                                     <View className="list-item-desc">
                                         <Text>{ item.couponDescription }</Text>

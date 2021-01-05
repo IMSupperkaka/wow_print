@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro'
 import day from 'dayjs'
 import classnames from 'classnames'
@@ -29,7 +29,7 @@ const ExpiresText = ({ endTime, ...resetProps }) => {
 
 export default () => {
 
-    const cdkeyRef = useRef();
+    const [cdkey, setCdkey] = useState(null);
 
     const { records, refresh } = useList({
         pullDownRefresh: true,
@@ -78,8 +78,7 @@ export default () => {
     }
 
     const handleExchange = () => {
-        const cdKey = cdkeyRef.current.value;
-        if (!/^\w{6}$/.test(cdKey)) {
+        if (!/^\w{6}$/.test(cdkey)) {
             return Taro.showToast({
                 title: '请填写正确的兑换码',
                 icon: 'none',
@@ -87,25 +86,24 @@ export default () => {
             })
         }
         exchange({
-            cdKey: cdKey
+            cdKey: cdkey
         }).then(() => {
+            setCdkey(null);
             refresh();
             Taro.showToast({
                 title: '兑换成功',
                 icon: 'none',
                 duration: 1500
             })
+        }).catch(() => {
+            setCdkey(null);
         })
     }
-
-    useDidShow(() => {
-        cdkeyRef.current.value = null;
-    })
 
     return (
         <View className={styles['index']}>
             <View className={styles['cdkey-wrap']}>
-                <Input ref={cdkeyRef} maxlength={6} placeholderStyle={{ color: '#c1c1c1' }} className={styles['exchange-input']} type='text' placeholder='请输入兑换码（长按粘贴）'/>
+                <Input value={cdkey} onInput={(e) => { setCdkey(e.detail.value) }} maxlength={6} placeholderStyle={{ color: '#c1c1c1' }} className={styles['exchange-input']} type='text' placeholder='请输入兑换码（长按粘贴）'/>
                 <Button onClick={handleExchange} className={classnames('primary-btn', styles['exchange-btn'])}>兑换</Button>
             </View>
             {
