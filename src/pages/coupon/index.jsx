@@ -118,7 +118,7 @@ export default () => {
                                     return (
                                         <View className={styles['list-item']} key={index}>
                                             {
-                                                item.new &&
+                                                (item.new || item.giveType == 2) &&
                                                 <View className={styles['top']}>
                                                     <View className={classnames(styles['triangle'], item.giveType == 2 && styles['exchange'])}></View>
                                                     <Text className={styles['new']}>

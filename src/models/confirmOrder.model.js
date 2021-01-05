@@ -182,25 +182,29 @@ export default {
             })
         },
         *pushConfirmOrder({ payload }, { call, put, select }) {
-
-            if (payload.resultList) {
-                yield put({
-                    type: 'saveUserImageList',
-                    payload: payload.resultList
-                })
-            }
-
-            isEmptyAddress().then((isEmpty) => {
-                if (isEmpty) {
-                    Taro.navigateTo({
-                        url: `/pages/addressEdit/index?type=add&redirect=${encodeURIComponent('/pages/confirmOrder/index')}`
-                    })
-                } else {
-                    Taro.navigateTo({
-                        url: '/pages/confirmOrder/index'
+            try {
+                if (payload.resultList) {
+                    yield put({
+                        type: 'saveUserImageList',
+                        payload: payload.resultList
                     })
                 }
-            })
+    
+                isEmptyAddress().then((isEmpty) => {
+                    if (isEmpty) {
+                        Taro.navigateTo({
+                            url: `/pages/addressEdit/index?type=add&redirect=${encodeURIComponent('/pages/confirmOrder/index')}`
+                        })
+                    } else {
+                        Taro.navigateTo({
+                            url: '/pages/confirmOrder/index'
+                        })
+                    }
+                })
+            } catch (error) {
+                console.error(error)
+            }
+
         },
         *savePortfolio({ payload }, { call, put, select }) { // 存入作品集
             try {
