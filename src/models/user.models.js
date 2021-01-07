@@ -8,7 +8,7 @@
 import Taro from '@tarojs/taro'
 
 import { getRouterParams, getH5Params } from '../utils/utils';
-import { login, wechatLogin, smsLogin, saveinfo, changeToken as getChangeToken } from '../services/user';
+import { login, wechatLogin, smsLogin, touristLogin, saveinfo, changeToken as getChangeToken } from '../services/user';
 
 export default {
     namespace: 'user',
@@ -120,6 +120,20 @@ export default {
                     Taro.navigateBack();
                 }
 
+            } catch (error) {
+                console.error(error)
+            }
+        },
+        *touristsLogin({ payload }, { call, put }) {
+            try {
+                const response = yield call(touristLogin, {
+                    deviceToken: payload.uuid
+                })
+                yield put({
+                    type: 'saveUserInfo',
+                    payload: response.data.data || {}
+                })
+                payload.resolve && payload.resolve()
             } catch (error) {
                 console.error(error)
             }

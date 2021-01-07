@@ -17,8 +17,6 @@ import { fix } from '../../utils/utils'
 const Home = (props) => {
 
     const { dispatch, home: { dialog } } = props;
-
-    const [scrollTop, setScrollTop] = useState(0);
     
     const [homeData, setHomeData] = useState({
         bannerList: [],
@@ -57,26 +55,31 @@ const Home = (props) => {
         }
     });
 
-    // TODO 封装usePageScroll
-    usePageScroll(res => {
-        setScrollTop(res.scrollTop);
-    })
-
     useEffect(() => {
         getConfig();
     }, [])
 
     const getConfig = () => {
         index().then(({ data }) => {
-            setHomeData(data.data);
+            setHomeData({
+                bannerList: [
+                    {
+                        id: 1,
+                        image: data.data.banner,
+                        url: data.data.bannerJumpUrl
+                    }
+                ],
+                indexBigImageList: [
+                    {
+                        id: 1,
+                        image: data.data.indexBigImage,
+                        url: data.data.indexBigImageJumpUrl
+                    }
+                ],
+                welfareText: data.data.welfareText,
+                logo: data.data.logo
+            });
         })
-    }
-
-    const percent = scrollTop / 150;
-
-    const navBarStyle = {
-        backgroundColor: `rgba(255,255,255,${percent * 1})`,
-        color: `rgba(${255 * (1 - percent)},${255 * (1 - percent)},${255 * (1 - percent)},1)`
     }
 
     const handleGoDetail = (id) => {
@@ -102,10 +105,10 @@ const Home = (props) => {
 
     return (
         <View className={styles['index']}>
-            <NavBar style={navBarStyle} left={
+            <NavBar left={
                 <View className={styles.navLeft}>
-                    <Image className={styles.navLogo} src={logo} />
-                    <Text>哇印</Text>
+                    <Image className={styles.navLogo} src={homeData.logo} />
+                    <Text>{homeData.welfareText}</Text>
                 </View>
             } />
             {process.env.TARO_ENV === 'weapp' && <AddToMine />}

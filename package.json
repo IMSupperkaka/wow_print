@@ -55,6 +55,7 @@
     "dva-loading": "^3.0.20",
     "dva-model-extend": "^0.1.2",
     "dva-model-persist": "^1.0.0",
+    "fingerprintjs": "^0.5.3",
     "mathjs": "^7.5.1",
     "node-sass": "^4.14.1",
     "qiniu-js": "^3.1.1",
