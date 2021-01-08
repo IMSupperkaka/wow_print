@@ -180,8 +180,17 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
     // 商品总价
     const productMoney = fix(productDetail.sellingPrice * (picNum <= 0 ? 0 : picNum), 2);
-    // 优惠金额
-    const discountMoney = discountNum * productDetail.sellingPrice / 100;
+
+    let discountMoney = 0;
+
+    if (coupon.couponMethod == 1) { // 免费打印券
+        discountMoney = discountNum * productDetail.sellingPrice / 100; // 优惠金额
+    } else if (coupon.couponMethod == 2) { // 满减券
+        if (productMoney > coupon.couponUseConditionMoney / 100) { // 满足满减条件
+            discountMoney = coupon.couponOffer / 100;
+        }
+    }
+    
     // 搭配商品总价
     const matchMoney = matchList.filter((v) => { return selectedRowKeys.includes(v.id) }).reduce((count, v) => { return count + v.saleNum * v.sellingPrice }, 0) / 100;
     // 优惠后金额

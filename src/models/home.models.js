@@ -117,7 +117,7 @@ export default {
                 return state.home;
             })
             if (dialog.type === 'coupon') {
-                yield call(receive);
+                const response = yield call(receive);
             }
             if (dialog.type === 'popup' && !close) {
                 dialog.url && jump(dialog.url);
