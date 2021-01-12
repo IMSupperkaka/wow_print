@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import * as math from 'mathjs'
+import math from '../../utils/math'
 import classnames from 'classnames'
 import { View, Image, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
