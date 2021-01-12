@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import * as math from 'mathjs'
 import classnames from 'classnames'
 import { View, Image, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
@@ -184,27 +185,27 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     let discountMoney = 0;
 
     if (coupon.couponMethod == 1) { // 免费打印券
-        discountMoney = discountNum * productDetail.sellingPrice / 100; // 优惠金额
+        discountMoney = math.chain(discountNum).multiply(productDetail.sellingPrice).divide(100); // 优惠金额
     } else if (coupon.couponMethod == 2) { // 满减券
-        if (productMoney > coupon.couponUseConditionMoney / 100) { // 满足满减条件
-            discountMoney = coupon.couponOffer / 100;
+        if (productMoney >= math.divide(coupon.couponUseConditionMoney, 100)) { // 满足满减条件
+            discountMoney = math.divide(coupon.couponOffer, 100);
         }
     }
     
     // 搭配商品总价
     const matchMoney = matchList.filter((v) => { return selectedRowKeys.includes(v.id) }).reduce((count, v) => { return count + v.saleNum * v.sellingPrice }, 0) / 100;
     // 优惠后金额
-    const afterDiscountMoney = Math.max(Number(productMoney) - Number(discountMoney), 0);
+    const afterDiscountMoney = Math.max(math.subtract(productMoney, discountMoney), 0);
     // 券优惠了金额
-    const couponDiscount = Math.min(Number(productMoney), Number(discountMoney))
+    const couponDiscount = Math.min(productMoney, discountMoney);
     // (搭配总价 + 商品总价 - 优惠金额) 是否大于包邮金额
-    if ((Number(matchMoney) + afterDiscountMoney) - freeShipMoney >= 0) {
+    if (math.chain(matchMoney).add(afterDiscountMoney).subtract(freeShipMoney) >= 0) {
         shipMoney = 0;
     }
     // 小计
-    const totalMoney = (afterDiscountMoney + Number(shipMoney)).toFixed(2);
+    const totalMoney = math.add(afterDiscountMoney, shipMoney).toFixed(2);
     // 支付金额
-    const payMoney = (Number(matchMoney) + Number(totalMoney)).toFixed(2)
+    const payMoney = math.add(matchMoney, totalMoney).toFixed(2)
 
     const rowSelection = {
         type: 'checkbox',

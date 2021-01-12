@@ -35,6 +35,26 @@ export default (props) => {
         }
     }, [productId])
 
+    useEffect(() => {
+        // 是否有已选择的优惠券
+        const resetCoupon = couponList.findIndex((v) => {
+            return v.id == activeCoupon.id;
+        }) == -1;
+        if (!resetCoupon) {
+            return false;
+        }
+        if (detail.category != 0) {
+            if (couponList.length > 0) {
+                onChange(couponList[0])
+            } else {
+                onChange({
+                    id: null,
+                    couponFreeNums: 0
+                })
+            }
+        }
+    }, [couponList, detail, activeCoupon.id])
+
     const getOrderDetail = (id) => {
         getDetail({
             goodId: id
@@ -47,23 +67,6 @@ export default (props) => {
                     new: (currentTime - new Date(v.createTime)) <= 86400000
                 }
             }))
-            // 是否有已选择的优惠券
-            const resetCoupon = data.data.couponList.findIndex((v) => {
-                return v.id == activeCoupon.id;
-            }) == -1;
-            if (!resetCoupon) {
-                return false;
-            }
-            if (data.data.category != 0) {
-                if (data.data.couponList.length > 0 && data.data.category == 1) {
-                    onChange(data.data.couponList[0])
-                } else {
-                    onChange({
-                        id: null,
-                        couponFreeNums: 0
-                    })
-                }
-            }
         })
     }
 
@@ -95,7 +98,7 @@ export default (props) => {
     let cellComponent = typeof render === 'function' ?
     render(activeCouponItem, couponList) :
     (
-        (couponList?.length > 0 && detail.category == 1) &&
+        couponList?.length > 0 &&
         <View className={styles["coupon-cell"]}>
             <View className={styles["coupon-left"]}>
                 <Image className={styles["coupon-icon"]} src={iconCoupon} />
@@ -139,7 +142,7 @@ export default (props) => {
                                             <View className="list-item-header-text">
                                                 <View className="name">{item.couponName}</View>
                                                 <View>
-                                                    <View className="sill">无门槛使用</View>
+                                                    <View className="sill">{item.couponDescription}</View>
                                                     <View className="time">有效期至 {item.endTime}</View>
                                                 </View>
                                             </View>
