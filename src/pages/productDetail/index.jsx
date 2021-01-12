@@ -12,6 +12,14 @@ import WidthCompressCanvas from '@/layout/WidthCompressCanvas'
 import SelectCoupon from '../../page-components/SelectCoupon'
 import { detail as getDetail } from '../../services/product'
 
+const BottomTips = () => {
+    return (
+        <View className={styles['bottom-tips']}>
+            <Text>免费定制1个 限时特惠</Text>
+        </View>
+    )
+}
+
 const ProductDetail = ({ dispatch, confirmOrder, user }) => {
 
     const { coupon } = confirmOrder;
@@ -89,6 +97,12 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
         submitBtnText = '立即定制';
     }
 
+    let priceText = `￥${fix(detail.sellingPrice, 2, true)}`;
+
+    if (coupon.couponMethod == 2) {
+        priceText = `券后￥${Math.abs(fix(detail.sellingPrice - coupon.couponOffer / 100, 2, true))}`
+    }
+
     return (
         <View className={styles.index}>
             <View className={styles['banner-wrap']}>
@@ -121,7 +135,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
             <View className={styles['product-info']}>
                 <View>
                     <View className={styles['product-price']}>
-                        <Text>￥{fix(detail.sellingPrice, 2, true)}</Text>
+                        <Text>{priceText}</Text>
                         <Text className={styles['original']}>￥{fix(detail.originalPrice, 2, true)}</Text>
                     </View>
                     <View className={styles['product-name']}>{detail.name}</View>
