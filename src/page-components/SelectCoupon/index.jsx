@@ -40,10 +40,7 @@ export default (props) => {
         const resetCoupon = couponList.findIndex((v) => {
             return v.id == activeCoupon.id;
         }) == -1;
-        if (!resetCoupon) {
-            return false;
-        }
-        if (detail.category != 0) {
+        if (resetCoupon && detail.category != 0) {
             if (couponList.length > 0) {
                 onChange(couponList[0])
             } else {
@@ -53,7 +50,7 @@ export default (props) => {
                 })
             }
         }
-    }, [couponList, detail, activeCoupon.id])
+    }, [couponList, detail, activeCoupon?.id])
 
     const getOrderDetail = (id) => {
         getDetail({
@@ -78,7 +75,7 @@ export default (props) => {
         setIsOpened(false);
     }
 
-    const useCoupon = (item) => {
+    const handleUseCoupon = (item) => {
         onChange(item);
         handleCloseCoupon();
     }
@@ -128,7 +125,7 @@ export default (props) => {
                     {
                         (couponList || []).map((item, index) => {
                             return (
-                                <View onClick={useCoupon.bind(this, item)} className={classNames('list-item', activeCoupon.id == item.id ? 'active' : '')} key={index}>
+                                <View onClick={() => { handleUseCoupon(item) }} className={classNames('list-item', activeCoupon.id == item.id ? 'active' : '')} key={item.id}>
                                     {
                                         item.new &&
                                         <View className="top">

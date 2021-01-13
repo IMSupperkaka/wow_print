@@ -50,6 +50,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     }
 
     const saveCoupon = (coupon) => {
+        console.log(coupon)
         dispatch({
             type: 'confirmOrder/saveCoupon',
             payload: coupon
@@ -142,7 +143,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 </View>
                 <View className={styles['product-sale']}>销量 {detail.sales}</View>
             </View>
-            <SelectCoupon productId={query.id} activeCoupon={coupon} onChange={saveCoupon}></SelectCoupon>
+            <SelectCoupon productId={query.id} activeCoupon={coupon} onChange={saveCoupon}/>
             <View className={styles['product-detail']}>
                 <View className={styles['detail-title']}>商品详情</View>
                 {

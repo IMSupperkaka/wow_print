@@ -29,7 +29,9 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
     const { addressInfo, coupon, goodId, userImageList } = confirmOrder;
     
-    const [productDetail, setProductDetail] = useState({});
+    const [productDetail, setProductDetail] = useState({
+        sellingPrice: 0
+    });
     
     const [matchList, setMatchList] = useState([]);
 
@@ -185,7 +187,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     let discountMoney = 0;
 
     if (coupon.couponMethod == 1) { // 免费打印券
-        discountMoney = math.chain(discountNum).multiply(productDetail.sellingPrice).divide(100); // 优惠金额
+        discountMoney = math.chain(discountNum).multiply(productDetail.sellingPrice).divide(100).done(); // 优惠金额
     } else if (coupon.couponMethod == 2) { // 满减券
         if (productMoney >= math.divide(coupon.couponUseConditionMoney, 100)) { // 满足满减条件
             discountMoney = math.divide(coupon.couponOffer, 100);
@@ -199,7 +201,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     // 券优惠了金额
     const couponDiscount = Math.min(productMoney, discountMoney);
     // (搭配总价 + 商品总价 - 优惠金额) 是否大于包邮金额
-    if (math.chain(matchMoney).add(afterDiscountMoney).subtract(freeShipMoney) >= 0) {
+    if (math.chain(matchMoney).add(afterDiscountMoney).subtract(freeShipMoney).done() >= 0) {
         shipMoney = 0;
     }
     // 小计
