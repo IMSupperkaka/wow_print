@@ -136,7 +136,7 @@ export default () => {
                                                     <View className={styles['list-item-header-text']}>
                                                         <View className={styles['name']}>{item.couponName}</View>
                                                         <View>
-                                                            <View className={styles['sill']}>无门槛使用</View>
+                                                            <View className={styles['sill']}>{item.freeContent}</View>
                                                             <View className={styles['time']}>有效期至 {item.endTime}</View>
                                                         </View>
                                                     </View>

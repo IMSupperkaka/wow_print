@@ -50,7 +50,6 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     }
 
     const saveCoupon = (coupon) => {
-        console.log(coupon)
         dispatch({
             type: 'confirmOrder/saveCoupon',
             payload: coupon

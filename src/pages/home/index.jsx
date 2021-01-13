@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import Taro, { usePageScroll, useShareAppMessage } from '@tarojs/taro'
+import math from '../../utils/math'
+import Taro, { useShareAppMessage } from '@tarojs/taro'
 import { View, Image, Text, Swiper, SwiperItem } from '@tarojs/components'
 
 import styles from './index.module.less'
@@ -11,8 +12,6 @@ import useList from '../../hooks/useList'
 import NavBar from '../../components/NavBar'
 import Dialog from '../../components/Dialog'
 import AddToMine from '../../components/AddToMine'
-import logo from '../../../images/bg_kachaxionglogo@2x.png'
-import { fix } from '../../utils/utils'
 
 const Home = (props) => {
 
@@ -157,7 +156,7 @@ const Home = (props) => {
                                     <View className={styles['product-info']}>
                                         <View className={styles['product-name']}>{product.name}</View>
                                         <View className={styles['product-description']}>{product.description}</View>
-                                        <View className={styles['product-price']}>￥<Text className="price">{fix(product.sellingPrice, 2, true)}</Text></View>
+                                        <View className={styles['product-price']}>￥<Text className="price">{math.divide(product.sellingPrice, 100)}</Text></View>
                                     </View>
                                 </View>
                             )

@@ -36,6 +36,9 @@ export default (props) => {
     }, [productId])
 
     useEffect(() => {
+        if (activeCoupon.noUse) {
+            return;
+        }
         // 是否有已选择的优惠券
         const resetCoupon = couponList.findIndex((v) => {
             return v.id == activeCoupon.id;
@@ -50,7 +53,7 @@ export default (props) => {
                 })
             }
         }
-    }, [couponList, detail, activeCoupon?.id])
+    }, [couponList, detail, JSON.stringify(activeCoupon)])
 
     const getOrderDetail = (id) => {
         getDetail({
@@ -83,6 +86,7 @@ export default (props) => {
     const noUseCoupon = () => {
         onChange({
             id: null,
+            noUse: true,
             couponFreeNums: 0
         });
         handleCloseCoupon();
@@ -139,7 +143,7 @@ export default (props) => {
                                             <View className="list-item-header-text">
                                                 <View className="name">{item.couponName}</View>
                                                 <View>
-                                                    <View className="sill">{item.couponDescription}</View>
+                                                    <View className="sill">{item.freeContent}</View>
                                                     <View className="time">有效期至 {item.endTime}</View>
                                                 </View>
                                             </View>
