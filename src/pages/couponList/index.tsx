@@ -90,7 +90,7 @@ export default () => {
                                             <View className="list-item-header-text">
                                                 <View className="name">{item.couponName}</View>
                                                 <View>
-                                                    <View className="sill">无门槛使用</View>
+                                                    <View className="sill">{item.freeContent}</View>
                                                     <View className="time">有效期至 {item.endTime}</View>
                                                 </View>
                                             </View>
