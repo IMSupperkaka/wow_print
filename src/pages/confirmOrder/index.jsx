@@ -263,12 +263,13 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                         productId={productDetail.id}
                         activeCoupon={coupon}
                         onChange={saveCoupon}
+                        money={productMoney}
                         render={(coupon, couponList) => {
                             return (
                                 couponList?.length > 0 &&
                                 <View className={styles['product-pay-info-item']}>
                                     <View>
-                                        <Text className="discount-title">优惠</Text>
+                                        <Text className={styles['discount-title']}>优惠</Text>
                                         {
                                             coupon?.couponName && <Text>{coupon?.couponName}</Text>
                                         }

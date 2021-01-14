@@ -11,13 +11,20 @@ import couponArrow from '../../../images/coin_jump@3x.png';
 
 export default (props) => {
 
-    const { productId, activeCoupon, render, onChange: propsOnChange } = props;
+    const { productId, activeCoupon, render, money, onChange: propsOnChange } = props;
 
     const [isOpened, setIsOpened] = useState(false);
 
     const [detail, setDetail] = useState({});
 
     const [couponList, setCouponList] = useState([]);
+
+    const filterCouponList = (couponList || []).filter((coupon) => {
+        if (coupon.couponMethod == 2 && money) {
+            return coupon.couponUseConditionMoney <= money;
+        }
+        return true;
+    })
 
     const onChange = (coupon) => {
         propsOnChange(coupon);
@@ -36,16 +43,9 @@ export default (props) => {
     }, [productId])
 
     useEffect(() => {
-        if (activeCoupon.noUse) {
-            return;
-        }
-        // 是否有已选择的优惠券
-        const resetCoupon = couponList.findIndex((v) => {
-            return v.id == activeCoupon.id;
-        }) == -1;
-        if (resetCoupon && detail.category != 0) {
-            if (couponList.length > 0) {
-                onChange(couponList[0])
+        if (detail.category != 0) {
+            if (filterCouponList.length > 0) {
+                onChange(filterCouponList[0])
             } else {
                 onChange({
                     id: null,
@@ -53,7 +53,7 @@ export default (props) => {
                 })
             }
         }
-    }, [couponList, detail, JSON.stringify(activeCoupon)])
+    }, [filterCouponList.map(v => v.id).join(','), detail, money])
 
     const getOrderDetail = (id) => {
         getDetail({
@@ -127,7 +127,7 @@ export default (props) => {
                 <View className="title">优惠券</View>
                 <ScrollView className="content" scrollY={true}>
                     {
-                        (couponList || []).map((item, index) => {
+                        filterCouponList.map((item, index) => {
                             return (
                                 <View onClick={() => { handleUseCoupon(item) }} className={classNames('list-item', activeCoupon.id == item.id ? 'active' : '')} key={item.id}>
                                     {

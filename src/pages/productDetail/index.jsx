@@ -140,13 +140,18 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 <View>
                     <View className={styles['product-price']}>
                         <Text>{priceText}</Text>
-                        <Text className={styles['original']}>￥{fix(detail.originalPrice, 2, true)}</Text>
+                        <Text className={styles['original']}>
+                            ￥
+                            <Text className={styles['discount']}>
+                            {fix(detail.originalPrice, 2, true)}
+                            </Text>
+                        </Text>
                     </View>
                     <View className={styles['product-name']}>{detail.name}</View>
                 </View>
                 <View className={styles['product-sale']}>销量 {detail.sales}</View>
             </View>
-            <SelectCoupon productId={query.id} activeCoupon={coupon} onChange={saveCoupon}/>
+            <SelectCoupon productId={query.id} activeCoupon={coupon} onChange={saveCoupon} money={detail.sellingPrice}/>
             <View className={styles['product-detail']}>
                 <View className={styles['detail-title']}>商品详情</View>
                 {

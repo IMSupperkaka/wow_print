@@ -135,6 +135,9 @@ export default React.forwardRef((props, ref) => {
                         console.log(error)
                     }
                 }
+            },
+            fail: (err) => {
+                console.log(err);
             }
         })
     }
