@@ -64,12 +64,11 @@ export default React.forwardRef((props, ref) => {
     })
 
     const onChange = (info) => {
-        console.log(info)
         setFileList(info.fileList);
-        onChangeProp(info.file, info.fileList);
+        onChangeProp(info.file, info.fileList, info.params);
     }
 
-    const progress = (item, res, imgInfo, status) => {
+    const progress = (item, res, imgInfo, status, params) => {
         const nextFileList = getFileList().concat();
         const index = nextFileList.findIndex((v) => {
             return v.uid == item.uid;
@@ -100,7 +99,7 @@ export default React.forwardRef((props, ref) => {
         });
     }
 
-    const handleChoose = () => {
+    const handleChoose = (params) => {
         if (typeof beforeUpload == 'function') {
             const result = beforeUpload();
             if (result === false) {
@@ -110,7 +109,7 @@ export default React.forwardRef((props, ref) => {
         Taro.chooseImage({
             sizeType: ['original'],
             count: limit,
-            success: async (e) => {
+            success: (e) => {
                 const nextFileList = getFileList().concat();
                 const uploadList = e.tempFiles.map((v, index) => {
                     return {
@@ -121,20 +120,26 @@ export default React.forwardRef((props, ref) => {
                     }
                 })
                 setUploadList(uploadList);
-                setFileList([
-                    ...nextFileList,
-                    ...uploadList
-                ]);
-                for (let i = 0; i < uploadList.length; i++) {
-                    progress(uploadList[i], null, null, 'uploading');
-                    try {
-                        const { file, imgInfo, response } = await uploadSync(uploadList[i], canvasId);
-                        progress(file, response, imgInfo, 'done');
-                    } catch (error) {
-                        progress(uploadList[i], null, null, 'fail');
-                        console.log(error)
-                    }
+                if (params?.type == 'replace') {
+                    nextFileList.splice(params.index, 1, ...uploadList);
+                    setFileList(nextFileList);
+                } else {
+                    setFileList([
+                        ...nextFileList,
+                        ...uploadList
+                    ]);
                 }
+                setTimeout(async () => {
+                    for (let i = 0; i < uploadList.length; i++) {
+                        progress(uploadList[i], null, null, 'uploading', params);
+                        try {
+                            const { file, imgInfo, response } = await uploadSync(uploadList[i], canvasId);
+                            progress(file, response, imgInfo, 'done', params);
+                        } catch (error) {
+                            progress(uploadList[i], null, null, 'fail', params);
+                        }
+                    }
+                }, 0)
             },
             fail: (err) => {
                 console.log(err);
