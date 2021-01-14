@@ -28,9 +28,15 @@ export default (props) => {
 
     const percent = scrollTop / 150;
 
-    const navBarStyle = {
+    let navBarStyle = {
         backgroundColor: `rgba(255,255,255,${percent * 1})`,
         color: `rgba(${255 * (1 - percent)},${255 * (1 - percent)},${255 * (1 - percent)},1)`
+    }
+
+    if (process.env.TARO_ENV === 'h5') {
+        navBarStyle = {
+            opacity: (1 - percent)
+        }
     }
 
     return (

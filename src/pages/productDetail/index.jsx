@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import math from '../../utils/math'
 import Taro, { useShareAppMessage, useReady } from '@tarojs/taro'
 import { connect } from 'react-redux'
 import { View, Text, Image, Swiper, SwiperItem } from '@tarojs/components'
@@ -25,7 +26,9 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     const { coupon } = confirmOrder;
 
     const [query, setQuery] = useState({});
-    const [detail, setDetail] = useState({});
+    const [detail, setDetail] = useState({
+        sellingPrice: 0
+    });
     const [current, setCurrent] = useState(0);
 
     useEffect(() => {
@@ -97,10 +100,11 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
         submitBtnText = '立即定制';
     }
 
-    let priceText = `￥${fix(detail.sellingPrice, 2, true)}`;
+    let priceText = `￥${math.divide(detail.sellingPrice, 100)}`;
 
     if (coupon.couponMethod == 2) {
-        priceText = `券后￥${Math.abs(fix(detail.sellingPrice - coupon.couponOffer / 100, 2, true))}`
+        const price = math.chain(detail.sellingPrice).subtract(coupon.couponOffer).divide(100).done();
+        priceText = `券后￥${Math.abs(price)}`
     }
 
     return (

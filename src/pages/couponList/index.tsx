@@ -77,6 +77,9 @@ export default () => {
                                 case 3:
                                     icon = icon_disabled;
                                     break;
+                                case 9:
+                                    icon = icon_used;
+                                    break;
                             }
 
                             return (

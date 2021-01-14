@@ -12,6 +12,7 @@ import useList from '../../hooks/useList'
 import NavBar from '../../components/NavBar'
 import Dialog from '../../components/Dialog'
 import AddToMine from '../../components/AddToMine'
+import iconLogo from '../../../images/icon_wayinlogo@2x.png'
 
 const Home = (props) => {
 
@@ -163,7 +164,10 @@ const Home = (props) => {
                         })
                     }
                 </View>
-                <View className={styles['bottom-text']}>更多商品  持续更新</View>
+                <View className={styles['bottom-text']}>
+                    <Image className={styles['bottom-logo']} src={iconLogo}/>
+                    <View>- 该服务由哇印科技提供 -</View>
+                </View>
             </View>
             <Dialog visible={dialog.visible} className={styles['home-dialog']} onClose={handleClose}>
                 <Image src={dialog.image} mode="widthFix" onClick={handleClickDialog} className={styles['dialog-img']} />
