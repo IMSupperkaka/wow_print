@@ -1,7 +1,7 @@
 import React, { useState, useRef, useImperativeHandle } from 'react';
 import Taro from '@tarojs/taro';
 import lodash from 'lodash';
-import { View, Canvas } from '@tarojs/components';
+import { View } from '@tarojs/components';
 
 import './index.less';
 import Dialog from '../Dialog';
@@ -68,7 +68,7 @@ export default React.forwardRef((props, ref) => {
         onChangeProp(info.file, info.fileList, info.params);
     }
 
-    const progress = (item, res, imgInfo, status, params) => {
+    const progress = (item, res, imgInfo, status) => {
         const nextFileList = getFileList().concat();
         const index = nextFileList.findIndex((v) => {
             return v.uid == item.uid;
@@ -113,7 +113,7 @@ export default React.forwardRef((props, ref) => {
                 const nextFileList = getFileList().concat();
                 const uploadList = e.tempFiles.map((v, index) => {
                     return {
-                        uid: nextFileList.length + index,
+                        uid: lodash.uniqueId(new Date().getTime()),
                         filePath: v.path,
                         size: v.size,
                         status: 'before-upload'
@@ -121,8 +121,9 @@ export default React.forwardRef((props, ref) => {
                 })
                 setUploadList(uploadList);
                 if (params?.type == 'replace') {
-                    nextFileList.splice(params.index, 1, ...uploadList);
-                    setFileList(nextFileList);
+                    let cloneNextFileList = JSON.parse(JSON.stringify(nextFileList));
+                    cloneNextFileList.splice(params.index, 1, ...uploadList);
+                    setFileList(cloneNextFileList);
                 } else {
                     setFileList([
                         ...nextFileList,
@@ -131,12 +132,12 @@ export default React.forwardRef((props, ref) => {
                 }
                 setTimeout(async () => {
                     for (let i = 0; i < uploadList.length; i++) {
-                        progress(uploadList[i], null, null, 'uploading', params);
+                        progress(uploadList[i], null, null, 'uploading');
                         try {
                             const { file, imgInfo, response } = await uploadSync(uploadList[i], canvasId);
-                            progress(file, response, imgInfo, 'done', params);
+                            progress(file, response, imgInfo, 'done');
                         } catch (error) {
-                            progress(uploadList[i], null, null, 'fail', params);
+                            progress(uploadList[i], null, null, 'fail');
                         }
                     }
                 }, 0)

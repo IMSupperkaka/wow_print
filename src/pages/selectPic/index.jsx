@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import styles from './index.module.less'
 import { SELECT_WIDTH } from '../../utils/picContent'
 import { computedBlur } from '../../utils/utils'
-import UploadCrop from '../../components/UploadCrop'
 import CropImg from '../../components/CropImg'
 import SafeArea from '../../components/SafeArea'
 import Upload from '../../components/Upload'
@@ -255,7 +254,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                             }
 
                             return (
-                                <View className={styles['item']}>
+                                <View className={styles['item']} key={index}>
                                     <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className={styles['delete-icon']} />
                                     <View className={styles['item-body']} onClick={handleGoEdit.bind(this, index)} style={contentStyle}>
                                         <CropImg {...cropImgProps}/>
