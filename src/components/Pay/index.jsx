@@ -14,6 +14,7 @@ import styles from './index.module.less';
 import Modal from '../../components/Modal';
 import Radio from '../../components/Radio';
 import { appendHTML } from '../../utils/dom';
+import { renderMoney } from '../../utils/utils'
 import { getOrderStatus } from '../../services/order';
 import closeIcon from '../../../images/fabu-delete3@2x.png';
 import aliPayIcon from '../../../images/icon_alipay@2x.png';
@@ -242,7 +243,7 @@ const Pay = (props) => {
                 <Image src={closeIcon} className={styles['close']} onClick={onClose}/>
             </View>
             <View className={styles['money-wrap']}>
-                ¥<Text className={styles['money']}>{ money }</Text>
+                ¥<Text className={styles['money']}>{ renderMoney(money) }</Text>
             </View>
             <Radio.Group value={payType} onChange={(value) => {
                 setPayType(value)

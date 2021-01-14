@@ -6,7 +6,7 @@ import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
 
 import styles from './index.module.less'
-import { fix, getRouterParams } from '../../utils/utils'
+import { renderMoney, getRouterParams } from '../../utils/utils'
 import Base, { useDidShow } from '../../layout/Base'
 import Card from '../../components/Card'
 import Pay from '../../components/Pay'
@@ -20,14 +20,6 @@ import arrowIcon from '../../../images/coin_jump@2x.png'
 import { create } from '../../services/order'
 import { list } from '../../services/address'
 import { detail as getDetail, getMatchList } from '../../services/product'
-
-const renderMoney = (money) => {
-    money = Number(money);
-    if (isNaN(money)) {
-        return 0;
-    }
-    return math.divide(money, 100);
-}
 
 const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 

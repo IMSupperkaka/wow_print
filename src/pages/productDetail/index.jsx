@@ -18,7 +18,7 @@ const BottomTips = (props) => {
     return (
         props.visible &&
         <View className={styles['bottom-tips']}>
-            <Text>免费定制1个 限时特惠</Text>
+            <Text>免费定制 限时特惠</Text>
             <Image onClick={props.onClose} className={styles['bottom-close']} src={shutDown}/>
         </View>
     )
