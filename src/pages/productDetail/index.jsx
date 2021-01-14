@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { View, Text, Image, Swiper, SwiperItem } from '@tarojs/components'
 
 import styles from './index.module.less'
+import shutDown from '../../../images/icon_shut_down@2x.png';
 import { fix } from '../../utils/utils'
 import SafeArea from '../../components/SafeArea'
 import NoticeBubble from '../../components/NoticeBubble'
@@ -13,10 +14,12 @@ import WidthCompressCanvas from '@/layout/WidthCompressCanvas'
 import SelectCoupon from '../../page-components/SelectCoupon'
 import { detail as getDetail } from '../../services/product'
 
-const BottomTips = () => {
+const BottomTips = (props) => {
     return (
+        props.visible &&
         <View className={styles['bottom-tips']}>
             <Text>免费定制1个 限时特惠</Text>
+            <Image onClick={props.onClose} className={styles['bottom-close']} src={shutDown}/>
         </View>
     )
 }
@@ -30,6 +33,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
         sellingPrice: 0
     });
     const [current, setCurrent] = useState(0);
+    const [visible, setVisible] = useState(false);
 
     useEffect(() => {
         const query = Taro.getCurrentInstance().router.params;
@@ -39,6 +43,9 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
             dispatch({
                 type: 'confirmOrder/initConfirmOrder'
             })
+        }
+        if (query.from == 'coupon') {
+            setVisible(true)
         }
     }, [])
 
@@ -164,6 +171,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                     })
                 }
             </View>
+            <BottomTips visible={visible} onClose={() => { setVisible(false) }}/>
             <SafeArea>
                 {({ bottom }) => {
                     return (

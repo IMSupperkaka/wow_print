@@ -189,7 +189,6 @@ export default {
                         payload: payload.resultList
                     })
                 }
-    
                 isEmptyAddress().then((isEmpty) => {
                     if (isEmpty) {
                         Taro.navigateTo({
@@ -284,7 +283,6 @@ export default {
             }
         },
         initUserImgList(state) {
-            // console.log(state.imgCache?.[state.goodId])
             const isExpired = isExpire(state.imgCache?.[state.goodId]?.expireTime);
             const imgList = !isExpired ? (state.imgCache?.[state.goodId]?.list || []) : [];
             return {

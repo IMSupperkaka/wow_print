@@ -120,7 +120,7 @@ export default {
                 const response = yield call(receive);
                 if (response.data.data.couponGoodId) {
                     Taro.navigateTo({
-                        url: `/pages/productDetail/index?id=${response.data.data.couponGoodId}`
+                        url: `/pages/productDetail/index?id=${response.data.data.couponGoodId}&from=coupon`
                     })
                 }
             }
