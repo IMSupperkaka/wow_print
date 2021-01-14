@@ -21,8 +21,12 @@ import { create } from '../../services/order'
 import { list } from '../../services/address'
 import { detail as getDetail, getMatchList } from '../../services/product'
 
-const NaN2Zero = (num) => {
-    return isNaN(num) ? 0 : num;
+const renderMoney = (money) => {
+    money = Number(money);
+    if (isNaN(money)) {
+        return 0;
+    }
+    return math.divide(money, 100);
 }
 
 const ConfirmOrder = ({ dispatch, confirmOrder }) => {
@@ -176,26 +180,26 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
         })
     }
 
-    const freeShipMoney = fix(addressInfo.freeShippingMoney, 2);
-    let shipMoney = fix(addressInfo.shipMoney, 2);
+    const freeShipMoney = addressInfo.freeShippingMoney || 0;
+    let shipMoney = addressInfo.shipMoney || 0;
     const picNum = productDetail.category == 1 ? userImageList.reduce((count, v) => { return count + v.printNums }, 0) : goodsNums;
     const discountNum = productDetail.category == 1 ? (coupon.couponFreeNums || 0) : 0;
 
     // 商品总价
-    const productMoney = fix(productDetail.sellingPrice * (picNum <= 0 ? 0 : picNum), 2);
+    const productMoney = productDetail.sellingPrice * (picNum <= 0 ? 0 : picNum);
 
     let discountMoney = 0;
 
     if (coupon.couponMethod == 1) { // 免费打印券
-        discountMoney = math.chain(discountNum).multiply(productDetail.sellingPrice).divide(100).done(); // 优惠金额
+        discountMoney = math.chain(discountNum).multiply(productDetail.sellingPrice).done(); // 优惠金额
     } else if (coupon.couponMethod == 2) { // 满减券
-        if (productMoney >= math.divide(coupon.couponUseConditionMoney, 100)) { // 满足满减条件
-            discountMoney = math.divide(coupon.couponOffer, 100);
+        if (productMoney >= coupon.couponUseConditionMoney) { // 满足满减条件
+            discountMoney = coupon.couponOffer;
         }
     }
     
     // 搭配商品总价
-    const matchMoney = matchList.filter((v) => { return selectedRowKeys.includes(v.id) }).reduce((count, v) => { return count + v.saleNum * v.sellingPrice }, 0) / 100;
+    const matchMoney = matchList.filter((v) => { return selectedRowKeys.includes(v.id) }).reduce((count, v) => { return count + v.saleNum * v.sellingPrice }, 0);
     // 优惠后金额
     const afterDiscountMoney = Math.max(math.subtract(productMoney, discountMoney), 0);
     // 券优惠了金额
@@ -205,9 +209,9 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
         shipMoney = 0;
     }
     // 小计
-    const totalMoney = math.add(afterDiscountMoney, shipMoney).toFixed(2);
+    const totalMoney = math.add(afterDiscountMoney, shipMoney);
     // 支付金额
-    const payMoney = math.add(matchMoney, totalMoney).toFixed(2)
+    const payMoney = math.add(matchMoney, totalMoney);
 
     const rowSelection = {
         type: 'checkbox',
@@ -242,7 +246,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                             {productDetail.name}
                         </View>
                         <View className="picNum">
-                            <Text>￥{fix(productDetail.sellingPrice, 2)}</Text>
+                            <Text>￥{renderMoney(productDetail.sellingPrice)}</Text>
                             <Text>x{picNum}</Text>
                         </View>
                     </View>
@@ -257,7 +261,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                     }
                     <View className={styles['product-pay-info-item']}>
                         <Text>商品总价</Text>
-                        <Text>￥{NaN2Zero(productMoney)}</Text>
+                        <Text>￥{renderMoney(productMoney)}</Text>
                     </View>
                     <SelectCoupon
                         productId={productDetail.id}
@@ -276,7 +280,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                                     </View>
                                     <View className={styles['product-pay-info-item-value']}>
                                         {
-                                           couponDiscount > 0 && <Text>-￥{NaN2Zero(couponDiscount)}</Text>
+                                           couponDiscount > 0 && <Text>-￥{renderMoney(couponDiscount)}</Text>
                                         }
                                         {
                                             !coupon?.couponName && <Text>{couponList?.length}张可用</Text>
@@ -292,15 +296,15 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                             <Text>运费</Text>
                             {
                                 freeShipMoney &&
-                                <Text>（满{NaN2Zero(freeShipMoney)}包邮）</Text>
+                                <Text>（满{renderMoney(freeShipMoney)}包邮）</Text>
                             }
                         </View>
-                        <Text>￥{shipMoney}</Text>
+                        <Text>￥{renderMoney(shipMoney)}</Text>
                     </View>
                     <Devide/>
                     <View className={classnames(styles['product-pay-info-item'], styles['product-pay-info-item-last'])}>
                         <Text>小计</Text>
-                        <Text className={styles['money']}>￥{NaN2Zero(totalMoney)}</Text>
+                        <Text className={styles['money']}>￥{renderMoney(totalMoney)}</Text>
                     </View>
                 </View>
             </Card>
@@ -317,8 +321,8 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                             <View className="left-info-con">
                                 <Text className="info-item">合计</Text>
                                 <Text className="info-item">￥</Text>
-                                <Text className="info-item">{NaN2Zero(payMoney)}</Text>
-                                <Text className="info-item">含运费{NaN2Zero(shipMoney)}元</Text>
+                                <Text className="info-item">{renderMoney(payMoney)}</Text>
+                                <Text className="info-item">含运费{renderMoney(shipMoney)}元</Text>
                             </View>
                             <View onClick={submitOrder} className="right-sub-btn">提交订单</View>
                         </View>
