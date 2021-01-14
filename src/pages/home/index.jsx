@@ -108,7 +108,7 @@ const Home = (props) => {
             <NavBar left={
                 <View className={styles.navLeft}>
                     <Image className={styles.navLogo} src={homeData.logo} />
-                    <Text>{homeData.welfareText}</Text>
+                    <Text className={styles.text}>{homeData.welfareText}</Text>
                 </View>
             } />
             {process.env.TARO_ENV === 'weapp' && <AddToMine />}
