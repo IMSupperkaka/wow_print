@@ -118,6 +118,11 @@ export default {
             })
             if (dialog.type === 'coupon') {
                 const response = yield call(receive);
+                if (response.data.data.couponGoodId) {
+                    Taro.navigateTo({
+                        url: `/pages/productDetail/index?id=${response.data.data.couponGoodId}}`
+                    })
+                }
             }
             if (dialog.type === 'popup' && !close) {
                 dialog.url && jump(dialog.url);
