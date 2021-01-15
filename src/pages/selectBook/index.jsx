@@ -70,7 +70,6 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
     };
 
     const onChange = (file, fileList, index) => {
-        console.log(userImageList)
         if (file.status == 'done') {
             dispatch({
                 type: 'confirmOrder/mutateUserImageList',
@@ -345,7 +344,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     }
                 </View>
                 <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} onSave={handleSaveWorks} goPrint={submit} limit={17} />
-                <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList.filter((v) => { return !v.restInfo?.isBack }), 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
+                <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList.filter((v) => { return !v?.restInfo?.isBack }), 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
                 <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
                     <View className={styles['modal-content']}>
                         <View className={styles['input-content']}>

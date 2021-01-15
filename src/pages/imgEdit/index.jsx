@@ -19,6 +19,11 @@ const ImgEdit = (props) => {
 
     const { dispatch, editimg: { imgList, activeIndex } } = props;
     const IMG = imgList[activeIndex];
+
+    if (!IMG) {
+        return null;
+    }
+
     const contentWidth = EDIT_WIDTH;
     const contentHeight = EDIT_WIDTH / IMG.proportion;
 
