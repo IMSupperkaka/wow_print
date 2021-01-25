@@ -109,9 +109,20 @@ const ImgEdit = (props) => {
     const activeRightIcon = <Image onClick={oprate.bind(this, 'plus')} className={styles['oprate-icon']} src={rightActiveIcon} />;
     const disabledRightIcon = <Image className={styles['oprate-icon']} src={rightDisabledIcon} />;
 
-    const maskStyle = {
-        borderWidth: `${Taro.pxTransform(104, 750)} ${Taro.pxTransform(84, 750)} calc(100% - ${Taro.pxTransform(104, 750)} - ${Taro.pxTransform(contentHeight, 750)}) ${Taro.pxTransform(84, 750)}`
+    const position = {
+        left: Taro.pxTransform(84, 750),
+        right: `calc(100% - ${Taro.pxTransform(84, 750)})`,
+        top: Taro.pxTransform(104, 750),
+        bottom: `calc(${Taro.pxTransform(104, 750)} + ${Taro.pxTransform(contentHeight, 750)})`
     }
+
+    const maskStyle = {
+        background: 'rgba(0,0,0,.5)',
+        // borderWidth: `${Taro.pxTransform(104, 750)} ${Taro.pxTransform(84, 750)} calc(100vh - ${Taro.pxTransform(104, 750)} - ${Taro.pxTransform(contentHeight, 750)}) ${Taro.pxTransform(84, 750)}`
+        clipPath: `polygon(100% 0%, 100% 100%, 0 100%, 0 ${position.bottom}, ${position.right} ${position.bottom}, ${position.right} ${position.top}, ${position.left} ${position.top}, ${position.left} ${position.bottom}, 0% ${position.bottom},0% 0%)`,
+    }
+
+
 
     const contentStyle = {
         height: `${Taro.pxTransform(contentHeight, 750)}`
