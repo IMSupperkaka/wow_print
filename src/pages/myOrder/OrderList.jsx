@@ -128,7 +128,7 @@ export default (props) => {
         e.stopPropagation();
         openPay({
             ...order,
-            money: (order.money / 100).toFixed(2)
+            money: order.money
         });
     }
 

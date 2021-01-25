@@ -124,7 +124,7 @@ const ImgEdit = (props) => {
                 <View className={styles['content-wrap']}>
                     <View className={styles['mask']} style={maskStyle}></View>
                     <View style={contentStyle} className={styles['content']}></View>
-                    <CropImg className={styles['img']} showIgnoreBtn={false} src={IMG.filePath || IMG.originImage} {...cropProps} />
+                    <CropImg className={styles['img']} showIgnoreBtn={false} src={IMG.filePath} {...cropProps} />
                     <Canvas style={contentStyle} canvasId='canvas' disableScroll={true} className={styles['edit-canvas']} {...touchProps}></Canvas>
                 </View>
                 <View className={styles['bottom-wrap']}>

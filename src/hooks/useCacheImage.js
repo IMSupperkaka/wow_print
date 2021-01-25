@@ -24,14 +24,6 @@ export default (filePath) => {
     });
 
     useEffect(() => {
-        if (cachePath) {
-            setCache(filePath, cachePath);
-        } else {
-            removeCache(filePath);
-        }
-    }, [filePath, cachePath])
-
-    useEffect(() => {
         setLoading(true);
         if (!getCache(filePath)) {
             Taro.downloadFile({
@@ -39,12 +31,15 @@ export default (filePath) => {
                 success: ({ tempFilePath }) => {
                     setLoading(false);
                     setCachePath(tempFilePath);
+                    setCache(filePath, tempFilePath);
                 },
                 fail: () => {
                     setLoading(false);
                     setCachePath(filePath);
                 }
             })
+        } else {
+            setCachePath(getCache(filePath))
         }
     }, [filePath])
 

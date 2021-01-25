@@ -131,7 +131,7 @@ export default Base((props) => {
 
     const handleRepay = () => {
         openPay({
-            money: (orderDetail.money / 100).toFixed(2)
+            money: orderDetail.money
         });
     }
 

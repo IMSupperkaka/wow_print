@@ -244,7 +244,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                             }
 
                             return (
-                                <View className={styles['item']} key={index}>
+                                <View className={styles['item']}>
                                     <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className={styles['delete-icon']} />
                                     <View className={styles['item-body']} style={contentStyle}>
                                         <CropImg {...cropImgProps}/>
