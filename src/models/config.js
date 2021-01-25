@@ -7,11 +7,12 @@
  */
 
 import { channelConfig } from '../services/config';
+import Taro from '@tarojs/taro';
 
 export default {
     namespace: 'config',
     state: {
-        channel: null,
+        channel: 'wayin',
         config: {
             payMethods: [
                 "alipay",
@@ -34,6 +35,7 @@ export default {
     },
     reducers: {
         setChannel(state, { payload }) {
+            Taro.setStorageSync('channel', payload);
             return {
                 ...state,
                 channel: payload
