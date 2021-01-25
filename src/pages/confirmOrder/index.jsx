@@ -98,7 +98,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     useDidShow(() => {
 
         const id = getRouterParams('id');
-
+        
         if (id) {
             dispatch({
                 type: 'confirmOrder/getDetail',
