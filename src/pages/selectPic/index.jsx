@@ -175,16 +175,6 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
         })
     }
 
-    const handleGoEdit = (index) => {
-        dispatch({
-            type: 'imgEdit/goImgEdit',
-            payload: {
-                imgList: userImageList,
-                defaultIndex: index
-            }
-        })
-    }
-
     const editFinish = (res) => {
         dispatch({
             type: 'confirmOrder/saveUserImageList',
@@ -231,7 +221,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                                             imgList: userImageList.map((v) => {
                                                 return {
                                                     ...v,
-                                                    proportion: v.imgInfo.width / v.imgInfo.height
+                                                    proportion
                                                 }
                                             }),
                                             defaultIndex: index
@@ -250,13 +240,13 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                                 width: v.imgInfo.width,
                                 height: v.imgInfo.height,
                                 cropOption: v.cropInfo,
-                                src: v.originImage
+                                src: v.filePath
                             }
 
                             return (
                                 <View className={styles['item']} key={index}>
                                     <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className={styles['delete-icon']} />
-                                    <View className={styles['item-body']} onClick={handleGoEdit.bind(this, index)} style={contentStyle}>
+                                    <View className={styles['item-body']} style={contentStyle}>
                                         <CropImg {...cropImgProps}/>
                                     </View>
                                     <View className={styles['item-footer']}>

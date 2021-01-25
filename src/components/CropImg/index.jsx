@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useImperativeHandle, forwardRef } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useImperativeHandle, forwardRef } from 'react'
 import Taro from '@tarojs/taro'
 import math from '../../utils/math'
 import classNames from 'classnames'
@@ -8,22 +8,18 @@ import './index.less'
 import { CropImgProvider, CropImgConsumer } from './context'
 import Transition from '../Transition'
 import useCrop from '../../hooks/useCrop'
+import useCacheImage from '../../hooks/useCacheImage'
 
 let globalKey = 0;
-
-const Img = React.memo((props) => {
-    return <Image style={props.style} src={props.src} mode="widthFix" className="crop-image" {...props} />
-}, (prevProps, nextProps) => {
-    return JSON.stringify(prevProps) === JSON.stringify(nextProps);
-})
-
-export {
-    CropImgProvider
-};
 
 const CropImg = (props) => {
 
     const { width, height, contentWidth, contentHeight, src, style = {}, className, useProps, animate, cropOption, showEdit = true, showIgnoreBtn = true, ...restProps } = props;
+
+    const {
+        loading,
+        cachePath
+    } = useCacheImage(src);
 
     const {
         state: {
@@ -138,11 +134,15 @@ const CropImg = (props) => {
                 </Transition>
             </View>
             <View className="crop-img-box">
-                <Img style={transformStyle} src={src} />
+                <Image style={transformStyle} src={cachePath} mode="widthFix" className="crop-image" />
             </View>
         </View>
     )
 }
+
+export {
+    CropImgProvider
+};
 
 export default (props) => {
 

@@ -285,6 +285,7 @@ export default {
         initUserImgList(state) {
             const isExpired = isExpire(state.imgCache?.[state.goodId]?.expireTime);
             const imgList = !isExpired ? (state.imgCache?.[state.goodId]?.list || []) : [];
+            console.log(imgList)
             return {
                 ...state,
                 userImageList: imgList,

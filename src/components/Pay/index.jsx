@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Taro from '@tarojs/taro';
 import classnames from 'classnames';
 import UAParser from 'ua-parser-js';
@@ -27,6 +28,11 @@ export const formSubmit = (url) => {
     document.body.appendChild(form);
     form.submit();
 }
+
+const payMap = new Map([
+    ['wechatpay', 'wechat'],
+    ['alipay', 'alipay']
+])
 
 const usePay = (props) => {
 
@@ -217,7 +223,13 @@ const Pay = (props) => {
 
     const { visible, money, confirmPay, onClose } = props;
 
+    const { config: { payMethods } } = useSelector(store => store.config);
+
     const [payType, setPayType] = useState('wechat');
+
+    useEffect(() => {
+        setPayType(payMap.get(payMethods[0] || 'wechatpay'));
+    }, [payMethods])
 
     const handleConfirm = () => {
         let payMethod;
@@ -248,20 +260,26 @@ const Pay = (props) => {
             <Radio.Group value={payType} onChange={(value) => {
                 setPayType(value)
             }}>
-                <View className={classnames('wy-hairline--bottom', styles['paytype-box'])}>
-                    <View className={styles['pay-title']}>
-                        <Image src={wechatPayIcon} className={styles['pay-icon']}/>
-                        <Text>微信支付</Text>
+                {
+                    payMethods.includes('wechatpay') &&
+                    <View className={classnames('wy-hairline--bottom', styles['paytype-box'])}>
+                        <View className={styles['pay-title']}>
+                            <Image src={wechatPayIcon} className={styles['pay-icon']}/>
+                            <Text>微信支付</Text>
+                        </View>
+                        <Radio value="wechat"/>
                     </View>
-                    <Radio value="wechat"/>
-                </View>
-                <View className={classnames('wy-hairline--bottom', styles['paytype-box'])}>
-                    <View className={styles['pay-title']}>
-                        <Image src={aliPayIcon} className={styles['pay-icon']}/>
-                        <Text>支付宝支付</Text>
+                }
+                {
+                    payMethods.includes('alipay') &&
+                    <View className={classnames('wy-hairline--bottom', styles['paytype-box'])}>
+                        <View className={styles['pay-title']}>
+                            <Image src={aliPayIcon} className={styles['pay-icon']}/>
+                            <Text>支付宝支付</Text>
+                        </View>
+                        <Radio value="alipay"/>
                     </View>
-                    <Radio value="alipay"/>
-                </View>
+                }
             </Radio.Group>
             <Button className={classnames('primary-btn', styles['confirm-btn'])} onClick={handleConfirm}>确认支付</Button>
         </Modal>
