@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import math from '../../utils/math'
-import Taro, { useShareAppMessage, useReady } from '@tarojs/taro'
+import Taro, { useShareAppMessage } from '@tarojs/taro'
 import { connect } from 'react-redux'
 import { View, Text, Image, Swiper, SwiperItem } from '@tarojs/components'
 
 import styles from './index.module.less'
 import shutDown from '../../../images/icon_shut_down@2x.png';
 import { fix } from '../../utils/utils'
+import Base from '../../layout/Base'
 import SafeArea from '../../components/SafeArea'
 import NoticeBubble from '../../components/NoticeBubble'
 import Upload from '../../components/Upload'
@@ -191,7 +192,13 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     )
 };
 
-export default WidthCompressCanvas(connect(({ confirmOrder, user }) => ({
-    confirmOrder,
-    user
-}))(ProductDetail));
+export default Base(
+    WidthCompressCanvas(
+        connect(
+            ({ confirmOrder, user }) => ({
+                confirmOrder,
+                user
+            })
+        )(ProductDetail)
+    )
+);
