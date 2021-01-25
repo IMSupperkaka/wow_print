@@ -122,8 +122,6 @@ const ImgEdit = (props) => {
         clipPath: `polygon(100% 0%, 100% 100%, 0 100%, 0 ${position.bottom}, ${position.right} ${position.bottom}, ${position.right} ${position.top}, ${position.left} ${position.top}, ${position.left} ${position.bottom}, 0% ${position.bottom},0% 0%)`,
     }
 
-
-
     const contentStyle = {
         height: `${Taro.pxTransform(contentHeight, 750)}`
     }
@@ -135,7 +133,7 @@ const ImgEdit = (props) => {
                 <View className={styles['content-wrap']}>
                     <View className={styles['mask']} style={maskStyle}></View>
                     <View style={contentStyle} className={styles['content']}></View>
-                    <CropImg className={styles['img']} showIgnoreBtn={false} src={IMG.filePath} {...cropProps} />
+                    <CropImg className={styles['img']} showIgnoreBtn={false} src={IMG.filePath || IMG.originImage} {...cropProps} />
                     <Canvas style={contentStyle} canvasId='canvas' disableScroll={true} className={styles['edit-canvas']} {...touchProps}></Canvas>
                 </View>
                 <View className={styles['bottom-wrap']}>

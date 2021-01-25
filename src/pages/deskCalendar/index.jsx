@@ -170,7 +170,7 @@ const DeskCalendar = (props) => {
                     filePath: img.filePath,
                     imgInfo: img.imgInfo,
                     cropInfo: img.cropInfo,
-                    originImage: img.originImage, 
+                    originImage: img.originImage,
                     printNums: 1,
                     restInfo: {
                         title: coverInfo.title

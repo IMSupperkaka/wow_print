@@ -118,6 +118,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     imgInfo: img.imgInfo, // 图片原始信息 { width, height, ...resetInfo }
                     cropInfo: img.cropInfo, // 裁剪信息
                     originImage: img.originImage, // 图片七牛地址
+                    filePath: img.filePath,
                     cropImage: cropImage.cropUrl,
                     printNums: 1,
                     restInfo: {
@@ -323,14 +324,14 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     {
                         twinsList.map((item, index) => {
                             return (
-                                <View className={classnams(styles['twins-item'], styles['item-box'])} key={index}>
+                                <View className={classnams(styles['twins-item'], styles['item-box'])}>
                                     <View className={styles['item-body']}>
                                         {
                                             item.map((child, i) => {
                                                 const imgIndex = index * 2 + i + 1;
                                                 const file = userImageList[imgIndex] ? [userImageList[imgIndex]] : []
                                                 return (
-                                                    <View className={styles['choose-item']} key={i}>
+                                                    <View className={styles['choose-item']}>
                                                         <UploadCrop editFinish={editFinish.bind(this, imgIndex)} beforeUpload={beforeUpload.bind(this, imgIndex)} fileList={file} onChange={onChange} width={320} height={328.5} />
                                                     </View>
                                                 )
