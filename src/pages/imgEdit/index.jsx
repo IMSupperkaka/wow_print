@@ -110,7 +110,7 @@ const ImgEdit = (props) => {
     const disabledRightIcon = <Image className={styles['oprate-icon']} src={rightDisabledIcon} />;
 
     const maskStyle = {
-        borderWidth: `${Taro.pxTransform(104, 750)} ${Taro.pxTransform(84, 750)} calc(100vh - ${Taro.pxTransform(104, 750)} - ${Taro.pxTransform(contentHeight, 750)}) ${Taro.pxTransform(84, 750)}`
+        borderWidth: `${Taro.pxTransform(104, 750)} ${Taro.pxTransform(84, 750)} calc(100% - ${Taro.pxTransform(104, 750)} - ${Taro.pxTransform(contentHeight, 750)}) ${Taro.pxTransform(84, 750)}`
     }
 
     const contentStyle = {
