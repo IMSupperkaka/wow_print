@@ -201,6 +201,14 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                         userImageList.map((v, index) => {
 
                             const cropImgProps = {
+                                onFinish: (cropInfo) => {
+                                    const cloneList = [...userImageList];
+                                    cloneList[index].cropInfo = {
+                                        ...cloneList[index].cropInfo,
+                                        ...cropInfo
+                                    };
+                                    editFinish(cloneList);
+                                },
                                 onIgnore: () => {
                                     const cloneList = [...userImageList];
                                     cloneList[index].cropInfo = {
@@ -247,7 +255,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                                 <View className={styles['item']}>
                                     <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className={styles['delete-icon']} />
                                     <View className={styles['item-body']} style={contentStyle}>
-                                        <CropImg {...cropImgProps}/>
+                                        <CropImg {...cropImgProps} autoRotate/>
                                     </View>
                                     <View className={styles['item-footer']}>
                                         <View className={styles['step-wrap']}>

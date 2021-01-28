@@ -70,7 +70,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     const goSelectPic = () => {
 
         if (query.type == 'display') {
-            Taro.eventCenter.trigger('confirmSelectMatch', query.id);
+            Taro.eventCenter.trigger('confirmSelectMatch', Number(query.id));
             return Taro.navigateBack();
         }
 

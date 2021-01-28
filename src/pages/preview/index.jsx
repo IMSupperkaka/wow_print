@@ -40,6 +40,7 @@ const Preview = () => {
                 <Swiper
                     className='preview-swiper'
                     key={previewList.length}
+                    skipHiddenItemLayout
                     onChange={handleOnChange}>
                     {
                         previewList.map((v, index) => {

@@ -18,7 +18,7 @@ const defaultRowSelection = {
 const Radio = ({ value, onChange, ...restProps }) => {
     return (
         <View className={restProps.className}>
-            <Image className={styles.radio} onClick={() => { onChange(!value) }} src={value ? selectedPng : unselectPng} />
+            <Image className={styles.radio} onClick={() => { onChange && onChange(!value) }} src={value ? selectedPng : unselectPng} />
             {restProps.children}
         </View>
     )

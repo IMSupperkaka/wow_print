@@ -14,12 +14,9 @@ let globalKey = 0;
 
 const CropImg = (props) => {
 
-    const { width, height, contentWidth, contentHeight, src, style = {}, className, useProps, animate, cropOption, showEdit = true, showIgnoreBtn = true, ...restProps } = props;
+    const { width, height, contentWidth, contentHeight, src, style = {}, className, useProps, animate, autoRotate = false, cropOption, onFinish, showEdit = true, showIgnoreBtn = true, ...restProps } = props;
 
-    const {
-        loading,
-        cachePath
-    } = useCacheImage(src);
+    const { cachePath } = useCacheImage(src);
 
     const {
         state: {
@@ -33,6 +30,8 @@ const CropImg = (props) => {
         contentWidth: contentWidth,
         contentHeight: contentHeight,
         animate,
+        autoRotate,
+        onFinish,
         ...cropOption
     });
 

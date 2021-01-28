@@ -5,8 +5,8 @@
  * @FilePath: \wow_print\src\models\user.models.js
  * @Description: Descrip Content
  */
-import Taro from '@tarojs/taro'
-
+import Taro from '@tarojs/taro';
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import { getRouterParams, getH5Params } from '../utils/utils';
 import { login, wechatLogin, smsLogin, touristLogin, saveinfo, changeToken as getChangeToken } from '../services/user';
 
@@ -126,8 +126,11 @@ export default {
         },
         *touristsLogin({ payload }, { call, put }) {
             try {
+                const fp =  yield FingerprintJS.load();
+                const result = yield fp.get();
+                const visitorId = result.visitorId;
                 const response = yield call(touristLogin, {
-                    deviceToken: payload.uuid
+                    deviceToken: visitorId
                 })
                 yield put({
                     type: 'saveUserInfo',
