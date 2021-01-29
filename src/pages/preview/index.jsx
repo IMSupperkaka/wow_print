@@ -5,7 +5,7 @@ import { View, Swiper, SwiperItem, Image, Text } from '@tarojs/components'
 
 import './index.less'
 import LazyImage from '@/components/LazyImage'
-import { detail } from '../../services/order'
+import { detail } from '@/services/order'
 
 const Preview = () => {
 

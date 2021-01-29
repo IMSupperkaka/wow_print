@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Taro, { usePullDownRefresh, useReachBottom, useReady } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 
-import Empty from '../../components/Empty'
+import Empty from '@/components/Empty'
 
 export default (props) => {
 

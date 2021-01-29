@@ -3,9 +3,9 @@ import Taro from '@tarojs/taro';
 import { View, Image, Text } from '@tarojs/components';
 
 import './index.less'
-import lessSelectIcon from '../../../images/icon_Less_selected@2x.png'
-import lessDisabledIcon from '../../../images/icon_Less_disabled@2x.png'
-import plusSelectIcon from '../../../images/cion_plus_selected@2x.png'
+import lessSelectIcon from '@/images/icon_Less_selected@2x.png'
+import lessDisabledIcon from '@/images/icon_Less_disabled@2x.png'
+import plusSelectIcon from '@/images/cion_plus_selected@2x.png'
 
 const stopPropagation = (e) => {
     e.preventDefault();

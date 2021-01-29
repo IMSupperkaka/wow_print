@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react'
-import math from '../../utils/math'
+import math from '@/utils/math'
 import classnames from 'classnames'
 import { View, Image, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
 
 import styles from './index.module.less'
-import { renderMoney, getRouterParams } from '../../utils/utils'
+import { renderMoney, getRouterParams } from '@/utils/utils'
 import Base, { useDidShow } from '../../layout/Base'
-import Card from '../../components/Card'
-import Pay from '../../components/Pay'
-import Step from '../../components/Step'
-import Devide from '../../components/Devide'
-import SafeArea from '../../components/SafeArea'
+import Card from '@/components/Card'
+import Pay from '@/components/Pay'
+import Step from '@/components/Step'
+import Devide from '@/components/Devide'
+import SafeArea from '@/components/SafeArea'
 import SelectCoupon from '../../page-components/SelectCoupon'
 import ProductList from './productList'
-import addressIcon from '../../../images/icon_address@2x.png'
-import arrowIcon from '../../../images/coin_jump@2x.png'
-import { create } from '../../services/order'
-import { list } from '../../services/address'
-import { detail as getDetail, getMatchList } from '../../services/product'
+import addressIcon from '@/images/icon_address@2x.png'
+import arrowIcon from '@/images/coin_jump@2x.png'
+import { create } from '@/services/order'
+import { list } from '@/services/address'
+import { detail as getDetail, getMatchList } from '@/services/product'
 
 const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
@@ -165,6 +165,10 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
         })
     }
 
+    const handleBack = () => {
+        Taro.navigateBack();
+    }
+
     const saveCoupon = (coupon) => {
         dispatch({
             type: 'confirmOrder/saveCoupon',
@@ -215,29 +219,33 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
     return (
         <View className={styles["index"]}>
-            <Card bodyClassName={"address-info"} onClick={handleChooseAddress}>
-                <Image src={addressIcon} className="location-icon"/>
-                <View className="address-info__body">
+            <Card bodyClassName={styles['address-info']} onClick={handleChooseAddress}>
+                <Image src={addressIcon} className={styles['location-icon']}/>
+                <View className={styles['address-info__body']}>
                     {
                         addressInfo.recipient ?
                             <>
-                                <View className="address-info__title">{addressInfo.recipient} {addressInfo.phone}</View>
-                                <View className="address-info__content">{addressInfo.province + addressInfo.city + addressInfo.area + addressInfo.address}</View>
+                                <View className={styles['address-info__title']}>{addressInfo.recipient} {addressInfo.phone}</View>
+                                <View className={styles['address-info__content']}>{addressInfo.province + addressInfo.city + addressInfo.area + addressInfo.address}</View>
                             </> :
-                            <View className="address-info__title">请选择收货地址</View>
+                            <View className={styles['address-info__title']}>请选择收货地址</View>
                     }
-                    <View className="address-info__notify">支付成功后订单地址无法修改，请仔细确认哦～</View>
+                    <View className={styles['address-info__notify']}>支付成功后订单地址无法修改，请仔细确认哦～</View>
                 </View>
-                <Image className="address-info__arrow" src={arrowIcon} />
+                <Image className={styles['address-info__arrow']} src={arrowIcon} />
             </Card>
             <Card bodyClassName="product-info">
-                <View className="product-info-content">
-                    <Image className="product-image" mode="aspectFill" src={productDetail?.productMainImages?.[0]} />
-                    <View className="product-content">
-                        <View className="picName">
+                <View className={styles['product-info-content']}>
+                    <Image className={styles['product-image']} mode="aspectFill" src={productDetail?.productMainImages?.[0]} />
+                    <View className={styles['product-content']}>
+                        <View className={styles['picName']}>
                             {productDetail.name}
+                            <View className={styles['edit']} onClick={handleBack}>
+                                编辑
+                                <Image className={styles['address-info__arrow']} src={arrowIcon} />
+                            </View>
                         </View>
-                        <View className="picNum">
+                        <View className={styles['picNum']}>
                             <Text>￥{renderMoney(productDetail.sellingPrice)}</Text>
                             <Text>x{picNum}</Text>
                         </View>
@@ -277,7 +285,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                                         {
                                             !coupon?.couponName && <Text>{couponList?.length}张可用</Text>
                                         }
-                                        <Image className="address-info__arrow" src={arrowIcon} />
+                                        <Image className={styles['address-info__arrow']} src={arrowIcon} />
                                     </View>
                                 </View>
                             )
@@ -309,14 +317,14 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
             <SafeArea>
                 {({ bottom }) => {
                     return (
-                        <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className="submit-wrap">
-                            <View className="left-info-con">
-                                <Text className="info-item">合计</Text>
-                                <Text className="info-item">￥</Text>
-                                <Text className="info-item">{renderMoney(payMoney)}</Text>
-                                <Text className="info-item">含运费{renderMoney(shipMoney)}元</Text>
+                        <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className={styles['submit-wrap']}>
+                            <View className={styles['left-info-con']}>
+                                <Text className={styles['info-item']}>合计</Text>
+                                <Text className={styles['info-item']}>￥</Text>
+                                <Text className={styles['info-item']}>{renderMoney(payMoney)}</Text>
+                                <Text className={styles['info-item']}>含运费{renderMoney(shipMoney)}元</Text>
                             </View>
-                            <View onClick={submitOrder} className="right-sub-btn">提交订单</View>
+                            <View onClick={submitOrder} className={styles['right-sub-btn']}>提交订单</View>
                         </View>
                     )
                 }}

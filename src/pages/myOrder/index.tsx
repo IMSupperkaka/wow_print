@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import Taro from '@tarojs/taro'
 import { View, Image, Text } from '@tarojs/components'
 
-import Tabs from '../../components/Tabs'
-import TabPanel from '../../components/TabPanel'
+import Tabs from '@/components/Tabs'
+import TabPanel from '@/components/TabPanel'
 import OrderList from './OrderList'
 import Base from '../../layout/Base'
 

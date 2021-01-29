@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import math from '../../utils/math'
-import Taro, { useShareAppMessage } from '@tarojs/taro'
+import math from '@/utils/math'
+import Taro from '@tarojs/taro'
 import { View, Image, Text, Swiper, SwiperItem } from '@tarojs/components'
 
 import styles from './index.module.less'
-import { jump } from '../../utils/utils'
-import { list, index } from '../../services/home'
+import { jump } from '@/utils/utils'
+import { list, index } from '@/services/home'
 import Base, { useDidShow } from '../../layout/Base'
 import useList from '../../hooks/useList'
-import NavBar from '../../components/NavBar'
-import Dialog from '../../components/Dialog'
-import AddToMine from '../../components/AddToMine'
-import iconLogo from '../../../images/icon_wayinlogo@2x.png'
+import NavBar from '@/components/NavBar'
+import Dialog from '@/components/Dialog'
+import AddToMine from '@/components/AddToMine'
+import iconLogo from '@/images/icon_wayinlogo@2x.png'
 
 const Home = (props) => {
 
@@ -38,8 +38,6 @@ const Home = (props) => {
             })
         }
     })
-
-    useShareAppMessage();
 
     useDidShow(() => {
         if (process.env.TARO_ENV === 'h5') {

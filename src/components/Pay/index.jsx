@@ -12,14 +12,14 @@ if (process.env.TARO_ENV === 'h5') {
 }
 
 import styles from './index.module.less';
-import Modal from '../../components/Modal';
-import Radio from '../../components/Radio';
-import { appendHTML } from '../../utils/dom';
-import { renderMoney } from '../../utils/utils'
-import { getOrderStatus } from '../../services/order';
-import closeIcon from '../../../images/fabu-delete3@2x.png';
-import aliPayIcon from '../../../images/icon_alipay@2x.png';
-import wechatPayIcon from '../../../images/icon_wechat pay@2x.png';
+import Modal from '@/components/Modal';
+import Radio from '@/components/Radio';
+import { appendHTML } from '@/utils/dom';
+import { renderMoney } from '@/utils/utils'
+import { getOrderStatus } from '@/services/order';
+import closeIcon from '@/images/fabu-delete3@2x.png';
+import aliPayIcon from '@/images/icon_alipay@2x.png';
+import wechatPayIcon from '@/images/icon_wechat pay@2x.png';
 
 export const formSubmit = (url) => {
     let form = document.createElement("form");

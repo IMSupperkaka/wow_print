@@ -3,8 +3,8 @@ import React, { useContext } from 'react';
 import { View, Image } from '@tarojs/components';
 
 import './index.less';
-import unselectPng from '../../../images/unselect.png';
-import selectedPng from '../../../images/selected.png';
+import unselectPng from '@/images/unselect.png';
+import selectedPng from '@/images/selected.png';
 
 const RadioContext = React.createContext();
 

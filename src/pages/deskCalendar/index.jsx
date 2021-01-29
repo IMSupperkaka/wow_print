@@ -4,14 +4,14 @@ import { connect } from 'react-redux';
 import { View, Text, Image, Input } from '@tarojs/components';
 
 import styles from './index.module.less';
-import imgView from '../../utils/crop';
-import Modal from '../../components/Modal';
-import UploadCrop from '../../components/UploadCrop';
-import { CropImgProvider } from '../../components/CropImg';
-import SelectPicModal from '../../components/SelectPicModal';
-import BottomButton from '../../components/BottomButton';
+import imgView from '@/utils/crop';
+import Modal from '@/components/Modal';
+import UploadCrop from '@/components/UploadCrop';
+import { CropImgProvider } from '@/components/CropImg';
+import SelectPicModal from '@/components/SelectPicModal';
+import BottomButton from '@/components/BottomButton';
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas';
-import editIcon from '../../../images/icon_edit.png';
+import editIcon from '@/images/icon_edit.png';
 import day from 'dayjs';
 
 const sizeMap = new Map([

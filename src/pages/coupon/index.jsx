@@ -5,11 +5,11 @@ import classnames from 'classnames'
 import { View, Image, Text, Input, Button } from '@tarojs/components'
 
 import styles from './index.module.less'
-import { list, pre, exchange } from '../../services/coupon';
-import Empty from '../../components/Empty';
+import { list, pre, exchange } from '@/services/coupon';
+import Empty from '@/components/Empty';
 import useList from '../../hooks/useList';
-import rightArrow from '../../../images/right_arrow@2x.png';
-import couponEmptyIcon from '../../../images/bg_no_coupons@2x.png';
+import rightArrow from '@/images/right_arrow@2x.png';
+import couponEmptyIcon from '@/images/bg_no_coupons@2x.png';
 
 const ExpiresText = ({ endTime, ...resetProps }) => {
     const expreisTime = day(endTime).diff(day()) / 60 / 60 / 1000;

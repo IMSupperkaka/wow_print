@@ -5,12 +5,12 @@ import classNames from 'classnames';
 import { View, Image, Button, Text } from '@tarojs/components'
 
 import styles from './index.module.less'
-import Devide from '../../components/Devide'
-import { detail, repay, cancel, receipt } from '../../services/order'
+import Devide from '@/components/Devide'
+import { detail, repay, cancel, receipt } from '@/services/order'
 import Base, { useDidShow } from '../../layout/Base'
-import { orderStatus } from '../../utils/map/order'
-import address from '../../../images/icon_address@2x.png'
-import Pay from '../../components/Pay'
+import { orderStatus } from '@/utils/map/order'
+import address from '@/images/icon_address@2x.png'
+import Pay from '@/components/Pay'
 import day from 'dayjs';
 
 export default Base((props) => {

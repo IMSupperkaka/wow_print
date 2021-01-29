@@ -4,16 +4,16 @@ import { connect } from 'react-redux';
 import { View, Image, Canvas } from '@tarojs/components';
 
 import styles from './index.module.less';
-import { EDIT_WIDTH } from '../../utils/picContent'
-import CropImg from '../../components/CropImg'
+import { EDIT_WIDTH } from '@/utils/picContent'
+import CropImg from '@/components/CropImg'
 import useCrop from '../../hooks/useCrop'
-import deleteIcon from '../../../images/icon_delete／2@2x.png'
-import mirrorIcon from '../../../images/icon_Mirror@3x.png'
-import rotateIcon from '../../../images/icon_90Spin@2x.png'
-import leftActiveIcon from '../../../images/icon_active_left@2x.png'
-import leftDisabledIcon from '../../../images/icon_disabled_left@2x.png'
-import rightActiveIcon from '../../../images/icon_active_right@2x.png'
-import rightDisabledIcon from '../../../images/icon_disabled_right@2x.png'
+import deleteIcon from '@/images/icon_delete／2@2x.png'
+import mirrorIcon from '@/images/icon_Mirror@3x.png'
+import rotateIcon from '@/images/icon_90Spin@2x.png'
+import leftActiveIcon from '@/images/icon_active_left@2x.png'
+import leftDisabledIcon from '@/images/icon_disabled_left@2x.png'
+import rightActiveIcon from '@/images/icon_active_right@2x.png'
+import rightDisabledIcon from '@/images/icon_disabled_right@2x.png'
 
 const ImgEdit = (props) => {
 

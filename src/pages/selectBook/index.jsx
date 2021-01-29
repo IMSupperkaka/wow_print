@@ -7,16 +7,16 @@ import { connect } from 'react-redux'
 import styles from './index.module.less'
 import lodash from 'lodash';
 
-import imgView from '../../utils/crop';
-import UploadCrop from '../../components/UploadCrop';
-import { CropImgProvider } from '../../components/CropImg';
-import SelectPicModal from '../../components/SelectPicModal';
-import BottomButton from '../../components/BottomButton';
-import Modal from '../../components/Modal';
+import imgView from '@/utils/crop';
+import UploadCrop from '@/components/UploadCrop';
+import { CropImgProvider } from '@/components/CropImg';
+import SelectPicModal from '@/components/SelectPicModal';
+import BottomButton from '@/components/BottomButton';
+import Modal from '@/components/Modal';
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas';
 
-import editIcon from '../../../images/icon_edit.png'
-import wayin from '../../../images/cover_wayin.png'
+import editIcon from '@/images/icon_edit.png'
+import wayin from '@/images/cover_wayin.png'
 
 // 除了封面之外的图片数组
 const twinsList = [

@@ -4,11 +4,11 @@ import classnames from 'classnames'
 import { ScrollView, View, Image, Button, Text } from '@tarojs/components'
 
 import styles from './orderList.module.less'
-import { orderStatus } from '../../utils/map/order'
-import { list, repay, cancel, receipt, detail } from '../../services/order'
-import Empty from '../../components/Empty'
-import Pay from '../../components/Pay'
-import noOrderIcon from '../../../images/bg_no_order@2x.png'
+import { orderStatus } from '@/utils/map/order'
+import { list, repay, cancel, receipt, detail } from '@/services/order'
+import Empty from '@/components/Empty'
+import Pay from '@/components/Pay'
+import noOrderIcon from '@/images/bg_no_order@2x.png'
 
 export default (props) => {
 

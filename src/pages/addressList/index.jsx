@@ -5,10 +5,10 @@ import { AtButton } from 'taro-ui'
 import { connect } from 'react-redux'
 
 import styles from './index.module.less'
-import Empty from '../../components/Empty'
-import SafeArea from '../../components/SafeArea'
-import { list, change } from '../../services/address'
-import Toast from '../../components/Toast'
+import Empty from '@/components/Empty'
+import SafeArea from '@/components/SafeArea'
+import { list, change } from '@/services/address'
+import Toast from '@/components/Toast'
 
 const AddresssList = ({ dispatch }) => {
     const [addressList, setAddressList] = useState([]);

@@ -6,9 +6,9 @@ import { View, Image, Button } from '@tarojs/components';
 import { AtSwipeAction } from "taro-ui";
 
 import styles from './index.module.less';
-import { list as getList, detail, deleteWork } from '../../services/portfolio';
-import Empty from '../../components/Empty';
-import List from '../../components/List';
+import { list as getList, detail, deleteWork } from '@/services/portfolio';
+import Empty from '@/components/Empty';
+import List from '@/components/List';
 
 const Portfolio = ({ dispatch }) => {
 

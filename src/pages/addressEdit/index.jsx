@@ -3,11 +3,11 @@ import Taro from '@tarojs/taro';
 import { View, Image, Input, Switch, Picker, Text } from '@tarojs/components';
 import { AtButton } from 'taro-ui';
 
-import Cell from '../../components/Cell';
-import RegionPicker from '../../components/RegionPicker';
+import Cell from '@/components/Cell';
+import RegionPicker from '@/components/RegionPicker';
 import styles from './index.module.less';
-import wechatIcon from '../../../images/icon_wechat@2x.png';
-import { add, edit, detail, del } from '../../services/address';
+import wechatIcon from '@/images/icon_wechat@2x.png';
+import { add, edit, detail, del } from '@/services/address';
 import { useEffect } from 'react';
 
 export default () => {

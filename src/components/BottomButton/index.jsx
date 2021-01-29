@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux'
 import Taro from '@tarojs/taro';
 import { View, Button, Text } from '@tarojs/components';
-import SafeArea from '../../components/SafeArea';
-import Upload from '../../components/Upload';
+import SafeArea from '@/components/SafeArea';
+import Upload from '@/components/Upload';
 
 // TODO: 移除全局样式
 import './index.less';

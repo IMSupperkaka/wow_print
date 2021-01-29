@@ -4,10 +4,10 @@ import classNames from 'classnames';
 import { View, ScrollView, Image, Text } from '@tarojs/components';
 
 import styles from './index.module.less';
-import Modal from '../../components/Modal';
-import { detail as getDetail } from '../../services/product';
-import iconCoupon from '../../../images/icon_coupon@2x.png';
-import couponArrow from '../../../images/coin_jump@3x.png';
+import { Modal, Empty } from '@/components';
+import { detail as getDetail } from '@/services/product';
+import iconCoupon from '@/images/icon_coupon@2x.png';
+import couponArrow from '@/images/coin_jump@3x.png';
 
 export default (props) => {
 
@@ -18,6 +18,8 @@ export default (props) => {
     const [detail, setDetail] = useState({});
 
     const [couponList, setCouponList] = useState([]);
+
+    const [disabledCouponList, setDisabledCouponList] = useState([]);
 
     const filterCouponList = (couponList || []).filter((coupon) => {
         if (coupon.couponMethod == 2 && money) {
@@ -61,6 +63,7 @@ export default (props) => {
         }).then(({ data }) => {
             setDetail(data.data);
             const currentTime = new Date().getTime();
+            setDisabledCouponList(data.data.couponDisableList);
             setCouponList(data.data.couponList.map((v) => {
                 return {
                     ...v,
@@ -99,7 +102,7 @@ export default (props) => {
     let cellComponent = typeof render === 'function' ?
     render(activeCouponItem, filterCouponList) :
     (
-        filterCouponList?.length > 0 &&
+        (filterCouponList?.length > 0 || disabledCouponList.length > 0) &&
         <View className={styles["coupon-cell"]}>
             <View className={styles["coupon-left"]}>
                 <Image className={styles["coupon-icon"]} src={iconCoupon} />
@@ -114,7 +117,7 @@ export default (props) => {
     
     cellComponent = cellComponent && React.cloneElement(cellComponent, {
         onClick: () => {
-            if (filterCouponList.length > 0) {
+            if (filterCouponList.length > 0 || disabledCouponList.length > 0) {
                 handleOpenCoupon();
             }
         }
@@ -126,6 +129,10 @@ export default (props) => {
             <Modal className={styles["coupon-modal"]} visible={isOpened} onClose={handleCloseCoupon}>
                 <View className="title">优惠券</View>
                 <ScrollView className="content" scrollY={true}>
+                    {
+                        filterCouponList.length <= 0 &&
+                        <Empty text="无可用优惠券哦~"/>
+                    }
                     {
                         filterCouponList.map((item, index) => {
                             return (

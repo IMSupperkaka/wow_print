@@ -3,12 +3,12 @@ import Taro from '@tarojs/taro'
 import { View, Image, Button } from '@tarojs/components'
 
 import styles from './index.module.less'
-import { repay } from '../../services/order'
-import iconCancel from '../../../images/icon_Order@2x.png'
-import iconSuccess from '../../../images/icon_success@2x.png'
-import iconFail from '../../../images/icon_failure@2x.png'
-import iconReceived from '../../../images/icon_Receipt@2x.png'
-import Pay from '../../components/Pay'
+import { repay } from '@/services/order'
+import iconCancel from '@/images/icon_Order@2x.png'
+import iconSuccess from '@/images/icon_success@2x.png'
+import iconFail from '@/images/icon_failure@2x.png'
+import iconReceived from '@/images/icon_Receipt@2x.png'
+import Pay from '@/components/Pay'
 
 const reslutType = new Map([
     ['cancel', { title: '订单已取消', icon: iconCancel }],

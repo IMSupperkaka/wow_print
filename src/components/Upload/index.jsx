@@ -5,10 +5,10 @@ import { View } from '@tarojs/components';
 
 import './index.less';
 import Dialog from '../Dialog';
-import compressImg from '../../utils/compress/index';
+import compressImg from '@/utils/compress/index';
 import { setCache } from '../../hooks/useCacheImage';
 import useFreshState from '../../hooks/useFreshState';
-import { uploadFile } from '../../services/upload';
+import { uploadFile } from '@/services/upload';
 
 const getImageInfo = async (filePath) => {
     return new Promise((resolve) => {

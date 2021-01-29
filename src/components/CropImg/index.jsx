@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useImperativeHandle, forwardRef } from 'react'
 import Taro from '@tarojs/taro'
-import math from '../../utils/math'
+import math from '@/utils/math'
 import classNames from 'classnames'
 import { View, Image, Text } from '@tarojs/components'
 

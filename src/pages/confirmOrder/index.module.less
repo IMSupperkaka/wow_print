@@ -1,6 +1,5 @@
 .index {
   padding-bottom: 100px;
-  :global {
 
     .location-icon {
       width: 34px;
@@ -71,11 +70,19 @@
         flex: 1;
 
         .picName {
-          font-size: 28px;
-          font-weight: 400;
-          color: #333333;
-          line-height: 28px;
-          margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 28px;
+            font-weight: 400;
+            color: #333333;
+            line-height: 28px;
+            margin-bottom: 20px;
+            .edit {
+                display: flex;
+                align-items: center;
+                color: #666;
+                font-size: 24px;
+            }
         }
 
         .picNum {
@@ -177,5 +184,4 @@
             color: #FF6345;
         }
     }
-  }
 }

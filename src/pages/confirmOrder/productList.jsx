@@ -3,11 +3,11 @@ import lodash from 'lodash';
 import Taro from '@tarojs/taro';
 import { View, Image, Text } from '@tarojs/components';
 
-import { fix } from '../../utils/utils';
-import Step from '../../components/Step';
+import { fix } from '@/utils/utils';
+import Step from '@/components/Step';
 import styles from './product-list.module.less';
-import unselectPng from '../../../images/unselect.png';
-import selectedPng from '../../../images/selected.png';
+import unselectPng from '@/images/unselect.png';
+import selectedPng from '@/images/selected.png';
 
 const defaultRowSelection = {
     type: 'none',

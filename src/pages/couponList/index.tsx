@@ -3,12 +3,12 @@ import Taro, { usePullDownRefresh, useReachBottom } from '@tarojs/taro';
 import { View, Image, Text } from '@tarojs/components';
 
 import styles from './index.module.less';
-import { list } from '../../services/coupon';
-import Empty from '../../components/Empty';
+import { list } from '@/services/coupon';
+import Empty from '@/components/Empty';
 
-import icon_used from '../../../images/icon_Used@2x.png';
-import icon_expired from '../../../images/icon_expired@2x.png';
-import icon_disabled from '../../../images/lALPD4Bhr9v28EJycg_114_114.png';
+import icon_used from '@/images/icon_Used@2x.png';
+import icon_expired from '@/images/icon_expired@2x.png';
+import icon_disabled from '@/images/lALPD4Bhr9v28EJycg_114_114.png';
 
 export default () => {
 
