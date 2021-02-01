@@ -12,12 +12,12 @@ import bgNoCoupons from '@/images/icon_coupons.png';
 
 const CouponItem = (props) => {
 
-    const { item: { couponGoodImage, couponName, freeContent, endTime, couponDescription }, disabled, ...restProps } = props;
+    const { item: { new: isNew, couponGoodImage, couponName, freeContent, endTime, couponDescription }, disabled, ...restProps } = props;
 
     return (
         <View {...restProps}>
             {
-                props.new &&
+                isNew &&
                 <View className="top">
                     <View className="triangle"></View>
                     <Text className="new">新</Text>
@@ -100,7 +100,12 @@ export default (props) => {
         }).then(({ data }) => {
             setDetail(data.data);
             const currentTime = new Date().getTime();
-            setDisabledCouponList(data.data.couponDisableList);
+            setDisabledCouponList(data.data.couponDisableList.map(() => {
+                return {
+                    ...v,
+                    new: (currentTime - new Date(v.createTime)) <= 86400000
+                }
+            }));
             setCouponList(data.data.couponList.map((v) => {
                 return {
                     ...v,
