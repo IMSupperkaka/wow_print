@@ -37,10 +37,12 @@ export default () => {
     })
 
     useLayoutEffect(() => {
-        scrollRef.current = document.querySelector('.taro-tabbar__panel');
-        scrollRef.current.addEventListener('scroll', scrollCallback);
-        return () => {
-            scrollRef.current.removeEventListener('scroll', scrollCallback);
+        if (process.env.TARO_ENV === 'h5') {
+            scrollRef.current = document.querySelector('.taro-tabbar__panel');
+            scrollRef.current.addEventListener('scroll', scrollCallback);
+            return () => {
+                scrollRef.current.removeEventListener('scroll', scrollCallback);
+            }
         }
     }, [])
 
