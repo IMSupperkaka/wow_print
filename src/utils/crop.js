@@ -36,9 +36,9 @@ class imgView {
 
         const cropContentHeight = Math.round(contentHeight / as);
 
-        let x = Math.max(0, Math.round(resizeWidth * 0.5 - cropContentWidth * 0.5 - translate[0] * translateScale / as));
+        let x = Math.round(resizeWidth * 0.5 - cropContentWidth * 0.5 - translate[0] * translateScale / as);
 
-        let y = Math.max(0, Math.round(resizeHeight * 0.5 - cropContentHeight * 0.5 - translate[1] * translateScale / as));
+        let y = Math.round(resizeHeight * 0.5 - cropContentHeight * 0.5 - translate[1] * translateScale / as);
 
         if (x + cropContentWidth > resizeWidth) {
             x = Math.round(resizeWidth - cropContentWidth);
