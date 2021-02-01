@@ -30,7 +30,10 @@ export default Base((props) => {
                 <TabPanel title="待收货">
                     <OrderList active={current == 3} status={3}/>
                 </TabPanel>
-                <TabPanel title="已取消">
+                <TabPanel title="已退款">
+                    <OrderList active={current == 5} status={5}/>
+                </TabPanel>
+                {/* <TabPanel title="已取消">
                     <OrderList active={current == 4} status={4}/>
                 </TabPanel>
                 <TabPanel title="已退款">
@@ -38,7 +41,7 @@ export default Base((props) => {
                 </TabPanel>
                 <TabPanel title="已关闭">
                     <OrderList active={current == 6} status={6}/>
-                </TabPanel>
+                </TabPanel> */}
             </Tabs>
         </View>
     )

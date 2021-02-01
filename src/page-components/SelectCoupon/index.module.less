@@ -38,6 +38,36 @@
   border-top-right-radius: 24px;
   margin: 0;
 
+  .content {
+    height: 700px;
+    :global {
+        .wy-empty {
+            padding: 88px 0;
+        }
+        .wy-empty-image {
+            width: 226px;
+            height: 254px;
+        }
+        .wy-empty-describe {
+            font-size: 28px;
+            font-family: PingFangSC-Regular, PingFang SC;
+            font-weight: 400;
+            color: #333333;
+        }
+    }
+  }
+  .disabled-content {
+    background: #F6F6F6;
+    overflow: hidden;
+    opacity: .7;
+    .disabled-title {
+        font-size: 24px;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #999999;
+        margin: 24px;
+    }
+  }
   :global {
     .title {
       display: flex;
@@ -47,10 +77,6 @@
       font-size: 28px;
       color: #000000;
       font-weight: bold;
-    }
-
-    .content {
-      height: 600px;
     }
 
     .footer {

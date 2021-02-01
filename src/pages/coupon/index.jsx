@@ -18,11 +18,9 @@ const ExpiresText = ({ endTime, ...resetProps }) => {
         return null;
     }
     if (expreisTime <= 24) {
-        text = '今日过期';
+        text = '即将过期';
     } else if (expreisTime <= 48) {
         text = '2天后过期';
-    } else if (expreisTime <= 72) {
-        text = '即将过期';
     }
     return <Text {...resetProps}>{text}</Text>
 }

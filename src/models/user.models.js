@@ -126,9 +126,13 @@ export default {
         },
         *touristsLogin({ payload }, { call, put }) {
             try {
-                const fp =  yield FingerprintJS.load();
-                const result = yield fp.get();
-                const visitorId = result.visitorId;
+                let visitorId = Taro.getStorageSync('uuid');
+                if (!visitorId) {
+                    const fp =  yield FingerprintJS.load();
+                    const result = yield fp.get();
+                    visitorId = result.visitorId;
+                    Taro.setStorageSync('uuid', visitorId);
+                }
                 const response = yield call(touristLogin, {
                     deviceToken: visitorId
                 })
