@@ -9,6 +9,7 @@ import { detail as getDetail } from '@/services/product';
 import iconCoupon from '@/images/icon_coupon@2x.png';
 import couponArrow from '@/images/coin_jump@3x.png';
 import bgNoCoupons from '@/images/icon_coupons.png';
+import closeIcon from '@/images/fabu-delete3@2x.png';
 
 const CouponItem = (props) => {
 
@@ -170,6 +171,7 @@ export default (props) => {
             { cellComponent}
             <Modal className={styles["coupon-modal"]} visible={isOpened} onClose={handleCloseCoupon}>
                 <View className="title">优惠券</View>
+                <Image src={closeIcon} className={styles['close']} onClick={handleCloseCoupon}/>
                 <ScrollView className={styles['content']} scrollY={true}>
                     {
                         filterCouponList.length <= 0 &&
