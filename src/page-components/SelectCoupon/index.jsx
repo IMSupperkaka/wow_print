@@ -139,14 +139,16 @@ export default (props) => {
     let cellComponent = typeof render === 'function' ?
         render(activeCouponItem, filterCouponList) :
         (
-            (filterCouponList?.length > 0 || disabledCouponList.length > 0) &&
             <View className={styles["coupon-cell"]}>
                 <View className={styles["coupon-left"]}>
                     <Image className={styles["coupon-icon"]} src={iconCoupon} />
                 优惠券
             </View>
                 <View className={styles["coupon-right"]}>
-                    {activeCouponItem?.couponName || `${filterCouponList?.length}张可用`}
+                    {
+                        filterCouponList.length > 0 &&
+                        (activeCouponItem?.couponName || `${filterCouponList?.length}张可用`)
+                    }
                     <Image src={couponArrow} className={styles["coupon-arrow"]} />
                 </View>
             </View>
@@ -154,9 +156,7 @@ export default (props) => {
 
     cellComponent = cellComponent && React.cloneElement(cellComponent, {
         onClick: () => {
-            if (filterCouponList.length > 0 || disabledCouponList.length > 0) {
-                handleOpenCoupon();
-            }
+            handleOpenCoupon();
         }
     })
 
