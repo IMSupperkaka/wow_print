@@ -2,7 +2,7 @@
  * @Author: shawn.huashiyun 
  * @Date: 2020-12-14 19:47:38 
  * @Last Modified by: shawn.huashiyun
- * @Last Modified time: 2021-02-02 09:51:17
+ * @Last Modified time: 2021-02-02 10:39:09
  * @Description 为包裹了该函数的页面级组件处理登录态，渠道，props注入router，以下为该装饰器依次处理的逻辑
  * @Description 无论登录与否 url上携带了channel参数 将会写入storage
  * @Description 未登录时 运行环境为微信内H5时 走微信授权后重定向至首页
@@ -43,11 +43,12 @@ const Base = (Camp) => {
         useEffect(() => {
 
             if (query.channel) {
+                const channel = Taro.getStorageSync('channel');
                 props.dispatch({
                     type: 'config/changeChannel',
                     payload: query.channel
                 })
-                if (process.env.TARO_ENV === 'h5') {
+                if (process.env.TARO_ENV === 'h5' && query.channel != channel) {
                     props.dispatch({
                         type: 'user/logout'
                     })
@@ -81,9 +82,7 @@ const Base = (Camp) => {
                             payload: {
                                 code: query.code,
                                 resolve: () => {
-                                    Taro.redirectTo({
-                                        url: '/pages/home/index'
-                                    })
+                                    setFinish(true);
                                 }
                             }
                         })
@@ -123,9 +122,7 @@ const Base = (Camp) => {
                         payload: {
                             changeToken: query.changeToken,
                             resolve: () => {
-                                Taro.redirectTo({
-                                    url: '/pages/home/index'
-                                })
+                                setFinish(true);
                             }
                         }
                     })
@@ -136,9 +133,7 @@ const Base = (Camp) => {
                         type: 'user/touristsLogin',
                         payload: {
                             resolve: () => {
-                                Taro.redirectTo({
-                                    url: '/pages/home/index'
-                                })
+                                setFinish(true);
                             }
                         }
                     })

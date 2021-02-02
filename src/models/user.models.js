@@ -153,7 +153,7 @@ export default {
                     type: 'saveUserInfo',
                     payload: response.data.data || {}
                 })
-                payload.resolve && payload.resolve()
+                payload?.resolve()
             } catch (error) {
                 console.error(error)
             }
