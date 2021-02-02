@@ -16,7 +16,7 @@ export default {
                 }
             });
             Taro.navigateTo({
-                url: '/pages/imgEdit/index'
+                url: '/package-main-order/pages/imgEdit/index'
             })
         },
         *deleteImg({ payload }, { put, select }) {

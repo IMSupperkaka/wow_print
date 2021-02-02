@@ -102,19 +102,19 @@ export default {
                 case 0:
                     const isEmpty = yield call(isEmptyAddress);
                     if (isEmpty) {
-                        path = `/pages/addressEdit/index?type=add&redirect=${encodeURIComponent('/pages/confirmOrder/index')}`
+                        path = `/pages/addressEdit/index?type=add&redirect=${encodeURIComponent('/package-main-order/pages/confirmOrder/index')}`
                     } else {
-                        path = `/pages/confirmOrder/index`
+                        path = `/package-main-order/pages/confirmOrder/index`
                     }
                     break;
                 case 1:
-                    path = `/pages/selectPic/index`
+                    path = `/package-main-order/pages/selectPic/index`
                     break;
                 case 2:
-                    path = `/pages/selectBook/index`
+                    path = `/package-main-order/pages/selectBook/index`
                     break;
                 case 3:
-                    path = `/pages/deskCalendar/index`
+                    path = `/package-main-order/pages/deskCalendar/index`
                     break;
                 case 4:
                     yield put({
@@ -151,7 +151,7 @@ export default {
             }
 
             if (goConfirmOrder) {
-                path = '/pages/confirmOrder/index'
+                path = '/package-main-order/pages/confirmOrder/index'
             }
 
             if (process.env.TARO_ENV == 'h5') {
@@ -192,11 +192,11 @@ export default {
                 isEmptyAddress().then((isEmpty) => {
                     if (isEmpty) {
                         Taro.navigateTo({
-                            url: `/pages/addressEdit/index?type=add&redirect=${encodeURIComponent('/pages/confirmOrder/index')}`
+                            url: `/pages/addressEdit/index?type=add&redirect=${encodeURIComponent('/package-main-order/pages/confirmOrder/index')}`
                         })
                     } else {
                         Taro.navigateTo({
-                            url: '/pages/confirmOrder/index'
+                            url: '/package-main-order/pages/confirmOrder/index'
                         })
                     }
                 })

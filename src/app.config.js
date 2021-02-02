@@ -12,15 +12,10 @@ let pages = [
     'pages/orderDetail/index',
     'pages/result/index',
     'pages/service/index',
-    'pages/selectPic/index',
-    'pages/selectBook/index',
-    'pages/imgEdit/index',
-    'pages/confirmOrder/index',
     'pages/webview/index',
     'pages/preview/index',
     'pages/logisticsDetails/index',
     'pages/portfolio/index',
-    'pages/deskCalendar/index',
     'pages/xdPromote/index'
 ]
 
@@ -64,7 +59,12 @@ export default {
             root: 'package-main-order',
             name: 'main-order',
             pages: [
-                'pages/stageView/index'
+                'pages/stageView/index',
+                'pages/selectPic/index',
+                'pages/selectBook/index',
+                'pages/deskCalendar/index',
+                'pages/imgEdit/index',
+                'pages/confirmOrder/index',
             ]
         }
     ],
