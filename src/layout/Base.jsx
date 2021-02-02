@@ -2,7 +2,7 @@
  * @Author: shawn.huashiyun 
  * @Date: 2020-12-14 19:47:38 
  * @Last Modified by: shawn.huashiyun
- * @Last Modified time: 2021-01-29 14:47:53
+ * @Last Modified time: 2021-02-02 09:51:17
  * @Description 为包裹了该函数的页面级组件处理登录态，渠道，props注入router，以下为该装饰器依次处理的逻辑
  * @Description 无论登录与否 url上携带了channel参数 将会写入storage
  * @Description 未登录时 运行环境为微信内H5时 走微信授权后重定向至首页
@@ -47,11 +47,18 @@ const Base = (Camp) => {
                     type: 'config/changeChannel',
                     payload: query.channel
                 })
+                if (process.env.TARO_ENV === 'h5') {
+                    props.dispatch({
+                        type: 'user/logout'
+                    })
+                }
             }
 
             if (process.env.TARO_ENV === 'h5') {
 
                 const isWechatLogin = sessionStorage.getItem('wechatLogin');
+
+                const token = Taro.getStorageSync('token');
 
                 const phoneInfo = new UAParser().getResult();
 
@@ -124,7 +131,7 @@ const Base = (Camp) => {
                     })
                 }
 
-                if (!props.user.info.token) {
+                if (!token) {
                     return props.dispatch({
                         type: 'user/touristsLogin',
                         payload: {

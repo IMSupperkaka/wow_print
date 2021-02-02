@@ -6,8 +6,9 @@
  * @Description: Descrip Content
  */
 import Taro from '@tarojs/taro';
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
-import { getRouterParams, getH5Params } from '../utils/utils';
+import { v4 as uuidv4 } from 'uuid';
+
+import { getRouterParams } from '../utils/utils';
 import { login, wechatLogin, smsLogin, touristLogin, saveinfo, changeToken as getChangeToken } from '../services/user';
 
 export default {
@@ -79,6 +80,20 @@ export default {
                 console.log(error)   
             }
         },
+        *logout({ payload }, { call, put }) {
+            try {
+                yield put({
+                    type: 'saveToken',
+                    payload: null
+                })
+                yield put({
+                    type: 'saveUserInfo',
+                    payload: {}
+                })
+            } catch (error) {
+                console.log(error)   
+            }
+        },
         *wechatLogin({ payload }, { call, put }) {
             try {
                 const response = yield call(wechatLogin, {
@@ -128,9 +143,7 @@ export default {
             try {
                 let visitorId = Taro.getStorageSync('uuid');
                 if (!visitorId) {
-                    const fp =  yield FingerprintJS.load();
-                    const result = yield fp.get();
-                    visitorId = result.visitorId;
+                    visitorId = uuidv4();
                     Taro.setStorageSync('uuid', visitorId);
                 }
                 const response = yield call(touristLogin, {
