@@ -2,12 +2,13 @@
  * @Author: shawn.huashiyun 
  * @Date: 2020-12-14 19:47:38 
  * @Last Modified by: shawn.huashiyun
- * @Last Modified time: 2021-02-02 10:39:09
- * @Description 为包裹了该函数的页面级组件处理登录态，渠道，props注入router，以下为该装饰器依次处理的逻辑
- * @Description 无论登录与否 url上携带了channel参数 将会写入storage
- * @Description 未登录时 运行环境为微信内H5时 走微信授权后重定向至首页
- * @Description 无论登录与否 运行环境为普通H5 若url上带有changeToken字段 走联合登录并重定向至首页
- * @Todo 所有页面级组件都需要套接该装饰器 以确保H5环境内的登录态控制
+ * @Last Modified time: 2021-02-02 11:11:58
+ * @Description 处理页面级组件的登录态 根据运行环境和url参数不同分别执行微信登录，联合登录，游客登录
+ * @Description 为页面级组件注入路由信息
+ * @Description 记录滚动位置
+ * @Description 获取渠道配置(存入config.model)并在渠道变更时重新登录
+ * @Description 根据路由参数save_dva在组件渲染前执行相应操作
+ * @Todo 所有页面级组件都需要套接该装饰器
  */
 
 import React, { useState, useEffect } from 'react';
