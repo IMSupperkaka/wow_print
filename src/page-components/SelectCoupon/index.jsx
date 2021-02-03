@@ -101,7 +101,7 @@ export default (props) => {
         }).then(({ data }) => {
             setDetail(data.data);
             const currentTime = new Date().getTime();
-            setDisabledCouponList(data.data.couponDisableList.map(() => {
+            setDisabledCouponList(data.data.couponDisableList.map((v) => {
                 return {
                     ...v,
                     new: (currentTime - new Date(v.createTime)) <= 86400000
