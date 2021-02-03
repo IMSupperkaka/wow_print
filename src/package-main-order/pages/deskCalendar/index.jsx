@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import lodash from 'lodash';
+import uniqBy from 'lodash/fp/uniqBy';
 import { connect } from 'react-redux';
 import { View, Text, Image, Input } from '@tarojs/components';
 
@@ -376,7 +376,7 @@ const DeskCalendar = (props) => {
                     })
                 }
                 <BottomButton onSave={handleSaveWorks} goPrint={submit} onChange={(file, fileList) => { onChange(file, fileList, -1) }} limit={13} />
-                <SelectPicModal limit={activeIndex == -1 ? 9 : 1} onChange={onChange} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
+                <SelectPicModal limit={activeIndex == -1 ? 9 : 1} onChange={onChange} imgList={uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
                 {/* TODO 封装Form组件 */}
                 <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
                     <View className={styles['modal-content']}>

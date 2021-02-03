@@ -1,6 +1,6 @@
 import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
 import Taro from '@tarojs/taro';
-import lodash from 'lodash';
+import uniqueId from 'lodash/fp/uniqueId';
 import { View } from '@tarojs/components';
 
 import './index.less';
@@ -121,7 +121,7 @@ export default React.forwardRef((props, ref) => {
                 })
                 const uploadList = e.tempFiles.map((v, index) => {
                     return {
-                        uid: lodash.uniqueId(new Date().getTime()),
+                        uid: uniqueId(new Date().getTime()),
                         filePath: v.path,
                         size: v.size,
                         status: 'before-upload'

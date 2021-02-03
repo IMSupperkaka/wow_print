@@ -1,6 +1,5 @@
 import React, { useEffect, useReducer, useMemo } from 'react';
-import lodash from 'lodash';
-import useDeepCompareEffect from 'use-deep-compare-effect';
+import isEqual from 'lodash/fp/isEqual';
 import Taro from '@tarojs/taro';
 
 import math from '../utils/math';
@@ -425,7 +424,7 @@ export default (props = {}) => {
                 payload.isEdit = true;
             }
             const afterState = Object.assign({}, state, payload);
-            if (!lodash.isEqual(afterState, state)) {
+            if (!isEqual(afterState, state)) {
                 props.onFinish && props.onFinish({
                     translate, scale, rotate, mirror, isTouch,
                     editwidth,

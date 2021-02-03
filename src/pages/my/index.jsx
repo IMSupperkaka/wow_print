@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { connect } from 'react-redux'
 import { View, Text, Image } from '@tarojs/components'
-import { AtAvatar, AtIcon, AtDivider } from 'taro-ui'
+import { AtIcon } from 'taro-ui'
 
 import styles from './index.module.less'
 import { info } from '@/services/user'

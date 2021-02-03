@@ -121,7 +121,13 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 {
                     detail?.buyList?.length > 0 &&
                     <NoticeBubble className={styles['order-notice']} list={detail.buyList} renderItem={(v) => {
-                        return <View className={styles['order-notice-item']}>{ v.cname }打印了{ v.printNums }张</View>
+                        return <View className={styles['order-notice-item']}>
+                            {
+                                detail.category == 1 ?
+                                `${v.cname}打印了${v.printNums}张` :
+                                `${v.cname},购买了${v.printNums}件`
+                            }
+                        </View>
                     }}/>
                 }
                 <Swiper

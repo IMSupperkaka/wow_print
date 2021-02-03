@@ -1,0 +1,43 @@
+.wy-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    border-radius: 50px;
+    overflow: visible;
+    margin: 0;
+    padding: 12px 30px;
+    box-sizing: border-box;
+    &::after {
+        border-radius: 62px;
+        border-color: transparent;
+    }
+}
+
+.wy-button[type=primary] {
+    color: #fff;
+    background-color: #FF6345;
+    &:not([disabled]):hover {
+        background-color: #FF6345;
+        color: #fff;
+    }
+    &:not([disabled]):active {
+        background-color: #FF6345;
+        color: #fff;
+        opacity: .7;
+    }
+}
+
+.wy-button[disabled][type=primary] {
+    opacity: 1;
+    border-color: #E0E0E0;
+    background-color: #E0E0E0;
+}
+
+.wy-button[type=outline] {
+    color: #666666;
+    background-color: #fff;
+    &::after {
+        border-color: #C1C1C1;
+    }
+}

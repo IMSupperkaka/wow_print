@@ -1,4 +1,5 @@
 import AddToMine from './AddToMine';
+import Button from './Button';
 import BottomButton from './BottomButton';
 import Card from './Card';
 import Cell from './Cell';
@@ -30,6 +31,7 @@ import UploadCrop from './UploadCrop';
 
 export {
     AddToMine,
+    Button,
     BottomButton,
     Card,
     Cell,

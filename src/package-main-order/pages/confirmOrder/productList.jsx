@@ -1,5 +1,6 @@
 import React from 'react';
-import lodash from 'lodash';
+import pullAll from 'lodash/fp/pullAll';
+import uniq from 'lodash/fp/uniq';
 import Taro from '@tarojs/taro';
 import { View, Image, Text } from '@tarojs/components';
 
@@ -39,10 +40,10 @@ export default ({ list = [], onChange: propOnChange, rowSelection = defaultRowSe
             if (value) {
                 cloneSelectedRowKeys.push(key);
             } else {
-                cloneSelectedRowKeys = lodash.pullAll(cloneSelectedRowKeys, [key])
+                cloneSelectedRowKeys = pullAll(cloneSelectedRowKeys, [key])
             }
         }
-        rowSelection.onChange(lodash.uniq(cloneSelectedRowKeys));
+        rowSelection.onChange(uniq(cloneSelectedRowKeys));
     }
 
     const handleChangeNum = (index, num) => {

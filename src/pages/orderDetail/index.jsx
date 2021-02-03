@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import Taro, { Events, useReady } from '@tarojs/taro'
+import Taro from '@tarojs/taro'
 import { AtIcon } from 'taro-ui'
 import classNames from 'classnames';
 import { View, Image, Button, Text } from '@tarojs/components'
