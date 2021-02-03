@@ -15,11 +15,13 @@ export default (props) => {
             ...file,
             status: file.status || 'done'
         });
-        resetProps.onClose();
+        // resetProps.onClose();
     }
 
+    console.log(imgList)
+
     const filterList = imgList.filter((v) => {
-        return v?.originImage;
+        return v?.filePath || v?.originImage;
     })
 
     return (
@@ -33,7 +35,7 @@ export default (props) => {
                         filterList.map((item, index) => {
                             return (
                                 <View className={styles['img-item']} onClick={() => { handleChange(item) }}>
-                                    <Image className={styles['img']} mode="aspectFill" src={`${item.originImage}?imageView2/1/w/200/h/200`} />
+                                    <Image className={styles['img']} mode="aspectFill" src={item.filePath} />
                                 </View>
                             )
                         })

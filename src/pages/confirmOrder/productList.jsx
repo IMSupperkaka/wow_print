@@ -1,6 +1,6 @@
 import React from 'react';
-import pullAll from 'lodash/fp/pullAll';
-import uniq from 'lodash/fp/uniq';
+import pullAll from 'lodash/pullAll';
+import uniq from 'lodash/uniq';
 import Taro from '@tarojs/taro';
 import { View, Image, Text } from '@tarojs/components';
 

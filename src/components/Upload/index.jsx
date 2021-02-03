@@ -1,6 +1,6 @@
 import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
 import Taro from '@tarojs/taro';
-import uniqueId from 'lodash/fp/uniqueId';
+import uniqueId from 'lodash/uniqueId';
 import { View } from '@tarojs/components';
 
 import './index.less';

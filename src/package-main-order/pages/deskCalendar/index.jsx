@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import uniqBy from 'lodash/fp/uniqBy';
+import uniqBy from 'lodash/uniqBy';
 import { connect } from 'react-redux';
 import { View, Text, Image, Input } from '@tarojs/components';
 

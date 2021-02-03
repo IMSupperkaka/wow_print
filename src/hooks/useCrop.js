@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useMemo } from 'react';
-import isEqual from 'lodash/fp/isEqual';
+import isEqual from 'lodash/isEqual';
 import Taro from '@tarojs/taro';
 
 import math from '../utils/math';

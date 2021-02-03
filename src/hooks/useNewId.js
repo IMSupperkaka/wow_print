@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import uniqueId from 'lodash/fp/uniqueId';
+import uniqueId from 'lodash/uniqueId';
 
 export default (props) => {
 

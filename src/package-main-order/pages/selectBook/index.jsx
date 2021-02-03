@@ -5,7 +5,7 @@ import Taro from '@tarojs/taro'
 import day from 'dayjs'
 import { connect } from 'react-redux'
 import styles from './index.module.less'
-import uniqBy from 'lodash/fp/uniqBy';
+import uniqBy from 'lodash/uniqBy';
 
 import imgView from '@/utils/crop';
 import UploadCrop from '@/components/UploadCrop';
@@ -286,6 +286,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
 
     const date = day().format('MM/DD YYYY');
 
+    console.log(userImageList.filter((v) => { return !v?.restInfo?.isBack }));
+
     return (
         <CropImgProvider>
             <View className={styles['index']}>
@@ -345,7 +347,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     }
                 </View>
                 <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} onSave={handleSaveWorks} goPrint={submit} limit={17} />
-                <SelectPicModal onChange={onChange} imgList={uniqBy(userImageList.filter((v) => { return !v?.restInfo?.isBack }), 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
+                <SelectPicModal onChange={onChange} imgList={uniqBy(userImageList.filter((v) => { return !v?.restInfo?.isBack }), 'filePath')} visible={visible} onClose={() => { setVisible(false) }} />
                 <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
                     <View className={styles['modal-content']}>
                         <View className={styles['input-content']}>
