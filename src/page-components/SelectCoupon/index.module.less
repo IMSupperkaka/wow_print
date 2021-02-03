@@ -74,6 +74,32 @@
         margin: 24px;
     }
   }
+  .top {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    left: 0px;
+
+    .triangle {
+      display: block;
+      border-style: dashed solid solid dashed;
+      font-size: 0;
+      line-height: 0;
+      border-color: #ff7534 transparent transparent #ff7534;
+      border-width: 24px 24px;
+      &.exchange {
+        border-color: #3ADAFF transparent transparent #3ADAFF;
+      }
+    }
+
+    .new {
+      position: absolute;
+      top: 1px;
+      left: 7px;
+      color: #FFFFFF;
+      font-size: 18px;
+    }
+  }
   :global {
     .title {
       display: flex;
@@ -107,30 +133,6 @@
 
       &.active {
         border: 2px solid #FF6345;
-      }
-
-      .top {
-        position: absolute;
-        width: 48px;
-        height: 48px;
-        left: 0px;
-
-        .triangle {
-          display: block;
-          border-style: dashed solid solid dashed;
-          font-size: 0;
-          line-height: 0;
-          border-color: #ff7534 transparent transparent #ff7534;
-          border-width: 24px 24px;
-        }
-
-        .new {
-          position: absolute;
-          top: 1px;
-          left: 7px;
-          color: #FFFFFF;
-          font-size: 18px;
-        }
       }
 
       .list-item-header {

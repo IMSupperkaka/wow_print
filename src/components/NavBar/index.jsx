@@ -14,11 +14,6 @@ export default (props) => {
     })
 
     useEffect(() => {
-        if (process.env.TARO_ENV === 'h5') {
-            document.querySelector('.taro-tabbar__panel').addEventListener('scroll', (e) => {
-                setScrollTop(e.target.scrollTop);
-            })
-        }
         Taro.getSystemInfo({
             success: (result) => {
                 setStatusBarHeight(result.statusBarHeight)

@@ -13,15 +13,22 @@ import closeIcon from '@/images/fabu-delete3@2x.png';
 
 const CouponItem = (props) => {
 
-    const { item: { new: isNew, couponGoodImage, couponName, freeContent, endTime, couponDescription }, disabled, ...restProps } = props;
+    const { item: { new: isNew, giveType, couponGoodImage, couponName, freeContent, endTime, couponDescription }, disabled, ...restProps } = props;
 
     return (
         <View {...restProps}>
+            
             {
-                isNew &&
-                <View className="top">
-                    <View className="triangle"></View>
-                    <Text className="new">新</Text>
+                (isNew || giveType == 2) &&
+                <View className={styles['top']}>
+                    <View className={classNames(styles['triangle'], giveType == 2 && styles['exchange'])}></View>
+                    <Text className={styles['new']}>
+                        {
+                            giveType == 1 ?
+                            '新' :
+                            '兑'
+                        }
+                    </Text>
                 </View>
             }
             <View className='list-item-header'>
@@ -147,7 +154,7 @@ export default (props) => {
         (
             <View className={styles["coupon-cell"]}>
                 <View className={styles["coupon-left"]}>
-                    <Image className={styles["coupon-icon"]} src={iconCoupon} />
+                <Image className={styles["coupon-icon"]} src={iconCoupon} />
                 优惠券
             </View>
                 <View className={styles["coupon-right"]}>
@@ -193,7 +200,7 @@ export default (props) => {
                         disabledCouponList.length > 0 &&
                         <>
                             <View className={styles['disabled-content']}>
-                                <View className={styles['disabled-title']}>不可使用优惠券</View>
+                                <View className={styles['disabled-title']}>不可使用优惠券（{disabledCouponList.length}）</View>
                                 {
                                     disabledCouponList.map((item, index) => {
                                         return (
