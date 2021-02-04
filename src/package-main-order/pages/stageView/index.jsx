@@ -4,21 +4,21 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { View, Image, Button } from '@tarojs/components';
 
-import useCrop from '../../../hooks/useCrop';
-import Upload from '../../../components/Upload';
-import Tabs from '../../../components/Tabs';
-import TabPanel from '../../../components/TabPanel';
-import Transition from '../../../components/Transition';
-import CropImg from '../../../components/CropImg';
-import imgView from '../../../utils/crop';
+import { useCrop } from '@/hooks';
+import Upload from '@/components/Upload';
+import Tabs from '@/components/Tabs';
+import TabPanel from '@/components/TabPanel';
+import Transition from '@/components/Transition';
+import CropImg from '@/components/CropImg';
+import imgView from '@/utils/crop';
 import styles from './index.module.less';
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas';
-import addIcon from '../../../../images/cion_add_to5@2x.png';
-import tipsOnIcon from '../../../../images/icon_prompt_on@2x.png';
-import tipsOffIcon from '../../../../images/icon_prompt_off@2x.png';
+import addIcon from '@/images/cion_add_to5@2x.png';
+import tipsOnIcon from '@/images/icon_prompt_on@2x.png';
+import tipsOffIcon from '@/images/icon_prompt_off@2x.png';
 import iconFold from '../../images/icon_edit_fold@2x.png';
 import iconUnFold from '../../images/icon_edit_un_fold@2x.png';
-import bgProjection from '../../../../images/bg_projection@2x.png';
+import bgProjection from '@/images/bg_projection@2x.png';
 
 const Tips = () => {
 

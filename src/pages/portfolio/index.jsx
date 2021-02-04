@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import Taro, { useReachBottom } from '@tarojs/taro';
+import Taro from '@tarojs/taro';
+import classnames from 'classnames';
 import { connect } from 'react-redux';
-import classnams from 'classnames';
 import { View, Image, Button } from '@tarojs/components';
-import { AtSwipeAction } from "taro-ui";
 
 import styles from './index.module.less';
-import { list as getList, detail, deleteWork } from '../../services/portfolio';
-import Empty from '../../components/Empty';
-import List from '../../components/List';
+import { Empty, List } from '@/components';
+import { list as getList, detail, deleteWork } from '@/services/portfolio';
 
 const Portfolio = ({ dispatch }) => {
 
@@ -62,25 +60,25 @@ const Portfolio = ({ dispatch }) => {
         })
     }
 
-    const handleDelete = (item) => {
-        Taro.showModal({
-            title: '确认删除',
-            content: '确认将会删除该作品集以及包含的所有照片',
-            confirmText: '确认',
-            cancelText: '取消',
-            confirmColor: '#FF6345',
-            success: (res) => {
-                if (res.confirm) {
-                    deleteWork(item.id).then(() => {
-                        const cloneList = [...list];
-                        const index = cloneList.findIndex((v) => { return v.id == item.id });
-                        cloneList.splice(index, 1);
-                        setList(cloneList);
-                    })
-                }
-            }
-        })
-    }
+    // const handleDelete = (item) => {
+    //     Taro.showModal({
+    //         title: '确认删除',
+    //         content: '确认将会删除该作品集以及包含的所有照片',
+    //         confirmText: '确认',
+    //         cancelText: '取消',
+    //         confirmColor: '#FF6345',
+    //         success: (res) => {
+    //             if (res.confirm) {
+    //                 deleteWork(item.id).then(() => {
+    //                     const cloneList = [...list];
+    //                     const index = cloneList.findIndex((v) => { return v.id == item.id });
+    //                     cloneList.splice(index, 1);
+    //                     setList(cloneList);
+    //                 })
+    //             }
+    //         }
+    //     })
+    // }
 
     return (
         <View className={styles['portfolio-list']}>
@@ -88,43 +86,33 @@ const Portfolio = ({ dispatch }) => {
                 {
                     list.map((item) => {
                         return (
-                            <AtSwipeAction onClick={handleDelete} className={styles['portfolio-item-swipe']} options={[
-                                {
-                                    id: item.id,
-                                    text: '删除',
-                                    style: {
-                                        backgroundColor: '#FF4949'
-                                    }
-                                }
-                                ]}>
-                                <View className={styles['portfolio-item']} onClick={(e) => { handleGoDetail(item, e) }}>
-                                    <View className={styles['portfolio-left']}>
-                                        <View className={styles['portfolio-img-wrap']}>
-                                            <Image className={styles['portfolio-img']} src={item.indexImage}/>
-                                        </View>
-                                        <View className={styles['portfolio-info']}>
-                                            <View>
-                                                <View className={styles['portfolio-title']}>
-                                                    { item.name }
-                                                    {
-                                                        item.coupon &&
-                                                        <View className={styles['coupon-sign']}>优惠券</View>
-                                                    }
-                                                </View>
-                                                <View className={styles['portfolio-page']}>完成页码: { item.finishPage } / { item.totalPage }</View>
-                                            </View>
-                                            <View className={styles['portfolio-time']}>创作时间: { item.updateTime.split(' ')[0] }</View>
-                                        </View>
+                            <View className={styles['portfolio-item']} onClick={(e) => { handleGoDetail(item, e) }}>
+                                <View className={styles['portfolio-left']}>
+                                    <View className={styles['portfolio-img-wrap']}>
+                                        <Image className={styles['portfolio-img']} src={item.indexImage}/>
                                     </View>
-                                    <Button className={classnams('primary-outline-btn', 'radius-btn')}>
-                                        {
-                                            item.finishPage < item.totalPage ?
-                                            '继续创作' :
-                                            '购买'
-                                        }
-                                    </Button>
+                                    <View className={styles['portfolio-info']}>
+                                        <View>
+                                            <View className={styles['portfolio-title']}>
+                                                { item.name }
+                                                {
+                                                    item.coupon &&
+                                                    <View className={styles['coupon-sign']}>优惠券</View>
+                                                }
+                                            </View>
+                                            <View className={styles['portfolio-page']}>完成页码: { item.finishPage } / { item.totalPage }</View>
+                                        </View>
+                                        <View className={styles['portfolio-time']}>创作时间: { item.updateTime.split(' ')[0] }</View>
+                                    </View>
                                 </View>
-                            </AtSwipeAction>
+                                <Button className={classnames('primary-outline-btn', 'radius-btn')}>
+                                    {
+                                        item.finishPage < item.totalPage ?
+                                        '继续创作' :
+                                        '购买'
+                                    }
+                                </Button>
+                            </View>
                         )
                     })
                 }

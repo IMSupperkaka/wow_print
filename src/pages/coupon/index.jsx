@@ -5,11 +5,11 @@ import classnames from 'classnames'
 import { View, Image, Text, Input, Button } from '@tarojs/components'
 
 import styles from './index.module.less'
-import { list, pre, exchange } from '../../services/coupon';
-import Empty from '../../components/Empty';
+import { list, pre, exchange } from '@/services/coupon';
+import Empty from '@/components/Empty';
 import useList from '../../hooks/useList';
-import rightArrow from '../../../images/right_arrow@2x.png';
-import couponEmptyIcon from '../../../images/bg_no_coupons@2x.png';
+import rightArrow from '@/images/right_arrow@2x.png';
+import couponEmptyIcon from '@/images/bg_no_coupons@2x.png';
 
 const ExpiresText = ({ endTime, ...resetProps }) => {
     const expreisTime = day(endTime).diff(day()) / 60 / 60 / 1000;
@@ -18,11 +18,9 @@ const ExpiresText = ({ endTime, ...resetProps }) => {
         return null;
     }
     if (expreisTime <= 24) {
-        text = '今日过期';
+        text = '即将过期';
     } else if (expreisTime <= 48) {
         text = '2天后过期';
-    } else if (expreisTime <= 72) {
-        text = '即将过期';
     }
     return <Text {...resetProps}>{text}</Text>
 }
@@ -136,7 +134,7 @@ export default () => {
                                                     <View className={styles['list-item-header-text']}>
                                                         <View className={styles['name']}>{item.couponName}</View>
                                                         <View>
-                                                            <View className={styles['sill']}>无门槛使用</View>
+                                                            <View className={styles['sill']}>{item.freeContent}</View>
                                                             <View className={styles['time']}>有效期至 {item.endTime}</View>
                                                         </View>
                                                     </View>

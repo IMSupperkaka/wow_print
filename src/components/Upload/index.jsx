@@ -1,14 +1,14 @@
-import React, { useState, useRef, useImperativeHandle } from 'react';
+import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
 import Taro from '@tarojs/taro';
-import lodash from 'lodash';
-import { View, Canvas } from '@tarojs/components';
+import uniqueId from 'lodash/uniqueId';
+import { View } from '@tarojs/components';
 
 import './index.less';
 import Dialog from '../Dialog';
-import useNewId from '../../hooks/useNewId';
-import compressImg from '../../utils/compress/index';
+import compressImg from '@/utils/compress/index';
+import { setCache } from '../../hooks/useCacheImage';
 import useFreshState from '../../hooks/useFreshState';
-import { uploadFile } from '../../services/upload';
+import { uploadFile } from '@/services/upload';
 
 const getImageInfo = async (filePath) => {
     return new Promise((resolve) => {
@@ -21,7 +21,7 @@ const getImageInfo = async (filePath) => {
     })
 }
 
-const uploadSync = async (file, canvasId) =>{
+const uploadSync = async (file) =>{
     const imgInfo = await getImageInfo(file.filePath);
     const filePath = await compressImg({
         canvasId: 'compress-canvas',
@@ -34,10 +34,19 @@ const uploadSync = async (file, canvasId) =>{
         filePath: filePath
     })
     const thumbnail = `${response.data}?imageMogr2/auto-orient/format/jpg/thumbnail/!540x540r/quality/80!/interlace/1/ignore-error/1`
+    const thumbnailPath = await new Promise((resolve) => {
+        Taro.downloadFile({
+            url: thumbnail,
+            success: ({ tempFilePath }) => {
+                resolve(tempFilePath);
+            }
+        })
+    })
+    setCache(thumbnail, thumbnailPath);
     return {
         file: {
             ...file,
-            filePath: thumbnail,
+            filePath: thumbnail
         },
         imgInfo: newImgInfo,
         response: response
@@ -48,14 +57,16 @@ export default React.forwardRef((props, ref) => {
 
     const { defaultFileList = [], fileList, beforeUpload, limit = 1, onChange: onChangeProp } = props;
 
-    const [uploadList, setUploadList] = useState([]);
+    const [uploadDialogProps, setUploadDialogProps] = useState({
+        visible: false,
+        totalCount: 0,
+        doneCount: 0
+    });
 
     const [getFileList, setFileList] = useFreshState(
         fileList || defaultFileList || [],
         fileList
     );
-
-    const { id: canvasId } = useNewId('compress-canvas-');
 
     useImperativeHandle(ref, () => {
         return {
@@ -64,9 +75,8 @@ export default React.forwardRef((props, ref) => {
     })
 
     const onChange = (info) => {
-        console.log(info)
         setFileList(info.fileList);
-        onChangeProp(info.file, info.fileList);
+        onChangeProp(info.file, info.fileList, info.params);
     }
 
     const progress = (item, res, imgInfo, status) => {
@@ -86,21 +96,13 @@ export default React.forwardRef((props, ref) => {
             mirror: false
         }
         currentItem.filePath = item.filePath;
-        setUploadList((uploadList) => {
-            const cloneUploadList = [...uploadList];
-            const uploadIndex = cloneUploadList.findIndex((v) => {
-                return v.uid == item.uid;
-            });
-            cloneUploadList[uploadIndex] = currentItem;
-            return cloneUploadList;
-        });
         onChange({
             file: currentItem,
             fileList: nextFileList
         });
     }
 
-    const handleChoose = () => {
+    const handleChoose = (params) => {
         if (typeof beforeUpload == 'function') {
             const result = beforeUpload();
             if (result === false) {
@@ -110,31 +112,57 @@ export default React.forwardRef((props, ref) => {
         Taro.chooseImage({
             sizeType: ['original'],
             count: limit,
-            success: async (e) => {
+            success: (e) => {
                 const nextFileList = getFileList().concat();
+                setUploadDialogProps({
+                    visible: true,
+                    totalCount: e.tempFiles.length,
+                    doneCount: 0
+                })
                 const uploadList = e.tempFiles.map((v, index) => {
                     return {
-                        uid: nextFileList.length + index,
+                        uid: uniqueId(new Date().getTime()),
                         filePath: v.path,
                         size: v.size,
                         status: 'before-upload'
                     }
                 })
-                setUploadList(uploadList);
-                setFileList([
-                    ...nextFileList,
-                    ...uploadList
-                ]);
-                for (let i = 0; i < uploadList.length; i++) {
-                    progress(uploadList[i], null, null, 'uploading');
-                    try {
-                        const { file, imgInfo, response } = await uploadSync(uploadList[i], canvasId);
-                        progress(file, response, imgInfo, 'done');
-                    } catch (error) {
-                        progress(uploadList[i], null, null, 'fail');
-                        console.log(error)
-                    }
+                if (params?.type == 'replace') {
+                    let cloneNextFileList = JSON.parse(JSON.stringify(nextFileList));
+                    cloneNextFileList.splice(params.index, 1, ...uploadList);
+                    setFileList(cloneNextFileList);
+                } else {
+                    setFileList([
+                        ...nextFileList,
+                        ...uploadList
+                    ]);
                 }
+                setTimeout(async () => {
+                    for (let i = 0; i < uploadList.length; i++) {
+                        progress(uploadList[i], null, null, 'uploading');
+                        try {
+                            const { file, imgInfo, response } = await uploadSync(uploadList[i]);
+                            progress(file, response, imgInfo, 'done');
+                        } catch (error) {
+                            progress(uploadList[i], null, null, 'fail');
+                        }
+                        setUploadDialogProps((props) => {
+                            return {
+                                ...props,
+                                doneCount: props.doneCount + 1
+                            }
+                        })
+                    }
+                    setUploadDialogProps((props) => {
+                        return {
+                            ...props,
+                            visible: false
+                        }
+                    })
+                }, 300)
+            },
+            fail: (err) => {
+                console.log(err);
             }
         })
     }
@@ -142,14 +170,6 @@ export default React.forwardRef((props, ref) => {
     const chooseArea = props.children ? React.cloneElement(props.children, {
         onClick: handleChoose
     }) : null;
-
-    const totalCount = uploadList.length;
-    const uploadingCount = uploadList.filter((v) => { return (v.status != 'done' && v.status != 'fail') }).length;
-    const uploadDialogProps = {
-        visible: uploadingCount > 0,
-        totalCount: totalCount,
-        doneCount: totalCount - uploadingCount
-    }
 
     return (
         <View className={props.className}>
@@ -159,4 +179,4 @@ export default React.forwardRef((props, ref) => {
             </Dialog>
         </View>
     )
-});;
+});

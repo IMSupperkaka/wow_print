@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useMemo } from 'react';
-import lodash from 'lodash';
+import isEqual from 'lodash/isEqual';
 import Taro from '@tarojs/taro';
 
 import math from '../utils/math';
@@ -39,14 +39,14 @@ const getDeg = (startTouches, endTouches) => {
     if (endw < 0) {
         endDeg = endDeg - Math.PI;
     }
-    return (endDeg - startDeg) / ( 2 * Math.PI) * 360;
+    return (endDeg - startDeg) / (2 * Math.PI) * 360;
 }
 
 const resetPosition = ({ width, height, contentWidth, contentHeight, scale, translate, rotate }) => {
 
     let resetx = translate[0];
     let resety = translate[1];
-    let resetRotate = approach([0,-90,-180,-270,-360,90,180,270,360], rotate) % 360;
+    let resetRotate = approach([0, -90, -180, -270, -360, 90, 180, 270, 360], rotate) % 360;
 
     const { fWidth, fHeight } = fitImg({
         width,
@@ -84,7 +84,7 @@ const resetPosition = ({ width, height, contentWidth, contentHeight, scale, tran
     }
 }
 
-const buildTransformStyle = ({ animate, width, height, editwidth, contentWidth, contentHeight, mirror, rotate, translate, scale}) => {
+const buildTransformStyle = ({ animate, width, height, editwidth, contentWidth, contentHeight, mirror, rotate, translate, scale }) => {
 
     const approachRotate = approach([0, -90, -180, -270, -360, 90, 180, 270, 360], rotate);
 
@@ -128,7 +128,7 @@ const buildTransformStyle = ({ animate, width, height, editwidth, contentWidth, 
         transition: animate ? 'transform .2s' : 'none'
     }
 
-    const contentStyleMatrix =  math.multiply(translateMatrix, rotateMatrix);
+    const contentStyleMatrix = math.multiply(translateMatrix, rotateMatrix);
 
     const contentStyle = {
         width: Taro.pxTransform(tWidth * scale, 750),
@@ -169,6 +169,7 @@ export default (props = {}) => {
         store: {
             behavior: ['translate']
         },
+        isEdit: false,
         mirror: false,
         rotate: 0,
         scale: 1,
@@ -176,6 +177,7 @@ export default (props = {}) => {
         isTouch: false,
         isMoving: false,
         animate: false,
+        autoRotate: false,
         lastTouch: [],
         editwidth: props.editwidth || props.contentWidth,
         width: props.width || 0,
@@ -194,40 +196,42 @@ export default (props = {}) => {
         translate,
         scale,
         rotate,
+        isEdit,
         mirror,
         store,
         isTouch,
         isMoving,
         animate,
+        autoRotate,
         lastTouch,
         ignoreBlur
     } = state;
 
     useEffect(() => {
-      const approachRotate = approach([0, -90, -180, -270, -360, 90, 180, 270, 360], rotate);
-      const { fWidth, fHeight } = fitImg({
-          width,
-          height,
-          contentWidth: contentWidth,
-          contentHeight: contentHeight,
-          deg: approachRotate
-      });
-      const blur = computedBlur({
-          contentWidth: contentWidth,
-          contentHeight: contentHeight,
-          width: width,
-          height: height,
-          afterWidth: fWidth * scale,
-          afterHieght: fHeight * scale,
-          printWidth: 10,
-          printHeight: 10 / (width / height)
-      });
-      dispatch({
-          type: 'save',
-          payload: {
-            blur
-          }
-      })
+        const approachRotate = approach([0, -90, -180, -270, -360, 90, 180, 270, 360], rotate);
+        const { fWidth, fHeight } = fitImg({
+            width,
+            height,
+            contentWidth: contentWidth,
+            contentHeight: contentHeight,
+            deg: approachRotate
+        });
+        const blur = computedBlur({
+            contentWidth: contentWidth,
+            contentHeight: contentHeight,
+            width: width,
+            height: height,
+            afterWidth: fWidth * scale,
+            afterHieght: fHeight * scale,
+            printWidth: 10,
+            printHeight: 10 / (width / height)
+        });
+        dispatch({
+            type: 'save',
+            payload: {
+                blur
+            }
+        })
     }, [width, height, contentWidth, contentHeight, scale, rotate])
 
     const touchStart = (e) => {
@@ -284,7 +288,7 @@ export default (props = {}) => {
             })
         } else {
             let payload = {
-              isMoving: true
+                isMoving: true
             };
             if (store.behavior.includes('translate')) {
                 const dx = (touchPositionList[0].x - lastTouch[0].x) * radio;
@@ -310,7 +314,7 @@ export default (props = {}) => {
     const touchEnd = (e) => {
 
         if (!isMoving) {
-          return;
+            return;
         }
 
         let payload = {
@@ -375,27 +379,27 @@ export default (props = {}) => {
             onTouchStart: touchStart
         },
         cropProps: {
-          useProps: true,
-          transformStyle: style.transformStyle,
-          width: width,
-          height: height,
-          contentWidth: contentWidth,
-          contentHeight: contentHeight,
-          cropOption: {
-            rotate,
-            translate,
-            scale,
-            mirror,
-            editwidth: editwidth,
-            ignoreBlur: ignoreBlur
-          },
-          animate: animate
+            useProps: true,
+            transformStyle: style.transformStyle,
+            width: width,
+            height: height,
+            contentWidth: contentWidth,
+            contentHeight: contentHeight,
+            cropOption: {
+                rotate,
+                translate,
+                scale,
+                mirror,
+                editwidth: editwidth,
+                ignoreBlur: ignoreBlur
+            },
+            animate: animate
         },
         style: style,
-        mutate: (state) => {
-            let payload = state;
-            if (state.editwidth || state.contentWidth) {
-                payload.editwidth = state.editwidth || state.contentWidth
+        mutate: (mutateState) => {
+            let payload = mutateState;
+            if (mutateState.editwidth || mutateState.contentWidth) {
+                payload.editwidth = mutateState.editwidth || mutateState.contentWidth
             }
             if (forcefit) {
                 const { resetx, resety, resetRotate } = resetPosition({
@@ -406,7 +410,7 @@ export default (props = {}) => {
                     translate,
                     rotate,
                     scale,
-                    ...state
+                    ...mutateState
                 });
                 if (forcefit.includes('translate')) {
                     payload.translate = [resetx, resety];
@@ -415,15 +419,22 @@ export default (props = {}) => {
                     payload.rotate = resetRotate;
                 }
             }
-            props.onFinish && props.onFinish({
-                translate, scale, rotate, mirror, isTouch,
-                editwidth,
-                ...payload
-            });
-            dispatch({
-                type: 'save',
-                payload: payload
-            })
+            if (autoRotate && !isEdit && width / height > contentHeight / contentWidth) {
+                payload.rotate = 90;
+                payload.isEdit = true;
+            }
+            const afterState = Object.assign({}, state, payload);
+            if (!isEqual(afterState, state)) {
+                props.onFinish && props.onFinish({
+                    translate, scale, rotate, mirror, isTouch,
+                    editwidth,
+                    ...payload
+                });
+                dispatch({
+                    type: 'save',
+                    payload: payload
+                })  
+            }
         }
     }
 }

@@ -59,7 +59,7 @@ function getFormatFn(format) {
     }
 }
 
-export const useCountDown = (props) => {
+export default (props) => {
 
     /**
      * initTime:初始值单位是毫秒

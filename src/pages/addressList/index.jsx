@@ -1,14 +1,11 @@
 import React, { Component, useEffect, useState } from 'react'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { View, Text } from '@tarojs/components'
-import { AtButton } from 'taro-ui'
 import { connect } from 'react-redux'
 
 import styles from './index.module.less'
-import Empty from '../../components/Empty'
-import SafeArea from '../../components/SafeArea'
-import { list, change } from '../../services/address'
-import Toast from '../../components/Toast'
+import { Empty, SafeArea, Toast, Button } from '@/components'
+import { list, change } from '@/services/address'
 
 const AddresssList = ({ dispatch }) => {
     const [addressList, setAddressList] = useState([]);
@@ -98,7 +95,7 @@ const AddresssList = ({ dispatch }) => {
                 {({ bottom }) => {
                     return (
                         <View className={styles["new-address-wrap"]} style={{ bottom: Taro.pxTransform(bottom + 32, 750) }}>
-                            <AtButton className={styles["new-address"]} type="primary" onClick={handleAddAddress}>新增收货地址</AtButton>
+                            <Button className={styles["new-address"]} type="primary" onClick={handleAddAddress}>新增收货地址</Button>
                         </View>
                     )
                 }}

@@ -3,12 +3,12 @@ import Taro, { usePullDownRefresh, useReachBottom } from '@tarojs/taro';
 import { View, Image, Text } from '@tarojs/components';
 
 import styles from './index.module.less';
-import { list } from '../../services/coupon';
-import Empty from '../../components/Empty';
+import { list } from '@/services/coupon';
+import Empty from '@/components/Empty';
 
-import icon_used from '../../../images/icon_Used@2x.png';
-import icon_expired from '../../../images/icon_expired@2x.png';
-import icon_disabled from '../../../images/lALPD4Bhr9v28EJycg_114_114.png';
+import icon_used from '@/images/icon_Used@2x.png';
+import icon_expired from '@/images/icon_expired@2x.png';
+import icon_disabled from '@/images/lALPD4Bhr9v28EJycg_114_114.png';
 
 export default () => {
 
@@ -77,6 +77,9 @@ export default () => {
                                 case 3:
                                     icon = icon_disabled;
                                     break;
+                                case 9:
+                                    icon = icon_used;
+                                    break;
                             }
 
                             return (
@@ -87,7 +90,7 @@ export default () => {
                                             <View className="list-item-header-text">
                                                 <View className="name">{item.couponName}</View>
                                                 <View>
-                                                    <View className="sill">无门槛使用</View>
+                                                    <View className="sill">{item.freeContent}</View>
                                                     <View className="time">有效期至 {item.endTime}</View>
                                                 </View>
                                             </View>

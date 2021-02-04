@@ -1,24 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import Taro, { usePageScroll, useShareAppMessage } from '@tarojs/taro'
+import math from '@/utils/math'
+import Taro, { usePageScroll } from '@tarojs/taro'
 import { View, Image, Text, Swiper, SwiperItem } from '@tarojs/components'
 
 import styles from './index.module.less'
-import { jump } from '../../utils/utils'
-import { list, index } from '../../services/home'
+import { jump } from '@/utils/utils'
+import { list, index } from '@/services/home'
 import Base, { useDidShow } from '../../layout/Base'
 import useList from '../../hooks/useList'
-import NavBar from '../../components/NavBar'
-import Dialog from '../../components/Dialog'
-import AddToMine from '../../components/AddToMine'
-import logo from '../../../images/bg_kachaxionglogo@2x.png'
-import { fix } from '../../utils/utils'
+import NavBar from '@/components/NavBar'
+import Dialog from '@/components/Dialog'
+import AddToMine from '@/components/AddToMine'
+import iconLogo from '@/images/icon_wayinlogo@2x.png'
 
 const Home = (props) => {
 
     const { dispatch, home: { dialog } } = props;
-
-    const [scrollTop, setScrollTop] = useState(0);
     
     const [homeData, setHomeData] = useState({
         bannerList: [],
@@ -41,8 +39,6 @@ const Home = (props) => {
         }
     })
 
-    useShareAppMessage();
-
     useDidShow(() => {
         if (process.env.TARO_ENV === 'h5') {
             const showFlag = sessionStorage.getItem('show_flag');
@@ -57,26 +53,31 @@ const Home = (props) => {
         }
     });
 
-    // TODO 封装usePageScroll
-    usePageScroll(res => {
-        setScrollTop(res.scrollTop);
-    })
-
     useEffect(() => {
         getConfig();
     }, [])
 
     const getConfig = () => {
         index().then(({ data }) => {
-            setHomeData(data.data);
+            setHomeData({
+                bannerList: [
+                    {
+                        id: 1,
+                        image: data.data.banner,
+                        url: data.data.bannerJumpUrl
+                    }
+                ],
+                indexBigImageList: [
+                    {
+                        id: 1,
+                        image: data.data.indexBigImage,
+                        url: data.data.indexBigImageJumpUrl
+                    }
+                ],
+                welfareText: data.data.welfareText,
+                logo: data.data.logo
+            });
         })
-    }
-
-    const percent = scrollTop / 150;
-
-    const navBarStyle = {
-        backgroundColor: `rgba(255,255,255,${percent * 1})`,
-        color: `rgba(${255 * (1 - percent)},${255 * (1 - percent)},${255 * (1 - percent)},1)`
     }
 
     const handleGoDetail = (id) => {
@@ -102,10 +103,10 @@ const Home = (props) => {
 
     return (
         <View className={styles['index']}>
-            <NavBar style={navBarStyle} left={
+            <NavBar left={
                 <View className={styles.navLeft}>
-                    <Image className={styles.navLogo} src={logo} />
-                    <Text>哇印</Text>
+                    <Image className={styles.navLogo} src={homeData.logo} />
+                    <Text className={styles.text}>{homeData.welfareText}</Text>
                 </View>
             } />
             {process.env.TARO_ENV === 'weapp' && <AddToMine />}
@@ -154,14 +155,17 @@ const Home = (props) => {
                                     <View className={styles['product-info']}>
                                         <View className={styles['product-name']}>{product.name}</View>
                                         <View className={styles['product-description']}>{product.description}</View>
-                                        <View className={styles['product-price']}>￥<Text className="price">{fix(product.sellingPrice, 2, true)}</Text></View>
+                                        <View className={styles['product-price']}>￥<Text className="price">{math.divide(product.sellingPrice, 100)}</Text></View>
                                     </View>
                                 </View>
                             )
                         })
                     }
                 </View>
-                <View className={styles['bottom-text']}>更多商品  持续更新</View>
+                <View className={styles['bottom-text']}>
+                    <Image className={styles['bottom-logo']} src={iconLogo}/>
+                    <View>- 该服务由哇印科技提供 -</View>
+                </View>
             </View>
             <Dialog visible={dialog.visible} className={styles['home-dialog']} onClose={handleClose}>
                 <Image src={dialog.image} mode="widthFix" onClick={handleClickDialog} className={styles['dialog-img']} />

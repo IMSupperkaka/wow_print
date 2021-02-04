@@ -3,8 +3,8 @@ import Taro, { useReady } from '@tarojs/taro';
 import { View, Text } from '@tarojs/components';
 
 import './index.less';
-import { orderStatus } from '../../utils/map/order';
-import { logistics } from '../../services/order';
+import { orderStatus } from '@/utils/map/order';
+import { logistics } from '@/services/order';
 
 export default () => {
 

@@ -3,8 +3,8 @@ import Taro from '@tarojs/taro'
 import { View, Image, Button } from '@tarojs/components'
 
 import styles from './index.module.less'
-import logo from '../../../images/bg_kachaxionglogo@2x.png'
-import service from '../../../images/lADPD26eM94wIlzNAa7NAa4_430_430.jpg'
+import logo from '@/images/bg_kachaxionglogo@2x.png'
+import service from '@/images/lADPD26eM94wIlzNAa7NAa4_430_430.jpg'
 
 export default () => {
 

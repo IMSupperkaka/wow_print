@@ -1,37 +1,46 @@
-import React from 'react';
-import Taro from '@tarojs/taro';
+import React, { useState, useEffect } from 'react';
+import Taro, { usePageScroll } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import './index.less';
 
-class NavBar extends React.Component {
-    constructor(...props) {
-        super(...props);
-        this.state = {
-            statusBarHeight: 0
+export default (props) => {
+
+    const [statusBarHeight, setStatusBarHeight] = useState(0);
+
+    const [scrollTop, setScrollTop] = useState(0);
+
+    usePageScroll(res => {
+        setScrollTop(res.scrollTop);
+    })
+
+    useEffect(() => {
+        Taro.getSystemInfo({
+            success: (result) => {
+                setStatusBarHeight(result.statusBarHeight)
+            }
+        })
+    })
+
+    const percent = scrollTop / 150;
+
+    let navBarStyle = {
+        backgroundColor: `rgba(255,255,255,${percent * 1})`,
+        color: `rgba(${255 * (1 - percent)},${255 * (1 - percent)},${255 * (1 - percent)},1)`
+    }
+
+    if (process.env.TARO_ENV === 'h5') {
+        navBarStyle = {
+            opacity: (1 - percent)
         }
     }
 
-    componentDidMount() {
-        Taro.getSystemInfo({
-            success: (result) => {
-                this.setState({
-                    statusBarHeight: result.statusBarHeight
-                })
-            }
-        })
-    }
-
-    render() {
-        return (
-            <View className="wy-nav-bar" style={{ paddingTop: this.state.statusBarHeight + 'px', ...this.props.style }}>
-                <View className="wy-nav-bar-content">
-                    {
-                        this.props.left
-                    }
-                </View>
+    return (
+        <View className="wy-nav-bar" style={{ paddingTop: statusBarHeight + 'px', ...navBarStyle }}>
+            <View className="wy-nav-bar-content">
+                {
+                    props.left
+                }
             </View>
-        )
-    }
-}
-
-export default NavBar;
+        </View>
+    )
+};

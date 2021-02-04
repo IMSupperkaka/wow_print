@@ -5,10 +5,11 @@
  * @FilePath: \wow_print\src\models\user.models.js
  * @Description: Descrip Content
  */
-import Taro from '@tarojs/taro'
+import Taro from '@tarojs/taro';
+import { v4 as uuidv4 } from 'uuid';
 
-import { getRouterParams, getH5Params } from '../utils/utils';
-import { login, wechatLogin, smsLogin, saveinfo, changeToken as getChangeToken } from '../services/user';
+import { getRouterParams } from '../utils/utils';
+import { login, wechatLogin, smsLogin, touristLogin, saveinfo, changeToken as getChangeToken } from '../services/user';
 
 export default {
     namespace: 'user',
@@ -79,6 +80,20 @@ export default {
                 console.log(error)   
             }
         },
+        *logout({ payload }, { call, put }) {
+            try {
+                yield put({
+                    type: 'saveToken',
+                    payload: null
+                })
+                yield put({
+                    type: 'saveUserInfo',
+                    payload: {}
+                })
+            } catch (error) {
+                console.log(error)   
+            }
+        },
         *wechatLogin({ payload }, { call, put }) {
             try {
                 const response = yield call(wechatLogin, {
@@ -120,6 +135,25 @@ export default {
                     Taro.navigateBack();
                 }
 
+            } catch (error) {
+                console.error(error)
+            }
+        },
+        *touristsLogin({ payload }, { call, put }) {
+            try {
+                let visitorId = Taro.getStorageSync('uuid');
+                if (!visitorId) {
+                    visitorId = uuidv4();
+                    Taro.setStorageSync('uuid', visitorId);
+                }
+                const response = yield call(touristLogin, {
+                    deviceToken: visitorId
+                })
+                yield put({
+                    type: 'saveUserInfo',
+                    payload: response.data.data || {}
+                })
+                payload?.resolve()
             } catch (error) {
                 console.error(error)
             }

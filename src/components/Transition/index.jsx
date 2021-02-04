@@ -1,5 +1,5 @@
 // Transition 用以解决react-transition-group在Taro中进出场动画失效的单个动画组件
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import classNames from 'classnames';
 
@@ -72,7 +72,7 @@ export default (props) => {
         setTimeout(setNextCallBack(handler), timeout);
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (state == 'enter') {
             Taro.nextTick(() => {
                 onEntering();
@@ -95,7 +95,7 @@ export default (props) => {
         }
     }, [state])
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         cancelNextCallback();
         if (props.in) {
             onEnter();

@@ -5,8 +5,8 @@ import { app } from '../../dva';
 
 import './index.less';
 import Upload from '../Upload';
-import CropImg from '../../components/CropImg';
-import uploiadPlus from '../../../images/upload-plus@2x.png';
+import CropImg from '@/components/CropImg';
+import uploiadPlus from '@/images/upload-plus@2x.png';
 
 export default React.memo((props) => {
 

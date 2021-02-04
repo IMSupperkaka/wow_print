@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import Taro from '@tarojs/taro';
-import { View, Image, Input, Switch, Picker, Text } from '@tarojs/components';
-import { AtButton } from 'taro-ui';
+import { View, Image, Input, Switch, Text } from '@tarojs/components';
 
-import Cell from '../../components/Cell';
-import RegionPicker from '../../components/RegionPicker';
+import { RegionPicker, Cell, Button } from '@/components';
 import styles from './index.module.less';
-import wechatIcon from '../../../images/icon_wechat@2x.png';
-import { add, edit, detail, del } from '../../services/address';
+import wechatIcon from '@/images/icon_wechat@2x.png';
+import { add, edit, detail, del } from '@/services/address';
 import { useEffect } from 'react';
 
 export default () => {
@@ -202,13 +200,13 @@ export default () => {
                 query.type == 'edit' &&
                 <Cell onClick={handleDelete} className={styles['delete-address']} title="删除该收货地址" />
             }
-            <AtButton disabled={!isValid} className={styles['save-btn']} type="primary" onClick={handleSave}>保存并使用</AtButton>
+            <Button disabled={!isValid} className={styles['save-btn']} type="primary" onClick={handleSave}>保存并使用</Button>
             {
                 process.env.TARO_ENV === 'weapp' &&
-                <AtButton className={styles['use-wx-location']} type="primary" onClick={onGetAddress}>
+                <Button className={styles['use-wx-location']} type="primary" onClick={onGetAddress}>
                     <Image className={styles['wechat-icon']} src={wechatIcon} />
-               使用微信地址
-             </AtButton>
+                    使用微信地址
+                </Button>
             }
         </View>
     )

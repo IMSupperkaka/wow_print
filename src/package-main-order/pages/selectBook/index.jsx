@@ -5,18 +5,18 @@ import Taro from '@tarojs/taro'
 import day from 'dayjs'
 import { connect } from 'react-redux'
 import styles from './index.module.less'
-import lodash from 'lodash';
+import uniqBy from 'lodash/uniqBy';
 
-import imgView from '../../utils/crop';
-import UploadCrop from '../../components/UploadCrop';
-import { CropImgProvider } from '../../components/CropImg';
-import SelectPicModal from '../../components/SelectPicModal';
-import BottomButton from '../../components/BottomButton';
-import Modal from '../../components/Modal';
+import imgView from '@/utils/crop';
+import UploadCrop from '@/components/UploadCrop';
+import { CropImgProvider } from '@/components/CropImg';
+import SelectPicModal from '@/components/SelectPicModal';
+import BottomButton from '@/components/BottomButton';
+import Modal from '@/components/Modal';
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas';
 
-import editIcon from '../../../images/icon_edit.png'
-import wayin from '../../../images/cover_wayin.png'
+import editIcon from '@/images/icon_edit.png'
+import wayin from '@/images/cover_wayin.png'
 
 // 除了封面之外的图片数组
 const twinsList = [
@@ -70,7 +70,6 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
     };
 
     const onChange = (file, fileList, index) => {
-        console.log(userImageList)
         if (file.status == 'done') {
             dispatch({
                 type: 'confirmOrder/mutateUserImageList',
@@ -119,6 +118,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     imgInfo: img.imgInfo, // 图片原始信息 { width, height, ...resetInfo }
                     cropInfo: img.cropInfo, // 裁剪信息
                     originImage: img.originImage, // 图片七牛地址
+                    filePath: img.filePath,
                     cropImage: cropImage.cropUrl,
                     printNums: 1,
                     restInfo: {
@@ -286,6 +286,8 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
 
     const date = day().format('MM/DD YYYY');
 
+    console.log(userImageList.filter((v) => { return !v?.restInfo?.isBack }));
+
     return (
         <CropImgProvider>
             <View className={styles['index']}>
@@ -324,14 +326,14 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     {
                         twinsList.map((item, index) => {
                             return (
-                                <View className={classnams(styles['twins-item'], styles['item-box'])} key={index}>
+                                <View className={classnams(styles['twins-item'], styles['item-box'])}>
                                     <View className={styles['item-body']}>
                                         {
                                             item.map((child, i) => {
                                                 const imgIndex = index * 2 + i + 1;
                                                 const file = userImageList[imgIndex] ? [userImageList[imgIndex]] : []
                                                 return (
-                                                    <View className={styles['choose-item']} key={i}>
+                                                    <View className={styles['choose-item']}>
                                                         <UploadCrop editFinish={editFinish.bind(this, imgIndex)} beforeUpload={beforeUpload.bind(this, imgIndex)} fileList={file} onChange={onChange} width={320} height={328.5} />
                                                     </View>
                                                 )
@@ -345,7 +347,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     }
                 </View>
                 <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} onSave={handleSaveWorks} goPrint={submit} limit={17} />
-                <SelectPicModal onChange={onChange} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
+                <SelectPicModal onChange={onChange} imgList={uniqBy(userImageList.filter((v) => { return !v?.restInfo?.isBack }), 'filePath')} visible={visible} onClose={() => { setVisible(false) }} />
                 <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
                     <View className={styles['modal-content']}>
                         <View className={styles['input-content']}>

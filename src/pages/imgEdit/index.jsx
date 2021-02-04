@@ -4,21 +4,26 @@ import { connect } from 'react-redux';
 import { View, Image, Canvas } from '@tarojs/components';
 
 import styles from './index.module.less';
-import { EDIT_WIDTH } from '../../utils/picContent'
-import CropImg from '../../components/CropImg'
+import { EDIT_WIDTH } from '@/utils/picContent'
+import CropImg from '@/components/CropImg'
 import useCrop from '../../hooks/useCrop'
-import deleteIcon from '../../../images/icon_delete／2@2x.png'
-import mirrorIcon from '../../../images/icon_Mirror@3x.png'
-import rotateIcon from '../../../images/icon_90Spin@2x.png'
-import leftActiveIcon from '../../../images/icon_active_left@2x.png'
-import leftDisabledIcon from '../../../images/icon_disabled_left@2x.png'
-import rightActiveIcon from '../../../images/icon_active_right@2x.png'
-import rightDisabledIcon from '../../../images/icon_disabled_right@2x.png'
+import deleteIcon from '@/images/icon_delete／2@2x.png'
+import mirrorIcon from '@/images/icon_Mirror@3x.png'
+import rotateIcon from '@/images/icon_90Spin@2x.png'
+import leftActiveIcon from '@/images/icon_active_left@2x.png'
+import leftDisabledIcon from '@/images/icon_disabled_left@2x.png'
+import rightActiveIcon from '@/images/icon_active_right@2x.png'
+import rightDisabledIcon from '@/images/icon_disabled_right@2x.png'
 
 const ImgEdit = (props) => {
 
     const { dispatch, editimg: { imgList, activeIndex } } = props;
     const IMG = imgList[activeIndex];
+
+    if (!IMG) {
+        return null;
+    }
+
     const contentWidth = EDIT_WIDTH;
     const contentHeight = EDIT_WIDTH / IMG.proportion;
 
@@ -104,8 +109,17 @@ const ImgEdit = (props) => {
     const activeRightIcon = <Image onClick={oprate.bind(this, 'plus')} className={styles['oprate-icon']} src={rightActiveIcon} />;
     const disabledRightIcon = <Image className={styles['oprate-icon']} src={rightDisabledIcon} />;
 
+    const position = {
+        left: Taro.pxTransform(84, 750),
+        right: `calc(100% - ${Taro.pxTransform(84, 750)})`,
+        top: Taro.pxTransform(104, 750),
+        bottom: `calc(${Taro.pxTransform(104, 750)} + ${Taro.pxTransform(contentHeight, 750)})`
+    }
+
     const maskStyle = {
-        borderWidth: `${Taro.pxTransform(104, 750)} ${Taro.pxTransform(84, 750)} calc(100vh - ${Taro.pxTransform(104, 750)} - ${Taro.pxTransform(contentHeight, 750)}) ${Taro.pxTransform(84, 750)}`
+        background: 'rgba(0,0,0,.5)',
+        // borderWidth: `${Taro.pxTransform(104, 750)} ${Taro.pxTransform(84, 750)} calc(100vh - ${Taro.pxTransform(104, 750)} - ${Taro.pxTransform(contentHeight, 750)}) ${Taro.pxTransform(84, 750)}`
+        clipPath: `polygon(100% 0%, 100% 100%, 0 100%, 0 ${position.bottom}, ${position.right} ${position.bottom}, ${position.right} ${position.top}, ${position.left} ${position.top}, ${position.left} ${position.bottom}, 0% ${position.bottom},0% 0%)`,
     }
 
     const contentStyle = {

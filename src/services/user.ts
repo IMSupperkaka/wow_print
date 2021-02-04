@@ -56,6 +56,14 @@ export const smsLogin = (data) => {
     })
 }
 
+export const touristLogin = (data) => {
+    return TaroRequest.request({
+        url: `/h5/touristMode/login`,
+        method: 'POST',
+        data
+    })
+}
+
 export const saveinfo = (data) => {
     return TaroRequest.request({
         url: `/app/user/info`,

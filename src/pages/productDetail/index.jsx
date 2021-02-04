@@ -1,24 +1,40 @@
 import React, { useEffect, useState } from 'react'
-import Taro, { useShareAppMessage, useReady } from '@tarojs/taro'
+import math from '@/utils/math'
+import Taro, { useShareAppMessage } from '@tarojs/taro'
 import { connect } from 'react-redux'
 import { View, Text, Image, Swiper, SwiperItem } from '@tarojs/components'
 
 import styles from './index.module.less'
-import { fix } from '../../utils/utils'
-import SafeArea from '../../components/SafeArea'
-import NoticeBubble from '../../components/NoticeBubble'
-import Upload from '../../components/Upload'
+import shutDown from '@/images/icon_shut_down@2x.png';
+import { fix } from '@/utils/utils'
+import Base from '../../layout/Base'
+import SafeArea from '@/components/SafeArea'
+import NoticeBubble from '@/components/NoticeBubble'
+import Upload from '@/components/Upload'
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas'
 import SelectCoupon from '../../page-components/SelectCoupon'
-import { detail as getDetail } from '../../services/product'
+import { detail as getDetail } from '@/services/product'
+
+const BottomTips = (props) => {
+    return (
+        props.visible &&
+        <View className={styles['bottom-tips']}>
+            <Text>免费定制 限时特惠</Text>
+            <Image onClick={props.onClose} className={styles['bottom-close']} src={shutDown}/>
+        </View>
+    )
+}
 
 const ProductDetail = ({ dispatch, confirmOrder, user }) => {
 
     const { coupon } = confirmOrder;
 
     const [query, setQuery] = useState({});
-    const [detail, setDetail] = useState({});
+    const [detail, setDetail] = useState({
+        sellingPrice: 0
+    });
     const [current, setCurrent] = useState(0);
+    const [visible, setVisible] = useState(false);
 
     useEffect(() => {
         const query = Taro.getCurrentInstance().router.params;
@@ -28,6 +44,9 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
             dispatch({
                 type: 'confirmOrder/initConfirmOrder'
             })
+        }
+        if (query.from == 'coupon') {
+            setVisible(true)
         }
     }, [])
 
@@ -51,7 +70,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     const goSelectPic = () => {
 
         if (query.type == 'display') {
-            Taro.eventCenter.trigger('confirmSelectMatch', query.id);
+            Taro.eventCenter.trigger('confirmSelectMatch', Number(query.id));
             return Taro.navigateBack();
         }
 
@@ -89,13 +108,26 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
         submitBtnText = '立即定制';
     }
 
+    let priceText = `￥${math.divide(detail.sellingPrice, 100)}`;
+
+    if (coupon.couponMethod == 2) {
+        const price = math.chain(detail.sellingPrice).subtract(coupon.couponOffer).divide(100).done();
+        priceText = `券后￥${Math.abs(price)}`
+    }
+
     return (
         <View className={styles.index}>
             <View className={styles['banner-wrap']}>
                 {
                     detail?.buyList?.length > 0 &&
                     <NoticeBubble className={styles['order-notice']} list={detail.buyList} renderItem={(v) => {
-                        return <View className={styles['order-notice-item']}>{ v.cname }打印了{ v.printNums }张</View>
+                        return <View className={styles['order-notice-item']}>
+                            {
+                                detail.category == 1 ?
+                                `${v.cname}打印了${v.printNums}张` :
+                                `${v.cname},购买了${v.printNums}件`
+                            }
+                        </View>
                     }}/>
                 }
                 <Swiper
@@ -121,15 +153,19 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
             <View className={styles['product-info']}>
                 <View>
                     <View className={styles['product-price']}>
-                        <Text>￥{fix(detail.sellingPrice, 2, true)}</Text>
-                        <Text className={styles['original']}>￥</Text>
-                        <Text className={`${styles['original']} ${styles['del']}`}>{fix(detail.originalPrice, 2, true)}</Text>
+                        <Text>{priceText}</Text>
+                        <Text className={styles['original']}>
+                            ￥
+                            <Text className={styles['discount']}>
+                            {fix(detail.originalPrice, 2, true)}
+                            </Text>
+                        </Text>
                     </View>
                     <View className={styles['product-name']}>{detail.name}</View>
                 </View>
                 <View className={styles['product-sale']}>销量 {detail.sales}</View>
             </View>
-            <SelectCoupon productId={query.id} activeCoupon={coupon} onChange={saveCoupon}></SelectCoupon>
+            <SelectCoupon productId={query.id} activeCoupon={coupon} onChange={saveCoupon} money={detail.sellingPrice}/>
             <View className={styles['product-detail']}>
                 <View className={styles['detail-title']}>商品详情</View>
                 {
@@ -142,6 +178,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                     })
                 }
             </View>
+            <BottomTips visible={visible} onClose={() => { setVisible(false) }}/>
             <SafeArea>
                 {({ bottom }) => {
                     return (
@@ -161,7 +198,13 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     )
 };
 
-export default WidthCompressCanvas(connect(({ confirmOrder, user }) => ({
-    confirmOrder,
-    user
-}))(ProductDetail));
+export default Base(
+    WidthCompressCanvas(
+        connect(
+            ({ confirmOrder, user }) => ({
+                confirmOrder,
+                user
+            })
+        )(ProductDetail)
+    )
+);

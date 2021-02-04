@@ -88,14 +88,22 @@ class TaroRequest {
                 Taro.request({
                     complete: (params) => {
                         if (params.data?.code != '10000') {
-                            if (params.data?.code == '10025') {
-                                if (process.env.TARO_ENV == 'h5') {
-                                    if (location.pathname == '/pages/login/index') {
-                                        return false;
-                                    }
-                                    return Taro.redirectTo({
-                                        url: `/pages/login/index?redirect=${encodeURIComponent(location.pathname + location.search)}`
+                            if (params.data?.code == '10025') { // token失效
+                                if (process.env.TARO_ENV == 'h5') { // refreshToken
+                                    return dispatch({
+                                        type: 'user/touristsLogin',
+                                        payload: {
+                                            resolve: () => {
+                                                requestPromise().then(resolve);
+                                            }
+                                        }
                                     })
+                                    // if (location.pathname == '/pages/login/index') {
+                                    //     return false;
+                                    // }
+                                    // return Taro.redirectTo({
+                                    //     url: `/pages/login/index?redirect=${encodeURIComponent(location.pathname + location.search)}`
+                                    // })
                                 }
                                 return dispatch({
                                     type: 'user/login',

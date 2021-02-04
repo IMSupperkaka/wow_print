@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import Taro from '@tarojs/taro'
-import { AtButton } from 'taro-ui'
 import { connect } from 'react-redux'
 import { View, Image, Text } from '@tarojs/components'
 
+import { Button } from '@/components'
 import styles from './index.module.less'
-import logo from '../../../images/auth-logo@2x.png'
+import logo from '@/images/auth-logo@2x.png'
 
 @connect(({ user }) => ({
     user
@@ -74,8 +74,8 @@ class Index extends Component {
         return (
             <View className={styles.index}>
                 <Image src={logo} className={styles.logo} />
-                <AtButton onClick={this.handleLogin} className={styles['auth-btn']} type='primary' openType="getUserInfo" onGetUserInfo={this.onGetUserInfo}>微信授权登录</AtButton>
-                <AtButton className={styles['cancel-btn']} onClick={this.goBack} type='primary'>取消</AtButton>
+                <Button onClick={this.handleLogin} className={styles['auth-btn']} type='primary' openType="getUserInfo" onGetUserInfo={this.onGetUserInfo}>微信授权登录</Button>
+                <Button className={styles['cancel-btn']} onClick={this.goBack}>取消</Button>
                 <View className={styles['bottom-agreement']}>
                     登陆视为同意
                     <Text onClick={this.handleGoService}>《用户服务协议》</Text>

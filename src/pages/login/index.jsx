@@ -5,10 +5,10 @@ import { connect } from 'react-redux';
 import { View, Text, Image, Button, Form, Input } from '@tarojs/components';
 
 import useCaptcha from '../../hooks/useCaptcha';
-import { openWebview } from '../../utils/utils';
+import { openWebview } from '@/utils/utils';
 import styles from './index.module.less';
-import { sms } from '../../services/user';
-import loginLogo from '../../../images/bg_wayin_avatar@2x.png';
+import { sms } from '@/services/user';
+import loginLogo from '@/images/bg_wayin_avatar@2x.png';
 
 const handleGoService = () => {
     openWebview(`${BASE_WEB_URL}/agreement.html\?key=user_service_agreement`, {

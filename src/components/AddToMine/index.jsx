@@ -7,6 +7,8 @@ import { View } from '@tarojs/components';
 import './index.less';
 import Transition from '../Transition';
 
+const duration = 300;
+
 export default () => {
 
     const [visible, setVisible] = useState(false);
@@ -25,12 +27,10 @@ export default () => {
         setVisible(false);
     }
 
-    const duration = 300;
-
     return (
         <Transition in={visible} timeout={duration} classNames="fade-in">
-            <View className="addto-mine-wrap" style={{ top: statusBarHeight + 45 }}>
-                <AtIcon onClick={handleClose} className="addto-mine-close-icon" value='close' size='12' color='#FFF'/>
+            <View className="addto-mine-wrap" style={{ top: statusBarHeight + 45 }} onClick={handleClose}>
+                <AtIcon className="addto-mine-close-icon" value='close' size='12' color='#FFF'/>
                 点击···添加“我的小程序”享服务更便捷
             </View>
         </Transition>

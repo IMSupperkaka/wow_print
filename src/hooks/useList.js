@@ -90,14 +90,14 @@ export default (props) => {
         }
     }
 
-    useEffect(() => {
-        if (process.env.TARO_ENV === 'h5') {
-            document.querySelector('.taro-tabbar__panel').addEventListener('scroll', reachBottom)
-            return () => {
-                document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
-            }
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (process.env.TARO_ENV === 'h5') {
+    //         document.querySelector('.taro-tabbar__panel').addEventListener('scroll', reachBottom)
+    //         return () => {
+    //             document.querySelector('.taro-tabbar__panel').removeEventListener('scroll', reachBottom)
+    //         }
+    //     }
+    // }, [])
 
     useEffect(() => {
         getData(true);

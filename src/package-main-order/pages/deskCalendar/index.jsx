@@ -1,17 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
-import lodash from 'lodash';
+import uniqBy from 'lodash/uniqBy';
 import { connect } from 'react-redux';
 import { View, Text, Image, Input } from '@tarojs/components';
 
 import styles from './index.module.less';
-import imgView from '../../utils/crop';
-import Modal from '../../components/Modal';
-import UploadCrop from '../../components/UploadCrop';
-import { CropImgProvider } from '../../components/CropImg';
-import SelectPicModal from '../../components/SelectPicModal';
-import BottomButton from '../../components/BottomButton';
+import imgView from '@/utils/crop';
+import Modal from '@/components/Modal';
+import UploadCrop from '@/components/UploadCrop';
+import { CropImgProvider } from '@/components/CropImg';
+import SelectPicModal from '@/components/SelectPicModal';
+import BottomButton from '@/components/BottomButton';
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas';
-import editIcon from '../../../images/icon_edit.png';
+import editIcon from '@/images/icon_edit.png';
 import day from 'dayjs';
 
 const sizeMap = new Map([
@@ -170,7 +170,7 @@ const DeskCalendar = (props) => {
                     filePath: img.filePath,
                     imgInfo: img.imgInfo,
                     cropInfo: img.cropInfo,
-                    originImage: img.originImage, 
+                    originImage: img.originImage,
                     printNums: 1,
                     restInfo: {
                         title: coverInfo.title
@@ -376,7 +376,7 @@ const DeskCalendar = (props) => {
                     })
                 }
                 <BottomButton onSave={handleSaveWorks} goPrint={submit} onChange={(file, fileList) => { onChange(file, fileList, -1) }} limit={13} />
-                <SelectPicModal limit={activeIndex == -1 ? 9 : 1} onChange={onChange} imgList={lodash.uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
+                <SelectPicModal limit={activeIndex == -1 ? 9 : 1} onChange={onChange} imgList={uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
                 {/* TODO 封装Form组件 */}
                 <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
                     <View className={styles['modal-content']}>

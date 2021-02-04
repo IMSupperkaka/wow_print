@@ -4,24 +4,24 @@ import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
 
 import styles from './index.module.less'
-import { SELECT_WIDTH } from '../../utils/picContent'
-import { computedBlur } from '../../utils/utils'
-import UploadCrop from '../../components/UploadCrop'
-import SafeArea from '../../components/SafeArea'
-import Upload from '../../components/Upload'
-import { CropImgProvider } from '../../components/CropImg'
+import { SELECT_WIDTH } from '@/utils/picContent'
+import { computedBlur } from '@/utils/utils'
+import CropImg from '@/components/CropImg'
+import SafeArea from '@/components/SafeArea'
+import Upload from '@/components/Upload'
+import { CropImgProvider } from '@/components/CropImg'
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas'
-import addPic from '../../../images/cion_add_to@2x.png'
-import deleteIcon from '../../../images/icon_delete@2x.png'
-import lessSelectIcon from '../../../images/icon_Less_selected@2x.png'
-import lessDisabledIcon from '../../../images/icon_Less_disabled@2x.png'
-import plusSelectIcon from '../../../images/cion_plus_selected@2x.png'
-import imgView from '../../utils/crop'
+import addPic from '@/images/cion_add_to@2x.png'
+import deleteIcon from '@/images/icon_delete@2x.png'
+import lessSelectIcon from '@/images/icon_Less_selected@2x.png'
+import lessDisabledIcon from '@/images/icon_Less_disabled@2x.png'
+import plusSelectIcon from '@/images/cion_plus_selected@2x.png'
+import imgView from '@/utils/crop'
 import day from 'dayjs';
 
 const SelectPic = ({ dispatch, confirmOrder }) => {
 
-    const { coupon, userImageList, proportion, imgCache } = confirmOrder;
+    const { coupon, userImageList, proportion } = confirmOrder;
 
     const uploadRef = useRef();
 
@@ -175,16 +175,6 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
         })
     }
 
-    const handleGoEdit = (index) => {
-        dispatch({
-            type: 'imgEdit/goImgEdit',
-            payload: {
-                imgList: userImageList,
-                defaultIndex: index
-            }
-        })
-    }
-
     const editFinish = (res) => {
         dispatch({
             type: 'confirmOrder/saveUserImageList',
@@ -209,20 +199,63 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                 <View className={styles['content']}>
                     {
                         userImageList.map((v, index) => {
+
+                            const cropImgProps = {
+                                onFinish: (cropInfo) => {
+                                    const cloneList = [...userImageList];
+                                    cloneList[index].cropInfo = {
+                                        ...cloneList[index].cropInfo,
+                                        ...cropInfo
+                                    };
+                                    editFinish(cloneList);
+                                },
+                                onIgnore: () => {
+                                    const cloneList = [...userImageList];
+                                    cloneList[index].cropInfo = {
+                                        ...v.cropInfo,
+                                        ignoreBlur: true
+                                    }
+                                    editFinish(cloneList);
+                                },
+                                showEdit: false,
+                                onHandleEdit: () => {
+                                    Taro.eventCenter.off('editFinish');
+                                    Taro.eventCenter.on('editFinish', (res) => {
+                                        editFinish(res);
+                                    })
+                                    dispatch({
+                                        type: 'editimg/goEditImg',
+                                        payload: {
+                                            imgList: userImageList.map((v) => {
+                                                return {
+                                                    ...v,
+                                                    proportion
+                                                }
+                                            }),
+                                            defaultIndex: index
+                                        }
+                                    })
+                                },
+                                onHandleChange: () => {
+                                    uploadRef.current.handleChoose({
+                                        type: 'replace',
+                                        index
+                                    });
+                                },
+                                className: styles['item-img'],
+                                contentWidth: SELECT_WIDTH,
+                                contentHeight: SELECT_WIDTH / proportion,
+                                width: v.imgInfo.width,
+                                height: v.imgInfo.height,
+                                cropOption: v.cropInfo,
+                                src: v.filePath
+                            }
+
                             return (
-                                <View className={styles['item']} key={index}>
+                                <View className={styles['item']}>
                                     <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className={styles['delete-icon']} />
-                                    <View className={styles['item-body']} onClick={handleGoEdit.bind(this, index)} style={contentStyle}>
-                                        <UploadCrop
-                                            limit={9}
-                                            fileList={userImageList}
-                                            showIndex={index}
-                                            showEdit={false}
-                                            editFinish={editFinish}
-                                            onChange={onChange}
-                                            className={styles['item-img']}
-                                            width={SELECT_WIDTH}
-                                            height={SELECT_WIDTH / proportion} />
+                                    <View className={styles['item-body']} style={contentStyle}>
+                                        <CropImg {...cropImgProps} autoRotate/>
                                     </View>
                                     <View className={styles['item-footer']}>
                                         <View className={styles['step-wrap']}>

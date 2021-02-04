@@ -2,7 +2,7 @@ import TaroRequest from '../utils/request'
 
 export const index = (code) => {
     return TaroRequest.request({
-        url: `/index`,
+        url: `/index/config`,
         method: 'GET'
     })
 }

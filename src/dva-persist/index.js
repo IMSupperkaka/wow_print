@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isEqual from 'lodash/isEqual';
 import Taro from '@tarojs/taro';
 
 let lastState = {};
@@ -30,7 +30,7 @@ export default (config) => {
         function dispatch(action) {
             const res = store.dispatch(action);
             let thatState = store.getState();
-            if (!_.isEqual(lastState, thatState)) {
+            if (!isEqual(lastState, thatState)) {
                 lastState = onSet(thatState);
                 storage.set(`${keyPrefix}:${key}`, lastState);
             }

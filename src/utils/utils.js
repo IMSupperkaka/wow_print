@@ -7,6 +7,7 @@
  */
 import Taro from '@tarojs/taro';
 import { EDIT_WIDTH } from './picContent';
+import math from './math';
 
 const defaultCropInfo = { scale: 1, translate: [0, 0], rotate: 0, mirror: false }
 
@@ -216,4 +217,12 @@ export const getRouterParams = (key) => {
         }
         return Taro.getCurrentInstance().router.params;
     }
+}
+
+export const renderMoney = (money) => {
+    money = Number(money);
+    if (isNaN(money)) {
+        return 0;
+    }
+    return math.divide(money, 100);
 }

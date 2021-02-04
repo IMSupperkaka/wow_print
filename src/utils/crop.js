@@ -36,9 +36,17 @@ class imgView {
 
         const cropContentHeight = Math.round(contentHeight / as);
 
-        const x = Math.round(resizeWidth * 0.5) - Math.round(cropContentWidth * 0.5) - Math.round(translate[0] * translateScale / as);
+        let x = Math.round(resizeWidth * 0.5 - cropContentWidth * 0.5 - translate[0] * translateScale / as);
 
-        const y = Math.round(resizeHeight * 0.5) - Math.round(cropContentHeight * 0.5) - Math.round(translate[1] * translateScale / as);
+        let y = Math.round(resizeHeight * 0.5 - cropContentHeight * 0.5 - translate[1] * translateScale / as);
+
+        if (x + cropContentWidth > resizeWidth) {
+            x = Math.round(resizeWidth - cropContentWidth);
+        }
+
+        if (y + cropContentHeight > resizeHeight) {
+            y = Math.round(resizeHeight - cropContentHeight);
+        }
 
         const cropUrl = `${this.imgInfo.src}?imageMogr2/rotate/${angel}/auto-orient/crop/!${cropContentWidth}x${cropContentHeight}a${x}a${y}`;
 
