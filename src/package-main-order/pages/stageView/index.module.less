@@ -46,7 +46,7 @@
         position: absolute;
         left: 50%;
         top: 50%;
-        transform: translate(-50%, calc(-50% + 18px));
+        transform: translate(-50%, calc(-50%));
         width: 604px;
         height: 440px;
         overflow: initial;
@@ -97,18 +97,28 @@
         }
     }
 }
-.bg-projection {
-    position: relative;
-    width: 640px;
-    height: 142px;
-    z-index: 1;
+.edit-shadow-wrapper {
+  position: relative;
+  .edit-stage-bg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+  }
 }
-  .edit-stage {
+.top-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events:none;
+  z-index: 2;
+}
+.edit-stage {
     position: relative;
     -webkit-backface-visibility: hidden;
     -webkit-transform: translate3d(0, 0, 0);
     z-index: 2;
-    transform: translateY(90px);
+    // transform: translateY(90px);
     .edit-stage-bg {
         position: absolute;
         left: 0;
