@@ -25,11 +25,12 @@ const BottomTips = (props) => {
     )
 }
 
-const ProductDetail = ({ dispatch, confirmOrder, user }) => {
+const ProductDetail = ({ dispatch, confirmOrder, router }) => {
+
+    const { query } = router;
 
     const { coupon } = confirmOrder;
 
-    const [query, setQuery] = useState({});
     const [detail, setDetail] = useState({
         sellingPrice: 0
     });
@@ -37,8 +38,6 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
-        const query = Taro.getCurrentInstance().router.params;
-        setQuery(query);
         getOrderDetail(query.id);
         if (query.type != 'display') {
             dispatch({
@@ -165,7 +164,10 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
                 </View>
                 <View className={styles['product-sale']}>销量 {detail.sales}</View>
             </View>
-            <SelectCoupon productId={query.id} activeCoupon={coupon} onChange={saveCoupon} money={detail.sellingPrice}/>
+            {
+                query.type != 'display' &&
+                <SelectCoupon productId={query.id} activeCoupon={coupon} onChange={saveCoupon} money={detail.sellingPrice}/>
+            }
             <View className={styles['product-detail']}>
                 <View className={styles['detail-title']}>商品详情</View>
                 {

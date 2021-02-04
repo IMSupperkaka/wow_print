@@ -2,7 +2,7 @@
  * @Author: shawn.huashiyun 
  * @Date: 2020-12-14 19:47:38 
  * @Last Modified by: shawn.huashiyun
- * @Last Modified time: 2021-02-03 12:00:29
+ * @Last Modified time: 2021-02-04 11:01:48
  * @Description 处理页面级组件的登录态 根据运行环境和url参数不同分别执行微信登录，联合登录，游客登录
  * @Description 为页面级组件注入路由信息
  * @Description 记录滚动位置
@@ -15,6 +15,7 @@ import React, { useState, useEffect } from 'react';
 import Taro, { useDidShow as _useDidShow } from '@tarojs/taro';
 import { connect } from 'react-redux';
 import UAParser from 'ua-parser-js';
+import { View } from '@tarojs/components'
 
 import { useSaveScrollTop } from '@/hooks';
 import { getSign } from '../services/user';
@@ -144,12 +145,20 @@ const Base = (Camp) => {
             }
 
         }, [])
-        
+
+        const Child = (
+            <View className="page-content" onClick={(e) => {
+                Taro.eventCenter.trigger('clickRoot', e);
+            }}>
+                <Camp router={{ query: query }} {...props} />
+            </View>
+        )
+
         if (process.env.TARO_ENV === 'weapp') {
-            return <Camp router={{ query: query }} {...props} />;
+            return Child
         }
 
-        return finish ? <Camp router={{ query: query }} {...props} /> : null;
+        return finish ? Child : null;
     })
 }
 

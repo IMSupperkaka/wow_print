@@ -1,20 +1,19 @@
-import React, { useState, useEffect, useMemo, useCallback, useImperativeHandle, forwardRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Taro from '@tarojs/taro'
-import math from '@/utils/math'
 import classNames from 'classnames'
 import { View, Image, Text } from '@tarojs/components'
 
 import './index.less'
-import { CropImgProvider, CropImgConsumer } from './context'
 import Transition from '../Transition'
-import useCrop from '../../hooks/useCrop'
-import useCacheImage from '../../hooks/useCacheImage'
-
-let globalKey = 0;
+import { useCrop, useClickOutside, useCacheImage } from '@/hooks'
 
 const CropImg = (props) => {
 
     const { width, height, contentWidth, contentHeight, src, style = {}, className, useProps, animate, autoRotate = false, cropOption, onFinish, showEdit = true, showIgnoreBtn = true, ...restProps } = props;
+
+    const [editVisible, setEditVisible] = useState(false);
+
+    const cropRef = useRef();
 
     const { cachePath } = useCacheImage(src);
 
@@ -35,6 +34,10 @@ const CropImg = (props) => {
         ...cropOption
     });
 
+    useClickOutside((e) => {
+        setEditVisible(false);
+    }, cropRef)
+
     useEffect(() => {
         if (!useProps) {
             mutate({
@@ -52,16 +55,16 @@ const CropImg = (props) => {
 
         let timer = null;
 
-        if (props.editVisible) {
+        if (editVisible) {
             timer = setTimeout(() => {
-                props.onHide();
+                setEditVisible(false);
             }, 7000);
         }
 
         return () => {
             clearTimeout(timer);
         };
-    }, [props.editVisible])
+    }, [editVisible])
 
     const toogleEdit = (e) => {
 
@@ -69,10 +72,10 @@ const CropImg = (props) => {
             return props.onHandleEdit();
         }
 
-        if (props.editVisible) {
-            props.onHide();
+        if (editVisible) {
+            setEditVisible(false);
         } else {
-            props.onShow();
+            setEditVisible(true);
         }
     }
 
@@ -96,20 +99,14 @@ const CropImg = (props) => {
 
     const showBlur = blur && !cropOption.ignoreBlur;
 
-    const editVisible = props.editVisible && !showBlur;
-
     const transformStyle = useProps ? props.transformStyle : cropStyle.transformStyle;
 
     const onClick = (e) => {
-        if (showIgnoreBtn) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
         toogleEdit(e);
     }
 
     return (
-        <View onClick={onClick} style={{ width: Taro.pxTransform(contentWidth, 750), height: Taro.pxTransform(contentHeight, 750), ...style }} className={classNames('cropimg-wrap', className)} {...restProps}>
+        <View ref={cropRef} onClick={onClick} style={{ width: Taro.pxTransform(contentWidth, 750), height: Taro.pxTransform(contentHeight, 750), ...style }} className={classNames('cropimg-wrap', className)} {...restProps}>
             <View className="mask-box">
                 <Transition in={showBlur && showIgnoreBtn} timeout={300} classNames="bottom-top">
                     <View className="mask-bottom">
@@ -124,7 +121,7 @@ const CropImg = (props) => {
                         <Text>图片模糊或过长哦~</Text>
                     </View>
                 </Transition>
-                <Transition in={editVisible} timeout={300} classNames="bottom-top">
+                <Transition in={editVisible && !showBlur} timeout={300} classNames="bottom-top">
                     <View className={`mask-bottom black`}>
                         <View className="btn" onClick={handleEdit}>调整</View>
                         <View className="line" />
@@ -139,24 +136,4 @@ const CropImg = (props) => {
     )
 }
 
-export {
-    CropImgProvider
-};
-
-export default (props) => {
-
-    const [cropKey, setCropKey] = useState();
-
-    useEffect(() => {
-        setCropKey(++globalKey);
-    }, [])
-
-    return (
-        <CropImgConsumer>
-            {({ list = [], onShow, onHide }) => {
-                const editVisible = list.includes(cropKey);
-                return <CropImg {...props} list={list} onShow={() => { onShow && onShow(cropKey) }} onHide={() => { onHide && onHide(cropKey) }} editVisible={editVisible} />
-            }}
-        </CropImgConsumer>
-    )
-}
+export default CropImg

@@ -8,12 +8,9 @@ import styles from './index.module.less'
 import uniqBy from 'lodash/uniqBy';
 
 import imgView from '@/utils/crop';
-import UploadCrop from '@/components/UploadCrop';
-import { CropImgProvider } from '@/components/CropImg';
-import SelectPicModal from '@/components/SelectPicModal';
-import BottomButton from '@/components/BottomButton';
-import Modal from '@/components/Modal';
+import { UploadCrop, SelectPicModal, BottomButton, Modal } from '@/components';
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas';
+import Base from '@/layout/Base';
 
 import editIcon from '@/images/icon_edit.png'
 import wayin from '@/images/cover_wayin.png'
@@ -286,123 +283,123 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
 
     const date = day().format('MM/DD YYYY');
 
-    console.log(userImageList.filter((v) => { return !v?.restInfo?.isBack }));
-
     return (
-        <CropImgProvider>
-            <View className={styles['index']}>
-                <View className={styles['header']}>显示区域即为打印区域，如需调整请点击图片</View>
-                <View className={styles['content']}>
-                    <View className={styles['item-box']}>
-                        <View className={styles['cover']}>
-                            <View className={styles['cover-top']}>
-                                <View className={styles['edit-box']}>
-                                    <View
-                                        className={styles['title-box']}
-                                        onClick={() => {
-                                            setEditVisible(true);
-                                            setCoverInfo((coverInfo) => {
-                                                return {
-                                                    ...coverInfo,
-                                                    temporaryDesc: coverInfo.description,
-                                                    temporaryName: coverInfo.bookName
-                                                }
-                                            });
-                                        }}>
-                                        <Text className={styles['title']}>{coverInfo.bookName}</Text>
-                                        <Image src={editIcon} className={styles['edit-icon']} />
-                                    </View>
-                                    <View className={styles['description']}>
-                                        {coverInfo.description}
-                                    </View>
+        <View className={styles['index']}>
+            <View className={styles['header']}>显示区域即为打印区域，如需调整请点击图片</View>
+            <View className={styles['content']}>
+                <View className={styles['item-box']}>
+                    <View className={styles['cover']}>
+                        <View className={styles['cover-top']}>
+                            <View className={styles['edit-box']}>
+                                <View
+                                    className={styles['title-box']}
+                                    onClick={() => {
+                                        setEditVisible(true);
+                                        setCoverInfo((coverInfo) => {
+                                            return {
+                                                ...coverInfo,
+                                                temporaryDesc: coverInfo.description,
+                                                temporaryName: coverInfo.bookName
+                                            }
+                                        });
+                                    }}>
+                                    <Text className={styles['title']}>{coverInfo.bookName}</Text>
+                                    <Image src={editIcon} className={styles['edit-icon']} />
                                 </View>
-                                <Image src={wayin} className={styles['wayin']} />
+                                <View className={styles['description']}>
+                                    {coverInfo.description}
+                                </View>
                             </View>
-                            <UploadCrop beforeUpload={beforeUpload.bind(this, 0)} editFinish={editFinish.bind(this, 0)} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className={styles['cover-con']} />
-                            <View className={styles['date-wrap']}>{ date }</View>
+                            <Image src={wayin} className={styles['wayin']} />
                         </View>
-                        <View className={styles['page-num']}>封面</View>
+                        <UploadCrop beforeUpload={beforeUpload.bind(this, 0)} editFinish={editFinish.bind(this, 0)} fileList={userImageList[0] ? [userImageList[0]] : []} onChange={onChange} width={555} height={472} className={styles['cover-con']} />
+                        <View className={styles['date-wrap']}>{date}</View>
                     </View>
-                    {
-                        twinsList.map((item, index) => {
-                            return (
-                                <View className={classnams(styles['twins-item'], styles['item-box'])}>
-                                    <View className={styles['item-body']}>
-                                        {
-                                            item.map((child, i) => {
-                                                const imgIndex = index * 2 + i + 1;
-                                                const file = userImageList[imgIndex] ? [userImageList[imgIndex]] : []
-                                                return (
-                                                    <View className={styles['choose-item']}>
-                                                        <UploadCrop editFinish={editFinish.bind(this, imgIndex)} beforeUpload={beforeUpload.bind(this, imgIndex)} fileList={file} onChange={onChange} width={320} height={328.5} />
-                                                    </View>
-                                                )
-                                            })
-                                        }
-                                    </View>
-                                    <View className={styles['page-num']}>{`${++index * 2 - 1} - ${index * 2}`}</View>
-                                </View>
-                            )
-                        })
-                    }
+                    <View className={styles['page-num']}>封面</View>
                 </View>
-                <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} onSave={handleSaveWorks} goPrint={submit} limit={17} />
-                <SelectPicModal onChange={onChange} imgList={uniqBy(userImageList.filter((v) => { return !v?.restInfo?.isBack }), 'filePath')} visible={visible} onClose={() => { setVisible(false) }} />
-                <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
-                    <View className={styles['modal-content']}>
-                        <View className={styles['input-content']}>
-                            <View className={styles['input-item']}>
-                                <Text className={styles['title']}>名称</Text>
-                                <Input
-                                    name='name'
-                                    type='text'
-                                    maxlength={12}
-                                    placeholder='最多12个字'
-                                    cursorSpacing="130"
-                                    adjustPosition
-                                    placeholderStyle="color: #C1C1C1"
-                                    value={coverInfo.temporaryName}
-                                    onInput={(event) => {
-                                        setCoverInfo({
-                                            ...coverInfo,
-                                            temporaryName: event.detail.value
+                {
+                    twinsList.map((item, index) => {
+                        return (
+                            <View className={classnams(styles['twins-item'], styles['item-box'])}>
+                                <View className={styles['item-body']}>
+                                    {
+                                        item.map((child, i) => {
+                                            const imgIndex = index * 2 + i + 1;
+                                            const file = userImageList[imgIndex] ? [userImageList[imgIndex]] : []
+                                            return (
+                                                <View className={styles['choose-item']}>
+                                                    <UploadCrop editFinish={editFinish.bind(this, imgIndex)} beforeUpload={beforeUpload.bind(this, imgIndex)} fileList={file} onChange={onChange} width={320} height={328.5} />
+                                                </View>
+                                            )
                                         })
-                                        return event.detail.value
-                                    }}
-                                />
+                                    }
+                                </View>
+                                <View className={styles['page-num']}>{`${++index * 2 - 1} - ${index * 2}`}</View>
                             </View>
-                            <View className={styles['input-item']}>
-                                <Text className={styles['title']}>昵称</Text>
-                                <Input
-                                    name='name'
-                                    type='text'
-                                    maxlength={20}
-                                    placeholder='最多20个字'
-                                    cursorSpacing="91"
-                                    adjustPosition
-                                    placeholderStyle="color: #C1C1C1"
-                                    value={coverInfo.temporaryDesc}
-                                    onInput={(event) => {
-                                        setCoverInfo({
-                                            ...coverInfo,
-                                            temporaryDesc: event.detail.value
-                                        })
-                                        return event.detail.value
-                                    }}
-                                />
-                            </View>
+                        )
+                    })
+                }
+            </View>
+            <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} onSave={handleSaveWorks} goPrint={submit} limit={17} />
+            <SelectPicModal onChange={onChange} imgList={uniqBy(userImageList.filter((v) => { return !v?.restInfo?.isBack }), 'filePath')} visible={visible} onClose={() => { setVisible(false) }} />
+            <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
+                <View className={styles['modal-content']}>
+                    <View className={styles['input-content']}>
+                        <View className={styles['input-item']}>
+                            <Text className={styles['title']}>名称</Text>
+                            <Input
+                                name='name'
+                                type='text'
+                                maxlength={12}
+                                placeholder='最多12个字'
+                                cursorSpacing="130"
+                                adjustPosition
+                                placeholderStyle="color: #C1C1C1"
+                                value={coverInfo.temporaryName}
+                                onInput={(event) => {
+                                    setCoverInfo({
+                                        ...coverInfo,
+                                        temporaryName: event.detail.value
+                                    })
+                                    return event.detail.value
+                                }}
+                            />
                         </View>
-                        <View className={styles['operate-content']}>
-                            <View className={styles['left-btn']} onClick={() => { setEditVisible(false) }}>取消</View>
-                            <View className={classnams(styles['right-btn'], coverInfo.temporaryName || coverInfo.temporaryDesc ? styles['clickable'] : '')} onClick={handleEditCover}>确认</View>
+                        <View className={styles['input-item']}>
+                            <Text className={styles['title']}>昵称</Text>
+                            <Input
+                                name='name'
+                                type='text'
+                                maxlength={20}
+                                placeholder='最多20个字'
+                                cursorSpacing="91"
+                                adjustPosition
+                                placeholderStyle="color: #C1C1C1"
+                                value={coverInfo.temporaryDesc}
+                                onInput={(event) => {
+                                    setCoverInfo({
+                                        ...coverInfo,
+                                        temporaryDesc: event.detail.value
+                                    })
+                                    return event.detail.value
+                                }}
+                            />
                         </View>
                     </View>
-                </Modal>
-            </View>
-        </CropImgProvider>
+                    <View className={styles['operate-content']}>
+                        <View className={styles['left-btn']} onClick={() => { setEditVisible(false) }}>取消</View>
+                        <View className={classnams(styles['right-btn'], coverInfo.temporaryName || coverInfo.temporaryDesc ? styles['clickable'] : '')} onClick={handleEditCover}>确认</View>
+                    </View>
+                </View>
+            </Modal>
+        </View>
     )
 }
 
-export default WidthCompressCanvas(connect(({ confirmOrder }) => ({
-    confirmOrder
-}))(SelectBook));
+export default Base(
+    WidthCompressCanvas(
+        connect(({ confirmOrder }) => ({
+            confirmOrder
+        }))(SelectBook)
+    )
+)
