@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react'
+import groupBy from 'lodash/groupBy'
 import { View, Image, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
 
 import styles from './index.module.less'
 import { SELECT_WIDTH } from '@/utils/picContent'
-import { computedBlur } from '@/utils/utils'
 import { CropImg, SafeArea, Upload } from '@/components'
 import Base from '@/layout/Base'
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas'
@@ -92,29 +92,17 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
             })
         }
 
-        let restList = [];
-
-        const blurList = userImageList.map((img) => {
-
-            const contentWidth = Math.min(img.imgInfo.width, img.imgInfo.height)
-
-            const blur = computedBlur({
-                contentWidth: contentWidth,
-                contentHeight: contentWidth / proportion,
-                width: img.imgInfo.width,
-                height: img.imgInfo.height,
-                afterWidth: img.imgInfo.width * img.cropInfo.scale,
-                afterHieght: img.imgInfo.height * img.cropInfo.scale,
-                printWidth: 10,
-                printHeight: 10 / proportion
-            }) && !img.cropInfo.ignoreBlur;
-            if (!blur) {
-                restList.push(img);
+        const group = groupBy(userImageList, (v) => {
+            if (!v.cropInfo) {
+                return 'empty'
             }
-            return blur ? img : false;
-        }).filter(v => v);
+            if (v.cropInfo.blur && !v.cropInfo.ignoreBlur) {
+                return 'blur';
+            }
+            return 'normal'
+        })
 
-        if (blurList.length > 0) {
+        if (group?.blur?.length > 0) {
             return Taro.showModal({
                 title: '温馨提示',
                 content: '图片存在模糊或太长的问题，建议调整，以免影响打印效果。无操作视为可以打印',
@@ -127,7 +115,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                     } else {
                         dispatch({
                             type: 'confirmOrder/saveUserImageList',
-                            payload: [...blurList, ...restList]
+                            payload: [...(group.blur || []), ...(group.normal || [])]
                         })
                     }
                 }

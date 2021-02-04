@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
+import Taro from '@tarojs/taro';
 import uniqBy from 'lodash/uniqBy';
+import groupBy from 'lodash/groupBy';
 import { connect } from 'react-redux';
 import { View, Text, Image, Input } from '@tarojs/components';
 
@@ -274,14 +276,40 @@ const DeskCalendar = (props) => {
         })
     }
 
-    const submit = () => {
-        const resultList = getResultList();
+    const goConfirmOrder = () => {
         dispatch({
             type: 'confirmOrder/pushConfirmOrder',
             payload: {
-                resultList
+                resultList: getResultList()
             }
         })
+    }
+
+    const submit = () => {
+        const group = groupBy(userImageList, (v) => {
+            if (!v?.cropInfo) {
+                return 'empty'
+            }
+            if (v.cropInfo.blur && !v.cropInfo.ignoreBlur) {
+                return 'blur';
+            }
+            return 'normal'
+        })
+        if (group?.blur?.length > 0) {
+            return Taro.showModal({
+                title: '温馨提示',
+                content: '图片存在模糊或太长的问题，建议调整，以免影响打印效果。无操作视为可以打印',
+                confirmText: '确认打印',
+                cancelText: '去调整',
+                confirmColor: '#FF6345',
+                success: (res) => {
+                    if (res.confirm) {
+                        goConfirmOrder();
+                    }
+                }
+            })
+        }
+        goConfirmOrder();
     }
 
     const handleSaveWorks = () => {

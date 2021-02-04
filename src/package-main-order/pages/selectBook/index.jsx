@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react'
-import classnams from 'classnames'
-import { View, Image, Text, Input } from '@tarojs/components'
-import Taro from '@tarojs/taro'
-import day from 'dayjs'
-import { connect } from 'react-redux'
-import styles from './index.module.less'
+import React, { useState, useEffect, useRef } from 'react';
+import classnams from 'classnames';
+import { View, Image, Text, Input } from '@tarojs/components';
+import Taro from '@tarojs/taro';
+import day from 'dayjs';
+import { connect } from 'react-redux';
+import styles from './index.module.less';
 import uniqBy from 'lodash/uniqBy';
+import groupBy from 'lodash/groupBy';
 
 import imgView from '@/utils/crop';
 import { UploadCrop, SelectPicModal, BottomButton, Modal } from '@/components';
@@ -238,15 +239,41 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         return resultList
     }
 
-    // 去下单
-    const submit = () => {
-        const resultList = handleResultList()
+    const goConfirmOrder = () => {
         dispatch({
             type: 'confirmOrder/pushConfirmOrder',
             payload: {
-                resultList
+                resultList: handleResultList()
             }
         })
+    }
+
+    // 去下单
+    const submit = () => {
+        const group = groupBy(userImageList, (v) => {
+            if (!v?.cropInfo) {
+                return 'empty'
+            }
+            if (v.cropInfo.blur && !v.cropInfo.ignoreBlur) {
+                return 'blur';
+            }
+            return 'normal'
+        })
+        if (group?.blur?.length > 0) {
+            return Taro.showModal({
+                title: '温馨提示',
+                content: '图片存在模糊或太长的问题，建议调整，以免影响打印效果。无操作视为可以打印',
+                confirmText: '确认打印',
+                cancelText: '去调整',
+                confirmColor: '#FF6345',
+                success: (res) => {
+                    if (res.confirm) {
+                        goConfirmOrder();
+                    }
+                }
+            })
+        }
+        goConfirmOrder();
     };
 
     // 修改封面信息

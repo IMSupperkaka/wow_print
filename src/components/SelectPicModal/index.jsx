@@ -8,33 +8,40 @@ import Upload from '../Upload';
 
 export default (props) => {
 
-    const { imgList = [], onChange, onReplace, limit = 1, ...resetProps } = props;
+    const { imgList = [], onChange, onReplace, limit = 1, onClose, ...resetProps } = props;
 
     const handleChange = (file, fileList) => {
         onChange({
             ...file,
             status: file.status || 'done'
         });
-        // resetProps.onClose();
+        if (fileList) {
+            const uploadingList = fileList.filter((v) => {
+                return v.status != 'done'
+            })
+            if (uploadingList.length <= 0) {
+                setTimeout(() => {
+                    onClose();
+                }, 300)
+            }
+        }
     }
-
-    console.log(imgList)
 
     const filterList = imgList.filter((v) => {
         return v?.filePath || v?.originImage;
     })
 
     return (
-        <Modal {...resetProps}>
+        <Modal {...resetProps} onClose={onClose}>
             <View className={styles['select-title']}>已上传图片
-                <View className={styles['close']} onClick={resetProps.onClose}>取消</View>
+                <View className={styles['close']} onClick={onClose}>取消</View>
             </View>
             <ScrollView scrollY style={{ height: "60vh", background: "#F6F6F6" }}>
                 <View className={styles['select-content']}>
                     {
                         filterList.map((item, index) => {
                             return (
-                                <View className={styles['img-item']} onClick={() => { handleChange(item) }}>
+                                <View className={styles['img-item']} onClick={() => { onClose(); handleChange(item); }}>
                                     <Image className={styles['img']} mode="aspectFill" src={item.filePath} />
                                 </View>
                             )
