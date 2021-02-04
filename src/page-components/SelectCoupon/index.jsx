@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import day from 'dayjs';
 import Taro from '@tarojs/taro';
 import classNames from 'classnames';
 import { View, ScrollView, Image, Text } from '@tarojs/components';
@@ -107,17 +108,17 @@ export default (props) => {
             goodId: id
         }).then(({ data }) => {
             setDetail(data.data);
-            const currentTime = new Date().getTime();
+            const currentTime = day();
             setDisabledCouponList(data.data.couponDisableList.map((v) => {
                 return {
                     ...v,
-                    new: (currentTime - new Date(v.createTime)) <= 86400000
+                    new: currentTime.diff(day(v.createTime)) <= 86400000
                 }
             }));
             setCouponList(data.data.couponList.map((v) => {
                 return {
                     ...v,
-                    new: (currentTime - new Date(v.createTime)) <= 86400000
+                    new: currentTime.diff(day(v.createTime)) <= 86400000
                 }
             }))
         })
