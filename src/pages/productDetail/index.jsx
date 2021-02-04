@@ -11,6 +11,7 @@ import Upload from '../../components/Upload'
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas'
 import SelectCoupon from '../../page-components/SelectCoupon'
 import { detail as getDetail } from '../../services/product'
+import { ProductWithTemplate } from '../../utils/map/product'
 
 const ProductDetail = ({ dispatch, confirmOrder, user }) => {
 
@@ -145,7 +146,7 @@ const ProductDetail = ({ dispatch, confirmOrder, user }) => {
             <SafeArea>
                 {({ bottom }) => {
                     return (
-                        [4, 5, 6].includes(detail.category) ?
+                        ProductWithTemplate.get(detail.category) ?
                         <Upload limit={1} onChange={handleUploadChange}>
                             <View style={{ paddingBottom: Taro.pxTransform(bottom, 750) }} onClick={goSelectPic} className={styles['submit-btn']}>
                                 上传照片
