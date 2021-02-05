@@ -141,6 +141,8 @@ const DeskCalendar = (props) => {
 
     const editFinish = (index, res) => {
 
+        console.log('edit-finish-file:', JSON.stringify(res))
+
         const coverList = [
             ...userImageList
         ];
@@ -358,7 +360,7 @@ const DeskCalendar = (props) => {
                     const size = sizeMap.get(item.type);
 
                     return (
-                        <View className="cc">
+                        <View key={index}>
                             {
                                 item.type == 0 ?
                                     <View className={`${styles['calendar-item']} ${styles['cover']}`} style={style}>

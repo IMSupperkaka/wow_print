@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Image } from '@tarojs/components';
 import { app } from '../../dva';
@@ -59,6 +59,10 @@ export default (props) => {
         editFinish && editFinish(cloneList);
     }
 
+    const onHandleChange = () => {
+        upload.current.handleChoose();
+    }
+
     return (
         <View className={className}>
             {
@@ -68,7 +72,7 @@ export default (props) => {
                         onIgnore={handleIgnore}
                         showEdit={showEdit}
                         onHandleEdit={onHandleEdit}
-                        onHandleChange={() => { upload.current.handleChoose(); }}
+                        onHandleChange={onHandleChange}
                         onFinish={onFinish}
                         className="item-img"
                         contentWidth={width}

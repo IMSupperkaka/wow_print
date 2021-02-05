@@ -382,7 +382,11 @@ export default {
                     cloneUserImageList[emptyIndex] = userImage;
                 }
             }
-            
+
+            console.log('mutate-user-image:', userImage.filePath)
+
+            console.log('mutate-user-image-list:', JSON.stringify(cloneUserImageList))
+
             return {
                 ...state,
                 userImageList: cloneUserImageList,
