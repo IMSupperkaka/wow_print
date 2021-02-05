@@ -4,8 +4,8 @@
 const fileInfo = {
     fileWidth: 604,
     fileHeight: 433,
-    fileX: 36,
-    fileY: 0
+    x: 36,
+    y: 0
 }
 export default [
     {
@@ -17,7 +17,7 @@ export default [
             filePath: 'https://cdn.91jiekuan.com/FjApI7ErjIw6MXZ2SjFEo0ZUtZfj', // 模板
             bgPath: 'http://cdn.91jiekuan.com/Fiu0PUtkx4ygErdZ7oOjlqIitHTd',
             bgCover: false,
-            maskPath: 'http://cdn.91jiekuan.com/FtYfvH7zamOC7cAu2nvn4tkxRH5W',
+            maskPath: 'https://cdn.91jiekuan.com/FqgLkMSuwvKLkiZdcuV5JnDdjVWL',
             thumbnail: 'https://cdn.91jiekuan.com/Fj41F2kXUGWe7Yo8Z3fpHdeh6G7e'
         },
         editArea: [
@@ -37,7 +37,7 @@ export default [
             filePath: 'https://cdn.91jiekuan.com/Fjy7Ma7VAY2ltkRqnDMjqcuTxCWj',
             bgPath: 'http://cdn.91jiekuan.com/Fiu0PUtkx4ygErdZ7oOjlqIitHTd',
             bgCover: false,
-            maskPath: 'http://cdn.91jiekuan.com/FtYfvH7zamOC7cAu2nvn4tkxRH5W',
+            maskPath: 'https://cdn.91jiekuan.com/FqgLkMSuwvKLkiZdcuV5JnDdjVWL',
             thumbnail: 'https://cdn.91jiekuan.com/FkK379R0guIw4oaG3quxMOq9rRlC'
         },
         editArea: [
@@ -63,7 +63,7 @@ export default [
             filePath: 'https://cdn.91jiekuan.com/FoZQyGwVzfCqKaaMMZgdqzprw-nW',
             bgPath: 'http://cdn.91jiekuan.com/Fiu0PUtkx4ygErdZ7oOjlqIitHTd',
             bgCover: false,
-            maskPath: 'http://cdn.91jiekuan.com/FtYfvH7zamOC7cAu2nvn4tkxRH5W',
+            maskPath: 'https://cdn.91jiekuan.com/FqgLkMSuwvKLkiZdcuV5JnDdjVWL',
             thumbnail: 'https://cdn.91jiekuan.com/Fo0ZzIWEj9MnymuvMEYRq4NclTIF'
         },
         editArea: [
@@ -83,7 +83,7 @@ export default [
             filePath: 'https://cdn.91jiekuan.com/Ft8B1QF9kcgl0HryFweHY36Ak7ws',
             bgPath: 'http://cdn.91jiekuan.com/Fiu0PUtkx4ygErdZ7oOjlqIitHTd',
             bgCover: false,
-            maskPath: 'http://cdn.91jiekuan.com/FtYfvH7zamOC7cAu2nvn4tkxRH5W',
+            maskPath: 'https://cdn.91jiekuan.com/FqgLkMSuwvKLkiZdcuV5JnDdjVWL',
             thumbnail: 'https://cdn.91jiekuan.com/FhAp77-KTrVci4C56kG6zWqywCCz'
         },
         editArea: [
@@ -103,7 +103,7 @@ export default [
             filePath: 'https://cdn.91jiekuan.com/FgZAFfjYapKsmf543PEOxB-qr1gc',
             bgPath: 'http://cdn.91jiekuan.com/Fiu0PUtkx4ygErdZ7oOjlqIitHTd',
             bgCover: false,
-            maskPath: 'http://cdn.91jiekuan.com/FtYfvH7zamOC7cAu2nvn4tkxRH5W',
+            maskPath: 'https://cdn.91jiekuan.com/FqgLkMSuwvKLkiZdcuV5JnDdjVWL',
             thumbnail: 'https://cdn.91jiekuan.com/FiF4yrYQW3qBOfhOtZyV8hYOa-Hv'
         },
         editArea: [
