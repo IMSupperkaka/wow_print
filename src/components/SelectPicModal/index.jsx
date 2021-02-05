@@ -13,6 +13,13 @@ export default (props) => {
     const handleChange = (file, fileList) => {
         onChange({
             ...file,
+            cropInfo: {
+                translate: [0, 0],
+                scale: 1,
+                ignoreBlur: false,
+                rotate: 0,
+                mirror: false
+            },
             status: file.status || 'done'
         });
         if (fileList) {

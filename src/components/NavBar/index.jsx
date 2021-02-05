@@ -30,6 +30,7 @@ export default (props) => {
 
     if (process.env.TARO_ENV === 'h5') {
         navBarStyle = {
+            color: '#000',
             opacity: (1 - percent)
         }
     }
