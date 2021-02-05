@@ -263,8 +263,8 @@ const StageView = (props) => {
             <View className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}>
                 {
                     activeEditAreaIndex != null &&
-                    <View ref={editRef} className={styles['edit-stage-absolute']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
-                        <View style={activeAreaStyle} className={styles['crop-img-extra-wrap']}>
+                    <View className={styles['edit-stage-absolute']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
+                        <View ref={editRef} style={activeAreaStyle} className={styles['crop-img-extra-wrap']}>
                             <View {...touchProps} className={styles['crop-img-extra']} style={style.contentStyle}>
                                 <View data-behavior={['zoom', 'rotate']} className={classnames(styles['crop-extra-zoom'], mirror && styles['mirror'])} />
                                 <View className={classnames(styles['crop-extra-bottom'], mirror && styles['mirror'])}>
