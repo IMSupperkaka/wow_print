@@ -288,7 +288,7 @@ const StageView = (props) => {
                         height: Taro.pxTransform(activeModel.stageInfo.height, 750),
                         '-webkit-mask-image': `url(${activeModel.stageInfo.maskPath})`,
                         '-webkit-mask-size': '100% 100%',
-                        mixBlendMode: activeModel.stageInfo.mixBlendMode
+                        '-webkit-mix-blend-mode': activeModel.stageInfo.mixBlendMode
                     }}>
                         {
                             activeModel.editArea.map(({ width, height, x, y, img }, index) => {
@@ -340,8 +340,8 @@ const StageView = (props) => {
                             <Image style={{ 
                                 width: Taro.pxTransform(activeModel.stageInfo.fileWidth, 750), 
                                 height: Taro.pxTransform(activeModel.stageInfo.fileHeight, 750),
-                                top: Taro.pxTransform(activeModel.stageInfo.y, 750),
-                                left: Taro.pxTransform(activeModel.stageInfo.x, 750),
+                                top: Taro.pxTransform(activeModel.stageInfo.fileY, 750),
+                                left: Taro.pxTransform(activeModel.stageInfo.fileX, 750),
                             }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
                         }
                     </View>

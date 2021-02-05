@@ -14,7 +14,7 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: ENOENT: no such file or directory, copyfile 'C:\Users\windwos\AppData\Local\Yarn\Cache\v6\npm-has-flag-4.0.0-944771fd9c81c81265c4d6941860da06bb59479b-integrity\node_modules\has-flag\index.d.ts' -> 'C:\Users\windwos\Desktop\qs-code\wow_print\node_modules\@tarojs\mini-runner\node_modules\@tarojs\runner-utils\node_modules\has-flag\index.d.ts'
+  Error: ENOENT: no such file or directory, copyfile 'C:\Users\windwos\AppData\Local\Yarn\Cache\v6\npm-ansi-styles-2.2.1-b432dd3358b634cf75e1e4664368240533c1ddbe-integrity\node_modules\ansi-styles\license' -> 'C:\Users\windwos\Desktop\qs-code\wow_print\node_modules\node-sass\node_modules\ansi-styles\license'
 
 npm manifest: 
   {

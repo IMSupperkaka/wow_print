@@ -1,8 +1,11 @@
+/**
+ * 摆台模板
+ */
 const fileInfo = {
     fileWidth: 604,
     fileHeight: 433,
-    x: 36,
-    y: 0
+    fileX: 36,
+    fileY: 0
 }
 export default [
     {
