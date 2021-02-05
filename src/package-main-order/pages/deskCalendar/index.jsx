@@ -1,15 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
+import Taro from '@tarojs/taro';
 import uniqBy from 'lodash/uniqBy';
+import groupBy from 'lodash/groupBy';
 import { connect } from 'react-redux';
 import { View, Text, Image, Input } from '@tarojs/components';
 
 import styles from './index.module.less';
 import imgView from '@/utils/crop';
-import Modal from '@/components/Modal';
-import UploadCrop from '@/components/UploadCrop';
-import { CropImgProvider } from '@/components/CropImg';
-import SelectPicModal from '@/components/SelectPicModal';
-import BottomButton from '@/components/BottomButton';
+import { Modal, UploadCrop, SelectPicModal, BottomButton } from '@/components';
+import Base from '@/layout/Base';
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas';
 import editIcon from '@/images/icon_edit.png';
 import day from 'dayjs';
@@ -277,14 +276,40 @@ const DeskCalendar = (props) => {
         })
     }
 
-    const submit = () => {
-        const resultList = getResultList();
+    const goConfirmOrder = () => {
         dispatch({
             type: 'confirmOrder/pushConfirmOrder',
             payload: {
-                resultList
+                resultList: getResultList()
             }
         })
+    }
+
+    const submit = () => {
+        const group = groupBy(userImageList, (v) => {
+            if (!v?.cropInfo) {
+                return 'empty'
+            }
+            if (v.cropInfo.blur && !v.cropInfo.ignoreBlur) {
+                return 'blur';
+            }
+            return 'normal'
+        })
+        if (group?.blur?.length > 0) {
+            return Taro.showModal({
+                title: '温馨提示',
+                content: '图片存在模糊或太长的问题，建议调整，以免影响打印效果。无操作视为可以打印',
+                confirmText: '确认打印',
+                cancelText: '去调整',
+                confirmColor: '#FF6345',
+                success: (res) => {
+                    if (res.confirm) {
+                        goConfirmOrder();
+                    }
+                }
+            })
+        }
+        goConfirmOrder();
     }
 
     const handleSaveWorks = () => {
@@ -316,103 +341,105 @@ const DeskCalendar = (props) => {
     }
 
     return (
-        <CropImgProvider>
-            <View className={styles['app']}>
-                <View className={styles['tips']}>
-                    显示区域即为打印区域，如需调整请点击图片
+        <View className={styles['app']}>
+            <View className={styles['tips']}>
+                显示区域即为打印区域，如需调整请点击图片
                 </View>
-                {
-                    deskCalenderList.map((item, index) => {
+            {
+                deskCalenderList.map((item, index) => {
 
-                        const fileList = userImageList[index] ? [userImageList[index]] : [];
+                    const fileList = userImageList[index] ? [userImageList[index]] : [];
 
-                        const style = {
-                            background: `url(${item.backgroundImage})`,
-                            backgroundSize: '100% 100%'
-                        }
+                    const style = {
+                        background: `url(${item.backgroundImage})`,
+                        backgroundSize: '100% 100%'
+                    }
 
-                        const size = sizeMap.get(item.type);
+                    const size = sizeMap.get(item.type);
 
-                        return (
-                            <View key={index} className="cc">
-                                {
-                                    item.type == 0 ?
-                                        <View className={`${styles['calendar-item']} ${styles['cover']}`} style={style}>
-                                            <View className={styles['edit-box']}>
-                                                <Text className={styles['title']}>{coverInfo.title}</Text>
-                                                <Image src={editIcon} className={styles['edit-icon']} onClick={() => {
-                                                    setEditVisible(true);
-                                                    setCoverInfo((coverInfo) => {
-                                                        return {
-                                                            ...coverInfo,
-                                                            temporaryTitle: coverInfo.title
-                                                        }
-                                                    });
-                                                }}/>
-                                            </View>
-                                            <UploadCrop
-                                                fileList={fileList}
-                                                editFinish={editFinish.bind(this, index)}
-                                                beforeUpload={beforeUpload.bind(this, index)}
-                                                onChange={onChange}
-                                                className={styles['calender-uploader']}
-                                                {...size}
-                                            />
-                                        </View> :
-                                        <View className={`${styles['calendar-item']} ${styles['page']}`} style={style}>
-                                            <UploadCrop
-                                                fileList={fileList}
-                                                editFinish={editFinish.bind(this, index)}
-                                                beforeUpload={beforeUpload.bind(this, index)}
-                                                onChange={onChange}
-                                                className={styles['calender-uploader']}
-                                                {...size}
-                                            />
+                    return (
+                        <View key={index} className="cc">
+                            {
+                                item.type == 0 ?
+                                    <View className={`${styles['calendar-item']} ${styles['cover']}`} style={style}>
+                                        <View className={styles['edit-box']}>
+                                            <Text className={styles['title']}>{coverInfo.title}</Text>
+                                            <Image src={editIcon} className={styles['edit-icon']} onClick={() => {
+                                                setEditVisible(true);
+                                                setCoverInfo((coverInfo) => {
+                                                    return {
+                                                        ...coverInfo,
+                                                        temporaryTitle: coverInfo.title
+                                                    }
+                                                });
+                                            }} />
                                         </View>
-                                }
-                                <View className={styles['calender-title']}>{item.title}</View>
-                            </View>
-                        )
-                    })
-                }
-                <BottomButton onSave={handleSaveWorks} goPrint={submit} onChange={(file, fileList) => { onChange(file, fileList, -1) }} limit={13} />
-                <SelectPicModal limit={activeIndex == -1 ? 9 : 1} onChange={onChange} imgList={uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
-                {/* TODO 封装Form组件 */}
-                <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
-                    <View className={styles['modal-content']}>
-                        <View className={styles['input-content']}>
-                            <View className={styles['input-item']}>
-                                <Text className={styles['title']}>标题</Text>
-                                <Input
-                                    name='name'
-                                    type='text'
-                                    maxlength={12}
-                                    cursorSpacing="91"
-                                    placeholder='最多12个字'
-                                    adjustPosition
-                                    placeholderStyle="color: #C1C1C1"
-                                    value={coverInfo.temporaryTitle}
-                                    onInput={(event) => {
-                                        setCoverInfo({
-                                            ...coverInfo,
-                                            temporaryTitle: event.detail.value
-                                        })
-                                        return event.detail.value
-                                    }}
-                                />
-                            </View>
+                                        <UploadCrop
+                                            fileList={fileList}
+                                            editFinish={editFinish.bind(this, index)}
+                                            beforeUpload={beforeUpload.bind(this, index)}
+                                            onChange={onChange}
+                                            className={styles['calender-uploader']}
+                                            {...size}
+                                        />
+                                    </View> :
+                                    <View className={`${styles['calendar-item']} ${styles['page']}`} style={style}>
+                                        <UploadCrop
+                                            fileList={fileList}
+                                            editFinish={editFinish.bind(this, index)}
+                                            beforeUpload={beforeUpload.bind(this, index)}
+                                            onChange={onChange}
+                                            className={styles['calender-uploader']}
+                                            {...size}
+                                        />
+                                    </View>
+                            }
+                            <View className={styles['calender-title']}>{item.title}</View>
                         </View>
-                        <View className={styles['operate-content']}>
-                            <View className={styles['left-btn']} onClick={() => { setEditVisible(false) }}>取消</View>
-                            <View className={`${styles['right-btn']} ${coverInfo.temporaryTitle ? styles['clickable'] : ''}`} onClick={handleEditCover}>确认</View>
+                    )
+                })
+            }
+            <BottomButton onSave={handleSaveWorks} goPrint={submit} onChange={(file, fileList) => { onChange(file, fileList, -1) }} limit={13} />
+            <SelectPicModal limit={activeIndex == -1 ? 9 : 1} onChange={onChange} imgList={uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
+            {/* TODO 封装Form组件 */}
+            <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
+                <View className={styles['modal-content']}>
+                    <View className={styles['input-content']}>
+                        <View className={styles['input-item']}>
+                            <Text className={styles['title']}>标题</Text>
+                            <Input
+                                name='name'
+                                type='text'
+                                maxlength={12}
+                                cursorSpacing="91"
+                                placeholder='最多12个字'
+                                adjustPosition
+                                placeholderStyle="color: #C1C1C1"
+                                value={coverInfo.temporaryTitle}
+                                onInput={(event) => {
+                                    setCoverInfo({
+                                        ...coverInfo,
+                                        temporaryTitle: event.detail.value
+                                    })
+                                    return event.detail.value
+                                }}
+                            />
                         </View>
                     </View>
-                </Modal>
-            </View>
-        </CropImgProvider>
+                    <View className={styles['operate-content']}>
+                        <View className={styles['left-btn']} onClick={() => { setEditVisible(false) }}>取消</View>
+                        <View className={`${styles['right-btn']} ${coverInfo.temporaryTitle ? styles['clickable'] : ''}`} onClick={handleEditCover}>确认</View>
+                    </View>
+                </View>
+            </Modal>
+        </View>
     )
 }
 
-export default WidthCompressCanvas(connect(({ confirmOrder }) => ({
-    confirmOrder
-}))(DeskCalendar));
+export default Base(
+    WidthCompressCanvas(
+        connect(({ confirmOrder }) => ({
+            confirmOrder
+        }))(DeskCalendar)
+    )
+)

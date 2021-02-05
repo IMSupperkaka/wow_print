@@ -1,15 +1,13 @@
 import React, { useEffect, useRef } from 'react'
+import groupBy from 'lodash/groupBy'
 import { View, Image, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
 
 import styles from './index.module.less'
 import { SELECT_WIDTH } from '@/utils/picContent'
-import { computedBlur } from '@/utils/utils'
-import CropImg from '@/components/CropImg'
-import SafeArea from '@/components/SafeArea'
-import Upload from '@/components/Upload'
-import { CropImgProvider } from '@/components/CropImg'
+import { CropImg, SafeArea, Upload } from '@/components'
+import Base from '@/layout/Base'
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas'
 import addPic from '@/images/cion_add_to@2x.png'
 import deleteIcon from '@/images/icon_delete@2x.png'
@@ -94,29 +92,17 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
             })
         }
 
-        let restList = [];
-
-        const blurList = userImageList.map((img) => {
-
-            const contentWidth = Math.min(img.imgInfo.width, img.imgInfo.height)
-
-            const blur = computedBlur({
-                contentWidth: contentWidth,
-                contentHeight: contentWidth / proportion,
-                width: img.imgInfo.width,
-                height: img.imgInfo.height,
-                afterWidth: img.imgInfo.width * img.cropInfo.scale,
-                afterHieght: img.imgInfo.height * img.cropInfo.scale,
-                printWidth: 10,
-                printHeight: 10 / proportion
-            }) && !img.cropInfo.ignoreBlur;
-            if (!blur) {
-                restList.push(img);
+        const group = groupBy(userImageList, (v) => {
+            if (!v.cropInfo) {
+                return 'empty'
             }
-            return blur ? img : false;
-        }).filter(v => v);
+            if (v.cropInfo.blur && !v.cropInfo.ignoreBlur) {
+                return 'blur';
+            }
+            return 'normal'
+        })
 
-        if (blurList.length > 0) {
+        if (group?.blur?.length > 0) {
             return Taro.showModal({
                 title: '温馨提示',
                 content: '图片存在模糊或太长的问题，建议调整，以免影响打印效果。无操作视为可以打印',
@@ -129,7 +115,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                     } else {
                         dispatch({
                             type: 'confirmOrder/saveUserImageList',
-                            payload: [...blurList, ...restList]
+                            payload: [...(group.blur || []), ...(group.normal || [])]
                         })
                     }
                 }
@@ -193,114 +179,116 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
     }
 
     return (
-        <CropImgProvider>
-            <View className={styles['index']}>
-                <View className={styles['header']}>显示区域即为打印区域，如需调整请点击图片</View>
-                <View className={styles['content']}>
-                    {
-                        userImageList.map((v, index) => {
+        <View className={styles['index']}>
+            <View className={styles['header']}>显示区域即为打印区域，如需调整请点击图片</View>
+            <View className={styles['content']}>
+                {
+                    userImageList.map((v, index) => {
 
-                            const cropImgProps = {
-                                onFinish: (cropInfo) => {
-                                    const cloneList = [...userImageList];
-                                    cloneList[index].cropInfo = {
-                                        ...cloneList[index].cropInfo,
-                                        ...cropInfo
-                                    };
-                                    editFinish(cloneList);
-                                },
-                                onIgnore: () => {
-                                    const cloneList = [...userImageList];
-                                    cloneList[index].cropInfo = {
-                                        ...v.cropInfo,
-                                        ignoreBlur: true
-                                    }
-                                    editFinish(cloneList);
-                                },
-                                showEdit: false,
-                                onHandleEdit: () => {
-                                    Taro.eventCenter.off('editFinish');
-                                    Taro.eventCenter.on('editFinish', (res) => {
-                                        editFinish(res);
-                                    })
-                                    dispatch({
-                                        type: 'editimg/goEditImg',
-                                        payload: {
-                                            imgList: userImageList.map((v) => {
-                                                return {
-                                                    ...v,
-                                                    proportion
-                                                }
-                                            }),
-                                            defaultIndex: index
-                                        }
-                                    })
-                                },
-                                onHandleChange: () => {
-                                    uploadRef.current.handleChoose({
-                                        type: 'replace',
-                                        index
-                                    });
-                                },
-                                className: styles['item-img'],
-                                contentWidth: SELECT_WIDTH,
-                                contentHeight: SELECT_WIDTH / proportion,
-                                width: v.imgInfo.width,
-                                height: v.imgInfo.height,
-                                cropOption: v.cropInfo,
-                                src: v.filePath
-                            }
-
-                            return (
-                                <View className={styles['item']}>
-                                    <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className={styles['delete-icon']} />
-                                    <View className={styles['item-body']} style={contentStyle}>
-                                        <CropImg {...cropImgProps} autoRotate/>
-                                    </View>
-                                    <View className={styles['item-footer']}>
-                                        <View className={styles['step-wrap']}>
-                                            <Image src={v.printNums <= 1 ? lessDisabledIcon : lessSelectIcon} onClick={handleOprate.bind(this, index, 'substract')} className={styles['opration-btn']} />
-                                            <View className={styles['step-value']}>{v.printNums}</View>
-                                            <Image src={plusSelectIcon} onClick={handleOprate.bind(this, index, 'add')} className={styles['opration-btn']} />
-                                        </View>
-                                    </View>
-                                </View>
-                            )
-                        })
-                    }
-                    <Upload ref={uploadRef} onChange={onChange} limit={9} fileList={userImageList}>
-                        <View className={`${styles['item']} ${styles['choose-item']}`}>
-                            <View className={styles['item-body']} style={contentStyle}>
-                                <Image className={styles['select-icon']} src={addPic} />
-                                添加照片
-                            </View>
-                            <View className={styles['item-footer']}></View>
-                        </View>
-                    </Upload>
-                </View>
-                <SafeArea>
-                    {({ bottom }) => {
-                        return (
-                            <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className={styles['submit-wrap']}>
-                                {
-                                    coupon.couponName &&
-                                    <View className={styles['freenums-tag']}>还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
+                        const cropImgProps = {
+                            onFinish: (cropInfo) => {
+                                const cloneList = [...userImageList];
+                                cloneList[index].cropInfo = {
+                                    ...cloneList[index].cropInfo,
+                                    ...cropInfo
+                                };
+                                editFinish(cloneList);
+                            },
+                            onIgnore: () => {
+                                const cloneList = [...userImageList];
+                                cloneList[index].cropInfo = {
+                                    ...v.cropInfo,
+                                    ignoreBlur: true
                                 }
-                                <View className={styles['submit-left']} onClick={handleAddPic}>
-                                    <Text className={styles['submit-left-text']}>添加照片</Text>
-                                    <Text className={styles['submit-left-text']}>已选{userImageList.length}张</Text>
+                                editFinish(cloneList);
+                            },
+                            showEdit: false,
+                            onHandleEdit: () => {
+                                Taro.eventCenter.off('editFinish');
+                                Taro.eventCenter.on('editFinish', (res) => {
+                                    editFinish(res);
+                                })
+                                dispatch({
+                                    type: 'editimg/goEditImg',
+                                    payload: {
+                                        imgList: userImageList.map((v) => {
+                                            return {
+                                                ...v,
+                                                proportion
+                                            }
+                                        }),
+                                        defaultIndex: index
+                                    }
+                                })
+                            },
+                            onHandleChange: () => {
+                                uploadRef.current.handleChoose({
+                                    type: 'replace',
+                                    index
+                                });
+                            },
+                            className: styles['item-img'],
+                            contentWidth: SELECT_WIDTH,
+                            contentHeight: SELECT_WIDTH / proportion,
+                            width: v.imgInfo.width,
+                            height: v.imgInfo.height,
+                            cropOption: v.cropInfo,
+                            src: v.filePath
+                        }
+
+                        return (
+                            <View className={styles['item']}>
+                                <Image onClick={handleDelete.bind(this, index)} src={deleteIcon} className={styles['delete-icon']} />
+                                <View className={styles['item-body']} style={contentStyle}>
+                                    <CropImg {...cropImgProps} autoRotate />
                                 </View>
-                                <View className={styles['submit-right']} onClick={handleGoPrint}>去打印</View>
+                                <View className={styles['item-footer']}>
+                                    <View className={styles['step-wrap']}>
+                                        <Image src={v.printNums <= 1 ? lessDisabledIcon : lessSelectIcon} onClick={handleOprate.bind(this, index, 'substract')} className={styles['opration-btn']} />
+                                        <View className={styles['step-value']}>{v.printNums}</View>
+                                        <Image src={plusSelectIcon} onClick={handleOprate.bind(this, index, 'add')} className={styles['opration-btn']} />
+                                    </View>
+                                </View>
                             </View>
                         )
-                    }}
-                </SafeArea>
+                    })
+                }
+                <Upload ref={uploadRef} onChange={onChange} limit={9} fileList={userImageList}>
+                    <View className={`${styles['item']} ${styles['choose-item']}`}>
+                        <View className={styles['item-body']} style={contentStyle}>
+                            <Image className={styles['select-icon']} src={addPic} />
+                                添加照片
+                            </View>
+                        <View className={styles['item-footer']}></View>
+                    </View>
+                </Upload>
             </View>
-        </CropImgProvider>
+            <SafeArea>
+                {({ bottom }) => {
+                    return (
+                        <View style={{ paddingBottom: Taro.pxTransform(bottom + 20, 750) }} className={styles['submit-wrap']}>
+                            {
+                                coupon.couponName &&
+                                <View className={styles['freenums-tag']}>还可免费打印{restFreeNums < 0 ? 0 : restFreeNums}张</View>
+                            }
+                            <View className={styles['submit-left']} onClick={handleAddPic}>
+                                <Text className={styles['submit-left-text']}>添加照片</Text>
+                                <Text className={styles['submit-left-text']}>已选{userImageList.length}张</Text>
+                            </View>
+                            <View className={styles['submit-right']} onClick={handleGoPrint}>去打印</View>
+                        </View>
+                    )
+                }}
+            </SafeArea>
+        </View>
     )
 }
 
-export default WidthCompressCanvas(connect(({ confirmOrder, editimg }) => ({
-    confirmOrder,
-    editimg
-}))(SelectPic));
+export default Base(
+    WidthCompressCanvas(
+        connect(({ confirmOrder, editimg }) => ({
+            confirmOrder,
+            editimg
+        }))(SelectPic)
+    )
+)

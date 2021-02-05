@@ -232,6 +232,9 @@ export default (props = {}) => {
                 blur
             }
         })
+        props.onFinish && props.onFinish({
+            blur
+        });
     }, [width, height, contentWidth, contentHeight, scale, rotate])
 
     const touchStart = (e) => {

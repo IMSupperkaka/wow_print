@@ -1333,6 +1333,11 @@
     swiper "4.4.2"
     weui "^1.1.2"
 
+"@tarojs/extend@^3.0.26":
+  version "3.0.26"
+  resolved "https://registry.npmjs.org/@tarojs/extend/-/extend-3.0.26.tgz#821f4ff422f0ae0c078efe17b5963337a5d9d13a"
+  integrity sha512-9qBTjdDH+vte+RqMorrbG57PL8zWKUx6icp1vWGoPXHdvFOTDqhrzIzeVbBdDA3TmibeqP4OkQKHg//UvH/I3w==
+
 "@tarojs/helper@2.2.15":
   version "2.2.15"
   resolved "https://registry.npm.taobao.org/@tarojs/helper/download/@tarojs/helper-2.2.15.tgz#b4cc2c70bb6bcdfdc865ea42d789844538849042"

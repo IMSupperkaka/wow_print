@@ -111,6 +111,7 @@ export default React.forwardRef((props, ref) => {
         }
         Taro.chooseImage({
             sizeType: ['original'],
+            sourceType: ['album'],
             count: limit,
             success: (e) => {
                 const nextFileList = getFileList().concat();

@@ -70,10 +70,10 @@ export default ({ list = [], onChange: propOnChange, rowSelection = defaultRowSe
             })
 
             return (
-                <View className={styles.productInfoContent} onClick={(value) => { onChange(!isSelect, product.id) }}>
+                <View className={styles.productInfoContent}>
                     {
                         (type == 'radio' || type == 'checkbox') &&
-                        <Radio className={styles.selection} value={isSelect} />
+                        <Radio className={styles.selection} value={isSelect} onChange={(value) => { onChange(value, product.id) }}/>
                     }
                     <Image onClick={(e) => { handleGoDetail(e, product) }} className="product-image" mode="aspectFill" src={product.indexImage} />
                     <View className="product-content">

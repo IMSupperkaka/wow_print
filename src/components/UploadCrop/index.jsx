@@ -44,8 +44,17 @@ export default React.memo((props) => {
     const handleIgnore = () => {
         const cloneList = [...fileList];
         cloneList[showIndex].cropInfo = {
-            ...currentImg.cropInfo,
+            ...cloneList[showIndex].cropInfo,
             ignoreBlur: true
+        }
+        editFinish && editFinish(cloneList);
+    }
+
+    const onFinish = (cropInfo) => {
+        const cloneList = [...fileList];
+        cloneList[showIndex].cropInfo = {
+            ...cloneList[showIndex].cropInfo,
+            ...cropInfo
         }
         editFinish && editFinish(cloneList);
     }
@@ -60,6 +69,7 @@ export default React.memo((props) => {
                         showEdit={showEdit}
                         onHandleEdit={onHandleEdit}
                         onHandleChange={() => { upload.current.handleChoose(); }}
+                        onFinish={onFinish}
                         className="item-img"
                         contentWidth={width}
                         contentHeight={height}
