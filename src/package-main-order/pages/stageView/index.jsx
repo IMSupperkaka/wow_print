@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Taro from '@tarojs/taro';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
@@ -108,9 +108,9 @@ const StageView = (props) => {
 
     const [activeEditAreaIndex, setActiveEditAreaIndex] = useState(null);
 
-    const [uploadIndex, setUploadIndex] = useState(null);
-
     const [modelList, setModelList] = useState(props.confirmOrder.stageModelList);
+
+    const uploadIndexRef = useRef();
 
     const uploadRef = useRef();
 
@@ -157,15 +157,17 @@ const StageView = (props) => {
         }
     }, [activeModelIndex, activeEditAreaIndex])
 
+
+
     const handleOnchange = (file, fileList) => {
-        if (file.status == 'done' && (activeEditAreaIndex != null || uploadIndex != null)) {
-            mutateActiveImg(file, activeEditAreaIndex == null ? uploadIndex : activeEditAreaIndex);
+        if (file.status == 'done' && (activeEditAreaIndex != null || uploadIndexRef.current != null)) {
+            mutateActiveImg(file, activeEditAreaIndex == null ? uploadIndexRef.current : activeEditAreaIndex);
         }
         setFileList(fileList)
     }
 
     const handleUpload = (uploadIndex) => {
-        setUploadIndex(uploadIndex);
+        uploadIndexRef.current = uploadIndex;
         uploadRef.current.handleChoose();
     }
 
