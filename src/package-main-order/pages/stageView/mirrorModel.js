@@ -13,7 +13,7 @@ export default [
             bgPath: 'http://cdn.91jiekuan.com/FuQfi97HoVYyWbX6644aIo8g61wq', // 背景层
             bgCover: false,
             mixBlendMode: 'normal', // 混合模式 multiply正片叠底 normal正常
-            maskPath: 'http://cdn.91jiekuan.com/FjtundWZ-re3cYgZ4w-98kXPBI0Q', // 展示层模板
+            maskPath: 'http://cdn.91jiekuan.com/FoOVGsh7aKKSzrPL4EHUls0p_jdJ', // 展示层模板
             topDecoration: 'http://cdn.91jiekuan.com/FgBNHIi7UuIvFomXHOZMZCddhSLC', // 顶部效果遮罩层
             thumbnail: 'http://cdn.91jiekuan.com/Fru-pa8Jk2dyXIYhbM5pvxLHZPSY',
         },
@@ -36,7 +36,7 @@ export default [
             bgPath: 'http://cdn.91jiekuan.com/FuQfi97HoVYyWbX6644aIo8g61wq', // 背景层
             bgCover: false,
             mixBlendMode: 'normal', // 混合模式 multiply正片叠底 normal正常
-            maskPath: 'http://cdn.91jiekuan.com/FjtundWZ-re3cYgZ4w-98kXPBI0Q', // 展示层模板
+            maskPath: 'http://cdn.91jiekuan.com/FoOVGsh7aKKSzrPL4EHUls0p_jdJ', // 展示层模板
             topDecoration: 'http://cdn.91jiekuan.com/FgBNHIi7UuIvFomXHOZMZCddhSLC', // 顶部效果遮罩层
             thumbnail: 'http://cdn.91jiekuan.com/FmKhcthVh3jakxdIvEYoxtrRPTHR',
         },
@@ -59,7 +59,7 @@ export default [
             bgPath: 'http://cdn.91jiekuan.com/FuQfi97HoVYyWbX6644aIo8g61wq', // 背景层
             bgCover: false,
             mixBlendMode: 'normal', // 混合模式 multiply正片叠底 normal正常
-            maskPath: 'http://cdn.91jiekuan.com/FjtundWZ-re3cYgZ4w-98kXPBI0Q', // 展示层模板
+            maskPath: 'http://cdn.91jiekuan.com/FoOVGsh7aKKSzrPL4EHUls0p_jdJ', // 展示层模板
             topDecoration: 'http://cdn.91jiekuan.com/FgBNHIi7UuIvFomXHOZMZCddhSLC', // 顶部效果遮罩层
             thumbnail: 'http://cdn.91jiekuan.com/FpbOrLYIeSV4qFcFbgSBTZeWOCJD',
         },
@@ -82,7 +82,7 @@ export default [
             bgPath: 'http://cdn.91jiekuan.com/FuQfi97HoVYyWbX6644aIo8g61wq', // 背景层
             bgCover: false,
             mixBlendMode: 'normal', // 混合模式 multiply正片叠底 normal正常
-            maskPath: 'http://cdn.91jiekuan.com/FjtundWZ-re3cYgZ4w-98kXPBI0Q', // 展示层模板
+            maskPath: 'http://cdn.91jiekuan.com/FoOVGsh7aKKSzrPL4EHUls0p_jdJ', // 展示层模板
             topDecoration: 'http://cdn.91jiekuan.com/FgBNHIi7UuIvFomXHOZMZCddhSLC', // 顶部效果遮罩层
             thumbnail: 'http://cdn.91jiekuan.com/FioV31UAHglUHrhoKYijhpbplwss',
         },
@@ -105,7 +105,7 @@ export default [
             bgPath: 'http://cdn.91jiekuan.com/FuQfi97HoVYyWbX6644aIo8g61wq', // 背景层
             bgCover: false,
             mixBlendMode: 'normal', // 混合模式 multiply正片叠底 normal正常
-            maskPath: 'http://cdn.91jiekuan.com/FjtundWZ-re3cYgZ4w-98kXPBI0Q', // 展示层模板
+            maskPath: 'http://cdn.91jiekuan.com/FoOVGsh7aKKSzrPL4EHUls0p_jdJ', // 展示层模板
             topDecoration: 'http://cdn.91jiekuan.com/FgBNHIi7UuIvFomXHOZMZCddhSLC', // 顶部效果遮罩层
             thumbnail: 'http://cdn.91jiekuan.com/FmQBDltE_SytAmKJdlnZeOkKvKur',
         },

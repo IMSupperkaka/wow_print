@@ -15,9 +15,10 @@ export default [
             height: 504,
             ...fileInfo,
             filePath: 'https://cdn.91jiekuan.com/FjApI7ErjIw6MXZ2SjFEo0ZUtZfj', // 模板
-            bgPath: 'http://cdn.91jiekuan.com/Fiu0PUtkx4ygErdZ7oOjlqIitHTd',
+            bgPath: 'http://cdn.91jiekuan.com/FtXL7PQlMh9Gnlsb-YWymghDMuSW',
             bgCover: false,
-            maskPath: 'https://cdn.91jiekuan.com/FqgLkMSuwvKLkiZdcuV5JnDdjVWL',
+            maskPath: 'http://cdn.91jiekuan.com/FtF8BM67Cogg-Ve3SobrbqqWqyi-',
+            topDecoration: 'http://cdn.91jiekuan.com/FqSp3pC41-aSw10c0QpCrX2zNBRS', // 顶部效果遮罩层
             thumbnail: 'https://cdn.91jiekuan.com/Fj41F2kXUGWe7Yo8Z3fpHdeh6G7e'
         },
         editArea: [
@@ -34,10 +35,12 @@ export default [
         stageInfo: {
             width: 676,
             height: 504,
+            ...fileInfo,
             filePath: 'https://cdn.91jiekuan.com/Fjy7Ma7VAY2ltkRqnDMjqcuTxCWj',
-            bgPath: 'http://cdn.91jiekuan.com/Fiu0PUtkx4ygErdZ7oOjlqIitHTd',
+            bgPath: 'http://cdn.91jiekuan.com/FtXL7PQlMh9Gnlsb-YWymghDMuSW',
             bgCover: false,
-            maskPath: 'https://cdn.91jiekuan.com/FqgLkMSuwvKLkiZdcuV5JnDdjVWL',
+            maskPath: 'http://cdn.91jiekuan.com/FtF8BM67Cogg-Ve3SobrbqqWqyi-',
+            topDecoration: 'http://cdn.91jiekuan.com/FqSp3pC41-aSw10c0QpCrX2zNBRS', // 顶部效果遮罩层
             thumbnail: 'https://cdn.91jiekuan.com/FkK379R0guIw4oaG3quxMOq9rRlC'
         },
         editArea: [
@@ -60,10 +63,12 @@ export default [
         stageInfo: {
             width: 676,
             height: 504,
+            ...fileInfo,
             filePath: 'https://cdn.91jiekuan.com/FoZQyGwVzfCqKaaMMZgdqzprw-nW',
-            bgPath: 'http://cdn.91jiekuan.com/Fiu0PUtkx4ygErdZ7oOjlqIitHTd',
+            bgPath: 'http://cdn.91jiekuan.com/FtXL7PQlMh9Gnlsb-YWymghDMuSW',
             bgCover: false,
-            maskPath: 'https://cdn.91jiekuan.com/FqgLkMSuwvKLkiZdcuV5JnDdjVWL',
+            maskPath: 'http://cdn.91jiekuan.com/FtF8BM67Cogg-Ve3SobrbqqWqyi-',
+            topDecoration: 'http://cdn.91jiekuan.com/FqSp3pC41-aSw10c0QpCrX2zNBRS', // 顶部效果遮罩层
             thumbnail: 'https://cdn.91jiekuan.com/Fo0ZzIWEj9MnymuvMEYRq4NclTIF'
         },
         editArea: [
@@ -80,10 +85,12 @@ export default [
         stageInfo: {
             width: 676,
             height: 504,
+            ...fileInfo,
             filePath: 'https://cdn.91jiekuan.com/Ft8B1QF9kcgl0HryFweHY36Ak7ws',
-            bgPath: 'http://cdn.91jiekuan.com/Fiu0PUtkx4ygErdZ7oOjlqIitHTd',
+            bgPath: 'http://cdn.91jiekuan.com/FtXL7PQlMh9Gnlsb-YWymghDMuSW',
             bgCover: false,
-            maskPath: 'https://cdn.91jiekuan.com/FqgLkMSuwvKLkiZdcuV5JnDdjVWL',
+            maskPath: 'http://cdn.91jiekuan.com/FtF8BM67Cogg-Ve3SobrbqqWqyi-',
+            topDecoration: 'http://cdn.91jiekuan.com/FqSp3pC41-aSw10c0QpCrX2zNBRS', // 顶部效果遮罩层
             thumbnail: 'https://cdn.91jiekuan.com/FhAp77-KTrVci4C56kG6zWqywCCz'
         },
         editArea: [
@@ -100,10 +107,12 @@ export default [
         stageInfo: {
             width: 676,
             height: 504,
+            ...fileInfo,
             filePath: 'https://cdn.91jiekuan.com/FgZAFfjYapKsmf543PEOxB-qr1gc',
-            bgPath: 'http://cdn.91jiekuan.com/Fiu0PUtkx4ygErdZ7oOjlqIitHTd',
+            bgPath: 'http://cdn.91jiekuan.com/FtXL7PQlMh9Gnlsb-YWymghDMuSW',
             bgCover: false,
-            maskPath: 'https://cdn.91jiekuan.com/FqgLkMSuwvKLkiZdcuV5JnDdjVWL',
+            maskPath: 'http://cdn.91jiekuan.com/FtF8BM67Cogg-Ve3SobrbqqWqyi-',
+            topDecoration: 'http://cdn.91jiekuan.com/FqSp3pC41-aSw10c0QpCrX2zNBRS', // 顶部效果遮罩层
             thumbnail: 'https://cdn.91jiekuan.com/FiF4yrYQW3qBOfhOtZyV8hYOa-Hv'
         },
         editArea: [
