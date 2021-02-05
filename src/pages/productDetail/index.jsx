@@ -125,7 +125,7 @@ const ProductDetail = ({ dispatch, confirmOrder, router }) => {
                             {
                                 detail.category == 1 ?
                                 `${v.cname}打印了${v.printNums}张` :
-                                `${v.cname},购买了${v.printNums}件`
+                                `${v.cname}购买了${v.printNums}件`
                             }
                         </View>
                     }}/>
