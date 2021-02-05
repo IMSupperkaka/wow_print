@@ -330,7 +330,7 @@ const StageView = (props) => {
 
                                 return (
                                     <View style={style} onClick={handleShowEdit.bind(this, index)}>
-                                        <CropImg showIgnoreBtn={false} src={img.filePath} {..._cropProps} />
+                                        <CropImg showIgnoreBtn={false} showEdit={false} src={img.filePath} {..._cropProps} />
                                     </View>
                                 )
                             })
