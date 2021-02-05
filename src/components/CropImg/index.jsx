@@ -72,11 +72,9 @@ const CropImg = (props) => {
             return props.onHandleEdit?.();
         }
 
-        if (editVisible) {
-            setEditVisible(false);
-        } else {
-            setEditVisible(true);
-        }
+        setEditVisible((visible) => {
+            return !visible;
+        })
     }
 
     const handleEdit = (e) => {

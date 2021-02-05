@@ -8,7 +8,7 @@ import Upload from '../Upload';
 import CropImg from '@/components/CropImg';
 import uploiadPlus from '@/images/upload-plus@2x.png';
 
-export default React.memo((props) => {
+export default (props) => {
 
     const { width, height, editFinish, limit = 1, showIndex = 0, fileList = [], showEdit = true, className, ...restProps } = props;
 
@@ -87,4 +87,4 @@ export default React.memo((props) => {
             </Upload>
         </View>
     )
-})
+}

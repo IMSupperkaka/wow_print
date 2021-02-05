@@ -358,7 +358,7 @@ const DeskCalendar = (props) => {
                     const size = sizeMap.get(item.type);
 
                     return (
-                        <View key={index} className="cc">
+                        <View className="cc">
                             {
                                 item.type == 0 ?
                                     <View className={`${styles['calendar-item']} ${styles['cover']}`} style={style}>
