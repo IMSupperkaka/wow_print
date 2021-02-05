@@ -10,13 +10,15 @@ export default [
         stageInfo: {
             width: 656,
             height: 610,
-            ...fileInfo,
             bgPath: 'http://cdn.91jiekuan.com/Fj2pQO9GW2THiGt5xwzdAxwE0apc',
             bgCover: false,
             mixBlendMode: 'multiply',
             maskPath: 'http://cdn.91jiekuan.com/FgRBoe84ktW7DBKz93Z5P1sheLPr',
             topDecoration: 'http://cdn.91jiekuan.com/FhRPq0wRBr4ivgPfbW33uhw2B9em',
             thumbnail: 'http://cdn.91jiekuan.com/Fru-pa8Jk2dyXIYhbM5pvxLHZPSY'
+        },
+        fileInfo: {
+            ...fileInfo
         },
         editArea: [
             {

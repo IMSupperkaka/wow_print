@@ -18,7 +18,6 @@ import tipsOnIcon from '@/images/icon_prompt_on@2x.png';
 import tipsOffIcon from '@/images/icon_prompt_off@2x.png';
 import iconFold from '../../images/icon_edit_fold@2x.png';
 import iconUnFold from '../../images/icon_edit_un_fold@2x.png';
-import bgProjection from '@/images/bg_projection@2x.png';
 
 const Tips = () => {
 
@@ -52,8 +51,8 @@ const buildResultList = (model) => {
                 {
                     type: 'IMAGE',
                     imageUrl: 'https://cdn.91jiekuan.com/FoXlt8UQT99Eoiuk2NJPWdrwRTIE',
-                    width: model.stageInfo.width * scale,
-                    height: model.stageInfo.height * scale,
+                    width: model.fileInfo.fileWidth * scale,
+                    height: model.fileInfo.fileHeight * scale,
                     offsetX: 0,
                     offsetY: 0,
                     isBase: true
@@ -74,8 +73,8 @@ const buildResultList = (model) => {
                     return {
                         type: 'IMAGE',
                         imageUrl: v.img.originImage,
-                        offsetX: v.x * scale,
-                        offsetY: v.y * scale,
+                        offsetX: v.fileX * scale,
+                        offsetY: v.fileY * scale,
                         ...cropImage,
                         width: v.width * scale,
                         height: v.height * scale
@@ -89,8 +88,8 @@ const buildResultList = (model) => {
         resultList[0].synthesisList.push({
             type: 'IMAGE',
             imageUrl: model.stageInfo.filePath,
-            width: model.stageInfo.width * scale,
-            height: model.stageInfo.height * scale,
+            width: model.fileInfo.fileWidth * scale,
+            height: model.fileInfo.fileHeight * scale,
             offsetX: 0,
             offsetY: 0
         })
@@ -338,10 +337,10 @@ const StageView = (props) => {
                         {
                             activeModel.stageInfo.filePath &&
                             <Image style={{ 
-                                width: Taro.pxTransform(activeModel.stageInfo.fileWidth, 750), 
-                                height: Taro.pxTransform(activeModel.stageInfo.fileHeight, 750),
-                                top: Taro.pxTransform(activeModel.stageInfo.y, 750),
-                                left: Taro.pxTransform(activeModel.stageInfo.x, 750),
+                                width: Taro.pxTransform(activeModel.fileInfo.fileWidth, 750), 
+                                height: Taro.pxTransform(activeModel.fileInfo.fileHeight, 750),
+                                top: Taro.pxTransform(activeModel.fileInfo.y, 750),
+                                left: Taro.pxTransform(activeModel.fileInfo.x, 750),
                             }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
                         }
                     </View>
