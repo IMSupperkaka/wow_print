@@ -5,14 +5,10 @@ import { connect } from 'react-redux';
 import { View, Image, Button } from '@tarojs/components';
 
 import { useCrop, useClickOutside } from '@/hooks';
-import Base from '@/layout/Base';
-import Upload from '@/components/Upload';
-import Tabs from '@/components/Tabs';
-import TabPanel from '@/components/TabPanel';
-import Transition from '@/components/Transition';
-import CropImg from '@/components/CropImg';
+import { Upload, Tabs, TabPanel, Transition, CropImg } from '@/components';
 import imgView from '@/utils/crop';
 import styles from './index.module.less';
+import Base from '@/layout/Base';
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas';
 import addIcon from '@/images/cion_add_to5@2x.png';
 import tipsOnIcon from '@/images/icon_prompt_on@2x.png';
@@ -118,7 +114,16 @@ const StageView = (props) => {
 
     const uploadRef = useRef();
 
-    const editRef = useRef()
+    const editRef = useRef();
+
+    useClickOutside(() => {
+        if (activeEditAreaIndex != null) {
+            mutate({
+                animate: false
+            })
+        }
+        setActiveEditAreaIndex(null);
+    }, editRef)
 
     const {
         state: {
@@ -136,11 +141,7 @@ const StageView = (props) => {
                     return modelList;
                 }
                 const cloneList = [...modelList];
-                const img = cloneList[activeModelIndex].editArea[activeEditAreaIndex].img;
-                img.cropInfo = {
-                    ...img.cropInfo,
-                    ...cropInfo
-                };
+                cloneList[activeModelIndex].editArea[activeEditAreaIndex].img.cropInfo = cropInfo;
                 return cloneList;
             })
         }
@@ -197,12 +198,6 @@ const StageView = (props) => {
         setActiveEditAreaIndex(index);
     }
 
-    const handleMirror = () => {
-        mutate({
-            mirror: !mirror
-        })
-    }
-
     const handleChangePic = (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -256,23 +251,12 @@ const StageView = (props) => {
 
     const uploadList = [...fileList].reverse();
 
-    useClickOutside(() => {
-        if (activeEditAreaIndex != null) {
-            mutate({
-                animate: false
-            })
-        }
-        setActiveEditAreaIndex(null);
-    }, editRef)
-
     return (
         <View className={styles['index']}>
             <Tips />
             {/* trasnform中fixed定位不会定位在根元素上 TODO:小程序中portal实现 */}
             <Upload className={styles['hidden-upload']} ref={uploadRef} fileList={fileList} onChange={handleOnchange} limit={9}></Upload>
-            <View className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }} style={{
-                background: activeModel.background || ''
-            }}>
+            <View className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}>
                 {
                     activeEditAreaIndex != null &&
                     <View ref={editRef} className={styles['edit-stage-absolute']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
@@ -286,82 +270,69 @@ const StageView = (props) => {
                         </View>
                     </View>
                 }
-                <View className={styles['edit-shadow-wrapper']}>
-                    <View className={styles['edit-stage']} style={{
-                        width: Taro.pxTransform(activeModel.stageInfo.width, 750),
-                        height: Taro.pxTransform(activeModel.stageInfo.height, 750),
-                        '-webkit-mask-image': `url(${activeModel.stageInfo.maskPath})`,
-                        '-webkit-mask-size': '100% 100%',
-                        mixBlendMode: activeModel.stageInfo.mixBlendMode
-                    }}>
-                        {
-                            activeModel.editArea.map(({ width, height, x, y, img }, index) => {
+                <View className={styles['edit-stage']} style={{
+                    width: Taro.pxTransform(activeModel.stageInfo.width, 750),
+                    height: Taro.pxTransform(activeModel.stageInfo.height, 750),
+                    '-webkit-mask-image': `url(${activeModel.stageInfo.maskPath})`,
+                    '-webkit-mask-size': '100% 100%'
+                }}>
+                    {
+                        activeModel.editArea.map(({ width, height, x, y, img }, index) => {
 
-                                const style = {
-                                    position: 'absolute',
-                                    width: Taro.pxTransform(width, 750),
-                                    height: Taro.pxTransform(height, 750),
-                                    top: Taro.pxTransform(y, 750),
-                                    left: Taro.pxTransform(x, 750),
-                                    zIndex: 2,
-                                }
+                            const style = {
+                                position: 'absolute',
+                                width: Taro.pxTransform(width, 750),
+                                height: Taro.pxTransform(height, 750),
+                                top: Taro.pxTransform(y, 750),
+                                left: Taro.pxTransform(x, 750),
+                                zIndex: 2
+                            }
 
-                                if (!img) {
-                                    return (
-                                        <View style={style} className={styles['edit-upload']} onClick={handleUpload.bind(this, index)}>
-                                            <Image className={styles['upload-icon']} src={addIcon} />
-                                        </View>
-                                    )
-                                }
-
-                                let _cropProps = {
-                                    useProps: false,
-                                    width: img.imgInfo.width,
-                                    height: img.imgInfo.height,
-                                    contentWidth: width,
-                                    contentHeight: height,
-                                    cropOption: {
-                                        ...img.cropInfo,
-                                        editwidth: width
-                                    },
-                                    ignoreBlur: true,
-                                    animate: false
-                                }
-
-                                if (activeEditAreaIndex === index) {
-                                    _cropProps = cropProps;
-                                }
-
+                            if (!img) {
                                 return (
-                                    <View style={style} onClick={handleShowEdit.bind(this, index)}>
-                                        <CropImg showIgnoreBtn={false} showEdit={false} src={img.filePath} {..._cropProps} />
+                                    <View style={style} className={styles['edit-upload']} onClick={handleUpload.bind(this, index)}>
+                                        <Image className={styles['upload-icon']} src={addIcon} />
                                     </View>
                                 )
-                            })
-                        }
-                        {
-                            activeModel.stageInfo.filePath &&
-                            <Image style={{ 
-                                width: Taro.pxTransform(activeModel.stageInfo.fileWidth, 750), 
-                                height: Taro.pxTransform(activeModel.stageInfo.fileHeight, 750),
-                                top: Taro.pxTransform(activeModel.stageInfo.y, 750),
-                                left: Taro.pxTransform(activeModel.stageInfo.x, 750),
-                            }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
-                        }
-                    </View>
+                            }
+
+                            let _cropProps = {
+                                useProps: false,
+                                width: img.imgInfo.width,
+                                height: img.imgInfo.height,
+                                contentWidth: width,
+                                contentHeight: height,
+                                cropOption: {
+                                    ...img.cropInfo,
+                                    editwidth: width
+                                },
+                                ignoreBlur: true,
+                                animate: false
+                            }
+
+                            if (activeEditAreaIndex === index) {
+                                _cropProps = cropProps;
+                            }
+
+                            return (
+                                <View style={style} onClick={handleShowEdit.bind(this, index)}>
+                                    <CropImg showEdit={false} showIgnoreBtn={false} src={img.filePath} {..._cropProps} />
+                                </View>
+                            )
+                        })
+                    }
                     <Image style={{
                         width: Taro.pxTransform(activeModel.stageInfo.width, 750),
                         height: Taro.pxTransform(activeModel.stageInfo.height, 750),
-                        zIndex: activeModel.stageInfo.bgCover ? 4 : 1
+                        zIndex: activeModel.stageInfo.bgCover ? 4 : 1 
                     }} className={styles['edit-stage-bg']} src={activeModel.stageInfo.bgPath} />
+                    
                     {
-                        activeModel.stageInfo.topDecoration && 
-                        <Image src={activeModel.stageInfo.topDecoration} className={styles['top-decoration']} style={{
-                            width: Taro.pxTransform(activeModel.stageInfo.width, 750),
-                            height: Taro.pxTransform(activeModel.stageInfo.height, 750),
-                        }}/>
+                        activeModel.stageInfo.filePath &&
+                        <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
                     }
                 </View>
+                <Image src={bgProjection} className={styles['bg-projection']}/>
             </View>
             <View className={classnames(styles['bottom-selector'], fold && styles['fold'])}>
                 <Image onClick={toggleFold} src={fold ? iconFold : iconUnFold} className={styles['fold']} />

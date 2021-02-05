@@ -8,10 +8,6 @@ import { add as addPortfolio, edit as editPortfolio } from '../services/portfoli
 import defaultModelList from '../package-main-order/pages/stageView/model'
 import defaultPillowModelList from '../package-main-order/pages/stageView/pillowmodel'
 import defaultMousePadModelList from '../package-main-order/pages/stageView/mousePadModel'
-import defaultMugCupModelList from '../package-main-order/pages/stageView/mugCupModel'
-import defaultMirrorModelList from '../package-main-order/pages/stageView/mirrorModel'
-import defaultLighterModelList from '../package-main-order/pages/stageView/lighterModel'
-import defaultCoupleBraceletModelList from '../package-main-order/pages/stageView/coupleBraceletModel'
 
 const defaultAddressInfo = {
     id: null,
@@ -150,50 +146,6 @@ export default {
                     yield put({
                         type: 'saveStageModelList',
                         payload: initModelList(defaultMousePadModelList, stageFileList)
-                    })
-                    path = `/package-main-order/pages/stageView/index`
-                    break;
-                case 7:
-                    yield put({
-                        type: 'saveStageFileList',
-                        payload: stageFileList
-                    })
-                    yield put({
-                        type: 'saveStageModelList',
-                        payload: initModelList(defaultMugCupModelList, stageFileList)
-                    })
-                    path = `/package-main-order/pages/stageView/index`
-                    break;
-                case 8:
-                    yield put({
-                        type: 'saveStageFileList',
-                        payload: stageFileList
-                    })
-                    yield put({
-                        type: 'saveStageModelList',
-                        payload: initModelList(defaultCoupleBraceletModelList, stageFileList)
-                    })
-                    path = `/package-main-order/pages/stageView/index`
-                    break;
-                case 9:
-                    yield put({
-                        type: 'saveStageFileList',
-                        payload: stageFileList
-                    })
-                    yield put({
-                        type: 'saveStageModelList',
-                        payload: initModelList(defaultMirrorModelList, stageFileList)
-                    })
-                    path = `/package-main-order/pages/stageView/index`
-                    break;
-                case 10:
-                    yield put({
-                        type: 'saveStageFileList',
-                        payload: stageFileList
-                    })
-                    yield put({
-                        type: 'saveStageModelList',
-                        payload: initModelList(defaultLighterModelList, stageFileList)
                     })
                     path = `/package-main-order/pages/stageView/index`
                     break;

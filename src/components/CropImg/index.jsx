@@ -69,7 +69,7 @@ const CropImg = (props) => {
     const toogleEdit = (e) => {
 
         if (!showEdit) {
-            return props.onHandleEdit();
+            return props.onHandleEdit?.();
         }
 
         if (editVisible) {
@@ -82,7 +82,7 @@ const CropImg = (props) => {
     const handleEdit = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        props.onHandleEdit();
+        props?.onHandleEdit();
     }
 
     const handleChange = (e) => {
