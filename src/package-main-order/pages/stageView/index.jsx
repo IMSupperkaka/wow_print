@@ -141,7 +141,11 @@ const StageView = (props) => {
                     return modelList;
                 }
                 const cloneList = [...modelList];
-                cloneList[activeModelIndex].editArea[activeEditAreaIndex].img.cropInfo = cropInfo;
+                const img = cloneList[activeModelIndex].editArea[activeEditAreaIndex].img;
+                img.cropInfo = {
+                    ...img.cropInfo,
+                    ...cropInfo
+                }
                 return cloneList;
             })
         }
