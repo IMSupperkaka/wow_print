@@ -81,7 +81,7 @@ export default {
     effects: {
         *pushSeletPage({ payload }, { put, call }) {
             const { goodInfo, portfolioId, userImageList, stageFileList, goConfirmOrder = false } = payload;
-
+            console.log('pushSeletPage goodInfo',goodInfo)
             yield put({
                 type: 'saveGoodInfo',
                 payload: goodInfo

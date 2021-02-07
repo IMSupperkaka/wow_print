@@ -2,7 +2,7 @@ var vConsolePlugin = require('vconsole-webpack-plugin');
 
 module.exports = {
     env: {
-        NODE_ENV: '"development"'
+        NODE_ENV: 'development'
     },
     defineConstants: {
         BASE_URL: JSON.stringify('https://testapp.wayinkeji.com'),
