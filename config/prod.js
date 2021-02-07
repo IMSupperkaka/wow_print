@@ -1,4 +1,4 @@
-
+var vConsolePlugin = require('vconsole-webpack-plugin');
 module.exports = {
     env: {
         NODE_ENV: '"production"'
