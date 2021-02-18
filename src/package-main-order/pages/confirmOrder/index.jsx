@@ -153,6 +153,13 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
         openPay({
             money: payMoney
         });
+        dispatch({
+            type: 'confirmOrder/saveImageCache',
+            payload: {
+                list: null,
+                expireTime: null
+            }
+        })
     }
 
     const handleChooseAddress = () => {

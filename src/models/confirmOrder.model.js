@@ -81,7 +81,6 @@ export default {
     effects: {
         *pushSeletPage({ payload }, { put, call }) {
             const { goodInfo, portfolioId, userImageList, stageFileList, goConfirmOrder = false } = payload;
-            console.log('pushSeletPage goodInfo',goodInfo)
             yield put({
                 type: 'saveGoodInfo',
                 payload: goodInfo
@@ -334,6 +333,7 @@ export default {
         initUserImgList(state) {
             const isExpired = isExpire(state.imgCache?.[state.goodId]?.expireTime);
             const imgList = !isExpired ? (state.imgCache?.[state.goodId]?.list || []) : [];
+            console.log('initUserImgList', state.goodId)
             return {
                 ...state,
                 userImageList: imgList,
@@ -379,7 +379,21 @@ export default {
                 proportion: sizeMap.get(Number(payload.size))
             }
         },
+        saveImageCache(state, { payload }) {
+            console.log('saveImageCache', state.goodId)
+            return {
+                ...state,
+                imgCache: {
+                    ...state.imgCache,
+                    [state.goodId]: {
+                        list: payload.list,
+                        expireTime: payload.expireTime || state.imgCache?.[state.goodId]?.expireTime || null
+                    }
+                }
+            }
+        },
         saveUserImageList(state, { payload, expireTime }) {
+            console.log('saveUserImageList', state.goodId)
             if (Array.isArray(payload)) {
                 return {
                     ...state,
@@ -413,7 +427,7 @@ export default {
             }
         },
         mutateUserImageList(state, { payload, expireTime }) {
-
+            console.log('mutateUserImageList', state.goodId)
             const { index, userImage } = payload;
 
             const cloneUserImageList = [...state.userImageList];

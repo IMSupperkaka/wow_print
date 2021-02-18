@@ -43,6 +43,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
     }
 
     useEffect(() => {
+        console.log(userImageList)
         dispatch({
             type: 'confirmOrder/initUserImgList'
         })
