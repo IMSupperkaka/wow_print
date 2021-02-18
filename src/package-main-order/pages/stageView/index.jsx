@@ -287,8 +287,8 @@ const StageView = (props) => {
                     <View className={styles['edit-stage']} style={{
                         width: Taro.pxTransform(activeModel.stageInfo.width, 750),
                         height: Taro.pxTransform(activeModel.stageInfo.height, 750),
-                        // '-webkit-mask-image': `url(${activeModel.stageInfo.maskPath})`,
-                        // '-webkit-mask-size': '100% 100%',
+                        '-webkit-mask-image': `url(${activeModel.stageInfo.maskPath})`,
+                        '-webkit-mask-size': '100% 100%',
                         // mixBlendMode: activeModel.stageInfo.mixBlendMode
                     }}>
                         {
