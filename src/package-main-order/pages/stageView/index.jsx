@@ -106,6 +106,8 @@ const StageView = (props) => {
 
     const [fileList, setFileList] = useState(props.confirmOrder.stageFileList);
 
+    console.log('StageView-fileList',props.confirmOrder.stageFileList, fileList)
+
     const [activeModelIndex, setActiveModelIndexIndex] = useState(0);
 
     const [activeEditAreaIndex, setActiveEditAreaIndex] = useState(null);
@@ -303,7 +305,7 @@ const StageView = (props) => {
 
                                 if (!img) {
                                     return (
-                                        <View style={style} className={styles['edit-upload']} onClick={handleUpload.bind(this, index)}>
+                                        <View style={style} className={styles['edit-upload']} onClick={handleUpload.bind(this, index)} key={index}>
                                             <Image className={styles['upload-icon']} src={addIcon} />
                                         </View>
                                     )
@@ -366,9 +368,9 @@ const StageView = (props) => {
                             <Image className={styles['upload-icon']} src={addIcon} />
                         </View>
                         {
-                            uploadList.map((v) => {
+                            uploadList.map((v, index) => {
                                 return (
-                                    <View className={styles['pic-item']} onClick={handleChoosePic.bind(this, v)}>
+                                    <View className={styles['pic-item']} onClick={handleChoosePic.bind(this, v)} key={index}>
                                         <Image className={styles['pic']} src={v.filePath} mode="aspectFill" />
                                     </View>
                                 )
@@ -384,7 +386,7 @@ const StageView = (props) => {
                                             setActiveEditAreaIndex(null)
                                             setActiveModelIndexIndex(index)
                                         }}
-                                        className={classnames(styles['pic-item'], index == activeModelIndex && styles['active'])}>
+                                        className={classnames(styles['pic-item'], index == activeModelIndex && styles['active'])} key={index}>
                                         <Image className={styles['pic']} src={v.stageInfo.thumbnail} mode="aspectFill" />
                                     </View>
                                 )
