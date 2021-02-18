@@ -181,6 +181,7 @@ export default {
                         type: 'saveStageFileList',
                         payload: stageFileList
                     })
+                    console.log('9stageFileList', stageFileList, defaultMirrorModelList)
                     yield put({
                         type: 'saveStageModelList',
                         payload: initModelList(defaultMirrorModelList, stageFileList)
@@ -192,6 +193,7 @@ export default {
                         type: 'saveStageFileList',
                         payload: stageFileList
                     })
+                    console.log('10stageFileList', stageFileList, defaultMirrorModelList)
                     yield put({
                         type: 'saveStageModelList',
                         payload: initModelList(defaultLighterModelList, stageFileList)
