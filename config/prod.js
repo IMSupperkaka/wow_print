@@ -1,3 +1,5 @@
+var vConsolePlugin = require('vconsole-webpack-plugin');
+
 module.exports = {
     env: {
         NODE_ENV: '"production"'
@@ -16,5 +18,18 @@ module.exports = {
          *     .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin, [])
          * }
          */
-    },
+        webpackChain(chain) {
+            chain.merge({
+                plugin: {
+                    install: {
+                        plugin: vConsolePlugin,
+                        args: [{
+                            filter: [],
+                            enable: true
+                        }]
+                    }
+                }
+            })
+        }
+    }
 }

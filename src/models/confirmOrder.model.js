@@ -101,6 +101,8 @@ export default {
 
             let path = '';
 
+            console.log('model pushSeletPage', goodInfo.category)
+
             switch (goodInfo.category) {
                 case 0:
                     const isEmpty = yield call(isEmptyAddress);
@@ -377,19 +379,6 @@ export default {
                 goodId: payload.id,
                 size: payload.size,
                 proportion: sizeMap.get(Number(payload.size))
-            }
-        },
-        saveImageCache(state, { payload }) {
-            console.log('saveImageCache', state.goodId)
-            return {
-                ...state,
-                imgCache: {
-                    ...state.imgCache,
-                    [state.goodId]: {
-                        list: payload.list,
-                        expireTime: payload.expireTime || state.imgCache?.[state.goodId]?.expireTime || null
-                    }
-                }
             }
         },
         saveUserImageList(state, { payload, expireTime }) {

@@ -88,7 +88,7 @@ const ProductDetail = ({ dispatch, confirmOrder, router }) => {
     }
 
     const handleUploadChange = (file, fileList) => {
-        console.log('pushSeletPage 上传照片')
+        console.log('pushSeletPage 选择完照片', detail.category)
         if (file.status == 'done') {
             dispatch({
                 type: 'confirmOrder/pushSeletPage',
