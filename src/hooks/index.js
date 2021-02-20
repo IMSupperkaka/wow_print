@@ -4,6 +4,7 @@ import useCaptcha from './useCaptcha';
 import useCountDown from './useCountDown';
 import useCrop from './useCrop';
 import useClickOutside from './useClickOutside';
+import useControllableValue from './useControllableValue';
 import useForceUpdate from './useForceUpdate';
 import useFreshState from './useFreshState';
 import useImgCache from './useImgCache';
@@ -17,6 +18,7 @@ export {
     useCountDown,
     useCrop,
     useClickOutside,
+    useControllableValue,
     useForceUpdate,
     useFreshState,
     useImgCache,

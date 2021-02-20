@@ -7,6 +7,7 @@ const fileInfo = {
     x: 36,
     y: 0
 }
+
 export default [
     {
         name: "模版001",
@@ -85,7 +86,7 @@ export default [
         },
         editArea: [
             {
-                x: 167,
+                x: 131,
                 y: 60,
                 fileX: 12, // 距离filePath模板的left
                 fileY: 14, // 距离filePath模板的top
@@ -137,7 +138,7 @@ export default [
         },
         editArea: [
             {
-                x: 81,
+                x: 45,
                 y: 43,
                 fileX: 12, // 距离filePath模板的left
                 fileY: 14, // 距离filePath模板的top

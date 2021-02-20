@@ -145,6 +145,9 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     }
 
     const submitOrder = () => {
+        return Taro.reLaunch({
+            url: '/pages/home/index'
+        })
         if (!addressInfo.id) {
             return Taro.showToast({
                 title: '请选择收货地址',

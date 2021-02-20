@@ -69,20 +69,18 @@ const CropImg = (props) => {
     const toogleEdit = (e) => {
 
         if (!showEdit) {
-            return props.onHandleEdit();
+            return props.onHandleEdit?.();
         }
 
-        if (editVisible) {
-            setEditVisible(false);
-        } else {
-            setEditVisible(true);
-        }
+        setEditVisible((visible) => {
+            return !visible;
+        })
     }
 
     const handleEdit = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        props.onHandleEdit();
+        props?.onHandleEdit();
     }
 
     const handleChange = (e) => {
