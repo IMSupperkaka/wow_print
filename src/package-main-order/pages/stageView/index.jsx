@@ -103,8 +103,6 @@ const StageView = (props) => {
 
     const [fileList, setFileList] = useState(props.confirmOrder.stageFileList);
 
-    console.log('StageView-fileList',props.confirmOrder.stageFileList, fileList)
-
     const [activeModelIndex, setActiveModelIndexIndex] = useState(0);
 
     const [activeEditAreaIndex, setActiveEditAreaIndex] = useState(null);
