@@ -1,14 +1,17 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { View, Image, Button } from '@tarojs/components';
 
-import { useCrop, useClickOutside } from '@/hooks';
-import { Upload, Tabs, TabPanel, Transition, CropImg } from '@/components';
+import { useCrop, useControllableValue } from '@/hooks';
+import Upload from '@/components/Upload';
+import Tabs from '@/components/Tabs';
+import TabPanel from '@/components/TabPanel';
+import Transition from '@/components/Transition';
+import CropImg from '@/components/CropImg';
 import imgView from '@/utils/crop';
 import styles from './index.module.less';
-import Base from '@/layout/Base';
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas';
 import addIcon from '@/images/cion_add_to5@2x.png';
 import tipsOnIcon from '@/images/icon_prompt_on@2x.png';
@@ -101,28 +104,21 @@ const StageView = (props) => {
 
     const [fold, setFold] = useState(false);
 
-    const [fileList, setFileList] = useState(props.confirmOrder.stageFileList);
+    const [fileList, setFileList] = useControllableValue(props.confirmOrder, {
+        valuePropName: 'stageFileList'
+    });
 
     const [activeModelIndex, setActiveModelIndexIndex] = useState(0);
 
     const [activeEditAreaIndex, setActiveEditAreaIndex] = useState(null);
 
-    const [modelList, setModelList] = useState(props.confirmOrder.stageModelList);
+    const [uploadIndex, setUploadIndex] = useState(null);
 
-    const uploadIndexRef = useRef();
+    const [modelList, setModelList] = useControllableValue(props.confirmOrder, {
+        valuePropName: 'stageModelList'
+    });
 
     const uploadRef = useRef();
-
-    const editRef = useRef();
-
-    useClickOutside(() => {
-        if (activeEditAreaIndex != null) {
-            mutate({
-                animate: false
-            })
-        }
-        setActiveEditAreaIndex(null);
-    }, editRef)
 
     const {
         state: {
@@ -140,11 +136,7 @@ const StageView = (props) => {
                     return modelList;
                 }
                 const cloneList = [...modelList];
-                const img = cloneList[activeModelIndex].editArea[activeEditAreaIndex].img;
-                img.cropInfo = {
-                    ...img.cropInfo,
-                    ...cropInfo
-                }
+                cloneList[activeModelIndex].editArea[activeEditAreaIndex].img.cropInfo = cropInfo;
                 return cloneList;
             })
         }
@@ -156,17 +148,15 @@ const StageView = (props) => {
         }
     }, [activeModelIndex, activeEditAreaIndex])
 
-
-
     const handleOnchange = (file, fileList) => {
-        if (file.status == 'done' && (activeEditAreaIndex != null || uploadIndexRef.current != null)) {
-            mutateActiveImg(file, activeEditAreaIndex == null ? uploadIndexRef.current : activeEditAreaIndex);
+        if (file.status == 'done' && (activeEditAreaIndex != null || uploadIndex != null)) {
+            mutateActiveImg(file, activeEditAreaIndex == null ? uploadIndex : activeEditAreaIndex);
         }
         setFileList(fileList)
     }
 
     const handleUpload = (uploadIndex) => {
-        uploadIndexRef.current = uploadIndex;
+        setUploadIndex(uploadIndex);
         uploadRef.current.handleChoose();
     }
 
@@ -192,15 +182,33 @@ const StageView = (props) => {
     const handleShowEdit = (index, e) => {
         e.stopPropagation();
         e.preventDefault();
-        const activeArea = modelList[activeModelIndex].editArea[index];
+        // Taro 阻止事件冒泡超过两级依然冒泡 https://github.com/NervJS/taro/issues/8041
+        setTimeout(() => {
+            const activeArea = modelList[activeModelIndex].editArea[index];
+            mutate({
+                width: activeArea.img.imgInfo.width,
+                height: activeArea.img.imgInfo.height,
+                contentWidth: activeArea.width,
+                contentHeight: activeArea.height,
+                ...activeArea.img.cropInfo
+            })
+            setActiveEditAreaIndex(index);
+        }, 100)
+    }
+
+    const handleHideEdit = () => {
+        if (activeEditAreaIndex != null) {
+            mutate({
+                animate: false
+            })
+        }
+        setActiveEditAreaIndex(null);
+    }
+
+    const handleMirror = () => {
         mutate({
-            width: activeArea.img.imgInfo.width,
-            height: activeArea.img.imgInfo.height,
-            contentWidth: activeArea.width,
-            contentHeight: activeArea.height,
-            ...activeArea.img.cropInfo
+            mirror: !mirror
         })
-        setActiveEditAreaIndex(index);
     }
 
     const handleChangePic = (e) => {
@@ -257,15 +265,17 @@ const StageView = (props) => {
     const uploadList = [...fileList].reverse();
 
     return (
-        <View className={styles['index']}>
+        <View className={styles['index']} onClick={handleHideEdit}>
             <Tips />
             {/* trasnform中fixed定位不会定位在根元素上 TODO:小程序中portal实现 */}
             <Upload className={styles['hidden-upload']} ref={uploadRef} fileList={fileList} onChange={handleOnchange} limit={9}></Upload>
-            <View className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }}>
+            <View className={classnames(styles['edit-container'], fold && styles['fold'])} onTouchMove={(e) => { e.preventDefault(); e.stopPropagation(); }} style={{
+                background: activeModel.background || ''
+            }}>
                 {
                     activeEditAreaIndex != null &&
                     <View className={styles['edit-stage-absolute']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
-                        <View ref={editRef} style={activeAreaStyle} className={styles['crop-img-extra-wrap']}>
+                        <View style={activeAreaStyle} className={styles['crop-img-extra-wrap']}>
                             <View {...touchProps} className={styles['crop-img-extra']} style={style.contentStyle}>
                                 <View data-behavior={['zoom', 'rotate']} className={classnames(styles['crop-extra-zoom'], mirror && styles['mirror'])} />
                                 <View className={classnames(styles['crop-extra-bottom'], mirror && styles['mirror'])}>
@@ -322,8 +332,8 @@ const StageView = (props) => {
                                 }
 
                                 return (
-                                    <View style={style} className={styles['edit-upload']} onClick={handleUpload.bind(this, index)}>
-                                        <Image className={styles['upload-icon']} src={addIcon} />
+                                    <View style={style} onClick={handleShowEdit.bind(this, index)}>
+                                        <CropImg showIgnoreBtn={false} src={img.filePath} {..._cropProps} />
                                     </View>
                                 )
                             })
@@ -341,17 +351,18 @@ const StageView = (props) => {
                     <Image style={{
                         width: Taro.pxTransform(activeModel.stageInfo.width, 750),
                         height: Taro.pxTransform(activeModel.stageInfo.height, 750),
-                        zIndex: activeModel.stageInfo.bgCover ? 4 : 1 
+                        zIndex: activeModel.stageInfo.bgCover ? 4 : 1
                     }} className={styles['edit-stage-bg']} src={activeModel.stageInfo.bgPath} />
-                    
                     {
-                        activeModel.stageInfo.filePath &&
-                        <Image style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }} className={styles['edit-stage-background']} src={activeModel.stageInfo.filePath} />
+                        activeModel.stageInfo.topDecoration && 
+                        <Image src={activeModel.stageInfo.topDecoration} className={styles['top-decoration']} style={{
+                            width: Taro.pxTransform(activeModel.stageInfo.width, 750),
+                            height: Taro.pxTransform(activeModel.stageInfo.height, 750),
+                        }}/>
                     }
                 </View>
-                <Image src={bgProjection} className={styles['bg-projection']}/>
             </View>
-            <View className={classnames(styles['bottom-selector'], fold && styles['fold'])}>
+            <View onClick={handleHideEdit} className={classnames(styles['bottom-selector'], fold && styles['fold'])}>
                 <Image onClick={toggleFold} src={fold ? iconFold : iconUnFold} className={styles['fold']} />
                 <Tabs current={current} onChange={setCurrent}>
                     <TabPanel title="图片" className={styles['tab-content']}>
@@ -394,10 +405,6 @@ const StageView = (props) => {
     )
 }
 
-export default Base(
-    WidthCompressCanvas(
-        connect(({ confirmOrder }) => ({
-            confirmOrder
-        }))(StageView)
-    )
-)
+export default WidthCompressCanvas(connect(({ confirmOrder }) => ({
+    confirmOrder
+}))(StageView));

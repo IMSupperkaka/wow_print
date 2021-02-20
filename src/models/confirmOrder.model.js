@@ -8,6 +8,10 @@ import { add as addPortfolio, edit as editPortfolio } from '../services/portfoli
 import defaultModelList from '../package-main-order/pages/stageView/model'
 import defaultPillowModelList from '../package-main-order/pages/stageView/pillowmodel'
 import defaultMousePadModelList from '../package-main-order/pages/stageView/mousePadModel'
+import defaultMugCupModelList from '../package-main-order/pages/stageView/mugCupModel'
+import defaultMirrorModelList from '../package-main-order/pages/stageView/mirrorModel'
+import defaultLighterModelList from '../package-main-order/pages/stageView/lighterModel'
+import defaultCoupleBraceletModelList from '../package-main-order/pages/stageView/coupleBraceletModel'
 
 const defaultAddressInfo = {
     id: null,

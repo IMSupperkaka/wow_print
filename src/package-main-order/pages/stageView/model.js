@@ -1,3 +1,13 @@
+/**
+ * 摆台模板
+ */
+const fileInfo = {
+    fileWidth: 604,
+    fileHeight: 433,
+    x: 36,
+    y: 0
+}
+
 export default [
     {
         name: "模版001",

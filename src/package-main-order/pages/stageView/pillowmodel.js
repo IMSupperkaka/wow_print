@@ -1,3 +1,10 @@
+const fileInfo = {
+    fileWidth: 432,
+    fileHeight: 432,
+    x: 40,
+    y: 45
+}
+
 export default [
     {
         name: "原图定制",
