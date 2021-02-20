@@ -20,7 +20,7 @@ import { detail as getPortfolio } from '@/services/portfolio';
 
 const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
-    const { addressInfo, coupon, goodId, userImageList } = confirmOrder;
+    const { addressInfo, coupon, goodId, userImageList, portfolioId } = confirmOrder;
     
     const [productDetail, setProductDetail] = useState({
         sellingPrice: 0
@@ -145,9 +145,6 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     }
 
     const submitOrder = () => {
-        return Taro.reLaunch({
-            url: '/pages/home/index'
-        })
         if (!addressInfo.id) {
             return Taro.showToast({
                 title: '请选择收货地址',
@@ -165,16 +162,16 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
         })
     }
 
-    const handleEdit = (item) => {
+    const handleEdit = () => {
         getPortfolio({
-            portfolioId: item.id
+            portfolioId: portfolioId
         }).then(({ data }) => {
             dispatch({
                 type: 'confirmOrder/pushSeletPage',
                 payload: {
                     goConfirmOrder: false,
                     goodInfo: data.data.goodsDetail,
-                    portfolioId: item.id,
+                    portfolioId: portfolioId,
                     userImageList: data.data.imageList
                 }
             })
