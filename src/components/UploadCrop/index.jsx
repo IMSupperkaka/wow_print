@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 import { View, Image } from '@tarojs/components';
 import { app } from '../../dva';
@@ -8,7 +8,7 @@ import Upload from '../Upload';
 import CropImg from '@/components/CropImg';
 import uploiadPlus from '@/images/upload-plus@2x.png';
 
-export default React.memo((props) => {
+export default (props) => {
 
     const { width, height, editFinish, limit = 1, showIndex = 0, fileList = [], showEdit = true, className, ...restProps } = props;
 
@@ -59,6 +59,10 @@ export default React.memo((props) => {
         editFinish && editFinish(cloneList);
     }
 
+    const onHandleChange = () => {
+        upload.current.handleChoose();
+    }
+
     return (
         <View className={className}>
             {
@@ -68,7 +72,7 @@ export default React.memo((props) => {
                         onIgnore={handleIgnore}
                         showEdit={showEdit}
                         onHandleEdit={onHandleEdit}
-                        onHandleChange={() => { upload.current.handleChoose(); }}
+                        onHandleChange={onHandleChange}
                         onFinish={onFinish}
                         className="item-img"
                         contentWidth={width}
@@ -87,4 +91,4 @@ export default React.memo((props) => {
             </Upload>
         </View>
     )
-})
+}

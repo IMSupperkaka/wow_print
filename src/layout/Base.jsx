@@ -2,7 +2,7 @@
  * @Author: shawn.huashiyun 
  * @Date: 2020-12-14 19:47:38 
  * @Last Modified by: shawn.huashiyun
- * @Last Modified time: 2021-02-04 11:01:48
+ * @Last Modified time: 2021-02-05 17:54:19
  * @Description 处理页面级组件的登录态 根据运行环境和url参数不同分别执行微信登录，联合登录，游客登录
  * @Description 为页面级组件注入路由信息
  * @Description 记录滚动位置

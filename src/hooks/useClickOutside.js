@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import Taro from '@tarojs/taro';
 
 const isSame = (elem, target) => {
@@ -26,11 +26,15 @@ const checkChildContain = (elem, target) => {
 }
 
 export default (callback, ref) => {
-    useLayoutEffect(() => {
+
+    const onClickAwayRef = useRef(callback);
+    onClickAwayRef.current = callback;
+
+    useEffect(() => {
 
         const handleClickAway = (e) => {
             if (!checkChildContain(ref.current, e.target)) {
-                callback(e);
+                onClickAwayRef.current(e);
             }
         }
 
@@ -40,5 +44,5 @@ export default (callback, ref) => {
             Taro.eventCenter.off('clickRoot', handleClickAway)
         }
 
-    }, [])
+    }, [ref])
 }

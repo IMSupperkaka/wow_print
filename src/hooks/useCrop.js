@@ -400,7 +400,7 @@ export default (props = {}) => {
         },
         style: style,
         mutate: (mutateState) => {
-            let payload = mutateState;
+            let payload = {...mutateState};
             if (mutateState.editwidth || mutateState.contentWidth) {
                 payload.editwidth = mutateState.editwidth || mutateState.contentWidth
             }

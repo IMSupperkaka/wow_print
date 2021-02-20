@@ -11,10 +11,20 @@ export default (props) => {
     const { imgList = [], onChange, onReplace, limit = 1, onClose, ...resetProps } = props;
 
     const handleChange = (file, fileList) => {
-        onChange({
-            ...file,
-            status: file.status || 'done'
-        });
+        if (file.status == 'done') {
+            console.log('select-pic-upload-file-path:', file.filePath)
+            onChange({
+                ...file,
+                cropInfo: {
+                    translate: [0, 0],
+                    scale: 1,
+                    ignoreBlur: false,
+                    rotate: 0,
+                    mirror: false
+                },
+                status: file.status || 'done'
+            });
+        }
         if (fileList) {
             const uploadingList = fileList.filter((v) => {
                 return v.status != 'done'
@@ -42,7 +52,7 @@ export default (props) => {
                         filterList.map((item, index) => {
                             return (
                                 <View className={styles['img-item']} onClick={() => { onClose(); handleChange(item); }}>
-                                    <Image className={styles['img']} mode="aspectFill" src={item.filePath} />
+                                    <Image className={styles['img']} mode="aspectFill" src={item.filePath || item.originImage} />
                                 </View>
                             )
                         })
