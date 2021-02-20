@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Taro, { useDidShow } from '@tarojs/taro'
+import Taro from '@tarojs/taro'
 import classnames from 'classnames'
 import { ScrollView, View, Image, Button, Text } from '@tarojs/components'
 
@@ -43,6 +43,17 @@ export default (props) => {
             })
         }
     });
+
+    const test = () => {
+        Taro.showModal({
+            title: '支付确认',
+            content: '如果您已完成支付，请点击支付完成',
+            confirmText: '重新支付',
+            cancelText: '支付完成',
+            confirmColor: '#FF6345',
+            cancelColor: '#333333'
+        })
+    }
 
     useEffect(() => {
         onLoad(true);
@@ -175,7 +186,7 @@ export default (props) => {
     }
 
     return (
-        <ScrollView className={styles['order-list-scroll']} onScrollToLower={onLoad.bind(this, false)} scrollY={true} style={{ height: '100%' }}>
+        <ScrollView className={styles['order-list-scroll']} onScrollToLower={onLoad.bind(this, false)} scrollY={true} style={{ height: '100%' }} onClick={test}>
             {
                 records.length > 0 ?
                     <View className={styles['order-list']}>

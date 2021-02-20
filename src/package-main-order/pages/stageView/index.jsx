@@ -104,7 +104,7 @@ const StageView = (props) => {
 
     const [fold, setFold] = useState(false);
 
-    const [fileList, setFileList] = useInitialValue(props.confirmOrder.stageFileList);    
+    const [fileList, setFileList] = useInitialValue(props.confirmOrder.stageFileList);
 
     const [activeModelIndex, setActiveModelIndexIndex] = useState(0);
 
@@ -112,7 +112,7 @@ const StageView = (props) => {
 
     const [uploadIndex, setUploadIndex] = useState(null);
 
-    const [modelList, setModelList] = useInitialValue(props.confirmOrder.stageModelList);   
+    const [modelList, setModelList] = useInitialValue(props.confirmOrder.stageModelList);
 
     const uploadRef = useRef();
 

@@ -35,6 +35,7 @@ const modelList = [
 const SelectBook = ({ dispatch, confirmOrder }) => {
 
     const { userImageList } = confirmOrder;
+    console.log(userImageList)
 
     const [activeIndex, setActiveIndex] = useState(0);
     const activeRef = useRef(0);

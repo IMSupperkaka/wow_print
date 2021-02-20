@@ -101,8 +101,6 @@ export default {
 
             let path = '';
 
-            console.log('model pushSeletPage', goodInfo.category)
-
             switch (goodInfo.category) {
                 case 0:
                     const isEmpty = yield call(isEmptyAddress);
@@ -181,7 +179,6 @@ export default {
                         type: 'saveStageFileList',
                         payload: stageFileList
                     })
-                    console.log('9stageFileList', stageFileList, defaultMirrorModelList)
                     yield put({
                         type: 'saveStageModelList',
                         payload: initModelList(defaultMirrorModelList, stageFileList)
@@ -193,7 +190,6 @@ export default {
                         type: 'saveStageFileList',
                         payload: stageFileList
                     })
-                    console.log('10stageFileList', stageFileList, defaultLighterModelList)
                     yield put({
                         type: 'saveStageModelList',
                         payload: initModelList(defaultLighterModelList, stageFileList)
@@ -337,7 +333,6 @@ export default {
         initUserImgList(state) {
             const isExpired = isExpire(state.imgCache?.[state.goodId]?.expireTime);
             const imgList = !isExpired ? (state.imgCache?.[state.goodId]?.list || []) : [];
-            console.log('initUserImgList', state.goodId)
             return {
                 ...state,
                 userImageList: imgList,
@@ -384,7 +379,6 @@ export default {
             }
         },
         saveUserImageList(state, { payload, expireTime }) {
-            console.log('saveUserImageList', state.goodId)
             if (Array.isArray(payload)) {
                 return {
                     ...state,
@@ -418,7 +412,6 @@ export default {
             }
         },
         mutateUserImageList(state, { payload, expireTime }) {
-            console.log('mutateUserImageList', state.goodId)
             const { index, userImage } = payload;
 
             const cloneUserImageList = [...state.userImageList];

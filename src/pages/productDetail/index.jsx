@@ -41,7 +41,6 @@ const ProductDetail = ({ dispatch, confirmOrder, router }) => {
     useEffect(() => {
         getOrderDetail(query.id);
         if (query.type != 'display') {
-            console.log('initConfirmOrder useEffect')
             dispatch({
                 type: 'confirmOrder/initConfirmOrder'
             })
@@ -88,7 +87,6 @@ const ProductDetail = ({ dispatch, confirmOrder, router }) => {
     }
 
     const handleUploadChange = (file, fileList) => {
-        console.log('pushSeletPage 选择完照片', detail.category)
         if (file.status == 'done') {
             dispatch({
                 type: 'confirmOrder/pushSeletPage',

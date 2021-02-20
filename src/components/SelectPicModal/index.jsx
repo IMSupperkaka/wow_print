@@ -36,7 +36,7 @@ export default (props) => {
             }
         }
     }
-
+    console.log(imgList)
     const filterList = imgList.filter((v) => {
         return v?.filePath || v?.originImage;
     })
