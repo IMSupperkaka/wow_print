@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { View, Image, Button } from '@tarojs/components';
 
-import { useCrop, useControllableValue } from '@/hooks';
+import { useCrop, useInitialValue } from '@/hooks';
 import Upload from '@/components/Upload';
 import Tabs from '@/components/Tabs';
 import TabPanel from '@/components/TabPanel';
@@ -104,9 +104,7 @@ const StageView = (props) => {
 
     const [fold, setFold] = useState(false);
 
-    const [fileList, setFileList] = useControllableValue(props.confirmOrder, {
-        valuePropName: 'stageFileList'
-    });
+    const [fileList, setFileList] = useInitialValue(props.confirmOrder.stageFileList);    
 
     const [activeModelIndex, setActiveModelIndexIndex] = useState(0);
 
@@ -114,9 +112,7 @@ const StageView = (props) => {
 
     const [uploadIndex, setUploadIndex] = useState(null);
 
-    const [modelList, setModelList] = useControllableValue(props.confirmOrder, {
-        valuePropName: 'stageModelList'
-    });
+    const [modelList, setModelList] = useInitialValue(props.confirmOrder.stageModelList);   
 
     const uploadRef = useRef();
 

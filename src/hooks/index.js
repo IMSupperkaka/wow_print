@@ -5,6 +5,8 @@ import useCountDown from './useCountDown';
 import useCrop from './useCrop';
 import useClickOutside from './useClickOutside';
 import useControllableValue from './useControllableValue';
+import useUpdateEffect from './useUpdateEffect';
+import useInitialValue from './useInitialValue';
 import useForceUpdate from './useForceUpdate';
 import useFreshState from './useFreshState';
 import useImgCache from './useImgCache';
@@ -19,6 +21,8 @@ export {
     useCrop,
     useClickOutside,
     useControllableValue,
+    useUpdateEffect,
+    useInitialValue,
     useForceUpdate,
     useFreshState,
     useImgCache,
