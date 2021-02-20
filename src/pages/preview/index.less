@@ -8,8 +8,7 @@
 
 .preview-swiper {
     width: 640px;
-    height: auto;
-    height: calc(100vh - 100px)!important;
+    max-height: 75vh;
     .preview-item {
         display: flex;
         align-items: center;
@@ -42,6 +41,7 @@
     position: fixed;
     left: 0;
     bottom: 0;
+    z-index: 1;
     width: 100%;
     display: flex;
     justify-content: center;

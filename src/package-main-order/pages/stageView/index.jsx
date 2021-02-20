@@ -320,7 +320,9 @@ const StageView = (props) => {
                                         editwidth: width
                                     },
                                     ignoreBlur: true,
-                                    animate: false
+                                    animate: false,
+                                    showEdit: false,
+                                    onHandleEdit: () => {return}
                                 }
 
                                 if (activeEditAreaIndex === index) {

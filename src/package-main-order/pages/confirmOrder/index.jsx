@@ -16,6 +16,7 @@ import arrowIcon from '@/images/coin_jump@2x.png'
 import { create } from '@/services/order'
 import { list } from '@/services/address'
 import { detail as getDetail, getMatchList } from '@/services/product'
+import { detail as getPortfolio } from '@/services/portfolio';
 
 const ConfirmOrder = ({ dispatch, confirmOrder }) => {
 
@@ -161,8 +162,20 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
         })
     }
 
-    const handleBack = () => {
-        Taro.navigateBack();
+    const handleEdit = (item) => {
+        getPortfolio({
+            portfolioId: item.id
+        }).then(({ data }) => {
+            dispatch({
+                type: 'confirmOrder/pushSeletPage',
+                payload: {
+                    goConfirmOrder: false,
+                    goodInfo: data.data.goodsDetail,
+                    portfolioId: item.id,
+                    userImageList: data.data.imageList
+                }
+            })
+        })
     }
 
     const saveCoupon = (coupon) => {
@@ -236,7 +249,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                     <View className={styles['product-content']}>
                         <View className={styles['picName']}>
                             {productDetail.name}
-                            <View className={styles['edit']} onClick={handleBack}>
+                            <View className={styles['edit']} onClick={handleEdit}>
                                 编辑
                                 <Image className={styles['address-info__arrow']} src={arrowIcon} />
                             </View>
