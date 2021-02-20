@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import Taro, { useDidHide } from '@tarojs/taro';
+import Taro from '@tarojs/taro';
 import classnames from 'classnames';
 import UAParser from 'ua-parser-js';
 import { View, Image, Text, Button } from '@tarojs/components';
@@ -42,18 +42,13 @@ const usePay = (props) => {
     const [money, setMoney] = useState(0);
     const [params, setParams] = useState({});
 
-    useDidHide(() => {
-        console.log('componentDidHide')
-    })
-
     useEffect(() => {
 
         if (process.env.TARO_ENV != 'h5') {
             return;
         }
 
-        const payInfo = JSON.parse(sessionStorage.getItem('pay-info') || '{}')
-        console.log(sessionStorage.getItem('pay-info'), 'onshow')
+        const payInfo = JSON.parse(sessionStorage.getItem('pay-info') || '{}');
         if (payInfo.payData) {
 
             setMoney(payInfo.money);
@@ -68,8 +63,6 @@ const usePay = (props) => {
                 confirmColor: '#FF6345',
                 cancelColor: '#333333',
                 success: (res) => {
-                    console.log(sessionStorage.getItem('pay-info'), 'success')
-                    sessionStorage.removeItem('pay-info');
                     if (res.cancel) {
                         getOrderStatus(payInfo.payData.out_trade_no).then(({ data }) => {
                             if (data.data.isPay) {
@@ -83,8 +76,8 @@ const usePay = (props) => {
                     }
                 }
             })
+            sessionStorage.removeItem('pay-info');
         }
-
     }, [])
 
     const confirmPay = ({ payType, params: defaultParams }) => {
