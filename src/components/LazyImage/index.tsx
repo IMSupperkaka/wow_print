@@ -42,7 +42,7 @@ export default (props) => {
     return (
         <View className="wy-lazy-wrap">
             <View className={classnames(props.className, 'wy-lazy-loading')} style={loadingStyle}></View>
-            <Image {...props} style={imgStyle} onLoad={() => { setLoading(false) }}/>
+            <Image src={props.src} style={imgStyle} onLoad={() => { setLoading(false) }}/>
         </View>
     )
 }
