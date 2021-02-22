@@ -103,8 +103,6 @@ const CropImg = (props) => {
         toogleEdit(e);
     }
 
-    console.log(transformStyle);
-
     return (
         <View ref={cropRef} onClick={onClick} style={{ width: Taro.pxTransform(contentWidth, 750), height: Taro.pxTransform(contentHeight, 750), ...style }} className={classNames('cropimg-wrap', className)} {...restProps}>
             <View className="mask-box">

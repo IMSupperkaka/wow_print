@@ -141,8 +141,6 @@ const DeskCalendar = (props) => {
 
     const editFinish = (index, res) => {
 
-        console.log('edit-finish-file:', JSON.stringify(res))
-
         const coverList = [
             ...userImageList
         ];

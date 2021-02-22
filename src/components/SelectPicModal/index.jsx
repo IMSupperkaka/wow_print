@@ -12,7 +12,6 @@ export default (props) => {
 
     const handleChange = (file, fileList) => {
         if (file.status == 'done') {
-            console.log('select-pic-upload-file-path:', file.filePath)
             onChange({
                 ...file,
                 cropInfo: {
@@ -36,7 +35,6 @@ export default (props) => {
             }
         }
     }
-    console.log(imgList)
     const filterList = imgList.filter((v) => {
         return v?.filePath || v?.originImage;
     })

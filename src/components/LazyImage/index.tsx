@@ -15,16 +15,18 @@ export default (props) => {
     });
 
     useEffect(() => {
-        Taro.getImageInfo({
-            src: props.src.replace('http://', 'https://'),
-            success: (res) => {
-                setImgInfo({
-                    width: imgInfo.width,
-                    height: imgInfo.width / (res.width / res.height)
-                })
-            }
-        })
-    }, [])
+        if (props.src) {
+            Taro.getImageInfo({
+                src: props.src.replace('http://', 'https://'),
+                success: (res) => {
+                    setImgInfo({
+                        width: imgInfo.width,
+                        height: imgInfo.width / (res.width / res.height)
+                    })
+                }
+            })
+        }
+    }, [props.src])
 
     const loadingStyle = {
         width: Taro.pxTransform(imgInfo.width, 750),

@@ -49,6 +49,9 @@ const Portfolio = ({ dispatch }) => {
             portfolioId: item.id
         }).then(({ data }) => {
             dispatch({
+                type: 'confirmOrder/initConfirmOrder'
+            })
+            dispatch({
                 type: 'confirmOrder/pushSeletPage',
                 payload: {
                     goConfirmOrder: item.finishPage == item.totalPage,
