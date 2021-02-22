@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { View, Image, Button } from '@tarojs/components';
 
-import { useCrop, useInitialValue } from '@/hooks';
+import { useCrop, useClickOutside, useInitialValue } from '@/hooks';
 import Upload from '@/components/Upload';
 import Tabs from '@/components/Tabs';
 import TabPanel from '@/components/TabPanel';
@@ -12,6 +12,7 @@ import Transition from '@/components/Transition';
 import CropImg from '@/components/CropImg';
 import imgView from '@/utils/crop';
 import styles from './index.module.less';
+import Base from '@/layout/Base';
 import WidthCompressCanvas from '@/layout/WidthCompressCanvas';
 import addIcon from '@/images/cion_add_to5@2x.png';
 import tipsOnIcon from '@/images/icon_prompt_on@2x.png';
@@ -116,6 +117,12 @@ const StageView = (props) => {
 
     const uploadRef = useRef();
 
+    const editRef = useRef();
+
+    useClickOutside(() => {
+        setActiveEditAreaIndex(null);
+    }, editRef)
+
     const {
         state: {
             mirror
@@ -132,7 +139,11 @@ const StageView = (props) => {
                     return modelList;
                 }
                 const cloneList = [...modelList];
-                cloneList[activeModelIndex].editArea[activeEditAreaIndex].img.cropInfo = cropInfo;
+                const img = cloneList[activeModelIndex].editArea[activeEditAreaIndex].img;
+                img.cropInfo = {
+                    ...img.cropInfo,
+                    ...cropInfo
+                }
                 return cloneList;
             })
         }
@@ -178,27 +189,15 @@ const StageView = (props) => {
     const handleShowEdit = (index, e) => {
         e.stopPropagation();
         e.preventDefault();
-        // Taro 阻止事件冒泡超过两级依然冒泡 https://github.com/NervJS/taro/issues/8041
-        setTimeout(() => {
-            const activeArea = modelList[activeModelIndex].editArea[index];
-            mutate({
-                width: activeArea.img.imgInfo.width,
-                height: activeArea.img.imgInfo.height,
-                contentWidth: activeArea.width,
-                contentHeight: activeArea.height,
-                ...activeArea.img.cropInfo
-            })
-            setActiveEditAreaIndex(index);
-        }, 100)
-    }
-
-    const handleHideEdit = () => {
-        if (activeEditAreaIndex != null) {
-            mutate({
-                animate: false
-            })
-        }
-        setActiveEditAreaIndex(null);
+        const activeArea = modelList[activeModelIndex].editArea[index];
+        mutate({
+            width: activeArea.img.imgInfo.width,
+            height: activeArea.img.imgInfo.height,
+            contentWidth: activeArea.width,
+            contentHeight: activeArea.height,
+            ...activeArea.img.cropInfo
+        })
+        setActiveEditAreaIndex(index);
     }
 
     const handleMirror = () => {
@@ -261,7 +260,7 @@ const StageView = (props) => {
     const uploadList = [...fileList].reverse();
 
     return (
-        <View className={styles['index']} onClick={handleHideEdit}>
+        <View className={styles['index']}>
             <Tips />
             {/* trasnform中fixed定位不会定位在根元素上 TODO:小程序中portal实现 */}
             <Upload className={styles['hidden-upload']} ref={uploadRef} fileList={fileList} onChange={handleOnchange} limit={9}></Upload>
@@ -271,7 +270,7 @@ const StageView = (props) => {
                 {
                     activeEditAreaIndex != null &&
                     <View className={styles['edit-stage-absolute']} style={{ width: Taro.pxTransform(activeModel.stageInfo.width, 750), height: Taro.pxTransform(activeModel.stageInfo.height, 750) }}>
-                        <View style={activeAreaStyle} className={styles['crop-img-extra-wrap']}>
+                        <View ref={editRef} style={activeAreaStyle} className={styles['crop-img-extra-wrap']}>
                             <View {...touchProps} className={styles['crop-img-extra']} style={style.contentStyle}>
                                 <View data-behavior={['zoom', 'rotate']} className={classnames(styles['crop-extra-zoom'], mirror && styles['mirror'])} />
                                 <View className={classnames(styles['crop-extra-bottom'], mirror && styles['mirror'])}>
@@ -321,8 +320,7 @@ const StageView = (props) => {
                                     },
                                     ignoreBlur: true,
                                     animate: false,
-                                    showEdit: false,
-                                    onHandleEdit: () => {return}
+                                    showEdit: false
                                 }
 
                                 if (activeEditAreaIndex === index) {
@@ -360,7 +358,7 @@ const StageView = (props) => {
                     }
                 </View>
             </View>
-            <View onClick={handleHideEdit} className={classnames(styles['bottom-selector'], fold && styles['fold'])}>
+            <View className={classnames(styles['bottom-selector'], fold && styles['fold'])}>
                 <Image onClick={toggleFold} src={fold ? iconFold : iconUnFold} className={styles['fold']} />
                 <Tabs current={current} onChange={setCurrent}>
                     <TabPanel title="图片" className={styles['tab-content']}>
@@ -403,6 +401,10 @@ const StageView = (props) => {
     )
 }
 
-export default WidthCompressCanvas(connect(({ confirmOrder }) => ({
-    confirmOrder
-}))(StageView));
+export default Base(
+    WidthCompressCanvas(
+        connect(({ confirmOrder }) => ({
+            confirmOrder
+        }))(StageView)
+    )
+)
