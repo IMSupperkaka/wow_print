@@ -163,19 +163,24 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
     }
 
     const handleEdit = () => {
-        getPortfolio({
-            portfolioId: portfolioId
-        }).then(({ data }) => {
-            dispatch({
-                type: 'confirmOrder/pushSeletPage',
-                payload: {
-                    goConfirmOrder: false,
-                    goodInfo: data.data.goodsDetail,
-                    portfolioId: portfolioId,
-                    userImageList: data.data.imageList
-                }
+        const querInfo = Taro.getCurrentInstance().router.params;
+        if(querInfo.type === 'confirmOrder') {
+            Taro.navigateBack()
+        } else {
+            getPortfolio({
+                portfolioId: portfolioId
+            }).then(({ data }) => {
+                dispatch({
+                    type: 'confirmOrder/pushSeletPage',
+                    payload: {
+                        goConfirmOrder: false,
+                        goodInfo: data.data.goodsDetail,
+                        portfolioId: portfolioId,
+                        userImageList: data.data.imageList
+                    }
+                })
             })
-        })
+        }
     }
 
     const saveCoupon = (coupon) => {
@@ -249,10 +254,13 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                     <View className={styles['product-content']}>
                         <View className={styles['picName']}>
                             {productDetail.name}
-                            <View className={styles['edit']} onClick={handleEdit}>
-                                编辑
-                                <Image className={styles['address-info__arrow']} src={arrowIcon} />
-                            </View>
+                            {
+                                productDetail.category != 0 &&
+                                <View className={styles['edit']} onClick={handleEdit}>
+                                    编辑
+                                    <Image className={styles['address-info__arrow']} src={arrowIcon} />
+                                </View>
+                            }
                         </View>
                         <View className={styles['picNum']}>
                             <Text>￥{renderMoney(productDetail.sellingPrice)}</Text>
