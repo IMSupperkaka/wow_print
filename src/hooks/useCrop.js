@@ -382,7 +382,7 @@ export default (props = {}) => {
             onTouchStart: touchStart
         },
         cropProps: {
-            useProps: true,
+            useProps: false,
             transformStyle: style.transformStyle,
             width: width,
             height: height,
