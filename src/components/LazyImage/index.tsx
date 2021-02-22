@@ -10,7 +10,7 @@ export default (props) => {
     const [loading, setLoading] = useState(true);
 
     const [imgInfo, setImgInfo] = useState({
-        width: props.width,
+        width: props.width || 640,
         height: props.height || 320
     });
 

@@ -17,20 +17,9 @@ import editIcon from '@/images/icon_edit.png'
 import wayin from '@/images/cover_wayin.png'
 
 // 除了封面之外的图片数组
-const twinsList = [
-    [{}, {}],
-    [{}, {}],
-    [{}, {}],
-    [{}, {}],
-    [{}, {}],
-    [{}, {}],
-    [{}, {}],
-    [{}, {}]
-];
+const twinsList = Array.from(Array(8)).map(() => ([{}, {}]));
 
-const modelList = [
-    {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
-];
+const modelList = Array.from(Array(17)).map(() => ({}));
 
 const SelectBook = ({ dispatch, confirmOrder }) => {
 

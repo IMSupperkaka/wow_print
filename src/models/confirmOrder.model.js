@@ -80,7 +80,7 @@ export default {
 
     effects: {
         *pushSeletPage({ payload }, { put, call }) {
-            const { goodInfo, portfolioId, userImageList, stageFileList, goConfirmOrder = false } = payload;
+            const { goodInfo, portfolioId, userImageList, stageFileList, goConfirmOrder = false, fromPage } = payload;
             yield put({
                 type: 'saveGoodInfo',
                 payload: goodInfo
@@ -244,7 +244,7 @@ export default {
                         })
                     } else {
                         Taro.navigateTo({
-                            url: '/package-main-order/pages/confirmOrder/index'
+                            url: '/package-main-order/pages/confirmOrder/index?type=confirmOrder'
                         })
                     }
                 })
