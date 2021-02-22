@@ -10,7 +10,7 @@ export default (props) => {
     const [loading, setLoading] = useState(true);
 
     const [imgInfo, setImgInfo] = useState({
-        width: props.width || 640,
+        width: props.width,
         height: props.height || 320
     });
 
@@ -27,14 +27,14 @@ export default (props) => {
     }, [])
 
     const loadingStyle = {
-        // width: Taro.pxTransform(imgInfo.width, 750),
-        // height: Taro.pxTransform(imgInfo.height, 750),
+        width: Taro.pxTransform(imgInfo.width, 750),
+        height: Taro.pxTransform(imgInfo.height, 750),
         display: loading ? 'block' : 'none'
     }
 
     const imgStyle = {
-        // width: Taro.pxTransform(imgInfo.width, 750),
-        // height: Taro.pxTransform(imgInfo.height, 750),
+        width: Taro.pxTransform(imgInfo.width, 750),
+        height: Taro.pxTransform(imgInfo.height, 750),
         transition: 'height .2s ease-in-out',
         opacity: loading ? 0 : 1
     }
@@ -42,7 +42,7 @@ export default (props) => {
     return (
         <View className="wy-lazy-wrap">
             <View className={classnames(props.className, 'wy-lazy-loading')} style={loadingStyle}></View>
-            <Image className="wy-lazy-img" src={props.src} mode={props.mode} style={imgStyle} onLoad={() => { setLoading(false) }}/>
+            <Image src={props.src} style={imgStyle} onLoad={() => { setLoading(false) }}/>
         </View>
     )
 }
