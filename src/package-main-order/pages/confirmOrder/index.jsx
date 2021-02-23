@@ -43,12 +43,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                         goodIsMaster: 1,
                         goodsNums: goodsNums,
                         goodId: goodId,
-                        userImageList: userImageList.map((v) => {
-                            return {
-                                ...v,
-                                filePath: null
-                            }
-                        })
+                        userImageList: userImageList
                     },
                     ...selectedRowKeys.map((id) => {
                         var item = matchList.find((v) => { return v.id == id });
@@ -180,7 +175,6 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                             if (v?.originImage) {
                                 return {
                                     ...v,
-                                    filePath: `${v.originImage}?imageMogr2/auto-orient/format/jpg/thumbnail/!540x540r/quality/80!/interlace/1/ignore-error/1`,
                                     status: 'done'
                                 }
                                 

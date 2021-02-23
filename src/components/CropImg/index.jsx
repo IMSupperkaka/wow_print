@@ -6,6 +6,7 @@ import { View, Image, Text } from '@tarojs/components'
 import './index.less'
 import Transition from '../Transition'
 import { useCrop, useClickOutside, useCacheImage } from '@/hooks'
+import { thumbnail } from '@/hooks/useThumbnail'
 
 const CropImg = (props) => {
 
@@ -15,7 +16,7 @@ const CropImg = (props) => {
 
     const cropRef = useRef();
 
-    const { cachePath } = useCacheImage(src);
+    const { cachePath } = useCacheImage(thumbnail(src));
 
     const {
         state: {

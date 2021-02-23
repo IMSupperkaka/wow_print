@@ -5,6 +5,7 @@ import { View, Image, Button, ScrollView } from '@tarojs/components';
 import styles from './index.module.less';
 import Modal from '../Modal';
 import Upload from '../Upload';
+import { thumbnail } from '@/hooks/useThumbnail';
 
 export default (props) => {
 
@@ -36,7 +37,7 @@ export default (props) => {
         }
     }
     const filterList = imgList.filter((v) => {
-        return v?.filePath || v?.originImage;
+        return v?.originImage;
     })
 
     return (
@@ -49,8 +50,14 @@ export default (props) => {
                     {
                         filterList.map((item, index) => {
                             return (
-                                <View className={styles['img-item']} onClick={() => { onClose(); handleChange(item); }}>
-                                    <Image className={styles['img']} mode="aspectFill" src={item.filePath || item.originImage} />
+                                <View className={styles['img-item']} onClick={() => {
+                                    onClose();
+                                    handleChange({
+                                        ...item,
+                                        status: 'done'
+                                    });
+                                }}>
+                                    <Image className={styles['img']} mode="aspectFill" src={thumbnail(item.originImage)} />
                                 </View>
                             )
                         })
