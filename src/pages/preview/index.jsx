@@ -14,7 +14,7 @@ const PreviewImage = (props) => {
 
     useLayoutEffect(() => {
         Taro.request({
-            url: `${props.src}?imageInfo`,
+            url: `${props.src.replace('http://', 'https://')}?imageInfo`,
             method: 'GET'
         }).then((res) => {
             const info = {
