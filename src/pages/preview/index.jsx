@@ -90,7 +90,6 @@ const Preview = () => {
                     }
                 </Swiper>
             </View>
-            <PreviewImage className="preview-image" src="https://cdn.91jiekuan.com/FlH9MiZvL3uUT37EdMSowIpodHV4" width={640}/>
             <View className="goback-btn" onClick={goBack}>
                 返回
             </View>
