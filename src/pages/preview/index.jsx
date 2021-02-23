@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useLayoutEffect, useState, useRef } from 'react'
 import Taro, { useReady } from '@tarojs/taro'
 import { View, Swiper, SwiperItem, Text } from '@tarojs/components'
 
@@ -12,13 +12,13 @@ const PreviewImage = (props) => {
         src: ''
     });
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         Taro.request({
             url: `${props.src}?imageInfo`,
             method: 'GET'
         }).then((res) => {
             const info = {
-                height: props.width / (res.data.width / res.data.height),
+                height: props.width * res.data.height / res.data.width,
                 width: props.width
             }
             if (res.data.size < 20971520) {

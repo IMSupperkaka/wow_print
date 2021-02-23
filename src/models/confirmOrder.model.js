@@ -230,6 +230,7 @@ export default {
             })
         },
         *pushConfirmOrder({ payload }, { call, put, select }) {
+            console.log(payload.resultList)
             try {
                 if (payload.resultList) {
                     yield put({
