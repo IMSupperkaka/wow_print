@@ -15,7 +15,13 @@ export default (props) => {
     });
 
     useEffect(() => {
-        if (props.src) {
+        if (props.width && props.height) {
+            setImgInfo({
+                width: props.width,
+                height: props.height
+            })
+        }
+        if (props.src && (!props.width || !props.height)) {
             Taro.getImageInfo({
                 src: props.src.replace('http://', 'https://'),
                 success: (res) => {
@@ -26,7 +32,7 @@ export default (props) => {
                 }
             })
         }
-    }, [props.src])
+    }, [props.src, props.width, props.height])
 
     const loadingStyle = {
         width: Taro.pxTransform(imgInfo.width, 750),
