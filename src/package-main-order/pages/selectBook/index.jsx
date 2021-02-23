@@ -105,7 +105,6 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                     imgInfo: img.imgInfo, // 图片原始信息 { width, height, ...resetInfo }
                     cropInfo: img.cropInfo, // 裁剪信息
                     originImage: img.originImage, // 图片七牛地址
-                    filePath: img.filePath,
                     cropImage: cropImage.cropUrl,
                     printNums: 1,
                     restInfo: {
@@ -357,7 +356,7 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
                 }
             </View>
             <BottomButton onChange={(file, fileList) => { onChange(file, fileList, -1) }} onSave={handleSaveWorks} goPrint={submit} limit={17} />
-            <SelectPicModal onChange={onChange} imgList={uniqBy(userImageList.filter((v) => { return !v?.restInfo?.isBack }), 'filePath')} visible={visible} onClose={() => { setVisible(false) }} />
+            <SelectPicModal onChange={onChange} imgList={uniqBy(userImageList.filter((v) => { return !v?.restInfo?.isBack }), 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
             <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
                 <View className={styles['modal-content']}>
                     <View className={styles['input-content']}>

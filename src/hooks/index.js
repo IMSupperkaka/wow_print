@@ -12,6 +12,7 @@ import useFreshState from './useFreshState';
 import useImgCache from './useImgCache';
 import useList from './useList';
 import usePrevious from './usePrevious';
+import useThumbnail from './useThumbnail';
 
 export {
     useSaveScrollTop,
@@ -27,5 +28,6 @@ export {
     useFreshState,
     useImgCache,
     useList,
+    useThumbnail,
     usePrevious
 }

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { View, Image, Button } from '@tarojs/components';
 
 import { useCrop, useClickOutside, useInitialValue } from '@/hooks';
+import { thumbnail } from '@/hooks/useThumbnail';
 import Upload from '@/components/Upload';
 import Tabs from '@/components/Tabs';
 import TabPanel from '@/components/TabPanel';
@@ -329,7 +330,7 @@ const StageView = (props) => {
 
                                 return (
                                     <View style={style} onClick={handleShowEdit.bind(this, index)}>
-                                        <CropImg showIgnoreBtn={false} src={img.filePath} {..._cropProps} />
+                                        <CropImg showIgnoreBtn={false} src={img.originImage} {..._cropProps} />
                                     </View>
                                 )
                             })
@@ -369,7 +370,7 @@ const StageView = (props) => {
                             uploadList.map((v, index) => {
                                 return (
                                     <View className={styles['pic-item']} onClick={handleChoosePic.bind(this, v)} key={index}>
-                                        <Image className={styles['pic']} src={v.filePath} mode="aspectFill" />
+                                        <Image className={styles['pic']} src={thumbnail(v.originImage)} mode="aspectFill" />
                                     </View>
                                 )
                             })

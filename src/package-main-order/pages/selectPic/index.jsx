@@ -233,7 +233,7 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
                             width: v.imgInfo.width,
                             height: v.imgInfo.height,
                             cropOption: v.cropInfo,
-                            src: v.filePath
+                            src: v.originImage
                         }
 
                         return (

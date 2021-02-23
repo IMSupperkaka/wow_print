@@ -80,7 +80,7 @@ export default (props) => {
                         width={currentImg.imgInfo.width}
                         height={currentImg.imgInfo.height}
                         cropOption={currentImg.cropInfo}
-                        src={currentImg.filePath || currentImg.originImage}
+                        src={currentImg.originImage}
                     />
                 </View>
             }
