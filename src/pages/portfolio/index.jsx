@@ -64,6 +64,7 @@ const Portfolio = ({ dispatch }) => {
                                 filePath: `${v.originImage}?imageMogr2/auto-orient/format/jpg/thumbnail/!540x540r/quality/80!/interlace/1/ignore-error/1`,
                                 status: 'done'
                             }
+                            
                         }
                         return v;
                     })

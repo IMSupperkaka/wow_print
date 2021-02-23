@@ -79,7 +79,7 @@ const Preview = () => {
                                 <SwiperItem className="preview-item" key={v.id}>
                                     <View className="preview-image-wrap">
                                         <Text className="print-nums">打印{ v.printNums }张</Text>
-                                        <PreviewImage className="preview-image" src={`${v.url}?imageMogr2/auto-orient/format/jpg/thumbnail/!540x540r/quality/80!/interlace/1/ignore-error/1`} width={640}/>
+                                        <PreviewImage className="preview-image" src={v.url} width={640}/>
                                         <View className="pagenation">
                                             {index + 1}/{previewList.length}
                                         </View>
