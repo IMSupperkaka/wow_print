@@ -21,7 +21,7 @@ export default (props) => {
 
     useLayoutEffect(() => {
         $(wrapRef.current).height().then((height) => {
-            const calcHeight = (height || wrapRef.current.clientHeight) * radio;
+            const calcHeight = (height * radio || wrapRef.current.clientHeight);
             if (props.width && props.height) {
                 if (props.height > calcHeight) {
                     setImgInfo({
