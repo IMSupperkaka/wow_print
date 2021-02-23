@@ -21,7 +21,8 @@ export default (props) => {
 
     useLayoutEffect(() => {
         $(wrapRef.current).height().then((height) => {
-            const calcHeight = (height * radio || wrapRef.current.clientHeight * radio);
+            console.log(wrapRef.current.clientHeight)
+            const calcHeight = (height * radio || document.querySelector('.wy-lazy-wrap').clientHeight * radio);
             if (props.width && props.height) {
                 if (props.height > calcHeight) {
                     setImgInfo({
