@@ -1,6 +1,6 @@
 const fileInfo = {
-    fileWidth: 586,
-    fileHeight: 509,
+    fileWidth: 520,
+    fileHeight: 434,
     x: 0,
     y: 0
 }
@@ -22,10 +22,12 @@ export default [
         },
         editArea: [
             {
-                x: 0,
-                y: 0,
-                width: 586,
-                height: 509,
+                x: 33, // 距离底图(带阴影的背景图)的left
+                y: 9, // 距离底图(带阴影的背景图)的top
+                fileX: 0, // 距离filePath模板的left
+                fileY: 0, // 距离filePath模板的top
+                width: 520,
+                height: 434,
             }
         ]
     }

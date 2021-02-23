@@ -22,8 +22,8 @@ export default [
         },
         editArea: [
             {
-                x: 29,
-                y: 20,
+                x: 29, // 距离底图(带阴影的背景图)的left
+                y: 20, // 距离底图(带阴影的背景图)的top
                 fileX: 0, // 距离filePath模板的left
                 fileY: 0, // 距离filePath模板的top
                 width: 244,
@@ -49,8 +49,8 @@ export default [
         },
         editArea: [
             {
-                x: 29 + 14,
-                y: 20 + 20,
+                x: 29 + 14, // 距离底图(带阴影的背景图)的left
+                y: 20 + 20, // 距离底图(带阴影的背景图)的top
                 fileX: 14, // 距离filePath模板的left
                 fileY: 20, // 距离filePath模板的top
                 width: 216,
@@ -132,7 +132,7 @@ export default [
             {
                 x: 29 + 13,
                 y: 20 + 11,
-                fileX: 11, // 距离filePath模板的left
+                fileX: 13, // 距离filePath模板的left
                 fileY: 11, // 距离filePath模板的top
                 width: 220,
                 height: 424,
@@ -159,8 +159,8 @@ export default [
             {
                 x: 29,
                 y: 20 + 187,
-                fileX: 0 + 187, // 距离filePath模板的left
-                fileY: 18, // 距离filePath模板的top
+                fileX: 0, // 距离filePath模板的left
+                fileY: 187, // 距离filePath模板的top
                 width: 244,
                 height: 330,
             }

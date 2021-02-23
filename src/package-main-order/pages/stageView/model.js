@@ -76,16 +76,16 @@ export default [
             {
                 x: 134 + 36,
                 y: 164,
-                fileX: 12, // 距离filePath模板的left
-                fileY: 14, // 距离filePath模板的top
+                fileX: 134, // 距离filePath模板的left
+                fileY: 164, // 距离filePath模板的top
                 width: 129,
                 height: 139
             },
             {
                 x: 350 + 36,
                 y: 226,
-                fileX: 12, // 距离filePath模板的left
-                fileY: 14, // 距离filePath模板的top
+                fileX: 350, // 距离filePath模板的left
+                fileY: 226, // 距离filePath模板的top
                 width: 125,
                 height: 135
             }
@@ -108,10 +108,10 @@ export default [
         },
         editArea: [
             {
-                x: 131,
+                x: 131 + 36,
                 y: 60,
-                fileX: 12, // 距离filePath模板的left
-                fileY: 14, // 距离filePath模板的top
+                fileX: 131, // 距离filePath模板的left
+                fileY: 60, // 距离filePath模板的top
                 width: 443,
                 height: 313
             }
@@ -134,10 +134,10 @@ export default [
         },
         editArea: [
             {
-                x: 36,
-                y: 20,
-                fileX: 12, // 距离filePath模板的left
-                fileY: 14, // 距离filePath模板的top
+                x: 18 + 36,
+                y: 26,
+                fileX: 18, // 距离filePath模板的left
+                fileY: 26, // 距离filePath模板的top
                 width: 604,
                 height: 380
             }
@@ -160,10 +160,10 @@ export default [
         },
         editArea: [
             {
-                x: 45,
+                x: 45 + 36,
                 y: 43,
-                fileX: 12, // 距离filePath模板的left
-                fileY: 14, // 距离filePath模板的top
+                fileX: 45, // 距离filePath模板的left
+                fileY: 43, // 距离filePath模板的top
                 width: 415,
                 height: 346
             }
