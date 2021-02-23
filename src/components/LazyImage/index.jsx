@@ -1,5 +1,4 @@
 import React, { useState, useLayoutEffect, useRef } from 'react';
-// import { $ } from '@tarojs/extend';
 import Taro from '@tarojs/taro';
 import classnames from 'classnames';
 import { View, Image } from '@tarojs/components';
