@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect, useRef } from 'react';
-import { $ } from '@tarojs/extend';
+// import { $ } from '@tarojs/extend';
 import Taro from '@tarojs/taro';
 import classnames from 'classnames';
 import { View, Image } from '@tarojs/components';
@@ -20,33 +20,31 @@ export default (props) => {
     });
 
     useLayoutEffect(() => {
-        $(wrapRef.current).height().then((height) => {
-            const calcHeight = (height * radio || wrapRef.current.clientHeight * radio);
-            if (props.width && props.height) {
-                if (props.height > calcHeight) {
-                    setImgInfo({
-                        width: props.width * (calcHeight / props.height),
-                        height: calcHeight
-                    })
-                } else {
-                    setImgInfo({
-                        width: props.width,
-                        height: props.height
-                    })
-                }
-            }
-            if (props.src && (!props.width || !props.height)) {
-                Taro.getImageInfo({
-                    src: props.src.replace('http://', 'https://'),
-                    success: (res) => {
-                        setImgInfo({
-                            width: imgInfo.width,
-                            height: (res.width / res.height) / imgInfo.width
-                        })
-                    }
+        const calcHeight = 400 * radio;
+        if (props.width && props.height) {
+            if (props.height > calcHeight) {
+                setImgInfo({
+                    width: props.width * (calcHeight / props.height),
+                    height: calcHeight
+                })
+            } else {
+                setImgInfo({
+                    width: props.width,
+                    height: props.height
                 })
             }
-        })
+        }
+        if (props.src && (!props.width || !props.height)) {
+            Taro.getImageInfo({
+                src: props.src.replace('http://', 'https://'),
+                success: (res) => {
+                    setImgInfo({
+                        width: imgInfo.width,
+                        height: (res.width / res.height) / imgInfo.width
+                    })
+                }
+            })
+        }
     }, [props.src, props.width, props.height])
 
     const loadingStyle = {
