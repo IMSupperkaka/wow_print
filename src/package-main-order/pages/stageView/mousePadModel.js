@@ -1,3 +1,9 @@
+const fileInfo = {
+    fileWidth: 586,
+    fileHeight: 509,
+    x: 0,
+    y: 0
+}
 
 export default [
     {
@@ -10,6 +16,9 @@ export default [
             mixBlendMode: 'normal',
             maskPath: 'http://cdn.91jiekuan.com/Frp2ttsFNf_VIJBgMdEvaQWCHKE_',
             thumbnail: 'http://cdn.91jiekuan.com/Fru-pa8Jk2dyXIYhbM5pvxLHZPSY',
+        },
+        fileInfo: {
+            ...fileInfo
         },
         editArea: [
             {
