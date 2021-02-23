@@ -50,7 +50,13 @@ export default (props) => {
                     {
                         filterList.map((item, index) => {
                             return (
-                                <View className={styles['img-item']} onClick={() => { onClose(); handleChange(item); }}>
+                                <View className={styles['img-item']} onClick={() => {
+                                    onClose();
+                                    handleChange({
+                                        ...item,
+                                        status: 'done'
+                                    });
+                                }}>
                                     <Image className={styles['img']} mode="aspectFill" src={thumbnail(item.originImage)} />
                                 </View>
                             )
