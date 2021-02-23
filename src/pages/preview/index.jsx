@@ -1,11 +1,42 @@
-import React, { useState } from 'react'
-import { connect } from 'react-redux'
-import Taro, { useDidShow, useReady } from '@tarojs/taro'
-import { View, Swiper, SwiperItem, Image, Text } from '@tarojs/components'
+import React, { useEffect, useState } from 'react'
+import Taro, { useReady } from '@tarojs/taro'
+import { View, Swiper, SwiperItem, Text } from '@tarojs/components'
 
 import './index.less'
 import LazyImage from '@/components/LazyImage'
 import { detail } from '@/services/order'
+
+const PreviewImage = (props) => {
+
+    const [imgProps, setImgProps] = useState({
+        src: ''
+    });
+
+    useEffect(() => {
+        Taro.request({
+            url: `${props.src}?imageInfo`,
+            method: 'GET'
+        }).then((res) => {
+            const info = {
+                height: props.width / (res.data.width / res.data.height),
+                width: props.width
+            }
+            if (res.data.size < 20971520) {
+                setImgProps({
+                    src: `${props.src}?imageMogr2/auto-orient/format/jpg/thumbnail/!540x540r/quality/80!/interlace/1/ignore-error/1`,
+                    ...info
+                })
+            } else {
+                setImgProps({
+                    src: props.src,
+                    ...info
+                })
+            }
+        })
+    }, [props.src])
+
+    return <LazyImage {...props} {...imgProps}/>
+}
 
 const Preview = () => {
 
@@ -48,7 +79,7 @@ const Preview = () => {
                                 <SwiperItem className="preview-item" key={v.id}>
                                     <View className="preview-image-wrap">
                                         <Text className="print-nums">打印{ v.printNums }张</Text>
-                                        <LazyImage className="preview-image" src={`${v.url}?imageMogr2/auto-orient/format/jpg/thumbnail/!540x540r/quality/80!/interlace/1/ignore-error/1`} width={640}/>
+                                        <PreviewImage className="preview-image" src={v.url} width={640}/>
                                         <View className="pagenation">
                                             {index + 1}/{previewList.length}
                                         </View>
@@ -59,7 +90,6 @@ const Preview = () => {
                     }
                 </Swiper>
             </View>
-
             <View className="goback-btn" onClick={goBack}>
                 返回
             </View>

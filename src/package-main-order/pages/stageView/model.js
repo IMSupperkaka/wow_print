@@ -10,6 +10,28 @@ const fileInfo = {
 
 export default [
     {
+        name: "原图定制",
+        stageInfo: {
+            width: 676,
+            height: 504,
+            bgPath: 'http://cdn.91jiekuan.com/FtXL7PQlMh9Gnlsb-YWymghDMuSW',
+            bgCover: false,
+            mixBlendMode: 'normal',
+            maskPath: 'http://cdn.91jiekuan.com/FgA_n0HQbIEr453daf5PEjkOQqkN',
+            topDecoration: 'http://cdn.91jiekuan.com/FqSp3pC41-aSw10c0QpCrX2zNBRS', // 顶部效果遮罩层
+            thumbnail: 'http://cdn.91jiekuan.com/Fru-pa8Jk2dyXIYhbM5pvxLHZPSY',
+        },
+        fileInfo: fileInfo,
+        editArea: [
+            {
+                x: 36,
+                y: 0,
+                width: 604,
+                height: 433,
+            }
+        ]
+    },
+    {
         name: "模版001",
         stageInfo: {
             width: 676,

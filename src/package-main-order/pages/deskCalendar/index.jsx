@@ -141,8 +141,6 @@ const DeskCalendar = (props) => {
 
     const editFinish = (index, res) => {
 
-        console.log('edit-finish-file:', JSON.stringify(res))
-
         const coverList = [
             ...userImageList
         ];
@@ -402,7 +400,7 @@ const DeskCalendar = (props) => {
                 })
             }
             <BottomButton onSave={handleSaveWorks} goPrint={submit} onChange={(file, fileList) => { onChange(file, fileList, -1) }} limit={13} />
-            <SelectPicModal limit={activeIndex == -1 ? 9 : 1} onChange={onChange} imgList={uniqBy(userImageList, 'originImage')} visible={visible} onClose={() => { setVisible(false) }} />
+            <SelectPicModal limit={activeIndex == -1 ? 9 : 1} onChange={onChange} imgList={uniqBy(userImageList, 'filePath')} visible={visible} onClose={() => { setVisible(false) }} />
             {/* TODO 封装Form组件 */}
             <Modal visible={editVisible} onClose={() => { setEditVisible(false) }}>
                 <View className={styles['modal-content']}>

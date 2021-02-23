@@ -176,7 +176,17 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                         goConfirmOrder: false,
                         goodInfo: data.data.goodsDetail,
                         portfolioId: portfolioId,
-                        userImageList: data.data.imageList
+                        userImageList: data.data.imageList.map((v) => {
+                            if (v?.originImage) {
+                                return {
+                                    ...v,
+                                    filePath: `${v.originImage}?imageMogr2/auto-orient/format/jpg/thumbnail/!540x540r/quality/80!/interlace/1/ignore-error/1`,
+                                    status: 'done'
+                                }
+                                
+                            }
+                            return v;
+                        })
                     }
                 })
             })
@@ -270,7 +280,7 @@ const ConfirmOrder = ({ dispatch, confirmOrder }) => {
                 </View>
                 <View className={styles['product-pay-info']}>
                     {
-                        [0, 2, 3, 4, 5].includes(productDetail.category) &&
+                        [0, 2, 3, 4, 5, 6, 7, 8, 9, 10].includes(productDetail.category) &&
                         <View className={styles['product-pay-info-item']}>
                             <Text>购买数量</Text>
                             <Step value={goodsNums} max={productDetail.stock == null ? Infinity : productDetail.stock} onChange={setGoodsNums}/>
