@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useLayoutEffect, useRef } from 'react';
 import { $ } from '@tarojs/extend';
 import Taro from '@tarojs/taro';
 import classnames from 'classnames';
@@ -19,9 +19,9 @@ export default (props) => {
         height: props.height || 320
     });
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         $(wrapRef.current).height().then((height) => {
-            const calcHeight = height * radio;
+            const calcHeight = (height || wrapRef.current.clientHeight) * radio;
             if (props.width && props.height) {
                 if (props.height > calcHeight) {
                     setImgInfo({
@@ -47,7 +47,6 @@ export default (props) => {
                 })
             }
         })
-        // console.log(height);
     }, [props.src, props.width, props.height])
 
     const loadingStyle = {
