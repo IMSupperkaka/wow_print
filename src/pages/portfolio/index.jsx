@@ -63,7 +63,6 @@ const Portfolio = ({ dispatch }) => {
                                 ...v,
                                 status: 'done'
                             }
-
                         }
                         return v;
                     })

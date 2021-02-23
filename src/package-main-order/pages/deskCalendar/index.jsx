@@ -112,11 +112,11 @@ const DeskCalendar = (props) => {
         activeRef.current = activeIndex;
     }, [activeIndex])
 
-    useEffect(() => {
-        dispatch({
-            type: 'confirmOrder/initUserImgList'
-        })
-    }, [])
+    // useEffect(() => {
+    //     dispatch({
+    //         type: 'confirmOrder/initUserImgList'
+    //     })
+    // }, [])
 
     const onChange = (file, fileList, index) => {
         if (file.status == 'done') {
@@ -343,7 +343,7 @@ const DeskCalendar = (props) => {
         <View className={styles['app']}>
             <View className={styles['tips']}>
                 显示区域即为打印区域，如需调整请点击图片
-                </View>
+            </View>
             {
                 deskCalenderList.map((item, index) => {
 

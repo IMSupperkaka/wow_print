@@ -31,11 +31,11 @@ const SelectBook = ({ dispatch, confirmOrder }) => {
         activeRef.current = activeIndex;
     }, [activeIndex])
 
-    useEffect(() => {
-        dispatch({
-            type: 'confirmOrder/initUserImgList'
-        })
-    }, [])
+    // useEffect(() => {
+    //     dispatch({
+    //         type: 'confirmOrder/initUserImgList'
+    //     })
+    // }, [])
 
     const [visible, setVisible] = useState(false);
 

@@ -42,11 +42,11 @@ const SelectPic = ({ dispatch, confirmOrder }) => {
         }
     }
 
-    useEffect(() => {
-        dispatch({
-            type: 'confirmOrder/initUserImgList'
-        })
-    }, [])
+    // useEffect(() => {
+    //     dispatch({
+    //         type: 'confirmOrder/initUserImgList'
+    //     })
+    // }, [])
 
     const handleDelete = (index) => {
         Taro.showModal({

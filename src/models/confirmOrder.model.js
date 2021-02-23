@@ -90,15 +90,18 @@ export default {
                 type: 'savePortfolioId',
                 payload: portfolioId || null
             })
-            
+
             if(userImageList) {
                 yield put({
                     type: 'saveUserImageList',
                     payload: userImageList || []
                 })
+            } else {
+                yield put({
+                    type: 'initUserImgList'
+                })
             }
             
-
             let path = '';
 
             switch (goodInfo.category) {
@@ -197,7 +200,7 @@ export default {
                     path = `/package-main-order/pages/stageView/index`
                     break;
             }
-            
+
             if (goConfirmOrder) {
                 path = '/package-main-order/pages/confirmOrder/index'
             }
